@@ -12,9 +12,9 @@ using UnityEngine;
 namespace ReikaKalseki.SeaToSea;
 
 public class Campfire : CustomPrefab {
-    internal static readonly Dictionary<TechType, SmokingRecipe> cookMap = new Dictionary<TechType, SmokingRecipe>();
+    internal static readonly Dictionary<TechType, SmokingRecipe> cookMap = new();
 
-    private static readonly CampfireSaveHandler saveHandler = new CampfireSaveHandler();
+    private static readonly CampfireSaveHandler saveHandler = new();
 
     static Campfire() {
         addRecipe(TechType.Peeper, 3);
@@ -35,13 +35,13 @@ public class Campfire : CustomPrefab {
 
     internal class CampfireSaveHandler : SaveSystem.SaveHandler {
         public override void save(PrefabIdentifier pi) {
-            CampfireTag lgc = pi.GetComponent<CampfireTag>();
+            var lgc = pi.GetComponent<CampfireTag>();
             if (lgc)
                 lgc.save(data);
         }
 
         public override void load(PrefabIdentifier pi) {
-            CampfireTag lgc = pi.GetComponent<CampfireTag>();
+            var lgc = pi.GetComponent<CampfireTag>();
             if (lgc)
                 lgc.load(data);
         }
@@ -50,15 +50,14 @@ public class Campfire : CustomPrefab {
     public static void addRecipe(TechType inp, float secs = 2, Action<SmokedFish> modify = null) {
         if (cookMap.ContainsKey(inp))
             return;
-        TechType cooked = inp.getCookedCounterpart();
+        var cooked = inp.getCookedCounterpart();
         if (inp == TechType.None) {
             SNUtil.log("Could not add smoking recipe for " + inp.AsString() + "; no cooking recipes");
             return;
         }
 
-        SmokingRecipe sr = new SmokingRecipe(inp, new SmokedFish(inp, cooked), secs);
-        if (modify != null)
-            modify.Invoke(sr.output);
+        var sr = new SmokingRecipe(inp, new SmokedFish(inp, cooked), secs);
+        modify?.Invoke(sr.output);
         sr.output.Register();
         cookMap[inp] = sr;
     }
@@ -70,7 +69,7 @@ public class Campfire : CustomPrefab {
     }
 
     public GameObject GetGameObject() {
-        GameObject go = ObjectUtil.createWorldObject("14bbf7f0-4276-48bf-868b-317b366edd16");
+        var go = ObjectUtil.createWorldObject("14bbf7f0-4276-48bf-868b-317b366edd16");
         go.EnsureComponent<CampfireTag>();
         /*
         SphereCollider sc = go.EnsureComponent<SphereCollider>();
@@ -79,16 +78,16 @@ public class Campfire : CustomPrefab {
         sc.isTrigger = true;
         */
         go.layer = LayerID.Useable;
-        Light l = go.addLight(0.8F, 12, new Color(1, 0.5F, 0, 1));
+        var l = go.addLight(0.8F, 12, new Color(1, 0.5F, 0, 1));
         l.transform.localPosition = new Vector3(0, 0.5F, 0);
 
-        BoxCollider box = go.GetComponentInChildren<BoxCollider>();
+        var box = go.GetComponentInChildren<BoxCollider>();
         box.size = new Vector3(box.size.x * 0.15F, box.size.y, box.size.z * 0.15F);
 
-        GameObject pot = ObjectUtil.lookupPrefab(TechType.PlanterPot).GetResult()
+        var pot = ObjectUtil.lookupPrefab(TechType.PlanterPot).GetResult()
             .getChildObject("model/Base_interior_Planter_Pot_01").clone();
         pot.removeChildObject("pot_generic_plant_01");
-        GameObject cone = ObjectUtil.lookupPrefab(TechType.HangingFruit).GetResult().getChildObject("Fruit_03").clone();
+        var cone = ObjectUtil.lookupPrefab(TechType.HangingFruit).GetResult().getChildObject("Fruit_03").clone();
         cone.removeChildObject("Capsule");
         pot.transform.SetParent(go.transform);
         pot.transform.localRotation = Quaternion.Euler(-90, 0, 0);
@@ -97,14 +96,14 @@ public class Campfire : CustomPrefab {
         cone.transform.localRotation = Quaternion.Euler(-90, 0, 0);
         cone.transform.localPosition = Vector3.up * 0.45F;
         cone.transform.localScale = new Vector3(0.04F, 0.04F, 0.02F);
-        Renderer r = cone.GetComponentInChildren<Renderer>();
+        var r = cone.GetComponentInChildren<Renderer>();
         RenderUtil.setGlossiness(r, 2, 0, 0.5F);
         RenderUtil.setEmissivity(r, 120);
         return go;
     }
 
     public static void updateLocale() {
-        foreach (KeyValuePair<TechType, SmokingRecipe> kvp in cookMap) {
+        foreach (var kvp in cookMap) {
             kvp.Value.output.updateLocale();
         }
     }
@@ -143,8 +142,8 @@ public class SmokedFish : CustomPrefab {
         }
         repl.Apply(false, false);
         sprite.texture = repl;*/
-        string path = "Textures/Items/SmokedFish/" + rawFish.AsString().ToLowerInvariant();
-        sprite = TextureManager.getSprite(SeaToSeaMod.modDLL, path);
+        var path = "Textures/Items/SmokedFish/" + rawFish.AsString().ToLowerInvariant();
+        sprite = TextureManager.getSprite(SeaToSeaMod.ModDLL, path);
         // TODO
         // if (TextureManager.isTextureNotFound(path)) { //generate one if a manual one does not exist
         // 	CustomPrefab from = (CustomPrefab)cookedFish.getModPrefabByTechType();
@@ -177,11 +176,11 @@ public class SmokedFish : CustomPrefab {
     }
 
     public GameObject GetGameObject() {
-        GameObject go = ObjectUtil.createWorldObject(itemTemplate, true, false);
+        var go = ObjectUtil.createWorldObject(itemTemplate, true, false);
         go.GetComponent<Eatable>().waterValue =
             ObjectUtil.lookupPrefab(cookedFish).GetResult().GetComponent<Eatable>().waterValue * 0.67F;
         if (itemTemplate != cookedFish && itemTemplate != curedFish) {
-            GameObject mdl = go.getModelRoot();
+            var mdl = go.getModelRoot();
             mdl.transform.parent.gameObject.setModel(
                 mdl.name,
                 ObjectUtil.lookupPrefab(cookedFish).GetResult().getModelRoot().gameObject
@@ -205,7 +204,7 @@ public class SmokedFish : CustomPrefab {
     }
 }
 
-class CampfireTag : MonoBehaviour, IHandTarget {
+internal class CampfireTag : MonoBehaviour, IHandTarget {
     //private static readonly float COOK_TIME = 2;
 
     private LiveMixin live;
@@ -216,11 +215,11 @@ class CampfireTag : MonoBehaviour, IHandTarget {
     private float cookProgress;
     private SmokingRecipe cooking;
 
-    void Update() {
+    private void Update() {
         if (!live)
-            live = this.GetComponent<LiveMixin>();
+            live = GetComponent<LiveMixin>();
         if (!light)
-            light = this.GetComponentInChildren<Light>();
+            light = GetComponentInChildren<Light>();
         if (live) {
             live.health = live.maxHealth;
             live.invincible = true;
@@ -235,16 +234,16 @@ class CampfireTag : MonoBehaviour, IHandTarget {
             fire.transform.localScale = new Vector3(0.5F, 1, 0.5F);
         }
 
-        float time = DayNightCycle.main.timePassedAsFloat;
-        light.range = 12 + (1.2F * Mathf.Sin(time * 12.917F)) + (0.5F * Mathf.Sin((time * 18.371F) + 217F)) +
-                      (0.2F * Mathf.Sin((time * 45.713F) + 62F));
-        light.intensity = 0.8F * (0.5F + (light.range / 24F));
+        var time = DayNightCycle.main.timePassedAsFloat;
+        light.range = 12 + 1.2F * Mathf.Sin(time * 12.917F) + 0.5F * Mathf.Sin(time * 18.371F + 217F) +
+                      0.2F * Mathf.Sin(time * 45.713F + 62F);
+        light.intensity = 0.8F * (0.5F + light.range / 24F);
 
         if (cooking != null) {
             cookProgress += Time.deltaTime / cooking.cookTime;
             if (cookProgress >= 1) {
                 cookProgress = 0;
-                this.cook();
+                cook();
                 cooking = null;
             }
         }
@@ -256,7 +255,7 @@ class CampfireTag : MonoBehaviour, IHandTarget {
     }
 
     internal void load(XmlElement data) {
-        string rec = data.getProperty("cooking");
+        var rec = data.getProperty("cooking");
         cooking = string.IsNullOrEmpty(rec) ? null : Campfire.cookMap[(TechType)Enum.Parse(typeof(TechType), rec)];
     }
 
@@ -279,10 +278,10 @@ class CampfireTag : MonoBehaviour, IHandTarget {
 
     public void OnHandClick(GUIHand hand) {
         if (cooking == null) {
-            Pickupable held = Inventory.main.GetHeld();
+            var held = Inventory.main.GetHeld();
             if (held) {
-                TechType tt = held.GetTechType();
-                RetexturedFish rf = RetexturedFish.getFish(tt);
+                var tt = held.GetTechType();
+                var rf = RetexturedFish.GetFish(tt);
                 if (rf != null)
                     tt = CraftData.entClassTechTable[rf.baseTemplate.prefab];
                 if (Campfire.cookMap.ContainsKey(tt) && Inventory.main.TryRemoveItem(held)) { //sound
@@ -294,7 +293,7 @@ class CampfireTag : MonoBehaviour, IHandTarget {
     }
 }
 
-class SmokingRecipe {
+internal class SmokingRecipe {
     internal readonly TechType input;
     internal readonly SmokedFish output;
     internal readonly float cookTime;

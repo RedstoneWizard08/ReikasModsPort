@@ -16,20 +16,20 @@ public class VoltaicBladderfish : RetexturedFish, MultiTexturePrefab {
     }
 
     public override void prepareGameObject(GameObject world, Renderer[] r0) {
-        VoltaicBladderfishTag kc = world.EnsureComponent<VoltaicBladderfishTag>();
-        foreach (Renderer r in r0) {
-            foreach (Material m in r.materials) {
+        var kc = world.EnsureComponent<VoltaicBladderfishTag>();
+        foreach (var r in r0) {
+            foreach (var m in r.materials) {
                 m.SetColor("_GlowColor", new Color(1, 1, 1, 1));
                 RenderUtil.disableTransparency(m);
             }
         }
 
-        GameObject inner = ObjectUtil.lookupPrefab(VanillaCreatures.BOOMERANG.prefab).GetComponentInChildren<Animator>()
+        var inner = ObjectUtil.lookupPrefab(VanillaCreatures.BOOMERANG.prefab).GetComponentInChildren<Animator>()
             .gameObject.clone();
         inner.transform.SetParent(world.GetComponentInChildren<Animator>().transform);
         inner.gameObject.name = "AuxMdl";
-        foreach (Renderer r in inner.GetComponentsInChildren<Renderer>()) {
-            RenderUtil.swapTextures(SeaToSeaMod.modDLL, r, "Textures/Creature/VoltaicBladderfishAux");
+        foreach (var r in inner.GetComponentsInChildren<Renderer>()) {
+            RenderUtil.swapTextures(SeaToSeaMod.ModDLL, r, "Textures/Creature/VoltaicBladderfishAux");
             RenderUtil.setEmissivity(r, 1);
         }
 
@@ -40,7 +40,7 @@ public class VoltaicBladderfish : RetexturedFish, MultiTexturePrefab {
         world.EnsureComponent<VoltaicFishSparker>();
     }
 
-    public override BehaviourType getBehavior() {
+    public override BehaviourType GetBehavior() {
         return BehaviourType.SmallFish;
     }
 
@@ -49,7 +49,7 @@ public class VoltaicBladderfish : RetexturedFish, MultiTexturePrefab {
     }
 }
 
-class VoltaicFishSparker : AzuriteSparker {
+internal class VoltaicFishSparker : AzuriteSparker {
     public VoltaicFishSparker() : base(2.5F, 0.5F, false, new Vector3(0, 0, 0)) {
     }
 
@@ -58,7 +58,7 @@ class VoltaicFishSparker : AzuriteSparker {
     }
 }
 
-class VoltaicBladderfishTag : MonoBehaviour, ReikaKalseki.AqueousEngineering.AmpeelAntennaCreature {
+internal class VoltaicBladderfishTag : MonoBehaviour, AmpeelAntennaCreature {
     public static readonly float POWER_EXPONENT = 0.125F;
 
     private Renderer[] renders;
@@ -74,28 +74,22 @@ class VoltaicBladderfishTag : MonoBehaviour, ReikaKalseki.AqueousEngineering.Amp
         }
     }
     */
-    public LiveMixin live {
-        get { return GetComponent<LiveMixin>(); }
-    }
+    public LiveMixin live => GetComponent<LiveMixin>();
 
-    public float ampeelValue {
-        get { return 0F; }
-    }
+    public float ampeelValue => 0F;
 
-    public float powerExponentAddition {
-        get { return POWER_EXPONENT; }
-    }
+    public float powerExponentAddition => POWER_EXPONENT;
 
     public static void computeMaximumEfficiency(int acuSize) {
         SNUtil.log("Voltaic Bladderfish yields for size-" + acuSize + " ACU:");
-        float refAmt = AmpeelAntenna.ACU_COEFFICIENT * AmpeelAntenna.POWER_GEN;
-        int ampSize = 3; //ampeel is 3 units each;
-        int slots = 10 * acuSize;
-        int maxEels = slots / ampSize;
-        for (int ampeels = 1; ampeels <= maxEels; ampeels++) {
-            int maxVolt = slots - ampSize * ampeels;
-            for (int volt = 0; volt <= maxVolt; volt++) {
-                float yield = Mathf.Min(AmpeelAntenna.AMPEEL_CAP, Mathf.Pow(ampeels, 1 + volt * POWER_EXPONENT));
+        var refAmt = AmpeelAntenna.ACU_COEFFICIENT * AmpeelAntenna.POWER_GEN;
+        var ampSize = 3; //ampeel is 3 units each;
+        var slots = 10 * acuSize;
+        var maxEels = slots / ampSize;
+        for (var ampeels = 1; ampeels <= maxEels; ampeels++) {
+            var maxVolt = slots - ampSize * ampeels;
+            for (var volt = 0; volt <= maxVolt; volt++) {
+                var yield = Mathf.Min(AmpeelAntenna.AMPEEL_CAP, Mathf.Pow(ampeels, 1 + volt * POWER_EXPONENT));
                 SNUtil.log(
                     "    " + ampeels + " ampeels + " + volt + " voltaic: " + (yield * refAmt).ToString("0.00") + " (" +
                     yield.ToString("0.00") + "x)"
@@ -104,17 +98,17 @@ class VoltaicBladderfishTag : MonoBehaviour, ReikaKalseki.AqueousEngineering.Amp
         }
     }
 
-    void Update() {
+    private void Update() {
         if (renders == null)
-            renders = this.GetComponentsInChildren<Renderer>();
+            renders = GetComponentsInChildren<Renderer>();
 
         if (Mathf.Abs(currentEmissivity - targetEmissivity) < 0.1F) {
-            targetEmissivity = UnityEngine.Random.Range(0.9F, 2.5F);
+            targetEmissivity = Random.Range(0.9F, 2.5F);
         } else {
             currentEmissivity += Mathf.Sign(targetEmissivity - currentEmissivity) * Time.deltaTime;
         }
 
-        foreach (Renderer r in renders) {
+        foreach (var r in renders) {
             if (r)
                 RenderUtil.setEmissivity(r, currentEmissivity);
         }

@@ -7,7 +7,7 @@ using UnityEngine;
 namespace ReikaKalseki.DIAlterra;
 
 public class TerrainLootSpawner : CustomPrefab {
-    internal static readonly Dictionary<string, TerrainLootSpawn> spawnIDs = new Dictionary<string, TerrainLootSpawn>();
+    internal static readonly Dictionary<string, TerrainLootSpawn> spawnIDs = new();
 
     public readonly TerrainLootSpawn spawnID;
 
@@ -26,7 +26,7 @@ public class TerrainLootSpawner : CustomPrefab {
     }
 
     public GameObject GetGameObject() {
-        GameObject go = new GameObject();
+        var go = new GameObject();
         go.EnsureComponent<TerrainLootSpawnerTag>().spawnID = spawnID;
         go.EnsureComponent<TechTag>().type = Info.TechType;
         go.EnsureComponent<PrefabIdentifier>().ClassId = Info.ClassID;
@@ -34,31 +34,31 @@ public class TerrainLootSpawner : CustomPrefab {
         return go;
     }
 
-    class TerrainLootSpawnerTag : MonoBehaviour {
+    private class TerrainLootSpawnerTag : MonoBehaviour {
         internal TerrainLootSpawn spawnID;
 
         private int spawned;
 
-        void Update() {
+        private void Update() {
             if (spawnID == null) {
-                string id = this.GetComponent<PrefabIdentifier>().classId;
-                spawnID = TerrainLootSpawner.spawnIDs.ContainsKey(id) ? TerrainLootSpawner.spawnIDs[id] : null;
+                var id = GetComponent<PrefabIdentifier>().classId;
+                spawnID = spawnIDs.ContainsKey(id) ? spawnIDs[id] : null;
                 if (spawnID == null)
                     SNUtil.log("No spawn ID for prefab " + id + " @ " + transform.position);
                 return;
             }
 
-            Vector3 vec = UnityEngine.Random.insideUnitSphere.normalized;
-            Ray ray = new Ray(transform.position, vec);
+            var vec = UnityEngine.Random.insideUnitSphere.normalized;
+            var ray = new Ray(transform.position, vec);
             if (UWE.Utils.RaycastIntoSharedBuffer(
                     ray,
                     transform.localScale.z,
                     Voxeland.GetTerrainLayerMask(),
                     QueryTriggerInteraction.Ignore
                 ) > 0) {
-                RaycastHit hit = UWE.Utils.sharedHitBuffer[0];
+                var hit = UWE.Utils.sharedHitBuffer[0];
                 if (hit.transform != null) {
-                    foreach (PrefabIdentifier pi in WorldUtil.getObjectsNearWithComponent<PrefabIdentifier>(
+                    foreach (var pi in WorldUtil.getObjectsNearWithComponent<PrefabIdentifier>(
                                  hit.point,
                                  transform.localScale.x
                              )) {
@@ -66,7 +66,7 @@ public class TerrainLootSpawner : CustomPrefab {
                             return;
                     }
 
-                    GameObject go = ObjectUtil.createWorldObject(spawnID.getRandomSpawnID());
+                    var go = ObjectUtil.createWorldObject(spawnID.getRandomSpawnID());
                     go.transform.rotation = MathUtil.unitVecToRotation(hit.normal);
                     go.transform.position = hit.point;
                     spawned++;
@@ -95,7 +95,7 @@ public class TerrainLootSpawner : CustomPrefab {
     }
 
     public class WeightedTerrainLootSpawn : TerrainLootSpawn {
-        private readonly WeightedRandom<string> random = new WeightedRandom<string>();
+        private readonly WeightedRandom<string> random = new();
 
         public WeightedTerrainLootSpawn() {
         }

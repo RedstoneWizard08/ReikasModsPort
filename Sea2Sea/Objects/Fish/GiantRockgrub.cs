@@ -11,13 +11,13 @@ public class GiantRockGrub : RetexturedFish {
     internal GiantRockGrub(XMLLocale.LocaleEntry e) : base(e, VanillaCreatures.ROCKGRUB.prefab) {
         locale = e;
 
-        scanTime = 15;
+        ScanTime = 15;
 
-        eggSpawnRate = 0F;
+        EggSpawnRate = 0F;
     }
 
     public override void prepareGameObject(GameObject world, Renderer[] r0) {
-        GiantRockGrubTag kc = world.EnsureComponent<GiantRockGrubTag>();
+        var kc = world.EnsureComponent<GiantRockGrubTag>();
 
         world.transform.localScale = new Vector3(30, 20, 20);
 
@@ -31,16 +31,16 @@ public class GiantRockGrub : RetexturedFish {
 
         world.removeComponent<MoveTowardsTarget>();
 
-        Creature c = world.GetComponent<Creature>();
+        var c = world.GetComponent<Creature>();
 
-        AggressiveWhenSeeTarget agg = world.EnsureComponent<AggressiveWhenSeeTarget>();
+        var agg = world.EnsureComponent<AggressiveWhenSeeTarget>();
         agg.targetType = EcoTargetType.Shark;
         agg.aggressionPerSecond = 0.5F;
         agg.creature = c;
         agg.ignoreSameKind = true;
 
         world.EnsureComponent<AttackLastTarget>().creature = c;
-        MeleeAttack me = world.EnsureComponent<MeleeAttack>();
+        var me = world.EnsureComponent<MeleeAttack>();
         me.ignoreSameKind = true;
         me.mouth = world;
         me.liveMixin = world.GetComponent<LiveMixin>();
@@ -49,29 +49,29 @@ public class GiantRockGrub : RetexturedFish {
         world.GetComponent<Locomotion>().canWalkOnSurface = true;
 
         world.removeComponent<SphereCollider>();
-        CapsuleCollider cc = world.EnsureComponent<CapsuleCollider>();
+        var cc = world.EnsureComponent<CapsuleCollider>();
         cc.direction = 2;
         cc.height = 0.3F;
         cc.radius = 0.04F;
     }
 
-    public override BehaviourType getBehavior() {
+    public override BehaviourType GetBehavior() {
         return BehaviourType.Crab;
     }
 }
 
-class GiantRockGrubTag : MonoBehaviour {
+internal class GiantRockGrubTag : MonoBehaviour {
     private Renderer[] renders;
 
     private float lastTickTime = -1;
 
-    void Awake() {
+    private void Awake() {
     }
 
-    void Update() {
+    private void Update() {
         if (renders == null)
-            renders = this.GetComponentsInChildren<Renderer>();
-        float time = DayNightCycle.main.timePassedAsFloat;
+            renders = GetComponentsInChildren<Renderer>();
+        var time = DayNightCycle.main.timePassedAsFloat;
         if (time - lastTickTime >= 0.5F) {
             lastTickTime = time;
             transform.localScale = new Vector3(30, 20, 20);

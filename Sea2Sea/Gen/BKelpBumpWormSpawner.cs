@@ -21,7 +21,7 @@ public class BKelpBumpWormSpawner : WorldGenerator {
 
     public override bool generate(List<GameObject> li) {
         float r = 9;
-        foreach (PrefabIdentifier pi in WorldUtil.getObjectsNearWithComponent<PrefabIdentifier>(position, r)) {
+        foreach (var pi in WorldUtil.getObjectsNearWithComponent<PrefabIdentifier>(position, r)) {
             if (pi.ClassId == "26ce64dd-e703-470d-a0e4-acd43841bdd8" ||
                 pi.ClassId == "53e89f85-44a6-4ccf-9790-efae4b5fcae9" ||
                 pi.ClassId == "2dd42944-a73f-4443-ba90-bf45956e72f0" ||
@@ -30,23 +30,23 @@ public class BKelpBumpWormSpawner : WorldGenerator {
             }
         }
 
-        int placed = 0;
-        for (int i = 0; i < 40; i++) {
-            Vector3 pos = MathUtil.getRandomVectorAround(position, r);
+        var placed = 0;
+        for (var i = 0; i < 40; i++) {
+            var pos = MathUtil.getRandomVectorAround(position, r);
             if (pos.y < position.y) {
                 i--;
                 continue;
             }
 
-            Vector3 vec = position - pos;
-            Ray ray = new Ray(pos, vec);
+            var vec = position - pos;
+            var ray = new Ray(pos, vec);
             if (UWE.Utils.RaycastIntoSharedBuffer(ray, vec.magnitude, Voxeland.GetTerrainLayerMask()) > 0) {
-                RaycastHit hit = UWE.Utils.sharedHitBuffer[0];
+                var hit = UWE.Utils.sharedHitBuffer[0];
                 if (hit.transform != null) {
-                    GameObject go = spawner(SeaToSeaMod.bkelpBumpWorm.Info.ClassID);
+                    var go = spawner(SeaToSeaMod.BkelpBumpWorm.Info.ClassID);
                     go.transform.rotation = MathUtil.unitVecToRotation(hit.normal);
                     go.transform.position = hit.point;
-                    go.transform.RotateAroundLocal(go.transform.up, UnityEngine.Random.Range(0F, 360F));
+                    go.transform.RotateAroundLocal(go.transform.up, Random.Range(0F, 360F));
                     li.Add(go);
                     placed++;
                 }
@@ -55,10 +55,10 @@ public class BKelpBumpWormSpawner : WorldGenerator {
 
         if (placed < 3)
             return false;
-        for (int i = 0; i < 1; i++) {
-            GameObject grub = spawner(C2CItems.broodmother.ClassID);
+        for (var i = 0; i < 1; i++) {
+            var grub = spawner(C2CItems.broodmother.ClassID);
             grub.transform.rotation = Quaternion.identity;
-            grub.transform.position = MathUtil.getRandomVectorAround(position + (Vector3.up * 6), 3);
+            grub.transform.position = MathUtil.getRandomVectorAround(position + Vector3.up * 6, 3);
             li.Add(grub);
         }
 
@@ -69,10 +69,10 @@ public class BKelpBumpWormSpawner : WorldGenerator {
         return LargeWorldEntity.CellLevel.Far;
     }
 
-    private static float bkelpCheckTimer = 0;
+    private static float bkelpCheckTimer;
 
     public static void tickSpawnValidation(Player ep) {
-        Vector3 root = C2CProgression.instance.bkelpNestBumps[0];
+        var root = C2CProgression.Instance.BkelpNestBumps[0];
         if (ep && (ep.transform.position - root).sqrMagnitude <= 10000) {
             bkelpCheckTimer += Time.deltaTime;
             if (bkelpCheckTimer >= 30) {
@@ -85,10 +85,10 @@ public class BKelpBumpWormSpawner : WorldGenerator {
     }
 
     private static void doSpawnCheck() {
-        HashSet<Vector3> empty = new HashSet<Vector3>(C2CProgression.instance.bkelpNestBumps.ToList());
-        foreach (Vector3 pos in C2CProgression.instance.bkelpNestBumps) {
-            foreach (PrefabIdentifier pi in WorldUtil.getObjectsNearWithComponent<PrefabIdentifier>(pos, 25)) {
-                if (pi.ClassId == SeaToSeaMod.bkelpBumpWorm.Info.ClassID) {
+        var empty = new HashSet<Vector3>(C2CProgression.Instance.BkelpNestBumps.ToList());
+        foreach (var pos in C2CProgression.Instance.BkelpNestBumps) {
+            foreach (var pi in WorldUtil.getObjectsNearWithComponent<PrefabIdentifier>(pos, 25)) {
+                if (pi.ClassId == SeaToSeaMod.BkelpBumpWorm.Info.ClassID) {
                     empty.Remove(pos);
                     break;
                 }
@@ -96,9 +96,9 @@ public class BKelpBumpWormSpawner : WorldGenerator {
         }
 
         if (empty.Count > 0) {
-            foreach (Vector3 pos in empty) {
+            foreach (var pos in empty) {
                 //SNUtil.writeToChat("Regenerating nest @ "+pos);
-                GenUtil.fireGenerator(new BKelpBumpWormSpawner(pos + (Vector3.down * 3)), new List<GameObject>());
+                GenUtil.fireGenerator(new BKelpBumpWormSpawner(pos + Vector3.down * 3), []);
             }
         }
     }

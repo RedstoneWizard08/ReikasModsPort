@@ -7,7 +7,7 @@ public class PlayerMovementSpeedModifier : SelfRemovingComponent, CustomSerializ
 	public float speedModifier = 1;
 
 	public static void add(float modifier, float duration) {
-		PlayerMovementSpeedModifier m = Player.main.gameObject.AddComponent<PlayerMovementSpeedModifier>();
+		var m = Player.main.gameObject.AddComponent<PlayerMovementSpeedModifier>();
 		m.speedModifier = modifier;
 		m.elapseWhen = DayNightCycle.main.timePassedAsFloat + duration;
 	}

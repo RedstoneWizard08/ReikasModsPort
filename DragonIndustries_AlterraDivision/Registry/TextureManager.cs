@@ -8,13 +8,11 @@ using UnityEngine;
 namespace ReikaKalseki.DIAlterra;
 
 public static class TextureManager {
-    private static readonly Dictionary<Assembly, Dictionary<string, Texture2D>> textures =
-        new Dictionary<Assembly, Dictionary<string, Texture2D>>();
+    private static readonly Dictionary<Assembly, Dictionary<string, Texture2D>> textures = new();
 
-    private static readonly Dictionary<Assembly, Dictionary<string, Sprite>> sprites =
-        new Dictionary<Assembly, Dictionary<string, Sprite>>();
+    private static readonly Dictionary<Assembly, Dictionary<string, Sprite>> sprites = new();
 
-    private static readonly HashSet<string> notFound = new HashSet<string>();
+    private static readonly HashSet<string> notFound = [];
 
     static TextureManager() {
     }
@@ -29,7 +27,7 @@ public static class TextureManager {
         if (!textures.ContainsKey(a))
             textures[a] = new Dictionary<string, Texture2D>();
         if (!textures[a].ContainsKey(path)) {
-            textures[a][path] = loadTexture(a, path, out bool found);
+            textures[a][path] = loadTexture(a, path, out var found);
             if (!found)
                 notFound.Add(path);
         }
@@ -38,10 +36,10 @@ public static class TextureManager {
     }
 
     private static Texture2D loadTexture(Assembly a, string relative, out bool found) {
-        string folder = Path.GetDirectoryName(a.Location);
-        string path = Path.Combine(folder, relative + ".png");
+        var folder = Path.GetDirectoryName(a.Location);
+        var path = Path.Combine(folder, relative + ".png");
         SNUtil.log("Loading texture from '" + path + "'", a);
-        Texture2D newTex = ImageUtils.LoadTextureFromFile(path);
+        var newTex = ImageUtils.LoadTextureFromFile(path);
         found = File.Exists(path);
         return newTex;
     }
@@ -52,7 +50,7 @@ public static class TextureManager {
         if (!sprites.ContainsKey(a))
             sprites[a] = new Dictionary<string, Sprite>();
         if (!sprites[a].ContainsKey(path)) {
-            sprites[a][path] = loadSprite(a, path, out bool found);
+            sprites[a][path] = loadSprite(a, path, out var found);
             if (!found)
                 notFound.Add(path);
         }
@@ -65,10 +63,10 @@ public static class TextureManager {
     }
 
     private static Sprite loadSprite(Assembly a, string relative, out bool found) {
-        string folder = Path.GetDirectoryName(a.Location);
-        string path = Path.Combine(folder, relative + ".png");
+        var folder = Path.GetDirectoryName(a.Location);
+        var path = Path.Combine(folder, relative + ".png");
         SNUtil.log("Loading sprite from '" + path + "'", a);
-        Sprite newTex = ImageUtils.LoadSpriteFromFile(path);
+        var newTex = ImageUtils.LoadSpriteFromFile(path);
         found = File.Exists(path);
         return newTex;
     }

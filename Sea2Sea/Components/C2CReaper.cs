@@ -17,22 +17,22 @@ internal class C2CReaper : MonoBehaviour {
 
 	public float increasedAggroFactor;
 
-	void Start() {
+	private void Start() {
 		mouthObject = gameObject.getChildObject("reaper_leviathan/root/neck/head/mouth_damage_trigger").GetComponent<SphereCollider>();
-		creature = this.GetComponent<ReaperLeviathan>();
-		attack = this.GetComponent<ReaperMeleeAttack>();
-		swim = this.GetComponent<SwimBehaviour>();
-		aggression = this.GetComponents<AggressiveWhenSeeTarget>();
+		creature = GetComponent<ReaperLeviathan>();
+		attack = GetComponent<ReaperMeleeAttack>();
+		swim = GetComponent<SwimBehaviour>();
+		aggression = GetComponents<AggressiveWhenSeeTarget>();
 	}
 
-	void Update() {
+	private void Update() {
 		if (increasedAggroFactor > 0) {
 			mouthObject.radius = Mathf.Lerp(VANILLA_RADIUS, WIDE_RADIUS, increasedAggroFactor);
-			increasedAggroFactor = Mathf.Clamp01(increasedAggroFactor - (Time.deltaTime * 0.25F));
+			increasedAggroFactor = Mathf.Clamp01(increasedAggroFactor - Time.deltaTime * 0.25F);
 			if (increasedAggroFactor > 0.8F) {
 				creature.Aggression.Add(0.75F);
-				Vehicle v = Player.main.GetVehicle();
-				this.target(v ? v.gameObject : Player.main.gameObject);
+				var v = Player.main.GetVehicle();
+				target(v ? v.gameObject : Player.main.gameObject);
 			}
 		}
 		else {
@@ -45,13 +45,13 @@ internal class C2CReaper : MonoBehaviour {
 			swim.SwimTo(pos, 20);
 		creature.Aggression.Add(0.75F);
 		creature.leashPosition = pos;
-		this.target(hit);
+		target(hit);
 		increasedAggroFactor = 1;
 	}
 
 	private void target(GameObject hit) {
 		attack.lastTarget.SetTarget(hit);
-		foreach (AggressiveWhenSeeTarget a in aggression)
+		foreach (var a in aggression)
 			a.lastTarget.SetTarget(hit);
 	}
 }

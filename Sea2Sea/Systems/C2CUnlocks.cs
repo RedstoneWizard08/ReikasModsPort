@@ -4,14 +4,14 @@ namespace ReikaKalseki.SeaToSea;
 
 public class C2CUnlocks {
 
-	public static readonly C2CUnlocks instance = new C2CUnlocks();
+	public static readonly C2CUnlocks instance = new();
 
 	private C2CUnlocks() {
-		foreach (C2CItems.IngotDefinition tt in C2CItems.getIngots()) {
+		foreach (var tt in C2CItems.getIngots()) {
 			TechnologyUnlockSystem.instance.addDirectUnlock(tt.material, tt.ingot);
 			TechnologyUnlockSystem.instance.addDirectUnlock(tt.material, tt.unpackingRecipe.TechType);
 		}
-		C2CItems.IngotDefinition qi = C2CItems.getIngot(TechType.Quartz);
+		var qi = C2CItems.getIngot(TechType.Quartz);
 		TechnologyUnlockSystem.instance.addDirectUnlock(qi.material, C2CRecipes.getQuartzIngotToGlass().TechType);
 
 		TechnologyUnlockSystem.instance.addDirectUnlock(CraftingItems.getItem(CraftingItems.Items.DenseAzurite).TechType, CraftingItems.getItem(CraftingItems.Items.DenseAzurite).TechType);

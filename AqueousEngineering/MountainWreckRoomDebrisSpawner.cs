@@ -7,7 +7,7 @@ namespace ReikaKalseki.AqueousEngineering;
 
 public class MountainWreckRoomDebrisSpawner : WorldGenerator {
 
-	internal static readonly WeightedRandom<string> itemList = new WeightedRandom<string>();
+	internal static readonly WeightedRandom<string> itemList = new();
 
 	static MountainWreckRoomDebrisSpawner() {
 		addItem("8fb8a082-d40a-4473-99ec-1ded36cc6813", 6);
@@ -40,17 +40,17 @@ public class MountainWreckRoomDebrisSpawner : WorldGenerator {
 	}
 
 	public override bool generate(List<GameObject> li) {
-		for (int i = 0; i < 40; i++) {
-			GameObject go = spawner(itemList.getRandomEntry());
+		for (var i = 0; i < 40; i++) {
+			var go = spawner(itemList.getRandomEntry());
 			if (!go)
 				continue;
 			go.transform.position = MathUtil.getRandomVectorAround(position, 8F);
-			Rigidbody rb = go.EnsureComponent<Rigidbody>();
+			var rb = go.EnsureComponent<Rigidbody>();
 			rb.isKinematic = false;
 			rb.velocity = MathUtil.getRandomVectorAround(Vector3.zero, 15);
 			go.EnsureComponent<WorldForces>().underwaterGravity = 3;
-			go.transform.localRotation = UnityEngine.Random.rotationUniform;
-			PhysicsSettlingProp prop = go.EnsureComponent<PhysicsSettlingProp>();
+			go.transform.localRotation = Random.rotationUniform;
+			var prop = go.EnsureComponent<PhysicsSettlingProp>();
 			prop.init("mountaincrates", 30);
 			li.Add(go);
 		}

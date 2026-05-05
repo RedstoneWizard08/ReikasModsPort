@@ -12,9 +12,9 @@ public class PlantHidingCollider : MonoBehaviour {
 		renderColor = clr;
 	}
 
-	void Update() {
+	private void Update() {
 		if (!collider)
-			collider = this.GetComponent<Collider>();
+			collider = GetComponent<Collider>();
 	}
 
 	private void OnTriggerStay(Collider other) {
@@ -24,7 +24,7 @@ public class PlantHidingCollider : MonoBehaviour {
 	private void OnTriggerEnter(Collider other) {
 		if (!collider)
 			return;
-		PlantHidingTracker pc = other.gameObject.FindAncestor<PlantHidingTracker>();
+		var pc = other.gameObject.FindAncestor<PlantHidingTracker>();
 		if (pc && pc.minRadius * pc.minRadius <= collider.bounds.size.sqrMagnitude)
 			pc.addContact(this);
 	}
@@ -32,7 +32,7 @@ public class PlantHidingCollider : MonoBehaviour {
 	private void OnTriggerExit(Collider other) {
 		if (!collider)
 			return;
-		PlantHidingTracker pc = other.gameObject.FindAncestor<PlantHidingTracker>();
+		var pc = other.gameObject.FindAncestor<PlantHidingTracker>();
 		if (pc && pc.minRadius * pc.minRadius <= collider.bounds.size.sqrMagnitude)
 			pc.removeContact(this);
 	}

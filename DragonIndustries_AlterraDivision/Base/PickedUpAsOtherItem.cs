@@ -8,11 +8,9 @@ namespace ReikaKalseki.DIAlterra;
 public class PickedUpAsOtherItem : CustomPrefab {
     protected readonly TechType template;
 
-    private static readonly Dictionary<TechType, List<PickedUpAsOtherItem>> items =
-        new Dictionary<TechType, List<PickedUpAsOtherItem>>();
+    private static readonly Dictionary<TechType, List<PickedUpAsOtherItem>> items = new();
 
-    private static readonly Dictionary<TechType, PickedUpAsOtherItem> techMap =
-        new Dictionary<TechType, PickedUpAsOtherItem>();
+    private static readonly Dictionary<TechType, PickedUpAsOtherItem> techMap = new();
 
     [SetsRequiredMembers]
     public PickedUpAsOtherItem(string classID, string baseTemplate) : this(
@@ -25,7 +23,7 @@ public class PickedUpAsOtherItem : CustomPrefab {
     public PickedUpAsOtherItem(string classID, TechType tt) : base(classID, "", "") {
         template = tt;
 
-        List<PickedUpAsOtherItem> li = items.ContainsKey(tt) ? items[tt] : new List<PickedUpAsOtherItem>();
+        var li = items.ContainsKey(tt) ? items[tt] : [];
         li.Add(this);
         items[tt] = li;
 
@@ -34,13 +32,13 @@ public class PickedUpAsOtherItem : CustomPrefab {
         SetGameObject(GetGameObject);
     }
 
-    public GameObject GetGameObject() {
-        GameObject world = ObjectUtil.createWorldObject(template);
+    public virtual GameObject GetGameObject() {
+        var world = ObjectUtil.createWorldObject(template);
         world.EnsureComponent<TechTag>().type = Info.TechType;
         world.EnsureComponent<PrefabIdentifier>().ClassId = Info.ClassID;
-        Pickupable pp = world.EnsureComponent<Pickupable>();
+        var pp = world.EnsureComponent<Pickupable>();
         pp.SetTechTypeOverride(template);
-        this.prepareGameObject(world);
+        prepareGameObject(world);
         return world;
     }
 
@@ -48,7 +46,7 @@ public class PickedUpAsOtherItem : CustomPrefab {
     }
 
     public override string ToString() {
-        return string.Format("[PickedUpAsOtherItem Template={0}x{1}]", template, this.getNumberCollectedAs());
+        return $"[PickedUpAsOtherItem Template={template}x{getNumberCollectedAs()}]";
     }
 
 
@@ -65,8 +63,8 @@ public class PickedUpAsOtherItem : CustomPrefab {
     }
 
     public static void updateLocale() {
-        foreach (List<PickedUpAsOtherItem> li in items.Values) {
-            foreach (PickedUpAsOtherItem d in li) {
+        foreach (var li in items.Values) {
+            foreach (var d in li) {
                 CustomLocaleKeyDatabase.registerKey(d.Info.TechType.AsString(), Language.main.Get(d.template));
                 CustomLocaleKeyDatabase.registerKey(
                     "Tooltip_" + d.Info.TechType.AsString(),

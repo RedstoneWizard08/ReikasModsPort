@@ -12,22 +12,20 @@ public class PurpleHolefish : RetexturedFish {
         locale = e;
         glowIntensity = 0.5F;
 
-        scanTime = 4;
+        ScanTime = 4;
 
-        eggBase = TechType.Gasopod;
-        bigEgg = false;
-        eggMaturationTime = 1200;
-        eggSpawnRate = 1.5F;
+        EggBase = TechType.Gasopod;
+        BigEgg = false;
+        EggMaturationTime = 1200;
+        EggSpawnRate = 1.5F;
         //eggSpawns.Add(BiomeType.UnderwaterIslands_IslandCaveFloor);
     }
 
-    public override Vector2int SizeInInventory {
-        get { return new Vector2int(2, 2); }
-    }
+    public override Vector2int SizeInInventory => new(2, 2);
 
     public override void prepareGameObject(GameObject world, Renderer[] r0) {
-        PurpleHolefishTag kc = world.EnsureComponent<PurpleHolefishTag>();
-        foreach (Renderer r in r0) {
+        var kc = world.EnsureComponent<PurpleHolefishTag>();
+        foreach (var r in r0) {
             r.materials[0].SetColor("_GlowColor", new Color(1, 1, 1, 1));
             RenderUtil.setGlossiness(r, 3F, 0, 1F);
         }
@@ -46,12 +44,12 @@ public class PurpleHolefish : RetexturedFish {
         //world.removeComponent<Pickupable>();
     }
 
-    public override BehaviourType getBehavior() {
+    public override BehaviourType GetBehavior() {
         return BehaviourType.MediumFish;
     }
 }
 
-class PurpleHolefishTag : MonoBehaviour {
+internal class PurpleHolefishTag : MonoBehaviour {
     private Renderer[] renders;
     private Animator[] animators;
 
@@ -61,23 +59,23 @@ class PurpleHolefishTag : MonoBehaviour {
 
     private float lastTickTime = -1;
 
-    void Awake() {
-        isACU = this.GetComponent<WaterParkCreature>();
+    private void Awake() {
+        isACU = GetComponent<WaterParkCreature>();
     }
 
-    void Update() {
+    private void Update() {
         if (renders == null)
-            renders = this.GetComponentsInChildren<Renderer>();
+            renders = GetComponentsInChildren<Renderer>();
         if (animators == null)
-            animators = this.GetComponentsInChildren<Animator>();
+            animators = GetComponentsInChildren<Animator>();
         if (!pickup)
-            pickup = this.GetComponent<Pickupable>();
-        float time = DayNightCycle.main.timePassedAsFloat;
+            pickup = GetComponent<Pickupable>();
+        var time = DayNightCycle.main.timePassedAsFloat;
         if (time - lastTickTime >= 0.5F) {
             lastTickTime = time;
-            isACU = this.GetComponent<WaterParkCreature>();
+            isACU = GetComponent<WaterParkCreature>();
             transform.localScale = Vector3.one * (isACU ? 1.5F : 5);
-            foreach (Animator a in animators) {
+            foreach (var a in animators) {
                 if (a)
                     a.speed = 0.25F;
             }

@@ -7,7 +7,7 @@ public class GlassForestWreck : WreckHandler {
 
 	private float lastCheckTime = -1;
 
-	void Apply() {
+	private void Apply() {
 		//SNUtil.writeToChat("Initializing glass forest wreck");
 		gameObject.removeChildObject("Slots");
 		//gameObject.removeChildObject("Starship_exploded_debris_*");
@@ -16,9 +16,9 @@ public class GlassForestWreck : WreckHandler {
 		gameObject.removeChildObject("*DataBox*");
 		gameObject.removeChildObject("*Spawner*");
 		gameObject.removeChildObject("*PDA*");
-		GameObject interior = gameObject.getChildObject("InteriorEntities");
-		GameObject interior2 = gameObject.getChildObject("InteriorProps");
-		GameObject exterior = gameObject.getChildObject("ExteriorEntities");
+		var interior = gameObject.getChildObject("InteriorEntities");
+		var interior2 = gameObject.getChildObject("InteriorProps");
+		var exterior = gameObject.getChildObject("ExteriorEntities");
 		exterior.removeChildObject("ExplorableWreckHull01");
 		exterior.removeChildObject("ExplorableWreckHull02");
 		/*
@@ -42,13 +42,13 @@ public class GlassForestWreck : WreckHandler {
 	}
 
 	private void addGravity(Transform t) {
-		string n = t.name.ToLowerInvariant();
+		var n = t.name.ToLowerInvariant();
 		if (!t.GetComponentInChildren<ParticleSystem>() && !n.Contains("modular_wall") && !n.Contains("details") && !n.Contains("virtualentity") && n[0] != 'x' && !n.Contains("crack") && !n.Contains("engine_console") && !n.Contains("wires") && !n.Contains("wall_planter") && !n.Contains("monitor") && !n.Contains("tech_box")) {
-			Collider cc = t.GetComponentInChildren<Collider>(true);
+			var cc = t.GetComponentInChildren<Collider>(true);
 			SNUtil.log("Adding gravity to " + n + " in " + t.gameObject.GetFullHierarchyPath().Substring(gameObject.GetFullHierarchyPath().Length) + " @ " + t.position + " (" + (cc != null) + ")");
 			if (cc) {
 				ObjectUtil.applyGravity(t.gameObject);
-				GlassForestWreckProp prop = t.gameObject.EnsureComponent<GlassForestWreckProp>();
+				var prop = t.gameObject.EnsureComponent<GlassForestWreckProp>();
 				prop.init("glassforestwreck", 90);
 			}
 			else {
@@ -57,18 +57,18 @@ public class GlassForestWreck : WreckHandler {
 		}
 	}
 
-	void Update() {
-		float time = DayNightCycle.main.timePassedAsFloat;
+	private void Update() {
+		var time = DayNightCycle.main.timePassedAsFloat;
 		if (time - lastCheckTime >= 1) {
 			lastCheckTime = time;
-			if (gameObject.getChildObject("Slots") || gameObject.getChildObject("ExteriorEntities/ExplorableWreckHull01") || !this.GetComponentInChildren<GlassForestWreckProp>())
-				this.Apply();
+			if (gameObject.getChildObject("Slots") || gameObject.getChildObject("ExteriorEntities/ExplorableWreckHull01") || !GetComponentInChildren<GlassForestWreckProp>())
+				Apply();
 		}
 	}
 
 }
 
-class GlassForestWreckProp : PhysicsSettlingProp {
+internal class GlassForestWreckProp : PhysicsSettlingProp {
 	/*
 	private static readonly Vector3 vent1 = new Vector3(-134.15F, -501, 940.29F);
 	private static readonly Vector3 vent2 = new Vector3(-125.20F, -503, 936.16F);

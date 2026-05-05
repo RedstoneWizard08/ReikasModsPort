@@ -12,7 +12,7 @@ public class LRNestGrass : CustomPrefab {
     }
 
     public GameObject GetGameObject() {
-        GameObject go = ObjectUtil.createWorldObject("449f060e-1f82-4efa-a5e8-c4145a851a8f");
+        var go = ObjectUtil.createWorldObject("449f060e-1f82-4efa-a5e8-c4145a851a8f");
         go.removeComponent<LiveMixin>();
         go.removeComponent<Collider>();
         go.removeComponent<Rigidbody>();
@@ -31,14 +31,14 @@ public class LRNestGrass : CustomPrefab {
         return go;
     }
 
-    class LRNestGrassTag : MonoBehaviour {
+    private class LRNestGrassTag : MonoBehaviour {
         private ParticleSystem particles;
 
         //private float nextCheckTime = -1;
 
         private SphereCollider aoe;
 
-        void Update() {
+        private void Update() {
             /*
             float time = DayNightCycle.main.timePassedAsFloat;
             if (time >= nextCheckTime) {
@@ -49,13 +49,13 @@ public class LRNestGrass : CustomPrefab {
             }*/
 
             if (!particles) {
-                GameObject child = gameObject.getChildObject("xBloodGrassSmoke");
+                var child = gameObject.getChildObject("xBloodGrassSmoke");
                 //SNUtil.writeToChat(child ? child.ToString() : "no fx");
                 if (child) {
                     particles = child.GetComponent<ParticleSystem>();
                     particles.transform.localPosition = Vector3.up * 0.15F;
-                    foreach (ParticleSystem pp in particles.GetComponentsInChildren<ParticleSystem>(true)) {
-                        ParticleSystem.MainModule main = pp.main;
+                    foreach (var pp in particles.GetComponentsInChildren<ParticleSystem>(true)) {
+                        var main = pp.main;
                         main.duration *= 2;
                         main.startColor = new Color(0.4F, 1, 0.5F, 1);
                     }
@@ -63,7 +63,7 @@ public class LRNestGrass : CustomPrefab {
             }
         }
 
-        void Start() {
+        private void Start() {
             aoe = gameObject.EnsureComponent<SphereCollider>();
             aoe.center = Vector3.zero;
             aoe.radius = 1;
@@ -71,10 +71,10 @@ public class LRNestGrass : CustomPrefab {
             gameObject.layer = LayerID.Player;
         }
 
-        void OnTriggerEnter(Collider other) {
+        private void OnTriggerEnter(Collider other) {
             if (!particles || other.isTrigger)
                 return;
-            LiveMixin lv = other.gameObject.FindAncestor<LiveMixin>();
+            var lv = other.gameObject.FindAncestor<LiveMixin>();
             if (lv) {
                 particles.Play();
                 if (lv.isPlayer() || lv.GetComponent<Vehicle>()) {
@@ -87,8 +87,8 @@ public class LRNestGrass : CustomPrefab {
         }
     }
 
-    class NestGrassAcid : DamageOverTime {
-        NestGrassAcid() : base() {
+    private class NestGrassAcid : DamageOverTime {
+        private NestGrassAcid() : base() {
             damageType = DamageType.Acid;
             totalDamage = 30;
             duration = 10;

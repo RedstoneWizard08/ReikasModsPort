@@ -6,7 +6,7 @@ namespace ReikaKalseki.DIAlterra;
 
 public abstract class ObjectTemplate {
 
-	private static readonly Dictionary<string, Func<XmlElement, ObjectTemplate>> types = new Dictionary<string, Func<XmlElement, ObjectTemplate>>();
+	private static readonly Dictionary<string, Func<XmlElement, ObjectTemplate>> types = new();
 	//private static readonly Dictionary<Type, string> typeIDs = new Dictionary<Type, string>();
 
 	protected ObjectTemplate() {
@@ -15,8 +15,8 @@ public abstract class ObjectTemplate {
 
 	public string xmlString {
 		get {
-			XmlDocument doc = new XmlDocument();
-			XmlElement e = doc.CreateElement(getTagName());
+			var doc = new XmlDocument();
+			var e = doc.CreateElement(getTagName());
 			saveToXML(e);
 			return e.OuterXml;
 		}
@@ -38,14 +38,14 @@ public abstract class ObjectTemplate {
 	public static ObjectTemplate construct(XmlElement e) {
 		if (types.Count == 0)
 			throw new Exception("No object types registered!");
-		string key = e.Name;
+		var key = e.Name;
 		if (!types.ContainsKey(key))
 			throw new Exception("Nonexistent object type '" + e.Name + "'! Types: " + string.Join(",", types.Keys));
 		if (key == "object" && !e.hasProperty("prefab") && e.hasProperty("type")) //quickfix for back compat
 			key = "generator";
-		Func<XmlElement, ObjectTemplate> builder = types[key];
+		var builder = types[key];
 		try {
-			ObjectTemplate ot = builder(e);
+			var ot = builder(e);
 			if (ot == null)
 				return null;
 			try {

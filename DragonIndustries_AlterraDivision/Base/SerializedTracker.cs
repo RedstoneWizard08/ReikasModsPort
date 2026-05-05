@@ -14,7 +14,7 @@ public class SerializedTracker<E> where E : SerializedTrackedEvent {
 	private readonly Func<XmlElement, E> parser;
 	private readonly Func<string, E> legacyParser;
 
-	protected readonly List<E> data = new List<E>();
+	protected readonly List<E> data = [];
 
 	protected SerializedTracker(string name, bool loadWithGame, Func<XmlElement, E> f, Func<string, E> l) {
 		saveFileName = name;
@@ -27,14 +27,14 @@ public class SerializedTracker<E> where E : SerializedTrackedEvent {
 	}
 
 	public void forAll(Action<E> a) {
-		foreach (E e in data)
+		foreach (var e in data)
 			a.Invoke(e);
 	}
 
 	public void forAllNewerThan(float thresh, Action<E> forEach) {
-		float time = DayNightCycle.main.timePassedAsFloat;
-		foreach (E obj in data) {
-			double age = time - obj.eventTime;
+		var time = DayNightCycle.main.timePassedAsFloat;
+		foreach (var obj in data) {
+			var age = time - obj.eventTime;
 			if (age < thresh)
 				forEach.Invoke(obj);
 		}
@@ -45,12 +45,12 @@ public class SerializedTracker<E> where E : SerializedTrackedEvent {
 	}
 
 	public void handleSave() {
-		string path = Path.Combine(SNUtil.getCurrentSaveDir(), saveFileName);
-		XmlDocument content = new XmlDocument();
+		var path = Path.Combine(SNUtil.getCurrentSaveDir(), saveFileName);
+		var content = new XmlDocument();
 		content.AppendChild(content.CreateElement("Root"));
 		data.Sort();
-		foreach (E tt in data) {
-			XmlElement e = content.DocumentElement.addChild("Event");
+		foreach (var tt in data) {
+			var e = content.DocumentElement.addChild("Event");
 			tt.saveToXML(e);
 			e.addProperty("eventTime", tt.eventTime);
 		}
@@ -58,28 +58,28 @@ public class SerializedTracker<E> where E : SerializedTrackedEvent {
 	}
 
 	public void handleLoad(WaitScreenHandler.WaitScreenTask task) {
-		string dir = SNUtil.getCurrentSaveDir();
-		string path = Path.Combine(dir, saveFileName);
+		var dir = SNUtil.getCurrentSaveDir();
+		var path = Path.Combine(dir, saveFileName);
 		if (!File.Exists(path))
 			return;
 		SNUtil.log("Loading saved " + typeof(E).Name + "[] from " + path, SNUtil.diDLL);
-		this.clear();
-		IEnumerable<string> ie = File.ReadLines(path);
+		clear();
+		var ie = File.ReadLines(path);
 		if (ie == null)
 			return;
-		string first = ie.FirstOrDefault(); //ReadLines is lazy-eval so this only actually reads the first line
+		var first = ie.FirstOrDefault(); //ReadLines is lazy-eval so this only actually reads the first line
 		if (string.IsNullOrEmpty(first))
 			return;
 		if (first.Contains("<Root>")) {
-			XmlDocument doc = new XmlDocument();
+			var doc = new XmlDocument();
 			doc.Load(path);
 			if (doc.DocumentElement == null)
 				return;
 			foreach (XmlElement e in doc.DocumentElement.ChildNodes) {
 				try {
-					E tt = parser.Invoke(e);
+					var tt = parser.Invoke(e);
 					if (tt != null) {
-						this.add(tt);
+						add(tt);
 					}
 					else {
 
@@ -91,10 +91,10 @@ public class SerializedTracker<E> where E : SerializedTrackedEvent {
 			}
 		}
 		else if (legacyParser != null) {
-			foreach (string s in File.ReadAllLines(path)) {
-				E e = legacyParser.Invoke(s);
+			foreach (var s in File.ReadAllLines(path)) {
+				var e = legacyParser.Invoke(s);
 				if (e != null) {
-					this.add(e);
+					add(e);
 				}
 			}
 		}
@@ -114,7 +114,7 @@ public abstract class SerializedTrackedEvent : IComparable<SerializedTrackedEven
 
 	public readonly double eventTime;
 
-	public string formatTime { get { return Utils.PrettifyTime((int)eventTime); } }
+	public string formatTime => Utils.PrettifyTime((int)eventTime);
 
 	protected SerializedTrackedEvent(double t) {
 		eventTime = t;

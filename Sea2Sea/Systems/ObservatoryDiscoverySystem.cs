@@ -2,7 +2,7 @@
 
 public class ObservatoryDiscoverySystem {
 
-	public static readonly ObservatoryDiscoverySystem instance = new ObservatoryDiscoverySystem();
+	public static readonly ObservatoryDiscoverySystem instance = new();
 
 	private ObservatoryDiscoverySystem() {
 
@@ -12,7 +12,7 @@ public class ObservatoryDiscoverySystem {
 
 	}
 
-	enum BiomeTypes {
+	private enum BiomeTypes {
 		SHALLOW,
 		MODERATE,
 		DEEP,

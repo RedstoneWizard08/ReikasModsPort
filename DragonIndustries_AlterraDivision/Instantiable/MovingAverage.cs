@@ -7,13 +7,13 @@ namespace ReikaKalseki.DIAlterra;
 public sealed class MovingAverage {
 
 	private readonly int size;
-	private readonly LinkedList<Double> data;
+	private readonly LinkedList<double> data;
 	private double averageCache;
 
 	public MovingAverage(int dataPoints) {
 		size = dataPoints;
-		data = new LinkedList<Double>();
-		for (int i = 0; i < size; i++) {
+		data = [];
+		for (var i = 0; i < size; i++) {
 
 		}
 		averageCache = double.NaN;
@@ -34,8 +34,8 @@ public sealed class MovingAverage {
 		if (!double.IsNaN(averageCache))
 			return averageCache;
 		double avg = 0;
-		int i = 0;
-		foreach (double d in data) {
+		var i = 0;
+		foreach (var d in data) {
 			avg += d;
 			i++;
 		}
@@ -44,7 +44,7 @@ public sealed class MovingAverage {
 	}
 
 	public override string ToString() {
-		return this.getAverage() + "=" + data.toDebugString();
+		return getAverage() + "=" + data.toDebugString();
 	}
 
 }

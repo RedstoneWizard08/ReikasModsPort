@@ -12,8 +12,8 @@ public class PostCoveDomeGenerator : WorldGenerator {
     internal static readonly CustomPrefab coolResourceDome = new ResourceDome(false);
     internal static readonly CustomPrefab hotResourceDome = new ResourceDome(true);
 
-    internal static readonly WeightedRandom<string> resourceTableCool = new WeightedRandom<string>();
-    internal static readonly WeightedRandom<string> resourceTableHot = new WeightedRandom<string>();
+    internal static readonly WeightedRandom<string> resourceTableCool = new();
+    internal static readonly WeightedRandom<string> resourceTableHot = new();
 
     private Quaternion rotation;
 
@@ -33,7 +33,7 @@ public class PostCoveDomeGenerator : WorldGenerator {
         hotResourceDome.Register();
     }
 
-    class ResourceDome : CustomPrefab {
+    private class ResourceDome : CustomPrefab {
         private readonly bool isHot;
 
         [SetsRequiredMembers]
@@ -43,20 +43,20 @@ public class PostCoveDomeGenerator : WorldGenerator {
         }
 
         public GameObject GetGameObject() {
-            GameObject go = ObjectUtil.createWorldObject(VanillaResources.SANDSTONE.prefab);
-            GameObject mdl = ObjectUtil.lookupPrefab(VanillaFlora.AMOEBOID.getPrefabID())
+            var go = ObjectUtil.createWorldObject(VanillaResources.SANDSTONE.prefab);
+            var mdl = ObjectUtil.lookupPrefab(VanillaFlora.AMOEBOID.getPrefabID())
                 .getChildObject("lost_river_plant_04/lost_river_plant_04_membrane");
             go.EnsureComponent<ResourceDomeTag>().isHot = isHot;
             go.EnsureComponent<PrefabIdentifier>().ClassId = Info.ClassID;
             go.EnsureComponent<TechTag>().type = Info.TechType;
             go.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.Medium;
-            Renderer[] rs = go.GetComponentsInChildren<Renderer>();
-            foreach (Renderer r in rs) {
-                Renderer r2 = r.setModel(mdl).GetComponentInChildren<Renderer>();
-                r2.transform.localPosition = new Vector3(0, (-0.05F * 0) + 0.02F, 0);
+            var rs = go.GetComponentsInChildren<Renderer>();
+            foreach (var r in rs) {
+                var r2 = r.setModel(mdl).GetComponentInChildren<Renderer>();
+                r2.transform.localPosition = new Vector3(0, -0.05F * 0 + 0.02F, 0);
                 r2.transform.localEulerAngles = new Vector3(-90, 0, 0);
                 RenderUtil.swapTextures(
-                    SeaToSeaMod.modDLL,
+                    SeaToSeaMod.ModDLL,
                     r2,
                     "Textures/Plants/PostCoveTree/Res_" + (isHot ? "Hot" : "Cold")
                 );
@@ -81,43 +81,43 @@ public class PostCoveDomeGenerator : WorldGenerator {
 
         internal float growFade;
 
-        void Start() {
-            res = this.GetComponent<BreakableResource>();
+        private void Start() {
+            res = GetComponent<BreakableResource>();
             res.numChances = 0; //use own drop code
             res.hitsToBreak = UnityEngine.Random.Range(5, 9); //5-8 hits
             res.breakText = "BreakPostCoveDomeResource"; //locale key
             res.customGoalText = "BreakPostCoveDomeResource"; //StoryGoal
-            res.defaultPrefabTechType = SeaToSeaMod.geogelFogDrip.Info.TechType;
+            res.defaultPrefabTechType = SeaToSeaMod.GeogelFogDrip.Info.TechType;
             // res.defaultPrefab = ObjectUtil.lookupPrefab(SeaToSeaMod.geogelFogDrip.Info.ClassID);//this is lead for sandstone, but we made it an FX
-            this.GetComponentInChildren<Renderer>().transform.localScale = 0.3F * new Vector3(
+            GetComponentInChildren<Renderer>().transform.localScale = 0.3F * new Vector3(
                 UnityEngine.Random.Range(0.9F, 1.1F),
                 UnityEngine.Random.Range(0.9F, 1.1F),
                 UnityEngine.Random.Range(0.6F, 1.4F)
             );
-            skies = this.GetComponentsInChildren<SkyApplier>(true);
-            renderers = this.GetComponentsInChildren<Renderer>();
-            this.InvokeRepeating("setupSky", 0, 1F);
-            this.Invoke("refinePosition", 2.5F);
-            this.Invoke("refinePosition", 5F);
-            this.Invoke("refinePosition", 10F);
+            skies = GetComponentsInChildren<SkyApplier>(true);
+            renderers = GetComponentsInChildren<Renderer>();
+            InvokeRepeating(nameof(setupSky), 0, 1F);
+            Invoke(nameof(refinePosition), 2.5F);
+            Invoke(nameof(refinePosition), 5F);
+            Invoke(nameof(refinePosition), 10F);
             isHot = transform.position.y < PostCoveDome.HOT_THRESHOLD;
         }
 
-        void Update() {
+        private void Update() {
             growFade = Mathf.Clamp01(growFade - Time.deltaTime);
-            foreach (Renderer r in renderers) {
+            foreach (var r in renderers) {
                 r.transform.localPosition = Vector3.down * 0.25F * growFade;
             }
 
             res.enabled = growFade <= 0;
         }
 
-        void refinePosition() {
-            Vector3 pos = transform.position + (transform.up * 5);
-            Vector3 vec = -transform.up * 15;
-            Ray ray = new Ray(pos, vec);
+        private void refinePosition() {
+            var pos = transform.position + transform.up * 5;
+            var vec = -transform.up * 15;
+            var ray = new Ray(pos, vec);
             if (UWE.Utils.RaycastIntoSharedBuffer(ray, vec.magnitude, Voxeland.GetTerrainLayerMask()) > 0) {
-                RaycastHit hit = UWE.Utils.sharedHitBuffer[0];
+                var hit = UWE.Utils.sharedHitBuffer[0];
                 if (hit.transform != null) {
                     transform.rotation = MathUtil.unitVecToRotation(hit.normal);
                     transform.position = hit.point;
@@ -125,11 +125,11 @@ public class PostCoveDomeGenerator : WorldGenerator {
             }
         }
 
-        void setupSky() {
-            int idx = WaterBiomeManager.main.GetBiomeIndex(
+        private void setupSky() {
+            var idx = WaterBiomeManager.main.GetBiomeIndex(
                 isHot ? /*"ILZCorridor"*/"ILZChamber" : "LostRiver_TreeCove"
             );
-            foreach (SkyApplier sk in skies) {
+            foreach (var sk in skies) {
                 if (!sk)
                     continue;
                 sk.renderers = renderers;
@@ -137,8 +137,8 @@ public class PostCoveDomeGenerator : WorldGenerator {
             }
         }
 
-        void OnBreakResource() {
-            WeightedRandom<string> wr = isHot ? resourceTableHot : resourceTableCool;
+        private void OnBreakResource() {
+            var wr = isHot ? resourceTableHot : resourceTableCool;
 
             // TODO
             // res.SpawnResourceFromPrefab(ObjectUtil.lookupPrefab(wr.getRandomEntry())); //use their spawn code
@@ -157,15 +157,15 @@ public class PostCoveDomeGenerator : WorldGenerator {
     }
 
     public override bool generate(List<GameObject> li) {
-        GameObject go = spawner(SeaToSeaMod.postCoveDome.Info.ClassID);
+        var go = spawner(SeaToSeaMod.PostCoveDome.Info.ClassID);
         go.transform.position = position;
         go.transform.rotation = rotation;
         li.Add(go);
 
-        HashSet<Vector3> placed = new HashSet<Vector3>();
-        int failed = 0;
-        for (int i = 0; i < 24; i++) {
-            GameObject go2 = placeRandomResourceDome(go, placed, spawner);
+        HashSet<Vector3> placed = [];
+        var failed = 0;
+        for (var i = 0; i < 24; i++) {
+            var go2 = placeRandomResourceDome(go, placed, spawner);
             if (go2) {
                 li.Add(go2);
                 placed.Add(go2.transform.position);
@@ -191,24 +191,24 @@ public class PostCoveDomeGenerator : WorldGenerator {
         IEnumerable<Vector3> avoid,
         Func<string, GameObject> spawner
     ) {
-        Vector3 pos = MathUtil.getRandomVectorAround(from.transform.position + (from.transform.up * 5), 6);
-        Vector3 vec = -from.transform.up * 15;
-        Ray ray = new Ray(pos, vec);
+        var pos = MathUtil.getRandomVectorAround(from.transform.position + from.transform.up * 5, 6);
+        var vec = -from.transform.up * 15;
+        var ray = new Ray(pos, vec);
         if (UWE.Utils.RaycastIntoSharedBuffer(ray, vec.magnitude, Voxeland.GetTerrainLayerMask()) > 0) {
-            RaycastHit hit = UWE.Utils.sharedHitBuffer[0];
+            var hit = UWE.Utils.sharedHitBuffer[0];
             if (hit.transform != null) {
                 if ((hit.point - from.transform.position).sqrMagnitude < 9)
                     return null;
-                foreach (Vector3 at in avoid) {
+                foreach (var at in avoid) {
                     if ((at - hit.point).sqrMagnitude < 0.5) {
                         return null;
                     }
                 }
 
-                CustomPrefab rt = from.transform.position.y < PostCoveDome.HOT_THRESHOLD
+                var rt = from.transform.position.y < PostCoveDome.HOT_THRESHOLD
                     ? hotResourceDome
                     : coolResourceDome;
-                GameObject go2 = spawner(rt.Info.ClassID);
+                var go2 = spawner(rt.Info.ClassID);
                 go2.transform.rotation = MathUtil.unitVecToRotation(hit.normal);
                 go2.transform.position = hit.point;
                 go2.transform.RotateAroundLocal(go2.transform.up, UnityEngine.Random.Range(0F, 360F));

@@ -19,7 +19,7 @@ public class ModVersionCheck : IComparable<ModVersionCheck> {
 
 	private ModVersion fetchedRemoteVersion;
 
-	private static readonly List<ModVersionCheck> modVersions = new List<ModVersionCheck>();
+	private static readonly List<ModVersionCheck> modVersions = [];
 
 	public ModVersionCheck(string n, ModVersion cur, Func<ModVersion> rem) {
 		modName = n;
@@ -38,7 +38,8 @@ public class ModVersionCheck : IComparable<ModVersionCheck> {
 	}
 
 	public override string ToString() {
-		return string.Format("[ModVersionCheck ModName={0}, RemoteVersion={1}, CurrentVersion={2}]", modName, fetchedRemoteVersion, currentVersion);
+		return
+			$"[ModVersionCheck ModName={modName}, RemoteVersion={fetchedRemoteVersion}, CurrentVersion={currentVersion}]";
 	}
 
 	private void performRemoteCheck() {
@@ -48,7 +49,7 @@ public class ModVersionCheck : IComparable<ModVersionCheck> {
 	public bool isOutdated() {
 		if (fetchedRemoteVersion == null) //if not yet fetched for some reason block the thread until it is
 			fetchedRemoteVersion = remoteVersion.Invoke();
-		return !this.hasVersionError() && fetchedRemoteVersion.CompareTo(currentVersion) > 0;
+		return !hasVersionError() && fetchedRemoteVersion.CompareTo(currentVersion) > 0;
 	}
 
 	public bool hasVersionError() {
@@ -61,8 +62,8 @@ public class ModVersionCheck : IComparable<ModVersionCheck> {
 
 	private static ModVersion getFromInstall(Assembly a) {
 		try {
-			string local = Path.Combine(Path.GetDirectoryName(a.Location), VERSION_FILE);
-			string text = File.ReadAllLines(local)[0];
+			var local = Path.Combine(Path.GetDirectoryName(a.Location), VERSION_FILE);
+			var text = File.ReadAllLines(local)[0];
 			return ModVersion.parse(text);
 		}
 		catch (Exception ex) {
@@ -73,17 +74,17 @@ public class ModVersionCheck : IComparable<ModVersionCheck> {
 
 	private static ModVersion getModifiedTimeFromGitFile(string repo) {
 		try {
-			DateTime prev = DateTime.Now;
+			var prev = DateTime.Now;
 			SNUtil.log("Fetching remote version from " + repo, SNUtil.diDLL);
-			string url = "https://raw.githubusercontent.com/ReikaKalseki/"+repo+"/main/"+VERSION_FILE;
-			string text = new WebClient().DownloadString(url);
-			ModVersion mv = ModVersion.parse(text);
-			DateTime after = DateTime.Now;
+			var url = "https://raw.githubusercontent.com/ReikaKalseki/"+repo+"/main/"+VERSION_FILE;
+			var text = new WebClient().DownloadString(url);
+			var mv = ModVersion.parse(text);
+			var after = DateTime.Now;
 			SNUtil.log("Version check for " + repo + " done in " + (after - prev).TotalSeconds.ToString("0.000") + " seconds; version = " + mv, SNUtil.diDLL);
 			return mv;
 		}
 		catch (Exception ex) {
-			string str = ex.ToString();
+			var str = ex.ToString();
 			SNUtil.log("Failed to get remote " + repo + " git version: " + str, SNUtil.diDLL);
 			if (str.StartsWith("System.Net.WebException", StringComparison.InvariantCultureIgnoreCase) && str.Contains("ConnectFailure")) {
 				SNUtil.log("Could not connect to server!", SNUtil.diDLL);
@@ -103,8 +104,9 @@ public class ModVersionCheck : IComparable<ModVersionCheck> {
 
 	public static void fetchRemoteVersions() {
 		if (DIMod.config.getBoolean(DIConfig.ConfigEntries.THREADVER)) {
-			Thread t = new Thread(doFetchRemoteVersions);
-			t.Name = "Remote mod version checks";
+			var t = new Thread(doFetchRemoteVersions) {
+				Name = "Remote mod version checks",
+			};
 			t.Start();
 		}
 		else {
@@ -114,7 +116,7 @@ public class ModVersionCheck : IComparable<ModVersionCheck> {
 
 	private static void doFetchRemoteVersions() {
 		SNUtil.log("Fetching remote mod versions", SNUtil.diDLL);
-		foreach (ModVersionCheck mv in modVersions) {
+		foreach (var mv in modVersions) {
 			mv.performRemoteCheck();
 		}
 	}
@@ -125,7 +127,7 @@ public class ModVersion : IComparable<ModVersion> {
 
 	public static readonly string dateFormat = "dd/MM/yyyy HH:mm";
 
-	internal static readonly ModVersion ERROR = new ModVersion(-1, DateTime.MinValue);
+	internal static readonly ModVersion ERROR = new(-1, DateTime.MinValue);
 
 	public readonly int version;
 	public readonly DateTime date;
@@ -144,7 +146,7 @@ public class ModVersion : IComparable<ModVersion> {
 	}
 
 	public override bool Equals(object o) {
-		return o is ModVersion && ((ModVersion)o).version == version;
+		return o is ModVersion modVersion && modVersion.version == version;
 	}
 
 	public int CompareTo(ModVersion other) {
@@ -157,10 +159,10 @@ public class ModVersion : IComparable<ModVersion> {
 		input = input.Trim();
 		if (input[0] == 'v' || input[0] == 'V')
 			input = input.Substring(1);
-		int idx = input.IndexOf('@');
-		bool at = idx > 0;
+		var idx = input.IndexOf('@');
+		var at = idx > 0;
 		idx = input.IndexOf(' ', Math.Max(idx, 0));
-		int idx2 = at ? input.IndexOf(' ') : idx;
+		var idx2 = at ? input.IndexOf(' ') : idx;
 		return new ModVersion(int.Parse(input.Substring(0, idx2)), DateTime.ParseExact(input.Substring(idx + 1), dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None));
 	}
 

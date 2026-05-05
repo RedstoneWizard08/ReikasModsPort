@@ -8,7 +8,7 @@ public abstract class NoiseGeneratorBase {
 
 	protected double inputFactor = 1;
 
-	protected readonly List<Octave> octaves = new List<Octave>();
+	protected readonly List<Octave> octaves = [];
 	protected double maxRange = 1;
 
 	/// As opposed to scaling
@@ -28,28 +28,28 @@ public abstract class NoiseGeneratorBase {
 	}
 
 	public double getValue(Vector3 vec) {
-		return this.getValue(vec.x, vec.y, vec.z);
+		return getValue(vec.x, vec.y, vec.z);
 	}
 
 	public double getValue(double x, double y, double z) {
-		return this.calculateValues(x * inputFactor, y * inputFactor, z * inputFactor);
+		return calculateValues(x * inputFactor, y * inputFactor, z * inputFactor);
 	}
 
 	private double calculateValues(double x, double y, double z) {
-		if (this.displaceCalculation()) {
-			double x0 = x;
-			double y0 = y;
-			double z0 = z;
-			x += this.getXDisplacement(x0, y0, z0);
-			y += this.getYDisplacement(x0, y0, z0);
-			z += this.getZDisplacement(x0, y0, z0);
+		if (displaceCalculation()) {
+			var x0 = x;
+			var y0 = y;
+			var z0 = z;
+			x += getXDisplacement(x0, y0, z0);
+			y += getYDisplacement(x0, y0, z0);
+			z += getZDisplacement(x0, y0, z0);
 		}
 
-		double val = this.calcValue(x, y, z, 1, 1);
+		var val = calcValue(x, y, z, 1, 1);
 
 		if (octaves.Count > 0) {
-			foreach (Octave o in octaves) {
-				val += this.calcValue(x + o.phaseShift, y + o.phaseShift, z + o.phaseShift, o.frequency, o.amplitude);
+			foreach (var o in octaves) {
+				val += calcValue(x + o.phaseShift, y + o.phaseShift, z + o.phaseShift, o.frequency, o.amplitude);
 			}
 			if (clampEdge)
 				val = Mathf.Clamp((float)val, -1, 1);
@@ -76,7 +76,7 @@ public abstract class NoiseGeneratorBase {
 	}
 
 	public NoiseGeneratorBase addOctave(double relativeFrequency, double relativeAmplitude) {
-		return this.addOctave(relativeFrequency, relativeAmplitude, 0);
+		return addOctave(relativeFrequency, relativeAmplitude, 0);
 	}
 
 	public NoiseGeneratorBase addOctave(double relativeFrequency, double relativeAmplitude, double phaseShift) {
@@ -86,15 +86,15 @@ public abstract class NoiseGeneratorBase {
 	}
 
 	public NoiseGeneratorBase setDisplacementSimple(long seedX, double fx, long seedZ, double fz, double s) {
-		return this.setDisplacement(new SimplexNoiseGenerator(seedX).setFrequency(fx), s, null, s, new SimplexNoiseGenerator(seedZ).setFrequency(fz), s);
+		return setDisplacement(new SimplexNoiseGenerator(seedX).setFrequency(fx), s, null, s, new SimplexNoiseGenerator(seedZ).setFrequency(fz), s);
 	}
 
 	public NoiseGeneratorBase setDisplacementSimple(long seedX, double fx, long seedY, double fy, long seedZ, double fz, double s) {
-		return this.setDisplacement(new SimplexNoiseGenerator(seedX).setFrequency(fx), s, new SimplexNoiseGenerator(seedY).setFrequency(fy), s, new SimplexNoiseGenerator(seedZ).setFrequency(fz), s);
+		return setDisplacement(new SimplexNoiseGenerator(seedX).setFrequency(fx), s, new SimplexNoiseGenerator(seedY).setFrequency(fy), s, new SimplexNoiseGenerator(seedZ).setFrequency(fz), s);
 	}
 
 	public NoiseGeneratorBase setDisplacement(NoiseGeneratorBase x, NoiseGeneratorBase y, NoiseGeneratorBase z, double s) {
-		return this.setDisplacement(x, s, y, s, z, s);
+		return setDisplacement(x, s, y, s, z, s);
 	}
 
 	public NoiseGeneratorBase setDisplacement(NoiseGeneratorBase x, double xs, NoiseGeneratorBase y, double ys, NoiseGeneratorBase z, double zs) {

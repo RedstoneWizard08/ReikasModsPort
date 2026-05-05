@@ -22,8 +22,8 @@ public class PartialPurpleTablet : CustomPrefab {
     }
 
     public GameObject GetGameObject() {
-        GameObject go = ObjectUtil.createWorldObject("83b61f89-1456-4ff5-815a-ecdc9b6cc9e4");
-        GameObject mdl = go.getChildObject("precursor_key_cracked_01");
+        var go = ObjectUtil.createWorldObject("83b61f89-1456-4ff5-815a-ecdc9b6cc9e4");
+        var mdl = go.getChildObject("precursor_key_cracked_01");
         if (!includePartA)
             mdl.removeChildObject("PrecursorKeyCracked_01");
         if (!includePartB)

@@ -18,15 +18,15 @@ internal abstract class GlobalManipulation : ManipulationBase {
 	private LocalCheck localApply;
 
 	public sealed override void applyToObject(PlacedObject go) {
-		this.applyToGlobalObject(go);
+		applyToGlobalObject(go);
 		if (localApply != null && localApply.apply(go.obj))
-			this.applyToSpecificObject(go);
+			applyToSpecificObject(go);
 	}
 
 	public sealed override void applyToObject(GameObject go) {
-		this.applyToGlobalObject(go);
+		applyToGlobalObject(go);
 		if (localApply != null && localApply.apply(go))
-			this.applyToSpecificObject(go);
+			applyToSpecificObject(go);
 	}
 
 	internal abstract void applyToSpecificObject(PlacedObject go);
@@ -35,10 +35,10 @@ internal abstract class GlobalManipulation : ManipulationBase {
 	internal abstract void applyToGlobalObject(GameObject go);
 
 	public override void loadFromXML(XmlElement e) {
-		List<XmlElement> li = e.getDirectElementsByTagName("local");
+		var li = e.getDirectElementsByTagName("local");
 		if (li.Count == 1) {
-			string typeName = "ReikaKalseki.SeaToSea."+li[0].getProperty("type");
-			Type tt = InstructionHandlers.getTypeBySimpleName(typeName);
+			var typeName = "ReikaKalseki.SeaToSea."+li[0].getProperty("type");
+			var tt = InstructionHandlers.getTypeBySimpleName(typeName);
 			if (tt == null)
 				throw new Exception("No class found for '" + typeName + "'!");
 			localApply = (LocalCheck)Activator.CreateInstance(tt);
@@ -48,7 +48,7 @@ internal abstract class GlobalManipulation : ManipulationBase {
 
 	public override void saveToXML(XmlElement e) {
 		if (localApply != null) {
-			XmlElement e2 = e.OwnerDocument.CreateElement("local");
+			var e2 = e.OwnerDocument.CreateElement("local");
 			localApply.saveToXML(e2);
 			e.AppendChild(e2);
 		}

@@ -30,18 +30,18 @@ public class TechTypeMappingConfig<E> {
 	}
 
 	public void load() {
-		string path = Path.Combine(Path.GetDirectoryName(ownerMod.Location), Path.Combine("Config", filename+".txt"));
+		var path = Path.Combine(Path.GetDirectoryName(ownerMod.Location), Path.Combine("Config", filename+".txt"));
 		if (File.Exists(path)) {
 			SNUtil.log("Loading TechType mapping file '" + filename + "'.", ownerMod);
-			foreach (string raw in File.ReadAllLines(path)) {
-				string line = raw.Trim();
+			foreach (var raw in File.ReadAllLines(path)) {
+				var line = raw.Trim();
 				if (line.Length == 0 || line.StartsWith("//", StringComparison.InvariantCultureIgnoreCase))
 					continue;
-				string[] split = line.Split(new char[]{'='}, StringSplitOptions.RemoveEmptyEntries);
+				var split = line.Split(['='], StringSplitOptions.RemoveEmptyEntries);
 				if (split.Length == 2) {
-					TechType find = SNUtil.getTechType(split[0]);
+					var find = SNUtil.getTechType(split[0]);
 					if (find != TechType.None) {
-						if (valueParsing.tryParse(split[1], out E parsed)) {
+						if (valueParsing.tryParse(split[1], out var parsed)) {
 							valueConsumer.Invoke(find, parsed);
 							SNUtil.log("Setting TechType mapping: " + find + " = " + parsed);
 						}
@@ -61,7 +61,7 @@ public class TechTypeMappingConfig<E> {
 		else {
 			Directory.CreateDirectory(Path.GetDirectoryName(path));
 			SNUtil.log("TechType mapping file '" + filename + "' not found. Generating default.", ownerMod);
-			string[] lines = {
+			string[] lines = [
 				"//This file contains a list of TechTypes in a key=value format, used to assign them custom mappings.",
 				"//TechType names are case-sensitive, and in the case of modded TechTypes equal to their ClassID names.",
 				"//To see the TechType used for a given object, you can use the Runtime Editor mod to inspect it and see the TechType on the TechTag, Pickupable, or ResourceTracker component.",
@@ -69,7 +69,7 @@ public class TechTypeMappingConfig<E> {
 				"//There should be one mapping per line, and the value should be in the same format as the following example line:",
 				"//SAMPLE_TECH_TYPE="+valueParsing.getSample(),
 				"",
-			};
+			];
 			File.WriteAllLines(path, lines);
 		}
 	}
@@ -84,15 +84,15 @@ public class TechTypeMappingConfig<E> {
 
 	public class ColorParser : ValueParser<Color> {
 
-		public static readonly ColorParser instance = new ColorParser();
+		public static readonly ColorParser instance = new();
 
 		private ColorParser() {
 
 		}
 
 		public override bool tryParse(string s, out Color val) {
-			string[] parts = s.Split(new char[]{','}, StringSplitOptions.RemoveEmptyEntries);
-			if (parts.Length >= 3 && int.TryParse(parts[0], out int red) && int.TryParse(parts[1], out int green) && int.TryParse(parts[2], out int blue)) {
+			var parts = s.Split([','], StringSplitOptions.RemoveEmptyEntries);
+			if (parts.Length >= 3 && int.TryParse(parts[0], out var red) && int.TryParse(parts[1], out var green) && int.TryParse(parts[2], out var blue)) {
 				val = new Color(red / 255F, green / 255F, blue / 255F, 1);
 				return true;
 			}
@@ -110,7 +110,7 @@ public class TechTypeMappingConfig<E> {
 
 	public class IntParser : ValueParser<int> {
 
-		public static readonly IntParser instance = new IntParser();
+		public static readonly IntParser instance = new();
 
 		private IntParser() {
 
@@ -130,7 +130,7 @@ public class TechTypeMappingConfig<E> {
 
 	public class FloatParser : ValueParser<float> {
 
-		public static readonly FloatParser instance = new FloatParser();
+		public static readonly FloatParser instance = new();
 
 		private FloatParser() {
 

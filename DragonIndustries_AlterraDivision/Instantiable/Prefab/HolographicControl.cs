@@ -13,8 +13,7 @@ public sealed class HolographicControl : CustomPrefab {
 
     private Sprite[] spr = null;
 
-    internal static readonly Dictionary<string, HolographicControl> controlTypes =
-        new Dictionary<string, HolographicControl>();
+    internal static readonly Dictionary<string, HolographicControl> controlTypes = new();
 
     internal readonly Action<HolographicControlTag> actionData;
     internal readonly Func<HolographicControlTag, bool> validityData;
@@ -64,40 +63,40 @@ public sealed class HolographicControl : CustomPrefab {
 
     public HolographicControl setIcons(string pathAndName, int size) {
         if (isToggleable) {
-            Sprite off = Sprite.Create(
+            var off = Sprite.Create(
                 TextureManager.getTexture(ownerMod, pathAndName + "_false"),
                 new Rect(0, 0, size, size),
                 new Vector2(0, 0)
             );
-            Sprite on = Sprite.Create(
+            var on = Sprite.Create(
                 TextureManager.getTexture(ownerMod, pathAndName + "_true"),
                 new Rect(0, 0, size, size),
                 new Vector2(0, 0)
             );
-            return this.setIcons(off, on);
+            return setIcons(off, on);
         } else {
-            icons = new Sprite[] {
+            icons = [
                 Sprite.Create(
                     TextureManager.getTexture(ownerMod, pathAndName),
                     new Rect(0, 0, size, size),
                     new Vector2(0, 0)
-                )
-            };
+                ),
+            ];
             return this;
         }
     }
 
     public HolographicControl setIcons(Sprite off, Sprite on) {
-        icons = new Sprite[] { off, on };
+        icons = [off, on];
         return this;
     }
 
     public GameObject GetGameObject() {
-        GameObject world = new GameObject(Info.ClassID);
+        var world = new GameObject(Info.ClassID);
         world.EnsureComponent<TechTag>().type = Info.TechType;
         world.EnsureComponent<PrefabIdentifier>().ClassId = Info.ClassID;
         world.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.Near;
-        Canvas c = world.EnsureComponent<Canvas>();
+        var c = world.EnsureComponent<Canvas>();
         c.renderMode = RenderMode.WorldSpace;
         c.scaleFactor = 1;
         c.planeDistance = 100;
@@ -108,13 +107,13 @@ public sealed class HolographicControl : CustomPrefab {
         c.overridePixelPerfect = false;
         world.EnsureComponent<CanvasScaler>().scaleFactor = 1;
         world.EnsureComponent<GraphicRaycaster>();
-        GameObject gph = new GameObject("graphic");
-        CanvasRenderer cr = gph.EnsureComponent<CanvasRenderer>();
+        var gph = new GameObject("graphic");
+        var cr = gph.EnsureComponent<CanvasRenderer>();
         gph.transform.SetParent(world.transform);
         gph.transform.localScale = new Vector3(0.0025F, 0.0025F, 1F);
-        Image img = gph.EnsureComponent<Image>();
+        var img = gph.EnsureComponent<Image>();
         img.sprite = icons[0];
-        SphereCollider box = gph.EnsureComponent<SphereCollider>();
+        var box = gph.EnsureComponent<SphereCollider>();
         box.center = Vector3.zero;
         box.radius = 0.5F;
         box.isTrigger = true;
@@ -130,9 +129,9 @@ public sealed class HolographicControl : CustomPrefab {
 
 
     public static HolographicControlTag addButton(GameObject box, HolographicControl control) {
-        foreach (PrefabIdentifier pi in box.transform.GetComponentsInChildren<PrefabIdentifier>()) {
+        foreach (var pi in box.transform.GetComponentsInChildren<PrefabIdentifier>()) {
             if (pi && pi.classId == control.Info.ClassID) {
-                HolographicControlTag tag = pi.GetComponentInChildren<HolographicControlTag>();
+                var tag = pi.GetComponentInChildren<HolographicControlTag>();
                 if (tag)
                     return tag;
                 else
@@ -140,15 +139,15 @@ public sealed class HolographicControl : CustomPrefab {
             }
         }
 
-        GameObject btn = ObjectUtil.createWorldObject(control.Info.ClassID);
-        HolographicControlTag com = btn.GetComponentInChildren<HolographicControl.HolographicControlTag>();
+        var btn = ObjectUtil.createWorldObject(control.Info.ClassID);
+        var com = btn.GetComponentInChildren<HolographicControlTag>();
         btn.transform.SetParent(box.transform);
         return com;
     }
 
     public static HolographicControlTag[] addButtons(GameObject box, params HolographicControl[] control) {
-        HolographicControlTag[] add = new HolographicControlTag[control.Length];
-        for (int i = 0; i < add.Length; i++) {
+        var add = new HolographicControlTag[control.Length];
+        for (var i = 0; i < add.Length; i++) {
             add[i] = addButton(box, control[i]);
         }
 
@@ -164,13 +163,13 @@ public sealed class HolographicControl : CustomPrefab {
             if (!controlRef.isToggleable)
                 return;
             if (toggle != isToggled)
-                this.GetComponent<Image>().sprite = controlRef.icons[toggle ? 1 : 0];
+                GetComponent<Image>().sprite = controlRef.icons[toggle ? 1 : 0];
             isToggled = toggle;
-            base.SendMessageUpwards("SetHolographicControlState", this, SendMessageOptions.DontRequireReceiver);
+            SendMessageUpwards("SetHolographicControlState", this, SendMessageOptions.DontRequireReceiver);
         }
 
-        void Start() {
-            controlRef = HolographicControl.controlTypes[this.GetComponentInParent<PrefabIdentifier>().ClassId];
+        private void Start() {
+            controlRef = controlTypes[GetComponentInParent<PrefabIdentifier>().ClassId];
         }
 
         public bool getState() {
@@ -178,12 +177,12 @@ public sealed class HolographicControl : CustomPrefab {
         }
 
         public void disable() {
-            this.setState(false);
+            setState(false);
         }
 
         public void enableForDuration(float time) {
-            this.setState(true);
-            this.Invoke("disable", time);
+            setState(true);
+            Invoke(nameof(disable), time);
         }
 
         public void OnHandHover(GUIHand hand) {
@@ -204,7 +203,7 @@ public sealed class HolographicControl : CustomPrefab {
         }
 
         public void destroy() {
-            this.GetComponentInParent<PrefabIdentifier>().gameObject.destroy();
+            GetComponentInParent<PrefabIdentifier>().gameObject.destroy();
         }
     }
 }

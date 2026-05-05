@@ -18,9 +18,9 @@ public abstract class WorldGenerator : ObjectTemplate {
 	public string uniqueID {
 		get {
 			if (string.IsNullOrEmpty(savedID)) {
-				XmlDocument doc = new XmlDocument();
-				XmlElement e = doc.CreateElement("id");
-				this.saveToXML(e);
+				var doc = new XmlDocument();
+				var e = doc.CreateElement("id");
+				saveToXML(e);
 				savedID = e.InnerXml;
 			}
 			return savedID;
@@ -29,15 +29,15 @@ public abstract class WorldGenerator : ObjectTemplate {
 
 	static WorldGenerator() {
 		registerType(TAGNAME, e => {
-			string typeName = e.getProperty("type");
-			Vector3 pos = e.getVector("position").Value;
-			Vector3? scatt = e.getVector("scatter", true);
+			var typeName = e.getProperty("type");
+			var pos = e.getVector("position").Value;
+			var scatt = e.getVector("scatter", true);
 			if (scatt != null && scatt.HasValue)
 				pos += MathUtil.getRandomVectorBetween(-scatt.Value, scatt.Value);
-			Type tt = InstructionHandlers.getTypeBySimpleName(typeName);
+			var tt = InstructionHandlers.getTypeBySimpleName(typeName);
 			if (tt == null)
 				throw new Exception("No class found for '" + typeName + "'!");
-			WorldGenerator gen = (WorldGenerator)Activator.CreateInstance(tt, new object[]{pos});
+			var gen = (WorldGenerator)Activator.CreateInstance(tt, new object[]{pos});
 			return gen;
 		});
 	}
@@ -56,7 +56,7 @@ public abstract class WorldGenerator : ObjectTemplate {
 	}
 
 	protected bool isColliding(Vector3 vec, List<GameObject> li) {
-		foreach (GameObject go in li) {
+		foreach (var go in li) {
 			if (ObjectUtil.objectCollidesPosition(go, vec))
 				return true;
 		}
@@ -64,6 +64,6 @@ public abstract class WorldGenerator : ObjectTemplate {
 	}
 
 	public override string ToString() {
-		return this.GetType().Name + " @ " + position;
+		return GetType().Name + " @ " + position;
 	}
 }

@@ -6,7 +6,7 @@ namespace ReikaKalseki.DIAlterra;
 
 public class ScreenFXManager {
 
-	public static readonly ScreenFXManager instance = new ScreenFXManager();
+	public static readonly ScreenFXManager instance = new();
 
 	public GameObject mainCamera { get; private set; }
 	public MesmerizedScreenFXController mesmerController;// { get; private set; }
@@ -31,8 +31,8 @@ public class ScreenFXManager {
 	public Color defaultSmokeShaderColors { get; private set; }
 	public Color defaultRadiationShaderColors { get; private set; }
 
-	private readonly Dictionary<MonoBehaviour, ShaderPair> shaders = new Dictionary<MonoBehaviour, ShaderPair>();
-	private readonly List<ScreenFXOverride> effects = new List<ScreenFXOverride>();
+	private readonly Dictionary<MonoBehaviour, ShaderPair> shaders = new();
+	private readonly List<ScreenFXOverride> effects = [];
 
 	public static bool disableShaders = false;
 
@@ -60,14 +60,14 @@ public class ScreenFXManager {
 			if (mainCamera) {
 				//SNUtil.log("Load cam");
 
-				this.addShader(out mesmerShader, out mesmerController);
-				this.addShader(out smokeShader, out smokeController);
-				this.addShader(out radiationShader, out radiationController);
-				this.addShader(out telepathyShader, out telepathyController);
-				this.addShader(out warpShader, out warpController);
-				this.addShader(out endSequenceShader, out endSequenceController);
-				this.addShader(out teleportShader, out teleportController);
-				this.addShader(out radialShader, out radialController);
+				addShader(out mesmerShader, out mesmerController);
+				addShader(out smokeShader, out smokeController);
+				addShader(out radiationShader, out radiationController);
+				addShader(out telepathyShader, out telepathyController);
+				addShader(out warpShader, out warpController);
+				addShader(out endSequenceShader, out endSequenceController);
+				addShader(out teleportShader, out teleportController);
+				addShader(out radialShader, out radialController);
 
 				shaders[mesmerShader].onStopOverride = () => { if (mesmerShader.mat) mesmerShader.mat.SetVector("_ColorStrength", defaultMesmerShaderColors); };
 				shaders[smokeShader].onStopOverride = () => { if (smokeShader.mat) smokeShader.mat.color = defaultSmokeShaderColors; };
@@ -116,12 +116,12 @@ public class ScreenFXManager {
 		}
 		if (!mainCamera || shaders.Count == 0 || disableShaders)
 			return;
-		foreach (ShaderPair sp in shaders.Values)
+		foreach (var sp in shaders.Values)
 			sp.overriddenThisTick = false;
-		foreach (ScreenFXOverride fx in effects) {
+		foreach (var fx in effects) {
 			fx.onTick();
 		}
-		foreach (ShaderPair s in shaders.Values) {
+		foreach (var s in shaders.Values) {
 			//s.controller.enabled = !s.overriddenThisTick;//!activeOverrides.Contains(c.Key);
 			if (s.overriddenThisTick) {
 				if (s.controller)

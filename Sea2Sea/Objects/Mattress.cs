@@ -12,7 +12,7 @@ public class Mattress : CustomPrefab {
     }
 
     public GameObject GetGameObject() {
-        GameObject go = ObjectUtil.lookupPrefab("c3994649-d0da-4f8c-bb77-1590f50838b9").getChildObject("bed_narrow")
+        var go = ObjectUtil.lookupPrefab("c3994649-d0da-4f8c-bb77-1590f50838b9").getChildObject("bed_narrow")
             .clone();
         go.removeChildObject("bed_narrow");
         go.removeChildObject("blanket_narrow");

@@ -5,7 +5,7 @@ namespace ReikaKalseki.SeaToSea;
 
 public class C2CVentInteraction : MonoBehaviour, IHandTarget {
     public void OnHandClick(GUIHand hand) {
-        if (C2CProgression.instance.isPipeTravelEnabled(out bool invis)) {
+        if (C2CProgression.Instance.IsPipeTravelEnabled(out var invis)) {
             PipeTravelSystem.requestTravel(GetComponent<PrefabIdentifier>());
         } else if (!invis) {
             SoundManager.playSound("event:/env/keypad_wrong");
@@ -13,7 +13,7 @@ public class C2CVentInteraction : MonoBehaviour, IHandTarget {
     }
 
     public void OnHandHover(GUIHand hand) {
-        if (C2CProgression.instance.isPipeTravelEnabled(out bool invis)) {
+        if (C2CProgression.Instance.IsPipeTravelEnabled(out var invis)) {
             HandReticle.main.SetText(HandReticle.TextType.Use, "VentClick", true); //is a locale key
             HandReticle.main.SetIcon(HandReticle.IconType.Interact);
         } else if (!invis) {

@@ -5,8 +5,8 @@ namespace ReikaKalseki.DIAlterra;
 public abstract class CustomBiome : BiomeBase {
 
 	private static float nextMusicChoiceTime = -1;
-	private static VanillaMusic currentMusic = null;
-	private static CustomBiome currentBiomeForMusic = null;
+	private static VanillaMusic currentMusic;
+	private static CustomBiome currentBiomeForMusic;
 
 	public readonly string biomeName;
 	private readonly System.Reflection.Assembly ownerMod;
@@ -29,16 +29,17 @@ public abstract class CustomBiome : BiomeBase {
 	public void createDiscoveryStoryGoal(float minStayTime, XMLLocale.LocaleEntry e) {
 		if (e.pda == "#NULL")
 			SNUtil.log("Error - XML entry '" + e.key + "' is missing a sound field: " + e.dump());
-		this.createDiscoveryStoryGoal(minStayTime, e.desc, SoundManager.registerPDASound(SNUtil.tryGetModDLL(), "BiomeGoal_" + biomeName, e.pda).asset);
+		createDiscoveryStoryGoal(minStayTime, e.desc, SoundManager.registerPDASound(SNUtil.tryGetModDLL(), "BiomeGoal_" + biomeName, e.pda).asset);
 	}
 
 	public void createDiscoveryStoryGoal(float minStayTime, string text, FMODAsset sound) {
-		discoveryGoal = new Story.BiomeGoal();
-		discoveryGoal.key = "Goal_Biome" + biomeName;
-		discoveryGoal.goalType = Story.GoalType.PDA;
-		discoveryGoal.delay = 0;
-		discoveryGoal.biome = biomeName;
-		discoveryGoal.minStayDuration = minStayTime;
+		discoveryGoal = new Story.BiomeGoal {
+			key = "Goal_Biome" + biomeName,
+			goalType = Story.GoalType.PDA,
+			delay = 0,
+			biome = biomeName,
+			minStayDuration = minStayTime,
+		};
 		SNUtil.addVOLine(discoveryGoal, text, sound);
 		StoryHandler.instance.registerTickedGoal(discoveryGoal);
 		SNUtil.log("Created BiomeGoal for " + this);
@@ -86,11 +87,11 @@ public abstract class CustomBiome : BiomeBase {
 
 	public static void tickMusic(DayNightCycle cyc) {
 		if (cyc.timePassedAsFloat >= nextMusicChoiceTime) {
-			Player ep = Player.main;
+			var ep = Player.main;
 			if (ep) {
-				Vector3 pos = ep.transform.position;
-				CustomBiome b = getBiome(pos) as CustomBiome;
-				bool changed = b != currentBiomeForMusic;
+				var pos = ep.transform.position;
+				var b = GetBiome(pos) as CustomBiome;
+				var changed = b != currentBiomeForMusic;
 				currentBiomeForMusic = b;
 				if (changed) {
 					if (currentMusic != null)
@@ -99,10 +100,10 @@ public abstract class CustomBiome : BiomeBase {
 					return;
 				}
 				if (b != null) {
-					VanillaMusic[] mus = b.getMusicOptions();
+					var mus = b.getMusicOptions();
 					//SNUtil.writeToChat(b.biomeName+" > "+(mus != null ? string.Join(",", (object[])mus) : "null"));
 					if (mus != null) {
-						foreach (VanillaMusic vm in VanillaMusic.getAll()) {
+						foreach (var vm in VanillaMusic.getAll()) {
 							vm.stop();
 						}
 						if (mus.Length > 0) {/*
@@ -113,7 +114,7 @@ public abstract class CustomBiome : BiomeBase {
 								vm.enable();
 								vm.setToBiome(biome);
 							}*/
-							VanillaMusic track = mus[UnityEngine.Random.Range(0, mus.Length)];
+							var track = mus[Random.Range(0, mus.Length)];
 							track.play();
 							nextMusicChoiceTime = cyc.timePassedAsFloat + track.getLength() + b.getNextMusicSilencePadding();
 							currentMusic = track;

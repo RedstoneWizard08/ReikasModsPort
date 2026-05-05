@@ -11,7 +11,7 @@ using UnityEngine.UI;
 namespace ReikaKalseki.DIAlterra;
 
 public static class PDAManager {
-    private static readonly Dictionary<string, PDAPage> pages = new Dictionary<string, PDAPage>();
+    private static readonly Dictionary<string, PDAPage> pages = new();
 
     static PDAManager() {
     }
@@ -27,7 +27,7 @@ public static class PDAManager {
     public static PDAPage createPage(string id, string name, string text, string cat) {
         if (pages.ContainsKey(id))
             throw new Exception("PDA page ID '" + id + "' already in use! " + pages[id]);
-        PDAPage sig = new PDAPage(id, name, text, cat);
+        var sig = new PDAPage(id, name, text, cat);
         pages[sig.id] = sig;
         SNUtil.log("Registered PDA page " + sig);
         return sig;
@@ -43,11 +43,11 @@ public static class PDAManager {
 
         public string text { get; private set; }
 
-        private readonly PDAEncyclopedia.EntryData pageData = new PDAEncyclopedia.EntryData();
+        private readonly PDAEncyclopedia.EntryData pageData = new();
 
         public readonly Assembly ownerMod;
 
-        private List<string> tree = new List<string>();
+        private List<string> tree = [];
 
         private readonly PDAPrefab prefabID;
 
@@ -75,7 +75,7 @@ public static class PDAManager {
         }
 
         public PDAPage setVoiceover(string path) {
-            string sid = VanillaSounds.getID(path);
+            var sid = VanillaSounds.getID(path);
             if (sid == null) {
                 SNUtil.log("Sound path " + path + " did not find an ID. Registering as custom.");
                 pageData.audio = SoundManager.registerPDASound(SNUtil.tryGetModDLL(), "pda_vo_" + id, path).asset;
@@ -97,21 +97,21 @@ public static class PDAManager {
             pageData.path = string.Join("/", tree);
             PDAHandler.AddEncyclopediaEntry(pageData);
             CustomLocaleKeyDatabase.registerKey("Ency_" + pageData.key, name);
-            this.injectString();
+            injectString();
 
             prefabID.Register();
         }
 
         public void append(string s, bool force = false) {
             text += s;
-            this.injectString(force);
+            injectString(force);
         }
 
         public void update(string text, bool force = false, bool allowNotification = true) {
             if (this.text == text)
                 return;
             this.text = text;
-            this.injectString(force, allowNotification);
+            injectString(force, allowNotification);
         }
 
         public void format(bool force = false, bool allowNotification = true, params object[] args) {
@@ -125,7 +125,7 @@ public static class PDAManager {
             bool force = false,
             bool allowNotification = true
         ) {
-            this.update(
+            update(
                 values.Aggregate(
                     template,
                     (placeholder, value) => placeholder.Replace("$" + value.Key, value.Value.ToString())
@@ -140,14 +140,14 @@ public static class PDAManager {
                 Language.main.strings["EncyDesc_"+pageData.key] = text;
             else*/
             LanguageHandler.SetLanguageLine("EncyDesc_" + pageData.key, text);
-            if (force && DIHooks.isWorldLoaded()) {
-                uGUI_EncyclopediaTab tab = (uGUI_EncyclopediaTab)Player.main.GetPDA().ui.tabs[PDATab.Encyclopedia];
+            if (force && DIHooks.IsWorldLoaded()) {
+                var tab = (uGUI_EncyclopediaTab)Player.main.GetPDA().ui.tabs[PDATab.Encyclopedia];
                 if (tab && tab.activeEntry && tab.activeEntry.key == pageData.key)
                     tab.DisplayEntry(pageData.key); //.SetText(text);
             }
 
             if (allowNotification)
-                this.markUpdated(5);
+                markUpdated(5);
         }
 
         public void markUpdated(float duration = 3F) {
@@ -155,15 +155,13 @@ public static class PDAManager {
         }
 
         public TreeNode getNode() {
-            List<string> li = new List<string>(tree) {
-                id
-            };
+            List<string> li = [..tree, id];
             return PDAEncyclopedia.tree.FindNodeByPath(li.ToArray());
         }
 
         public uGUI_ListEntry getListEntry() {
-            uGUI_EncyclopediaTab tab = (uGUI_EncyclopediaTab)Player.main.GetPDA().ui.tabs[PDATab.Encyclopedia];
-            foreach (uGUI_ListEntry e in tab.GetComponentsInChildren<uGUI_ListEntry>()) {
+            var tab = (uGUI_EncyclopediaTab)Player.main.GetPDA().ui.tabs[PDATab.Encyclopedia];
+            foreach (var e in tab.GetComponentsInChildren<uGUI_ListEntry>()) {
                 if (e.GetComponentInChildren<Text>().text == name) {
                     return e;
                 }
@@ -173,15 +171,15 @@ public static class PDAManager {
         }
 
         public void show(Action<PDA> onClose = null) {
-            PDA pda = Player.main.GetPDA();
+            var pda = Player.main.GetPDA();
             pda.Open(PDATab.Encyclopedia, null, onClose != null ? new PDA.OnClose(onClose) : null);
-            uGUI_EncyclopediaTab ency = (uGUI_EncyclopediaTab)Player.main.GetPDA().ui.tabs[PDATab.Encyclopedia];
-            CraftNode node = ency.ExpandTo(id);
+            var ency = (uGUI_EncyclopediaTab)Player.main.GetPDA().ui.tabs[PDATab.Encyclopedia];
+            var node = ency.ExpandTo(id);
             ency.Activate(node);
         }
 
         public bool unlock(bool doSound = true) {
-            if (!this.isUnlocked()) {
+            if (!isUnlocked()) {
                 pageData.unlocked = true;
                 PDAEncyclopedia.Add(pageData.key, true);
 
@@ -226,7 +224,7 @@ public static class PDAManager {
         }
     }
 
-    sealed class PDAPrefab : CustomPrefab, DIPrefab<StringPrefabContainer> {
+    private sealed class PDAPrefab : CustomPrefab, DIPrefab<StringPrefabContainer> {
         internal readonly PDAPage page;
 
         public float glowIntensity { get; set; }
@@ -241,8 +239,8 @@ public static class PDAManager {
         }
 
         public GameObject GetGameObject() {
-            GameObject go = ObjectUtil.getModPrefabBaseObject<StringPrefabContainer>(this);
-            StoryHandTarget tgt = go.EnsureComponent<StoryHandTarget>();
+            var go = ObjectUtil.getModPrefabBaseObject(this);
+            var tgt = go.EnsureComponent<StoryHandTarget>();
             if (tgt.goal == null)
                 tgt.goal = new Story.StoryGoal();
             tgt.goal.goalType = Story.GoalType.Encyclopedia;

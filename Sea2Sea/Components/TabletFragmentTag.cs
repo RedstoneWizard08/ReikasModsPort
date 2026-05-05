@@ -15,11 +15,11 @@ internal class TabletFragmentTag : MonoBehaviour {
 
 	private float lastRenderUpdateTime;
 
-	void Update() {
+	private void Update() {
 		if (models == null)
 			models = gameObject.getChildObject("precursor_key_cracked_01").GetComponentsInChildren<MeshRenderer>();
 		if (!light)
-			light = this.GetComponentInChildren<Light>();
+			light = GetComponentInChildren<Light>();
 		if (light && !sparker) {
 			sparker = gameObject.getChildObject("Sparks");
 			if (!sparker)
@@ -29,15 +29,15 @@ internal class TabletFragmentTag : MonoBehaviour {
 			sparker.transform.localScale = new Vector3(0.4F, 0.4F, 0.4F);
 			sparker.transform.localPosition = models.Length > 1 ? Vector3.zero : models[0].transform.localPosition;
 		}
-		float time = DayNightCycle.main.timePassedAsFloat;
+		var time = DayNightCycle.main.timePassedAsFloat;
 		if (sparker && time - lastRenderUpdateTime > 0.5F) {
 			sparker.removeComponent<DamagePlayerInRadius>();
 			sparker.removeChildObject("ElecLight");
 			sparker.removeChildObject("xElec");
 			sparker.removeComponent<DamagePlayerInRadius>();
 			gameObject.removeChildObject("xUnderwaterElecSource_medium");
-			foreach (ParticleSystemRenderer r in sparker.GetComponentsInChildren<ParticleSystemRenderer>()) {
-				foreach (Material m in r.materials) {
+			foreach (var r in sparker.GetComponentsInChildren<ParticleSystemRenderer>()) {
+				foreach (var m in r.materials) {
 					m.SetColor("_Color", light.color);
 					m.SetVector("_ScrollSpeed", Vector4.one * -0.01F);
 				}
@@ -46,9 +46,9 @@ internal class TabletFragmentTag : MonoBehaviour {
 		}
 		if (particles == null) {
 			particles = sparker.GetComponentsInChildren<ParticleSystem>();
-			foreach (ParticleSystem pp in particles) {
-				ParticleSystem.MainModule main = pp.main;
-				ParticleSystem.EmissionModule em = pp.emission;
+			foreach (var pp in particles) {
+				var main = pp.main;
+				var em = pp.emission;
 				em.rateOverTime = 2.4F;
 				main.startSize = models.Length > 1 ? 1 : 0.67F;
 				main.startLifetime = 2.5F;
@@ -56,8 +56,8 @@ internal class TabletFragmentTag : MonoBehaviour {
 		}
 	}
 
-	void OnScanned() {
-		TechType tt = CraftData.GetTechType(gameObject);
+	private void OnScanned() {
+		var tt = CraftData.GetTechType(gameObject);
 		SNUtil.log("Scanned tablet fragment " + gameObject + " @ " + transform.position + ", TT=" + tt);
 		if (tt == TechType.PrecursorKey_PurpleFragment) {
 			if (Vector3.Distance(transform.position, WorldUtil.DEGASI_FLOATING_BASE) <= 20) {

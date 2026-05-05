@@ -8,9 +8,9 @@ using UnityEngine;
 namespace ReikaKalseki.SeaToSea;
 
 public sealed class PodDebris : WorldGenerator {
-    internal static readonly WeightedRandom<Prop> debrisProps = new WeightedRandom<Prop>();
-    internal static readonly List<Prop> alwaysPieces = new List<Prop>();
-    internal static readonly List<Prop> papers = new List<Prop>();
+    internal static readonly WeightedRandom<Prop> debrisProps = new();
+    internal static readonly List<Prop> alwaysPieces = [];
+    internal static readonly List<Prop> papers = [];
 
     static PodDebris() {
         debrisProps.addEntry(new Prop("08a95141-7c00-4d55-b582-306fa2e217ed"), 100);
@@ -38,11 +38,11 @@ public sealed class PodDebris : WorldGenerator {
         //big platform 5a6279e2-fab9-48c9-bcb3-fdeb02fd4ce2
     }
 
-    internal bool generateRecognizablePieces = false;
+    internal bool generateRecognizablePieces;
     internal int paperCount = 6;
     internal float debrisAmount = 1;
     internal float debrisScale = 0.5F;
-    internal int scrapCount = 0;
+    internal int scrapCount;
     internal float areaSpread = 1;
     internal Vector3? bounds = null;
 
@@ -70,23 +70,23 @@ public sealed class PodDebris : WorldGenerator {
     }
 
     public override bool generate(List<GameObject> li) {
-        for (int i = 0; i < 6 * debrisAmount; i++) {
-            li.Add(this.generateObjectInRange(9, 0.125F, 9));
+        for (var i = 0; i < 6 * debrisAmount; i++) {
+            li.Add(generateObjectInRange(9, 0.125F, 9));
         }
 
         if (generateRecognizablePieces) {
-            foreach (Prop s in alwaysPieces) {
-                li.Add(this.generateObjectInRange(15, 0, 15, 0, s.prefab.ClassID, false));
+            foreach (var s in alwaysPieces) {
+                li.Add(generateObjectInRange(15, 0, 15, 0, s.prefab.ClassID, false));
             }
         }
 
-        for (int i = 0; i < 12 * debrisAmount; i++) {
-            li.Add(this.generateObjectInRange(24, 0.125F, 24));
+        for (var i = 0; i < 12 * debrisAmount; i++) {
+            li.Add(generateObjectInRange(24, 0.125F, 24));
         }
 
-        for (int i = 0; i < paperCount; i++) {
+        for (var i = 0; i < paperCount; i++) {
             li.Add(
-                this.generateObjectInRange(
+                generateObjectInRange(
                     4,
                     2,
                     4,
@@ -97,8 +97,8 @@ public sealed class PodDebris : WorldGenerator {
             );
         }
 
-        for (int i = 0; i < scrapCount; i++) {
-            VanillaResources mtl = VanillaResources.SCRAP1;
+        for (var i = 0; i < scrapCount; i++) {
+            var mtl = VanillaResources.SCRAP1;
             switch (UnityEngine.Random.Range(0, 4)) {
                 case 0:
                     mtl = VanillaResources.SCRAP1;
@@ -114,7 +114,7 @@ public sealed class PodDebris : WorldGenerator {
                     break;
             }
 
-            GameObject drop = this.generateObjectInRange(18, 0, 18, 0, mtl.prefab, false);
+            var drop = generateObjectInRange(18, 0, 18, 0, mtl.prefab, false);
             li.Add(drop);
         }
 
@@ -135,10 +135,10 @@ public sealed class PodDebris : WorldGenerator {
     ) {
         if (pfb == null)
             pfb = debrisProps.getRandomEntry().prefab.ClassID;
-        GameObject go = spawner(pfb);
+        var go = spawner(pfb);
         if (go == null)
             return go;
-        Vector3 pos = MathUtil.getRandomVectorAround(position, new Vector3(dx, dy, dz) * areaSpread);
+        var pos = MathUtil.getRandomVectorAround(position, new Vector3(dx, dy, dz) * areaSpread);
         if (bounds != null && bounds.HasValue) {
             pos.x = Math.Max(Math.Min(pos.x, position.x + bounds.Value.x), position.x - bounds.Value.x);
             pos.y = Math.Max(Math.Min(pos.y, position.y + bounds.Value.y), position.y - bounds.Value.y);
@@ -155,16 +155,16 @@ public sealed class PodDebris : WorldGenerator {
 }
 
 public class Prop {
-    private static readonly Dictionary<string, Prop> propCache = new Dictionary<string, Prop>();
+    private static readonly Dictionary<string, Prop> propCache = new();
 
     public readonly PropPrefab prefab;
     internal readonly float[] baseAngles;
     internal readonly bool freeAngle;
 
-    internal Prop(string pfb, float ang1, float ang2) : this(pfb, new float[] { ang1, ang2 }) {
+    internal Prop(string pfb, float ang1, float ang2) : this(pfb, [ang1, ang2]) {
     }
 
-    internal Prop(string pfb, float ang = 0) : this(pfb, new float[] { ang }) {
+    internal Prop(string pfb, float ang = 0) : this(pfb, [ang]) {
     }
 
     internal Prop(string pfb, float[] ang) {
@@ -201,21 +201,21 @@ public sealed class PropPrefab : GenUtil.CustomPrefabImpl {
         go.removeComponent<Centrifuge>();
         go.removeComponent<Radio>();
         go.removeComponent<Constructable>();
-        PreventDeconstruction prev = go.EnsureComponent<PreventDeconstruction>();
+        var prev = go.EnsureComponent<PreventDeconstruction>();
         prev.enabled = true;
         prev.inEscapePod = true;
         if (useGravity) {
             ObjectUtil.applyGravity(go);
         } else {
-            Rigidbody b = go.GetComponentInChildren<Rigidbody>();
+            var b = go.GetComponentInChildren<Rigidbody>();
             //b.detectCollisions = false;
             if (b != null)
                 b.constraints = RigidbodyConstraints.FreezeAll;
         }
 
-        Pickupable p = go.GetComponentInChildren<Pickupable>();
+        var p = go.GetComponentInChildren<Pickupable>();
         if (p != null) {
-            TechType tt = CraftData.GetTechType(ObjectUtil.lookupPrefab(baseTemplate.prefab));
+            var tt = CraftData.GetTechType(ObjectUtil.lookupPrefab(baseTemplate.prefab));
             SNUtil.log(ClassID + " had PP, TT = " + tt);
             if (tt != TechType.None)
                 p.SetTechTypeOverride(tt);
@@ -224,7 +224,7 @@ public sealed class PropPrefab : GenUtil.CustomPrefabImpl {
     }
 
     internal PropPrefab register() {
-        this.Register();
+        Register();
         //prefabCache[useGravity ? 1 : 0][baseTemplate.prefab] = this;
         return this;
     }

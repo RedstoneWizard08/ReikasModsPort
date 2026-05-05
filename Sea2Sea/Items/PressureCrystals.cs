@@ -17,7 +17,7 @@ public class PressureCrystals : BasicCustomOre {
 
     public override void prepareGameObject(GameObject go, Renderer[] r0) {
         base.prepareGameObject(go, r0);
-        foreach (Renderer r in r0) {
+        foreach (var r in r0) {
             RenderUtil.makeTransparent(r);
             r.sharedMaterial.SetFloat("_Fresnel", 0.65F);
             r.sharedMaterial.SetFloat("_Shininess", 15F);
@@ -28,9 +28,9 @@ public class PressureCrystals : BasicCustomOre {
             r.materials[0].SetColor("_GlowColor", new Color(1, 1, 1, 1));
         }
 
-        Light l = go.addLight(0.3F, 4, new UnityEngine.Color(1F, 0.45F, 1F));
+        var l = go.addLight(0.3F, 4, new Color(1F, 0.45F, 1F));
         l.type = LightType.Point;
-        l = go.addLight(1.2F, 1, new UnityEngine.Color(1F, 0.45F, 1F));
+        l = go.addLight(1.2F, 1, new Color(1F, 0.45F, 1F));
         l.type = LightType.Point;
     }
 }

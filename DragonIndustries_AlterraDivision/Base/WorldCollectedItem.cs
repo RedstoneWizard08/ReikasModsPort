@@ -9,12 +9,12 @@ using UnityEngine;
 namespace ReikaKalseki.DIAlterra;
 
 public class WorldCollectedItem : CustomPrefab, DIPrefab<StringPrefabContainer> {
-    private readonly List<PlannedIngredient> recipe = new List<PlannedIngredient>();
+    private readonly List<PlannedIngredient> recipe = [];
     public readonly string id;
 
     public Sprite sprite = null;
-    public Vector2int inventorySize = new Vector2int(1, 1);
-    public readonly List<PlannedIngredient> byproducts = new List<PlannedIngredient>();
+    public Vector2int inventorySize = new(1, 1);
+    public readonly List<PlannedIngredient> byproducts = [];
     public Action<Renderer> renderModify = null;
 
     public float glowIntensity { get; set; }
@@ -42,9 +42,8 @@ public class WorldCollectedItem : CustomPrefab, DIPrefab<StringPrefabContainer> 
     }
 
     public GameObject GetGameObject() {
-        GameObject go = ObjectUtil.getModPrefabBaseObject(this);
-        if (renderModify != null)
-            renderModify.Invoke(go.GetComponentInChildren<Renderer>());
+        var go = ObjectUtil.getModPrefabBaseObject(this);
+        renderModify?.Invoke(go.GetComponentInChildren<Renderer>());
         return go;
     }
 
@@ -70,12 +69,10 @@ public class WorldCollectedItem : CustomPrefab, DIPrefab<StringPrefabContainer> 
     }
 
     public Sprite getIcon() {
-        return this.GetItemSprite();
+        return GetItemSprite();
     }
 
-    public Vector2int SizeInInventory {
-        get { return inventorySize; }
-    }
+    public Vector2int SizeInInventory => inventorySize;
 
     public sealed override string ToString() {
         return base.ToString() + " [" + Info.TechType + "] / " + Info.ClassID + " / " + Info.PrefabFileName;

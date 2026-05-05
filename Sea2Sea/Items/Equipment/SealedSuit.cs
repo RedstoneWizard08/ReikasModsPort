@@ -8,25 +8,21 @@ namespace ReikaKalseki.SeaToSea;
 public sealed class SealedSuit : CustomEquipable {
     [SetsRequiredMembers]
     public SealedSuit() : base(
-        SeaToSeaMod.itemLocale.getEntry("SealedSuit"),
+        SeaToSeaMod.ItemLocale.getEntry("SealedSuit"),
         "WorldEntities/Tools/ReinforcedDiveSuit"
     ) {
         isArmor = true;
-        this.preventNaturalUnlock();
+        preventNaturalUnlock();
     }
 
-    public override Vector2int SizeInInventory {
-        get { return new Vector2int(2, 2); }
-    }
+    public override Vector2int SizeInInventory => new(2, 2);
 
     public override void prepareGameObject(GameObject go, Renderer[] r) {
     }
 
-    public override sealed EquipmentType EquipmentType {
-        get { return EquipmentType.Body; }
-    }
+    public override sealed EquipmentType EquipmentType => EquipmentType.Body;
 
     public override List<TechType> getAuxCrafted() {
-        return new List<TechType> { C2CItems.sealGloves.Info.TechType };
+        return [C2CItems.sealGloves.Info.TechType];
     }
 }

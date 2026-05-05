@@ -12,7 +12,7 @@ internal class LavaCastleVentCrystalPlacer : CustomPrefab {
     }
 
     public GameObject GetGameObject() {
-        GameObject go = new GameObject("LavaCastleVentCrystalPlacer");
+        var go = new GameObject("LavaCastleVentCrystalPlacer");
         go.EnsureComponent<LavaCastleVentCrystalConverter>();
         go.EnsureComponent<PrefabIdentifier>().ClassId = Info.ClassID;
         go.EnsureComponent<TechTag>().type = Info.TechType;
@@ -22,11 +22,11 @@ internal class LavaCastleVentCrystalPlacer : CustomPrefab {
 }
 
 internal class LavaCastleVentCrystalConverter : MonoBehaviour {
-    void Update() {
+    private void Update() {
         if ((transform.position - Player.main.transform.position).sqrMagnitude <= 90000) {
-            float ch = SeaToSeaMod.config.getBoolean(C2CConfig.ConfigEntries.HARDMODE) ? 0.15F : 0.25F;
+            var ch = SeaToSeaMod.ModConfig.getBoolean(C2CConfig.ConfigEntries.HARDMODE) ? 0.15F : 0.25F;
             GameObject azur = null;
-            if (UnityEngine.Random.Range(0F, 1F) < ch) {
+            if (Random.Range(0F, 1F) < ch) {
                 azur = ObjectUtil.createWorldObject(
                     CustomMaterials.getItem(CustomMaterials.Materials.VENT_CRYSTAL).ClassID
                 );

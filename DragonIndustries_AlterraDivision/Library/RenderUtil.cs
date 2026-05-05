@@ -11,16 +11,16 @@ using UnityEngine;
 namespace ReikaKalseki.DIAlterra;
 
 public static class RenderUtil {
-    private static readonly string[] texTypes = new string[] { "_MainTex", "_SpecTex", "_BumpMap", "_Illum" };
-    private static readonly HashSet<string> warnNoTextures = new HashSet<string>();
+    private static readonly string[] texTypes = ["_MainTex", "_SpecTex", "_BumpMap", "_Illum"];
+    private static readonly HashSet<string> warnNoTextures = [];
 
-    private static readonly Regex LODPattern = new Regex(
+    private static readonly Regex LODPattern = new(
         "LOD[0-9]",
         RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant,
         TimeSpan.FromMilliseconds(50)
     );
 
-    private static readonly Regex LODPatternExcept0 = new Regex(
+    private static readonly Regex LODPatternExcept0 = new(
         "LOD[1-9]",
         RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant,
         TimeSpan.FromMilliseconds(50)
@@ -31,8 +31,8 @@ public static class RenderUtil {
     }
 
     public static void setEmissivity(Renderer r, float amt, float night, HashSet<int> matIndices = null) {
-        Material[] mr = r.materials;
-        for (int i = 0; i < mr.Length; i++) {
+        var mr = r.materials;
+        for (var i = 0; i < mr.Length; i++) {
             if (matIndices != null && !matIndices.Contains(i))
                 continue;
             setEmissivity(mr[i], amt, night);
@@ -63,8 +63,8 @@ public static class RenderUtil {
         float fresnel,
         HashSet<int> matIndices = null
     ) {
-        Material[] mr = r.materials;
-        for (int i = 0; i < mr.Length; i++) {
+        var mr = r.materials;
+        for (var i = 0; i < mr.Length; i++) {
             if (matIndices != null && !matIndices.Contains(i))
                 continue;
             setGlossiness(mr[i], specular, shininess, fresnel);
@@ -78,8 +78,8 @@ public static class RenderUtil {
     }
 
     public static void makeTransparent(Renderer r, HashSet<int> matIndices = null) {
-        Material[] mr = r.materials;
-        for (int i = 0; i < mr.Length; i++) {
+        var mr = r.materials;
+        for (var i = 0; i < mr.Length; i++) {
             if (matIndices != null && !matIndices.Contains(i))
                 continue;
             makeTransparent(mr[i]);
@@ -136,13 +136,13 @@ public static class RenderUtil {
     }
 
     public static void copyTextures(string pfb, Renderer to, int idxf = 0, int idxt = 0) {
-        GameObject go = ObjectUtil.lookupPrefab(pfb);
+        var go = ObjectUtil.lookupPrefab(pfb);
         if (!go)
             throw new Exception("Prefab " + pfb + " does not exist!");
-        Renderer from = go.GetComponentInChildren<Renderer>();
+        var from = go.GetComponentInChildren<Renderer>();
         if (!from)
             throw new Exception("Prefab " + pfb + " has no renderer to pull textures from!");
-        foreach (String type in texTypes) {
+        foreach (var type in texTypes) {
             to.materials[idxt].SetTexture(type, from.materials[idxf].GetTexture(type));
         }
     }
@@ -153,8 +153,8 @@ public static class RenderUtil {
         string path,
         Dictionary<int, string> textureLayers = null
     ) {
-        bool flag = false;
-        foreach (Renderer rr in r)
+        var flag = false;
+        foreach (var rr in r)
             flag |= swapTextures(a, rr, path, textureLayers);
         return flag;
     }
@@ -162,14 +162,14 @@ public static class RenderUtil {
     public static bool swapTextures(Assembly a, Renderer r, string path, Dictionary<int, string> textureLayers = null) {
         if (r == null)
             throw new Exception("Tried to retexture a null renderer!");
-        bool flag = false;
-        foreach (String type in texTypes) {
-            for (int i = 0; i < r.materials.Length; i++) {
+        var flag = false;
+        foreach (var type in texTypes) {
+            for (var i = 0; i < r.materials.Length; i++) {
                 if (!r.materials[i])
                     continue;
                 if ((textureLayers == null && i == 0) || (textureLayers != null && textureLayers.ContainsKey(i))) {
-                    string suffix = textureLayers != null
-                        ? (string.IsNullOrEmpty(textureLayers[i]) ? "" : "_" + textureLayers[i])
+                    var suffix = textureLayers != null
+                        ? string.IsNullOrEmpty(textureLayers[i]) ? "" : "_" + textureLayers[i]
                         : "";
                     if (path.EndsWith("/", StringComparison.InvariantCultureIgnoreCase) && suffix.StartsWith(
                             "_",
@@ -178,8 +178,8 @@ public static class RenderUtil {
                         suffix = suffix.Substring(1);
                     }
 
-                    string name = path + suffix + type;
-                    Texture2D newTex = TextureManager.getTexture(a, name);
+                    var name = path + suffix + type;
+                    var newTex = TextureManager.getTexture(a, name);
                     if (newTex != null) {
                         r.materials[i].SetTexture(type, newTex);
                         flag = true;
@@ -196,17 +196,17 @@ public static class RenderUtil {
     }
 
     public static void swapToModdedTextures<T>(Renderer[] r, DIPrefab<T> pfb) where T : PrefabReference {
-        foreach (Renderer rr in r) {
+        foreach (var rr in r) {
             swapToModdedTextures(rr, pfb);
         }
     }
 
     public static void swapToModdedTextures<T>(Renderer r, DIPrefab<T> pfb) where T : PrefabReference {
-        string path = "Textures/" + pfb.getTextureFolder() + "/" + ObjectUtil.formatFileName((CustomPrefab)pfb);
+        var path = "Textures/" + pfb.getTextureFolder() + "/" + ObjectUtil.formatFileName((CustomPrefab)pfb);
         //SNUtil.log("Applying custom textures in '"+path+"' to mod prefab "+pfb+" renderer "+r, pfb.getOwnerMod());
         Dictionary<int, string> dict = null;
-        if (pfb is MultiTexturePrefab)
-            dict = ((MultiTexturePrefab)pfb).getTextureLayers(r);
+        if (pfb is MultiTexturePrefab prefab)
+            dict = prefab.getTextureLayers(r);
         if (!swapTextures(pfb.getOwnerMod(), r, path, dict)) {
             if (!warnNoTextures.Contains(pfb.ClassID)) {
                 SNUtil.log("NO CUSTOM TEXTURES FOUND in " + path + ": " + pfb, pfb.getOwnerMod());
@@ -218,13 +218,13 @@ public static class RenderUtil {
             setEmissivity(r, pfb.glowIntensity);
         } else {
             setEmissivity(r, 0);
-            foreach (Material m in r.materials)
+            foreach (var m in r.materials)
                 m.DisableKeyword("MARMO_EMISSION");
         }
     }
 
     public static void setPolyanilineColor(this Renderer r, Color c, float glow = 0) {
-        Material m = r.materials[1]; //liquid
+        var m = r.materials[1]; //liquid
         m.SetColor("_Color", c);
         m.SetColor("_SpecColor", c);
         m.SetColor("_GlowColor", c);
@@ -255,27 +255,27 @@ public static class RenderUtil {
     }
 
     public static GameObject getModelRoot(this GameObject go) {
-        Animator[] anim = go.GetComponentsInChildren<Animator>();
-        foreach (Animator a in anim) {
+        var anim = go.GetComponentsInChildren<Animator>();
+        foreach (var a in anim) {
             if (!a.gameObject.GetFullHierarchyPath().Contains("ViewModel"))
                 return a.gameObject;
         }
 
-        SkinnedMeshRenderer smr = go.GetComponentInChildren<SkinnedMeshRenderer>();
+        var smr = go.GetComponentInChildren<SkinnedMeshRenderer>();
         if (smr)
             return smr.gameObject;
-        Renderer[] arr = go.GetComponentsInChildren<Renderer>();
+        var arr = go.GetComponentsInChildren<Renderer>();
         if (arr.Length == 0)
             return null;
-        List<Renderer> li = arr.Where(r => !r.name.contains(LODPattern)).ToList();
+        var li = arr.Where(r => !r.name.contains(LODPattern)).ToList();
         if (li.Count == 0)
             li = arr.Where(r => !r.name.contains(LODPatternExcept0)).ToList();
         return (li.Count == 0 ? arr[0] : li[0]).gameObject;
     }
 
     public static void convertToModel(this GameObject modelObj, params Type[] except) {
-        HashSet<Type> li = except.ToSet();
-        foreach (Component c in modelObj.GetComponentsInChildren<Component>()) {
+        var li = except.ToSet();
+        foreach (var c in modelObj.GetComponentsInChildren<Component>()) {
             if (c is Transform || c is Renderer || c is MeshFilter || c is Animator || c is Collider ||
                 c is VFXFabricating || c is PrefabIdentifier || c is ChildObjectIdentifier || c is AnimatorComponent)
                 continue;
@@ -291,17 +291,17 @@ public static class RenderUtil {
             return;
         }
 
-        Color[] c = m.colors;
-        for (int i = 0; i < c.Length; i++) {
+        var c = m.colors;
+        for (var i = 0; i < c.Length; i++) {
             c[i] = new Color(c[i].r, c[i].g, c[i].b, 1);
         }
 
         m.colors = c;
-        foreach (MeshFilter mf in go.GetComponentsInChildren<MeshFilter>(true)) {
+        foreach (var mf in go.GetComponentsInChildren<MeshFilter>(true)) {
             mf.mesh = m;
         }
 
-        foreach (SkinnedMeshRenderer smr in go.GetComponentsInChildren<SkinnedMeshRenderer>(true)) {
+        foreach (var smr in go.GetComponentsInChildren<SkinnedMeshRenderer>(true)) {
             smr.sharedMesh = m;
             smr.enabled = true;
         }
@@ -309,9 +309,9 @@ public static class RenderUtil {
 
     public static Texture2D getSpriteTexture(this Sprite s) {
         if (!Mathf.Approximately(s.rect.width, s.texture.width)) {
-            Texture2D newTex = new Texture2D((int)s.rect.width, (int)s.rect.height);
-            Rect r = s.textureRect;
-            Color[] newColors = s.texture.GetPixels((int)r.x, (int)r.y, (int)r.width, (int)r.height);
+            var newTex = new Texture2D((int)s.rect.width, (int)s.rect.height);
+            var r = s.textureRect;
+            var newColors = s.texture.GetPixels((int)r.x, (int)r.y, (int)r.width, (int)r.height);
             newTex.SetPixels(newColors);
             newTex.Apply();
             return newTex;
@@ -325,7 +325,7 @@ public static class RenderUtil {
     }
 
     public static Texture2D duplicateTexture(this Texture2D source) {
-        RenderTexture renderTex = RenderTexture.GetTemporary(
+        var renderTex = RenderTexture.GetTemporary(
             source.width,
             source.height,
             0,
@@ -333,9 +333,9 @@ public static class RenderUtil {
             RenderTextureReadWrite.sRGB
         );
         Graphics.Blit(source, renderTex);
-        RenderTexture previous = RenderTexture.active;
+        var previous = RenderTexture.active;
         RenderTexture.active = renderTex;
-        Texture2D copy = new Texture2D(source.width, source.height);
+        var copy = new Texture2D(source.width, source.height);
         copy.ReadPixels(new Rect(0, 0, renderTex.width, renderTex.height), 0, 0);
         copy.Apply();
         RenderTexture.active = previous;
@@ -344,12 +344,12 @@ public static class RenderUtil {
     }
 
     public static void dumpTextures(Assembly a, Renderer r) {
-        foreach (Material m in r.materials) {
+        foreach (var m in r.materials) {
             dumpTextures(
                 a,
                 m,
                 new string(
-                    r.gameObject.name.Select(ch => System.Array.IndexOf(Path.GetInvalidPathChars(), ch) >= 0 ? '_' : ch)
+                    r.gameObject.name.Select(ch => Array.IndexOf(Path.GetInvalidPathChars(), ch) >= 0 ? '_' : ch)
                         .ToArray()
                 ) + "_$_"
             );
@@ -357,15 +357,15 @@ public static class RenderUtil {
     }
 
     public static void dumpTextures(Assembly a, Material m, string prefix = "") {
-        foreach (string tex in m.GetTexturePropertyNames()) {
-            string fn = prefix + m.name + "_-_" + tex;
-            Texture2D img = (Texture2D)m.GetTexture(tex);
+        foreach (var tex in m.GetTexturePropertyNames()) {
+            var fn = prefix + m.name + "_-_" + tex;
+            var img = (Texture2D)m.GetTexture(tex);
             dumpTexture(a, fn, img);
         }
     }
 
     public static void dumpTexture(Assembly a, string fn, RenderTexture img, string pathOverride = null) {
-        Texture2D copy = new Texture2D(img.width, img.height);
+        var copy = new Texture2D(img.width, img.height);
         copy.ReadPixels(new Rect(0, 0, img.width, img.height), 0, 0);
         copy.Apply();
         dumpTexture(a, fn, copy, pathOverride);
@@ -373,9 +373,9 @@ public static class RenderUtil {
 
     public static void dumpTexture(Assembly a, string fn, Texture2D img, string pathOverride = null) {
         if (img != null) {
-            byte[] raw = img.duplicateTexture().EncodeToPNG();
-            string folder = Path.GetDirectoryName(a.Location);
-            string path = Path.Combine(folder, "TextureDump", fn + ".png");
+            var raw = img.duplicateTexture().EncodeToPNG();
+            var folder = Path.GetDirectoryName(a.Location);
+            var path = Path.Combine(folder, "TextureDump", fn + ".png");
             if (!string.IsNullOrEmpty(pathOverride))
                 path = Path.Combine(pathOverride, fn + ".png");
             Directory.CreateDirectory(Path.GetDirectoryName(path));

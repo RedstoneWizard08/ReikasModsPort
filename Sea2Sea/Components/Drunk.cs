@@ -34,46 +34,46 @@ public class Drunk : PlayerMovementSpeedModifier {
 	protected override void Update() {
 		//if (!player)
 		//	player = GetComponent<Rigidbody>();
-		float dT = Time.deltaTime;
+		var dT = Time.deltaTime;
 		age += dT;
-		float time = DayNightCycle.main.timePassedAsFloat;
+		var time = DayNightCycle.main.timePassedAsFloat;
 		if (time >= nextSpeedRecalculation) {
-			nextSpeedRecalculation = time + UnityEngine.Random.Range(0.5F, 2.5F);
-			speedModifier = 1 - (UnityEngine.Random.Range(0.2F, 0.75F) * intensity);
+			nextSpeedRecalculation = time + Random.Range(0.5F, 2.5F);
+			speedModifier = 1 - Random.Range(0.2F, 0.75F) * intensity;
 		}
 		if (time >= nextPushRecalculation) {
-			nextPushRecalculation = time + UnityEngine.Random.Range(0.5F, 1.5F);
-			currentPush = UnityEngine.Random.onUnitSphere * UnityEngine.Random.Range(0.25F, 1.0F) * intensity;
+			nextPushRecalculation = time + Random.Range(0.5F, 1.5F);
+			currentPush = Random.onUnitSphere * Random.Range(0.25F, 1.0F) * intensity;
 			if (!Player.main.IsSwimming())
 				currentPush = currentPush.setY(0);
 		}
 		if (time >= nextShaderRecalculation) {
-			float dur = UnityEngine.Random.Range(0.25F, 2.0F);
+			var dur = Random.Range(0.25F, 2.0F);
 			nextShaderRecalculation = time + dur;
-			shaderIntensityTarget = UnityEngine.Random.Range(0.33F, 1.5F) * intensity;
+			shaderIntensityTarget = Random.Range(0.33F, 1.5F) * intensity;
 			shaderIntensityMoveSpeed = Mathf.Abs(shaderIntensity - shaderIntensityTarget) / dur;
 		}
 		if (shaderIntensityTarget > shaderIntensity)
-			shaderIntensity = Mathf.Min(shaderIntensityTarget, shaderIntensity + (dT * shaderIntensityMoveSpeed));
+			shaderIntensity = Mathf.Min(shaderIntensityTarget, shaderIntensity + dT * shaderIntensityMoveSpeed);
 		else if (shaderIntensityTarget < shaderIntensity)
-			shaderIntensity = Mathf.Max(shaderIntensityTarget, shaderIntensity - (dT * shaderIntensityMoveSpeed));
+			shaderIntensity = Mathf.Max(shaderIntensityTarget, shaderIntensity - dT * shaderIntensityMoveSpeed);
 		drunkVisual.effect = 4 * shaderIntensity;
 		//player.AddForce(currentPush, ForceMode.VelocityChange);
-		if (UnityEngine.Random.Range(0F, 1F) < 0.04F)
-			SNUtil.shakeCamera(UnityEngine.Random.Range(0.4F, 1.5F), UnityEngine.Random.Range(0.25F, 0.75F), UnityEngine.Random.Range(0.125F, 0.67F));
-		if (age > 5F && time - lastVomitTime >= 5F / intensity && UnityEngine.Random.Range(0F, 1F) < 0.001F) {
+		if (Random.Range(0F, 1F) < 0.04F)
+			SNUtil.shakeCamera(Random.Range(0.4F, 1.5F), Random.Range(0.25F, 0.75F), Random.Range(0.125F, 0.67F));
+		if (age > 5F && time - lastVomitTime >= 5F / intensity && Random.Range(0F, 1F) < 0.001F) {
 			lastVomitTime = time;
-			SNUtil.vomit(survivalObject, 0, UnityEngine.Random.Range(0F, 2F));
+			SNUtil.vomit(survivalObject, 0, Random.Range(0F, 2F));
 		}
 		base.Update();
 	}
 
-	void OnDisable() {
+	private void OnDisable() {
 		drunkVisual.effect = 0;
 	}
 
-	void OnDestroy() {
-		this.OnDisable();
+	private void OnDestroy() {
+		OnDisable();
 	}
 
 	public override void saveToXML(XmlElement e) {
@@ -87,23 +87,23 @@ public class Drunk : PlayerMovementSpeedModifier {
 	}
 
 	public static Drunk add(float duration) {
-		Drunk m = Player.main.gameObject.EnsureComponent<Drunk>();
+		var m = Player.main.gameObject.EnsureComponent<Drunk>();
 		m.speedModifier = 1;
 		m.elapseWhen = DayNightCycle.main.timePassedAsFloat + duration;
 		return m;
 	}
 
 	internal static void manageDrunkenness(DIHooks.PlayerInput pi) {
-		Drunk d = Player.main.GetComponent<Drunk>();
+		var d = Player.main.GetComponent<Drunk>();
 		if (d)
-			pi.selectedInput += d.currentPush;
+			pi.SelectedInput += d.currentPush;
 	}
 
 }
 
-class DrunkVisual : ScreenFXManager.ScreenFXOverride {
+internal class DrunkVisual : ScreenFXManager.ScreenFXOverride {
 
-	internal float effect = 0;
+	internal float effect;
 
 	internal DrunkVisual() : base(100) {
 

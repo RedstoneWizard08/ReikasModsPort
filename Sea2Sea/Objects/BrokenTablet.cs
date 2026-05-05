@@ -11,7 +11,7 @@ namespace ReikaKalseki.SeaToSea;
 public class BrokenTablet : CustomPrefab {
     public readonly TechType tablet;
 
-    private static readonly List<BrokenTablet> tablets = new List<BrokenTablet>();
+    private static readonly List<BrokenTablet> tablets = [];
 
     [SetsRequiredMembers]
     internal BrokenTablet(TechType tt) : base(
@@ -26,12 +26,12 @@ public class BrokenTablet : CustomPrefab {
     }
 
     private static string generateName(TechType tech) {
-        string en = Enum.GetName(typeof(TechType), tech);
+        var en = Enum.GetName(typeof(TechType), tech);
         return "brokentablet_" + en.Substring(en.LastIndexOf('_') + 1);
     }
 
     public static void updateLocale() {
-        foreach (BrokenTablet d in tablets) {
+        foreach (var d in tablets) {
             CustomLocaleKeyDatabase.registerKey(
                 d.Info.TechType.AsString(),
                 "Broken " + Language.main.Get(d.tablet)
@@ -49,42 +49,43 @@ public class BrokenTablet : CustomPrefab {
     }
 
     public void register() {
-        GameObject tabPfb = ObjectUtil.lookupPrefab(CraftData.GetClassIdForTechType(tablet));
+        var tabPfb = ObjectUtil.lookupPrefab(CraftData.GetClassIdForTechType(tablet));
         //tabPfb.SetActive(false);
-        VFXFabricating fab = tabPfb.getChildObject("Model").EnsureComponent<VFXFabricating>();
+        var fab = tabPfb.getChildObject("Model").EnsureComponent<VFXFabricating>();
         fab.localMaxY = 0.1F;
         fab.localMinY = -0.1F;
         KnownTechHandler.SetAnalysisTechEntry(Info.TechType, new List<TechType>() { tablet });
-        PDAScanner.EntryData e = new PDAScanner.EntryData();
-        e.key = Info.TechType;
-        e.blueprint = tablet;
-        e.destroyAfterScan = false;
-        e.locked = true;
-        e.totalFragments = 1;
-        e.isFragment = true;
-        e.scanTime = tablet == TechType.PrecursorKey_Orange ? 10 : 15;
+        var e = new PDAScanner.EntryData {
+            key = Info.TechType,
+            blueprint = tablet,
+            destroyAfterScan = false,
+            locked = true,
+            totalFragments = 1,
+            isFragment = true,
+            scanTime = tablet == TechType.PrecursorKey_Orange ? 10 : 15,
+        };
         //e.encyclopedia = Enum.GetName(typeof(TechType), tablet);//PDAScanner.mapping.ContainsKey(tablet) ? PDAScanner.mapping[tablet].encyclopedia : null;
         PDAHandler.AddCustomScannerEntry(e);
     }
 
     public GameObject GetGameObject() {
-        GameObject tabRef = ObjectUtil.lookupPrefab(CraftData.GetClassIdForTechType(tablet));
-        GameObject world = ObjectUtil.createWorldObject("83b61f89-1456-4ff5-815a-ecdc9b6cc9e4", true, false);
+        var tabRef = ObjectUtil.lookupPrefab(CraftData.GetClassIdForTechType(tablet));
+        var world = ObjectUtil.createWorldObject("83b61f89-1456-4ff5-815a-ecdc9b6cc9e4", true, false);
         //GameObject sparker = ObjectUtil.createWorldObject("ff8e782e-e6f3-40a6-9837-d5b6dcce92bc");
         tabRef.SetActive(false);
         if (world != null) {
             world.SetActive(false);
             world.EnsureComponent<TechTag>().type = Info.TechType;
             world.EnsureComponent<PrefabIdentifier>().ClassId = Info.ClassID;
-            Material m1a = tabRef.GetComponentInChildren<MeshRenderer>().materials[1];
-            foreach (Renderer r in world.GetComponentsInChildren<Renderer>()) {
+            var m1a = tabRef.GetComponentInChildren<MeshRenderer>().materials[1];
+            foreach (var r in world.GetComponentsInChildren<Renderer>()) {
                 if (r.materials.Length !=
                     2) //any other renderers, like the VFXVoluLight added on purple and thus inherited here
                     continue;
-                int idx = 0;
-                Material m1b = r.materials[1];
-                foreach (Material m in r.materials) {
-                    foreach (string tex in m.GetTexturePropertyNames()) {
+                var idx = 0;
+                var m1b = r.materials[1];
+                foreach (var m in r.materials) {
+                    foreach (var tex in m.GetTexturePropertyNames()) {
                         m1b.SetTexture(tex, m1a.GetTexture(tex));
                         m1b.SetTextureOffset(tex, m1a.GetTextureOffset(tex));
                         m1b.SetTextureScale(tex, m1a.GetTextureScale(tex));
@@ -95,8 +96,8 @@ public class BrokenTablet : CustomPrefab {
             }
 
             //fetch existing light, added by C2CHooks skyapplier for purple
-            Light l = world.GetComponentInChildren<Light>();
-            FlickeringLight f = l.GetComponent<FlickeringLight>();
+            var l = world.GetComponentInChildren<Light>();
+            var f = l.GetComponent<FlickeringLight>();
             switch (tablet) {
                 case TechType.PrecursorKey_Orange: {
                     l.intensity = 0.4F;

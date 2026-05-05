@@ -7,10 +7,10 @@ namespace ReikaKalseki.SeaToSea;
 public class OxygeniteCharge : BasicCraftingItem {
     [SetsRequiredMembers]
     public OxygeniteCharge() : base(
-        SeaToSeaMod.itemLocale.getEntry("OxygeniteCharge"),
+        SeaToSeaMod.ItemLocale.getEntry("OxygeniteCharge"),
         "WorldEntities/Natural/FirstAidKit"
     ) {
-        sprite = TextureManager.getSprite(SeaToSeaMod.modDLL, "Textures/Items/OxygeniteCharge");
+        sprite = TextureManager.getSprite(SeaToSeaMod.ModDLL, "Textures/Items/OxygeniteCharge");
         unlockRequirement = TechType.Unobtanium;
         craftingTime = 20;
         inventorySize = new Vector2int(3, 3);
@@ -21,19 +21,11 @@ public class OxygeniteCharge : BasicCraftingItem {
         base.prepareGameObject(go, r);
     }
 
-    public override CraftTree.Type FabricatorType {
-        get { return CraftTree.Type.Workbench; }
-    }
+    public override CraftTree.Type FabricatorType => CraftTree.Type.Workbench;
 
-    public override TechGroup GroupForPDA {
-        get { return TechGroup.Workbench; }
-    }
+    public override TechGroup GroupForPDA => TechGroup.Workbench;
 
-    public override TechCategory CategoryForPDA {
-        get { return TechCategory.Workbench; }
-    }
+    public override TechCategory CategoryForPDA => TechCategory.Workbench;
 
-    public override string[] StepsToFabricatorTab {
-        get { return new string[] { "Tank" }; }
-    }
+    public override string[] StepsToFabricatorTab => ["Tank"];
 }

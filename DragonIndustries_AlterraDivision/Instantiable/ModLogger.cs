@@ -14,8 +14,8 @@ public class ModLogger {
 
 	public void log(string s, int indent = 0) {
 		while (s.Length > 4096) {
-			string part = s.Substring(0, 4096);
-			this.log(part);
+			var part = s.Substring(0, 4096);
+			log(part);
 			s = s.Substring(4096);
 		}
 		if (indent > 0) {

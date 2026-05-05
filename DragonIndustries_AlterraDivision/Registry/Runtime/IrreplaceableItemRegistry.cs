@@ -6,13 +6,12 @@ using UnityEngine;
 namespace ReikaKalseki.DIAlterra;
 
 public class IrreplaceableItemRegistry {
-    public static readonly IrreplaceableItemRegistry instance = new IrreplaceableItemRegistry();
+    public static readonly IrreplaceableItemRegistry instance = new();
 
-    private readonly Dictionary<TechType, IrreplaceableItemData> items =
-        new Dictionary<TechType, IrreplaceableItemData>();
+    private readonly Dictionary<TechType, IrreplaceableItemData> items = new();
 
     public static readonly Action<InventoryItem> DROP_ITEM = (ii) => {
-        Pickupable pp = ii.item;
+        var pp = ii.item;
         pp.Drop();
         pp.GetComponent<Rigidbody>().isKinematic = true;
     };
@@ -21,7 +20,7 @@ public class IrreplaceableItemRegistry {
 
     public static readonly Action<InventoryItem, List<Pickupable>> TEMP_LOCKER = (ii, li) => li.Add(ii.item);
 
-    public static readonly IrreplaceableItemData DEFAULT_EFFECTS = new IrreplaceableItemData(
+    public static readonly IrreplaceableItemData DEFAULT_EFFECTS = new(
         (pp, notify) => {
             if (notify)
                 ErrorMessage.AddError(Language.main.Get("ItemNotDroppable"));
@@ -35,7 +34,7 @@ public class IrreplaceableItemRegistry {
     }
 
     public void registerItem(CustomPrefab item, IrreplaceableItemData data = null) {
-        this.registerItem(item.Info.TechType, data);
+        registerItem(item.Info.TechType, data);
     }
 
     public void registerItem(TechType item, IrreplaceableItemData data = null) {

@@ -17,16 +17,16 @@ public class Scatter : ManipulationBase {
 	private Vector3 range = Vector3.zero;
 
 	public override void applyToObject(GameObject go) {
-		float dx = UnityEngine.Random.Range(-range.x, range.x);
-		float dy = UnityEngine.Random.Range(-range.y, range.y);
-		float dz = UnityEngine.Random.Range(-range.z, range.z);
-		go.transform.position = go.transform.position + new Vector3(dx, dy, dz);
+		var dx = Random.Range(-range.x, range.x);
+		var dy = Random.Range(-range.y, range.y);
+		var dz = Random.Range(-range.z, range.z);
+		go.transform.position += new Vector3(dx, dy, dz);
 	}
 
 	public override void applyToObject(PlacedObject go) {
-		double dx = UnityEngine.Random.Range(-range.x, range.x);
-		double dy = UnityEngine.Random.Range(-range.y, range.y);
-		double dz = UnityEngine.Random.Range(-range.z, range.z);
+		double dx = Random.Range(-range.x, range.x);
+		double dy = Random.Range(-range.y, range.y);
+		double dz = Random.Range(-range.z, range.z);
 		go.move(dx, dy, dz);
 	}
 

@@ -26,7 +26,7 @@ public class VentKelp : BasicCustomPlant, MultiTexturePrefab {
 
     [SetsRequiredMembers]
     public VentKelp() : base(
-        SeaToSeaMod.itemLocale.getEntry("VENT_KELP"),
+        SeaToSeaMod.ItemLocale.getEntry("VENT_KELP"),
         new FloraPrefabFetch(VanillaFlora.FERN_PALM),
         "afba45cf-00f9-4d80-a203-429d6ce7ff62",
         "Samples"
@@ -41,14 +41,12 @@ public class VentKelp : BasicCustomPlant, MultiTexturePrefab {
             : MathUtil.linterpolate(temp, idealTemperature, maxTemperature, 1, 0, true);
     }
 
-    public override Vector2int SizeInInventory {
-        get { return new Vector2int(1, 1); }
-    }
+    public override Vector2int SizeInInventory => new(1, 1);
 
     public override void prepareGameObject(GameObject go, Renderer[] r0) {
         base.prepareGameObject(go, r0);
         go.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.VeryFar;
-        GlowKelpTag g = go.EnsureComponent<GlowKelpTag>();
+        var g = go.EnsureComponent<GlowKelpTag>();
         float h = 0; /*
         int n = (int)Math.Min(9, 3+((1+heightNoiseField.getValue(go.transform.position))*8));
         for (int i = 0; i < n; i++) {
@@ -61,14 +59,14 @@ public class VentKelp : BasicCustomPlant, MultiTexturePrefab {
             h += dh;//*UnityEngine.Random.Range(0.2F, 1F);
         }
         */
-        float maxH = (float)Math.Min(9, 3 + ((1 + heightNoiseField.getValue(go.transform.position)) * 8)); //h;
+        var maxH = (float)Math.Min(9, 3 + (1 + heightNoiseField.getValue(go.transform.position)) * 8); //h;
         h = 0;
-        int i0 = 0;
+        var i0 = 0;
         while (h < maxH - 1) {
-            string pfb = VanillaFlora.CAVE_BUSH.getRandomPrefab(false);
-            string nm = CHILD_NAME_2 + i0;
-            GameObject child = this.getOrCreateSubplant(pfb, go, h, nm);
-            this.prepareSubplant(child, true);
+            var pfb = VanillaFlora.CAVE_BUSH.getRandomPrefab(false);
+            var nm = CHILD_NAME_2 + i0;
+            var child = getOrCreateSubplant(pfb, go, h, nm);
+            prepareSubplant(child, true);
             h += UnityEngine.Random.Range(0.75F, 1.5F);
             i0++;
         }
@@ -77,7 +75,7 @@ public class VentKelp : BasicCustomPlant, MultiTexturePrefab {
         go.removeChildObject("land_plant_middle_03_02");
         go.removeChildObject("coral_reef_plant_middle_12");
         go.layer = LayerID.Useable;
-        foreach (Collider c in go.GetComponentsInChildren<Collider>(true)) {
+        foreach (var c in go.GetComponentsInChildren<Collider>(true)) {
             c.isTrigger = true;
         }
 
@@ -85,7 +83,7 @@ public class VentKelp : BasicCustomPlant, MultiTexturePrefab {
     }
 
     private GameObject getOrCreateSubplant(string pfb, GameObject go, float h, string nm) {
-        GameObject child = go.getChildObject(nm);
+        var child = go.getChildObject(nm);
         if (!child) {
             child = ObjectUtil.createWorldObject(pfb);
             child.name = nm;
@@ -103,7 +101,7 @@ public class VentKelp : BasicCustomPlant, MultiTexturePrefab {
         child.removeComponent<TechTag>();
         child.removeComponent<PrefabIdentifier>();
 
-        foreach (Renderer r in child.GetComponentsInChildren<Renderer>(true)) {
+        foreach (var r in child.GetComponentsInChildren<Renderer>(true)) {
             leavesOnlyRendering = leavesOnly;
             if (leavesOnly) {
                 r.materials[0].color = new Color(0, 0, 0, 0);
@@ -140,8 +138,8 @@ public class VentKelp : BasicCustomPlant, MultiTexturePrefab {
 
             r.materials[0].SetColor("_GlowColor", GlowKelpTag.idleColor);
             r.materials[1].SetColor("_GlowColor", GlowKelpTag.idleColor);
-            RenderUtil.makeTransparent(r, leavesOnly ? new HashSet<int> { 0, 1 } : new HashSet<int> { 1 });
-            RenderUtil.setEmissivity(r, 8, new HashSet<int> { 1 });
+            RenderUtil.makeTransparent(r, leavesOnly ? [0, 1] : [1]);
+            RenderUtil.setEmissivity(r, 8, [1]);
             RenderUtil.swapToModdedTextures(r, this);
         }
 
@@ -192,10 +190,10 @@ class GrowingGlowKelp : MonoBehaviour {
 }
 */
 internal class GlowKelpTag : MonoBehaviour {
-    internal static readonly Color idleColor = new Color(0.1F, 0, 0.5F, 1);
-    internal static readonly Color activeColor = new Color(0.7F, 0.2F, 1, 1);
+    internal static readonly Color idleColor = new(0.1F, 0, 0.5F, 1);
+    internal static readonly Color activeColor = new(0.7F, 0.2F, 1, 1);
 
-    private readonly List<KelpSegment> segments = new List<KelpSegment>();
+    private readonly List<KelpSegment> segments = [];
     private GrownPlant grown;
     private WaterPark acu;
     private bool redoRenderers;
@@ -207,7 +205,7 @@ internal class GlowKelpTag : MonoBehaviour {
 
     private float intensity = 1;
 
-    class KelpSegment {
+    private class KelpSegment {
         internal readonly Renderer renderer;
 
         //internal readonly Renderer sonarRenderer;
@@ -215,18 +213,18 @@ internal class GlowKelpTag : MonoBehaviour {
         internal readonly GameObject obj;
         internal readonly int index;
 
-        internal float sonarIntensity = 0;
+        internal float sonarIntensity;
 
         internal KelpSegment(Renderer r) {
             renderer = r;
             live = r.gameObject.FindAncestor<LiveMixin>();
             obj = r.transform.parent.gameObject;
-            string n = obj.name;
+            var n = obj.name;
             index = !string.IsNullOrEmpty(n) && n.Contains("leaf_aux") ? int.Parse(n.Substring(n.Length - 1)) : -1;
         }
     }
 
-    void Start() {
+    private void Start() {
         C2CItems.kelp.prepareGameObject(gameObject, null);
         creationTime = DayNightCycle.main.timePassedAsFloat;
         grown = gameObject.GetComponent<GrownPlant>();
@@ -234,7 +232,7 @@ internal class GlowKelpTag : MonoBehaviour {
         if (grown || acu) {
             gameObject.SetActive(true);
             gameObject.removeChildObject("GlowChain");
-            for (int i = 0; i <= 8; i++) {
+            for (var i = 0; i <= 8; i++) {
                 gameObject.addLight(2F, 5F, new Color(0.5F, 0.1F, 1F)).setName("GlowChain").transform.localPosition =
                     Vector3.up * (i + 0.5F);
             }
@@ -244,33 +242,33 @@ internal class GlowKelpTag : MonoBehaviour {
         }
     }
 
-    void Update() {
+    private void Update() {
         if (!sonarControl)
-            sonarControl = this.GetComponent<SonarOnlyRenderer>();
-        bool isNew = DayNightCycle.main.timePassedAsFloat - creationTime <= 0.1F;
+            sonarControl = GetComponent<SonarOnlyRenderer>();
+        var isNew = DayNightCycle.main.timePassedAsFloat - creationTime <= 0.1F;
         if (segments.Count == 0 || isNew || redoRenderers) {
             segments.Clear();
-            foreach (Renderer r in gameObject.GetComponentsInChildren<Renderer>()) {
+            foreach (var r in gameObject.GetComponentsInChildren<Renderer>()) {
                 //if (!r.gameObject.name.Contains("Sonar")) {
-                KelpSegment s = new KelpSegment(r);
+                var s = new KelpSegment(r);
                 segments.Add(s);
                 //sonarControl.renderers.Add(s.sonarRenderer);
                 //}
             }
         }
 
-        float time = DayNightCycle.main.timePassedAsFloat;
-        float dT = Time.deltaTime;
+        var time = DayNightCycle.main.timePassedAsFloat;
+        var dT = Time.deltaTime;
         if (time - lastAreaCheckTime >= 0.25) {
             lastAreaCheckTime = time;
             intensity = 1 - (float)((VentKelp.noiseField.getValue(
-                gameObject.transform.position + (Vector3.down * DayNightCycle.main.timePassedAsFloat * 7.5F)
+                gameObject.transform.position + Vector3.down * DayNightCycle.main.timePassedAsFloat * 7.5F
             ) + 1) / 2D);
             if (grown || acu) {
                 gameObject.transform.localScale =
                     acu && acu.height == 1 ? new Vector3(1.5F, 1.75F, 1.5F) : new Vector3(2, 3.5F, 2);
                 if (isNew) {
-                    foreach (KelpSegment s in segments) {
+                    foreach (var s in segments) {
                         if (!s.renderer)
                             continue;
                         s.renderer.materials[1].SetVector("_Scale", new Vector4(0.05F, 0.0F, 0.05F, 0.0F));
@@ -291,15 +289,15 @@ internal class GlowKelpTag : MonoBehaviour {
             }
         }
 
-        bool kill = false;
-        bool cropped = false;
-        float sonarDist = sonarControl.computeSonarDistance();
-        foreach (KelpSegment s in segments) {
+        var kill = false;
+        var cropped = false;
+        var sonarDist = sonarControl.computeSonarDistance();
+        foreach (var s in segments) {
             if (!s.renderer)
                 continue;
             s.sonarIntensity = sonarControl.isBlobVisible(s.renderer, sonarDist, 1.5F)
-                ? Mathf.Min(1, s.sonarIntensity + (dT * 3.2F))
-                : Mathf.Max(0, s.sonarIntensity - (dT * 1F));
+                ? Mathf.Min(1, s.sonarIntensity + dT * 3.2F)
+                : Mathf.Max(0, s.sonarIntensity - dT * 1F);
 
             if (s.sonarIntensity > 0) {
                 s.renderer.materials[1].EnableKeyword("FX_BUILDING");
@@ -313,7 +311,7 @@ internal class GlowKelpTag : MonoBehaviour {
             }
 
             if ((grown || acu) && !isNew) {
-                int limit = 2;
+                var limit = 2;
                 if (acu)
                     limit = Math.Max(1, acu.height - 1);
                 if (s.index >= limit) {
@@ -324,10 +322,10 @@ internal class GlowKelpTag : MonoBehaviour {
                 }
             }
 
-            foreach (Material m in s.renderer.materials) {
-                m.SetColor("_GlowColor", Color.Lerp(idleColor, activeColor, (intensity * 1.5F) - 0.5F));
+            foreach (var m in s.renderer.materials) {
+                m.SetColor("_GlowColor", Color.Lerp(idleColor, activeColor, intensity * 1.5F - 0.5F));
                 if (acu) {
-                    Color c = new Color(0.44F, 0.28F, 0.56F);
+                    var c = new Color(0.44F, 0.28F, 0.56F);
                     m.SetColor("_Color", c);
                     m.SetColor("_SpecColor", c);
                 }
@@ -341,7 +339,7 @@ internal class GlowKelpTag : MonoBehaviour {
         else if (time - lastContinuityCheckTime >= 1 && !isNew) {
             lastContinuityCheckTime = time;
             kill |= segments.Count <= 0;
-            foreach (KelpSegment s in segments) {
+            foreach (var s in segments) {
                 if (!s.renderer) {
                     kill = true;
                     //SNUtil.writeToChat("Detected incomplete vent kelp @ "+transform.position+": "+s.obj.GetFullHierarchyPath());

@@ -7,10 +7,10 @@ namespace ReikaKalseki.SeaToSea;
 public class CurativeBandage : BasicCraftingItem {
     [SetsRequiredMembers]
     public CurativeBandage() : base(
-        SeaToSeaMod.itemLocale.getEntry("CurativeBandage"),
+        SeaToSeaMod.ItemLocale.getEntry("CurativeBandage"),
         "WorldEntities/Natural/FirstAidKit"
     ) {
-        sprite = TextureManager.getSprite(SeaToSeaMod.modDLL, "Textures/Items/CurativeBandage");
+        sprite = TextureManager.getSprite(SeaToSeaMod.ModDLL, "Textures/Items/CurativeBandage");
         unlockRequirement = TechType.Unobtanium; //TechType.Workbench;//SeaToSeaMod.healFlower.TechType;
         craftingTime = 6;
         inventorySize = new Vector2int(1, 2);
@@ -26,19 +26,11 @@ public class CurativeBandage : BasicCraftingItem {
         base.prepareGameObject(go, r);
     }
 
-    public override CraftTree.Type FabricatorType {
-        get { return CraftTree.Type.Workbench; }
-    }
+    public override CraftTree.Type FabricatorType => CraftTree.Type.Workbench;
 
-    public override TechGroup GroupForPDA {
-        get { return TechGroup.Workbench; }
-    }
+    public override TechGroup GroupForPDA => TechGroup.Workbench;
 
-    public override TechCategory CategoryForPDA {
-        get { return TechCategory.Workbench; }
-    }
+    public override TechCategory CategoryForPDA => TechCategory.Workbench;
 
-    public override string[] StepsToFabricatorTab {
-        get { return new string[] { "C2CMedical" }; }
-    }
+    public override string[] StepsToFabricatorTab => ["C2CMedical"];
 }

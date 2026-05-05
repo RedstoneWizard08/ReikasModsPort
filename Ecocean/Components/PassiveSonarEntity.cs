@@ -1,31 +1,31 @@
 ﻿using System.Collections.Generic;
+using ReikaKalseki.DIAlterra;
 using UnityEngine;
 
 namespace ReikaKalseki.Ecocean;
 
 public abstract class PassiveSonarEntity : MonoBehaviour {
+    private static Texture flatTexture = TextureManager.getTexture(EcoceanMod.modDLL, "Textures/reapersonarglow");
 
-	private static Texture flatTexture = TextureManager.getTexture(EcoceanMod.modDLL, "Textures/reapersonarglow");
+    //private Renderer renderer;
 
-	//private Renderer renderer;
+    private float forcedGlowFactor;
 
-	private float forcedGlowFactor;
+    private readonly List<Renderer> spheres = [];
 
-	private readonly List<Renderer> spheres = new List<Renderer>();
+    protected float minimumDistanceSq;
+    protected float maximumDistanceSq;
 
-	protected float minimumDistanceSq;
-	protected float maximumDistanceSq;
+    private void Start() {
+        //base.InvokeRepeating("tick", 0f, 1);
+    }
 
-	void Start() {
-		//base.InvokeRepeating("tick", 0f, 1);
-	}
+    //protected abstract Renderer getMainRenderer();
 
-	//protected abstract Renderer getMainRenderer();
-
-	protected void Update() {
-		if (!MainCamera.camera)
-			return;
-		/*SNUtil.log("A");
+    protected void Update() {
+        if (!MainCamera.camera)
+            return;
+        /*SNUtil.log("A");
         if (!renderer) {
             renderer = getMainRenderer();
             //SNUtil.log(""+renderer);
@@ -36,161 +36,167 @@ public abstract class PassiveSonarEntity : MonoBehaviour {
             for (int i = 0; i < renderer.materials.Length; i++) {
                 defaultGlows[i] = renderer.materials[i].GetFloat("_GlowStrength");
                 defaultTextures[i] = renderer.materials[i].GetTexture("_Illum");
-            }*//*
+            }*/ /*
         }*/
-		if (spheres.Count == 0) {
-			GameObject go = this.getSphereRootGO();
-			this.createRadarSphere(go);
-			this.onCreateSpheres();
-		}
-		//SNUtil.log("B");
-		float distq = (transform.position-MainCamera.camera.transform.position).sqrMagnitude;
-		this.setSonarRanges();
-		float f = Mathf.Clamp01((distq-minimumDistanceSq)/(maximumDistanceSq-minimumDistanceSq));
-		float glow = 5*f*f*f*0.9F*this.getIntensityFactor();
-		//SNUtil.writeToChat(distq.ToString("000.0")+">"+f.ToString("0.000")+">"+glow.ToString("0000000.0")+"@"+forcedGlowFactor.ToString("0.000"));
-		//SNUtil.log("C");
-		foreach (Renderer r in spheres) {
-			if (!r)
-				continue;
-			//RenderUtil.setEmissivity(renderer.materials[i], Mathf.Lerp(defaultGlows[i], glow, forcedGlowFactor), "GlowStrength");
-			//renderer.materials[i].SetTexture("_Illum", glow*forcedGlowFactor > 0 ? flatTexture : defaultTextures[i]);
-			float f2 = glow*forcedGlowFactor;
-			r.gameObject.SetActive(f2 > 0);
-			if (f2 > 0)
-				r.materials[0].EnableKeyword("FX_BUILDING");
-			else
-				r.materials[0].DisableKeyword("FX_BUILDING");
-			RenderUtil.setEmissivity(r.materials[0], f2);
-			r.materials[0].SetFloat("_Built", Mathf.Lerp(0.18F, 0.3F, f2 / 5F));
-			//sphereRenderer.materials[i].SetInt("_Cutoff", 0);
-		}
-		//SNUtil.log("D");
-		if (this.isInVehicleWithSonar()) {
-			float dT = Time.deltaTime;
-			forcedGlowFactor = MainCamera.camera.GetComponent<SonarScreenFX>().enabled ? Mathf.Max(0, forcedGlowFactor - (0.67F * dT)) : this.isAudible() && 1.001F - this.getTimeVariationStrength() + Mathf.Sin((DayNightCycle.main.timePassedAsFloat * 0.8F) + gameObject.GetInstanceID()) > 0 ? Mathf.Min(1, forcedGlowFactor + (2.5F * dT * this.getFadeRate())) : Mathf.Max(0, forcedGlowFactor - (0.33F * dT * this.getFadeRate()));
-		}
-		else {
-			forcedGlowFactor = 0;
-		}
-	}
+        if (spheres.Count == 0) {
+            var go = getSphereRootGO();
+            createRadarSphere(go);
+            onCreateSpheres();
+        }
 
-	protected virtual float getFadeRate() {
-		return 1;
-	}
+        //SNUtil.log("B");
+        var distq = (transform.position - MainCamera.camera.transform.position).sqrMagnitude;
+        setSonarRanges();
+        var f = Mathf.Clamp01((distq - minimumDistanceSq) / (maximumDistanceSq - minimumDistanceSq));
+        var glow = 5 * f * f * f * 0.9F * getIntensityFactor();
+        //SNUtil.writeToChat(distq.ToString("000.0")+">"+f.ToString("0.000")+">"+glow.ToString("0000000.0")+"@"+forcedGlowFactor.ToString("0.000"));
+        //SNUtil.log("C");
+        foreach (var r in spheres) {
+            if (!r)
+                continue;
+            //RenderUtil.setEmissivity(renderer.materials[i], Mathf.Lerp(defaultGlows[i], glow, forcedGlowFactor), "GlowStrength");
+            //renderer.materials[i].SetTexture("_Illum", glow*forcedGlowFactor > 0 ? flatTexture : defaultTextures[i]);
+            var f2 = glow * forcedGlowFactor;
+            r.gameObject.SetActive(f2 > 0);
+            if (f2 > 0)
+                r.materials[0].EnableKeyword("FX_BUILDING");
+            else
+                r.materials[0].DisableKeyword("FX_BUILDING");
+            RenderUtil.setEmissivity(r.materials[0], f2);
+            r.materials[0].SetFloat("_Built", Mathf.Lerp(0.18F, 0.3F, f2 / 5F));
+            //sphereRenderer.materials[i].SetInt("_Cutoff", 0);
+        }
 
-	protected virtual float getIntensityFactor() {
-		return 1;
-	}
+        //SNUtil.log("D");
+        if (isInVehicleWithSonar()) {
+            var dT = Time.deltaTime;
+            forcedGlowFactor = MainCamera.camera.GetComponent<SonarScreenFX>().enabled
+                ? Mathf.Max(0, forcedGlowFactor - 0.67F * dT)
+                : isAudible() && 1.001F - getTimeVariationStrength() + Mathf.Sin(
+                    DayNightCycle.main.timePassedAsFloat * 0.8F + gameObject.GetInstanceID()
+                ) > 0
+                    ? Mathf.Min(1, forcedGlowFactor + 2.5F * dT * getFadeRate())
+                    : Mathf.Max(0, forcedGlowFactor - 0.33F * dT * getFadeRate());
+        } else {
+            forcedGlowFactor = 0;
+        }
+    }
 
-	protected virtual float getTimeVariationStrength() {
-		return 1;
-	}
+    protected virtual float getFadeRate() {
+        return 1;
+    }
 
-	protected virtual GameObject getSphereRootGO() {
-		return this.GetComponentInChildren<TrailManager>().gameObject;
-	}
+    protected virtual float getIntensityFactor() {
+        return 1;
+    }
 
-	protected abstract bool isAudible();
+    protected virtual float getTimeVariationStrength() {
+        return 1;
+    }
 
-	protected bool isRoaring(FMOD_CustomEmitter emit) {/*
-			if (!emit._playing || !emit.evt.hasHandle())
-				return false;/*
-			int ms;
-			if (emit.evt.getTimelinePosition(out ms) == FMOD.RESULT.OK) {
-				SNUtil.writeToChat(ms+"ms for "+emit.GetType().Name);
-				return ms >= 0 && ms <= 1500;
-			}*//*
-			return false;*/
-		return emit && emit.playing;
-	}
+    protected virtual GameObject getSphereRootGO() {
+        return GetComponentInChildren<TrailManager>().gameObject;
+    }
 
-	protected virtual void onCreateSpheres() {
+    protected abstract bool isAudible();
 
-	}
+    protected bool isRoaring(FMOD_CustomEmitter emit) { /*
+            if (!emit._playing || !emit.evt.hasHandle())
+                return false;/*
+            int ms;
+            if (emit.evt.getTimelinePosition(out ms) == FMOD.RESULT.OK) {
+                SNUtil.writeToChat(ms+"ms for "+emit.GetType().Name);
+                return ms >= 0 && ms <= 1500;
+            }*/ /*
+            return false;*/
+        return emit && emit.playing;
+    }
 
-	protected virtual void setSonarRanges() {
-		float m = 80;
-		float x = 150;
-		float day = DayNightCycle.main.GetLightScalar();
-		if (VanillaBiomes.MOUNTAINS.isInBiome(transform.position)) {
-			m += 30 + (50 * day);
-			x += 50 + (100 * day);
-		}
-		else if (VanillaBiomes.DUNES.isInBiome(transform.position)) {
-			m += 20 + (20 * day);
-			x += 50 + (50 * day);
-		}
-		else if (VanillaBiomes.ILZ.isInBiome(transform.position)) {
-			m = 100;
-			x = 200;
-		}
-		minimumDistanceSq = m * m;
-		maximumDistanceSq = x * x * 0.8F;
-	}
+    protected virtual void onCreateSpheres() {
+    }
 
-	protected void createRadarSphere(GameObject go, float scale = 1) {
-		this.createRadarSphere(go, new Vector3(scale, scale, scale));
-	}
+    protected virtual void setSonarRanges() {
+        float m = 80;
+        float x = 150;
+        var day = DayNightCycle.main.GetLightScalar();
+        if (VanillaBiomes.Mountains.IsInBiome(transform.position)) {
+            m += 30 + 50 * day;
+            x += 50 + 100 * day;
+        } else if (VanillaBiomes.Dunes.IsInBiome(transform.position)) {
+            m += 20 + 20 * day;
+            x += 50 + 50 * day;
+        } else if (VanillaBiomes.Ilz.IsInBiome(transform.position)) {
+            m = 100;
+            x = 200;
+        }
 
-	protected void createRadarSphere(GameObject go, Vector3 scale) {
-		SNUtil.log("Creating radar sphere for " + go.GetFullHierarchyPath());
-		GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere).setName("RadarHalo");
-		sphere.transform.localScale = Vector3.Scale(this.getRadarSphereSize(), scale);
-		sphere.transform.SetParent(go.transform);
-		sphere.transform.localPosition = this.getRadarSphereOffset();
-		sphere.removeComponent<Collider>();
-		ECCHelpers.ApplySNShaders(sphere, new UBERMaterialProperties(0, 0, 5));
-		Renderer r = sphere.GetComponentInChildren<Renderer>();
-		r.receiveShadows = false;
-		r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-		r.materials[0].SetTexture("_Illum", flatTexture);
-		r.materials[0].SetFloat("_Built", 0.3F);
-		r.materials[0].SetFloat("_BuildLinear", 0.1F);
-		r.materials[0].SetFloat("_NoiseThickness", 1F);
-		r.materials[0].SetFloat("_NoiseStr", 1F);
-		r.materials[0].SetColor("_BorderColor", new Color(2.5F, 0.4F, 0.5F, 1));
-		r.materials[0].SetVector("_BuildParams", new Vector4(0.1F, 0.62F, 0.03F, 0.1F));
-		spheres.Add(r);
+        minimumDistanceSq = m * m;
+        maximumDistanceSq = x * x * 0.8F;
+    }
 
-		foreach (Transform child in go.transform) {
-			if (child == go.transform || child.gameObject == sphere || child.GetComponent<ParticleSystem>())
-				continue;
-			this.createRadarSphere(child.gameObject, scale);
-		}
-	}
+    protected void createRadarSphere(GameObject go, float scale = 1) {
+        createRadarSphere(go, new Vector3(scale, scale, scale));
+    }
 
-	protected virtual Vector3 getRadarSphereSize() {
-		return Vector3.one * 15;
-	}
+    protected void createRadarSphere(GameObject go, Vector3 scale) {
+        SNUtil.log("Creating radar sphere for " + go.GetFullHierarchyPath());
+        GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere).setName("RadarHalo");
+        sphere.transform.localScale = Vector3.Scale(getRadarSphereSize(), scale);
+        sphere.transform.SetParent(go.transform);
+        sphere.transform.localPosition = getRadarSphereOffset();
+        sphere.removeComponent<Collider>();
+        // TODO
+        // ECCHelpers.ApplySNShaders(sphere, new UBERMaterialProperties(0, 0, 5));
+        var r = sphere.GetComponentInChildren<Renderer>();
+        r.receiveShadows = false;
+        r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        r.materials[0].SetTexture("_Illum", flatTexture);
+        r.materials[0].SetFloat("_Built", 0.3F);
+        r.materials[0].SetFloat("_BuildLinear", 0.1F);
+        r.materials[0].SetFloat("_NoiseThickness", 1F);
+        r.materials[0].SetFloat("_NoiseStr", 1F);
+        r.materials[0].SetColor("_BorderColor", new Color(2.5F, 0.4F, 0.5F, 1));
+        r.materials[0].SetVector("_BuildParams", new Vector4(0.1F, 0.62F, 0.03F, 0.1F));
+        spheres.Add(r);
 
-	protected virtual Vector3 getRadarSphereOffset() {
-		return Vector3.zero;
-	}
+        foreach (Transform child in go.transform) {
+            if (child == go.transform || child.gameObject == sphere || child.GetComponent<ParticleSystem>())
+                continue;
+            createRadarSphere(child.gameObject, scale);
+        }
+    }
 
-	private bool isInVehicleWithSonar() {
-		if (Player.main) {
-			Vehicle v = Player.main.GetVehicle();
-			//SNUtil.writeToChat(v.activeSlot+" > "+(v.activeSlot >= 0 ? ""+v.GetSlotItem(v.activeSlot).item : "null")); 
-			if (v.isVehicleUpgradeSelected(TechType.SeamothSonarModule))
-				return true;
-			SubRoot sub = Player.main.currentSub;
-			if (sub && sub.isCyclops && sub.cyclopsHasUpgrade(TechType.CyclopsSonarModule))
-				return true;
-		}
-		return false;
-	}
+    protected virtual Vector3 getRadarSphereSize() {
+        return Vector3.one * 15;
+    }
 
-	private void OnKill() {
-		this.destroy(false);
-	}
+    protected virtual Vector3 getRadarSphereOffset() {
+        return Vector3.zero;
+    }
 
-	void OnDisable() {
-		//base.CancelInvoke("tick");
-	}
+    private bool isInVehicleWithSonar() {
+        if (Player.main) {
+            var v = Player.main.GetVehicle();
+            //SNUtil.writeToChat(v.activeSlot+" > "+(v.activeSlot >= 0 ? ""+v.GetSlotItem(v.activeSlot).item : "null")); 
+            if (v.isVehicleUpgradeSelected(TechType.SeamothSonarModule))
+                return true;
+            var sub = Player.main.currentSub;
+            if (sub && sub.isCyclops && sub.cyclopsHasUpgrade(TechType.CyclopsSonarModule))
+                return true;
+        }
 
-	internal void fireRoar() {
-		forcedGlowFactor = 1;
-	}
+        return false;
+    }
 
+    private void OnKill() {
+        this.destroy(false);
+    }
+
+    private void OnDisable() {
+        //base.CancelInvoke("tick");
+    }
+
+    internal void fireRoar() {
+        forcedGlowFactor = 1;
+    }
 }

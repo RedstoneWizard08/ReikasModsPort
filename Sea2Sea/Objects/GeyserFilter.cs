@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using ReikaKalseki.DIAlterra;
 using UnityEngine;
 
@@ -13,19 +14,16 @@ public class GeyserFilter : CustomMachine<GeyserFilterLogic>, MultiTexturePrefab
 
 	}
 
+	[SetsRequiredMembers]
 	public GeyserFilter(XMLLocale.LocaleEntry e) : base(e.key, e.name, e.desc, "bedc40fb-bd97-4b4d-a943-d39360c9c7bd") { //nuclear waste disposal
-		this.addIngredient(CraftingItems.getItem(CraftingItems.Items.MicroFilter).TechType, 4);
-		this.addIngredient(CustomMaterials.getItem(CustomMaterials.Materials.PLATINUM).TechType, 1);
-		this.addIngredient(TechType.Titanium, 3);
-		this.addIngredient(TechType.CopperWire, 2);
-		this.addIngredient(CraftingItems.getItem(CraftingItems.Items.WeakAcid).TechType, 1);
+		addIngredient(CraftingItems.getItem(CraftingItems.Items.MicroFilter).TechType, 4);
+		addIngredient(CustomMaterials.getItem(CustomMaterials.Materials.PLATINUM).TechType, 1);
+		addIngredient(TechType.Titanium, 3);
+		addIngredient(TechType.CopperWire, 2);
+		addIngredient(CraftingItems.getItem(CraftingItems.Items.WeakAcid).TechType, 1);
 	}
 
-	public override bool UnlockedAtStart {
-		get {
-			return false;
-		}
-	}
+	public override bool UnlockedAtStart => false;
 
 	public override bool isOutdoors() {
 		return true;
@@ -42,22 +40,22 @@ public class GeyserFilter : CustomMachine<GeyserFilterLogic>, MultiTexturePrefab
 
 		go.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.Global;
 
-		StorageContainer con = go.GetComponentInChildren<StorageContainer>();
+		var con = go.GetComponentInChildren<StorageContainer>();
 		con.hoverText = "Collect Filtrate";
 		con.storageLabel = "FILTRATE";
 		con.enabled = true;
 		con.Resize(5, 2);
 		//con.prefabRoot = go;
-		GeyserFilterLogic lgc = go.GetComponent<GeyserFilterLogic>();
+		var lgc = go.GetComponent<GeyserFilterLogic>();
 		//lgc.storage = con;
 
-		GameObject mdl = go.setModel("discovery_trashcan_01_d", ObjectUtil.lookupPrefab("8fb8a082-d40a-4473-99ec-1ded36cc6813").getChildObject("Starship_cargo"));
+		var mdl = go.setModel("discovery_trashcan_01_d", ObjectUtil.lookupPrefab("8fb8a082-d40a-4473-99ec-1ded36cc6813").getChildObject("Starship_cargo"));
 		mdl.transform.localRotation = Quaternion.Euler(0, 0, 0);
 		mdl.transform.localPosition = new Vector3(0, -0.05F, -2.25F);
 		float w = 4;//2.5F;
-		float t = 0.4F;//0.125F;
+		var t = 0.4F;//0.125F;
 		mdl.transform.localScale = new Vector3(w, t, w);
-		Constructable c = go.GetComponent<Constructable>();
+		var c = go.GetComponent<Constructable>();
 		c.model = mdl;
 		c.allowedOnCeiling = false;
 		c.allowedOnGround = true;
@@ -68,23 +66,23 @@ public class GeyserFilter : CustomMachine<GeyserFilterLogic>, MultiTexturePrefab
 		c.allowedOutside = true;
 		c.forceUpright = true;
 
-		GameObject mdl2 = mdl.clone();
+		var mdl2 = mdl.clone();
 		mdl2.transform.SetParent(mdl.transform.parent);
 		mdl2.transform.localRotation = Quaternion.Euler(180, 0, 0);
-		mdl2.transform.localPosition = new Vector3(0, -(0.05F + (0.18F * t / 0.125F)), 2.25F);
+		mdl2.transform.localPosition = new Vector3(0, -(0.05F + 0.18F * t / 0.125F), 2.25F);
 		mdl2.transform.localScale = new Vector3(w, t, w);
 
-		BoxCollider box = go.GetComponentInChildren<BoxCollider>();
+		var box = go.GetComponentInChildren<BoxCollider>();
 		box.size = new Vector3(w, t * 2, w);
 		box.center = Vector3.down * t * 1.5F;
 
-		Renderer[] r = mdl.GetComponentsInChildren<Renderer>();
+		var r = mdl.GetComponentsInChildren<Renderer>();
 		RenderUtil.swapToModdedTextures(r, this);
-		foreach (Renderer rr in r)
+		foreach (var rr in r)
 			RenderUtil.setEmissivity(rr, 1);
 		r = mdl2.GetComponentsInChildren<Renderer>();
 		RenderUtil.swapToModdedTextures(r, this);
-		foreach (Renderer rr in r)
+		foreach (var rr in r)
 			RenderUtil.setEmissivity(rr, 1);
 
 		//go.EnsureComponent<PowerFX>().vfxPrefab = ObjectUtil.lookupPrefab(TechType.PowerTransmitter).GetComponent<PowerFX>().vfxPrefab;
@@ -110,7 +108,7 @@ public class GeyserFilterLogic : DiscreteOperationalMachineLogic {
 
 	private bool showedFullMessage;
 
-	void Start() {
+	private void Start() {
 		SNUtil.log("Reinitializing geyser filter");
 		C2CItems.geyserFilter.initializeMachine(gameObject);
 	}
@@ -139,21 +137,21 @@ public class GeyserFilterLogic : DiscreteOperationalMachineLogic {
 
 	protected override void updateEntity(float seconds) {
 		if (mainRenderers == null)
-			mainRenderers = this.GetComponentsInChildren<Renderer>();
+			mainRenderers = GetComponentsInChildren<Renderer>();
 		//if (!lineRenderer)
 		//	lineRenderer = GetComponent<PowerFX>();
 		if (seconds <= 0)
 			return;
-		float time = DayNightCycle.main.timePassedAsFloat;
-		if (DIHooks.getWorldAge() > 0.5F && !liveGeyser && seconds > 0 && time - lastGeyserCheckTime >= 2.5F && (Player.main.transform.position - transform.position).sqrMagnitude <= 90000) {
-			liveGeyser = this.findGeyser();
+		var time = DayNightCycle.main.timePassedAsFloat;
+		if (DIHooks.GetWorldAge() > 0.5F && !liveGeyser && seconds > 0 && time - lastGeyserCheckTime >= 2.5F && (Player.main.transform.position - transform.position).sqrMagnitude <= 90000) {
+			liveGeyser = findGeyser();
 			if (liveGeyser)
 				geyserDutyCycle = liveGeyser.eruptionLength / liveGeyser.eruptionInterval;
 			lastGeyserCheckTime = time;
 		}
 		//lineRenderer.target = geyser ? geyser.gameObject : null;
 		//SNUtil.writeToChat("Geyser: "+geyser+" @ "+(geyser ? geyser.transform.position.ToString() : "null"));
-		foreach (Renderer r in mainRenderers)
+		foreach (var r in mainRenderers)
 			r.materials[0].SetColor("_GlowColor", Color.Lerp(Color.red, Color.green, collectionTime / GeyserFilter.PRODUCTION_RATE));
 		//geyser.transform.SetParent(null);
 		if (!storage) {
@@ -163,12 +161,12 @@ public class GeyserFilterLogic : DiscreteOperationalMachineLogic {
 		storage.hoverText = "Collect filtrate";
 
 		//setPowered(seconds);
-		float increase = liveGeyser ? (liveGeyser.erupting ? seconds : 0) : (seconds*geyserDutyCycle);
+		var increase = liveGeyser ? liveGeyser.erupting ? seconds : 0 : seconds*geyserDutyCycle;
 		if (!liveGeyser || liveGeyser.erupting) {
 			collectionTime += increase;
 			if (collectionTime >= GeyserFilter.PRODUCTION_RATE) {
 				collectionTime = 0; //reset time no matter what, otherwise lags trying to add when full
-				if (this.addItemToInventory(CraftingItems.getItem(CraftingItems.Items.GeyserMinerals).TechType) > 0) {
+				if (addItemToInventory(CraftingItems.getItem(CraftingItems.Items.GeyserMinerals).TechType) > 0) {
 					showedFullMessage = false;
 				}
 				else if (!showedFullMessage) {
@@ -190,8 +188,8 @@ public class GeyserFilterLogic : DiscreteOperationalMachineLogic {
 		if (ret == null)
 			return null;
 		GameObject go = ret.GetGameObject();*/
-		Vector3 nearest = WorldUtil.getNearestGeyserPosition(position);
-		foreach (Geyser g in WorldUtil.getObjectsNearWithComponent<Geyser>(nearest, 5)) {
+		var nearest = WorldUtil.getNearestGeyserPosition(position);
+		foreach (var g in WorldUtil.getObjectsNearWithComponent<Geyser>(nearest, 5)) {
 			if (g.transform.position.y < position.y && position.y - g.transform.position.y <= 25) {
 				if ((g.transform.position.setY(0) - position.setY(0)).sqrMagnitude < 225)
 					return g;

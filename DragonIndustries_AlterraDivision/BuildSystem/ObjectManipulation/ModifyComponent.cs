@@ -14,13 +14,13 @@ namespace ReikaKalseki.DIAlterra;
 public abstract class ModifyComponent<T> : ManipulationBase where T : Component {
 
 	public override sealed void applyToObject(PlacedObject go) {
-		this.applyToObject(go.obj);
+		applyToObject(go.obj);
 	}
 
 	public override sealed void applyToObject(GameObject go) {
-		T component = go.GetComponentInChildren<T>();
+		var component = go.GetComponentInChildren<T>();
 		if (component != null)
-			this.modifyComponent(component);
+			modifyComponent(component);
 	}
 
 	public abstract void modifyComponent(T component);

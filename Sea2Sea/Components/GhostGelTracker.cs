@@ -26,17 +26,17 @@ public class GhostGelTracker : MonoBehaviour {
                             harvestCount++;
                         } else {
                             SNUtil.writeToChat(
-                                SeaToSeaMod.mouseoverLocale.getEntry("GhostLeviathanSampleCooldown").desc
+                                SeaToSeaMod.MouseoverLocale.getEntry("GhostLeviathanSampleCooldown").desc
                             );
                         }
                     }
                 }
             )
         );
-        GenericHandTarget ht = gameObject.EnsureComponent<GenericHandTarget>();
+        var ht = gameObject.EnsureComponent<GenericHandTarget>();
         ht.onHandHover = new HandTargetEvent();
         ht.onHandHover.AddListener(hte => {
-                Pickupable held = Inventory.main.GetHeld();
+                var held = Inventory.main.GetHeld();
                 if (held && held.GetTechType() == TechType.Scanner)
                     return;
                 if (held && held.GetTechType() == TechType.LaserCutter &&
@@ -63,11 +63,9 @@ public class GhostGelTracker : MonoBehaviour {
         );
     }
 
-    public bool canHarvest {
-        get { return harvestCount < 3; }
-    }
+    public bool canHarvest => harvestCount < 3;
 
-    void Update() {
+    private void Update() {
         if (harvestCount > 0)
             harvestCount -= Time.deltaTime / REGEN_RATE;
     }

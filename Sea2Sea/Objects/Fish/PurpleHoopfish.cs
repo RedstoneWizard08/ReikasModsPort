@@ -14,22 +14,22 @@ public class PurpleHoopfish : RetexturedFish {
     }
 
     public override void prepareGameObject(GameObject world, Renderer[] r0) {
-        PurpleHoopfishTag kc = world.EnsureComponent<PurpleHoopfishTag>();
-        foreach (Renderer r in r0) {
+        var kc = world.EnsureComponent<PurpleHoopfishTag>();
+        foreach (var r in r0) {
             r.materials[0].SetColor("_GlowColor", new Color(1, 1, 1, 1));
         }
     }
 
-    public override BehaviourType getBehavior() {
+    public override BehaviourType GetBehavior() {
         return BehaviourType.SmallFish;
     }
 }
 
-class PurpleHoopfishTag : MonoBehaviour {
+internal class PurpleHoopfishTag : MonoBehaviour {
     private Renderer[] renders;
 
-    void Update() {
+    private void Update() {
         if (renders == null)
-            renders = this.GetComponentsInChildren<Renderer>();
+            renders = GetComponentsInChildren<Renderer>();
     }
 }

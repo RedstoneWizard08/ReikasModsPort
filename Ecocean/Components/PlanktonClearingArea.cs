@@ -14,10 +14,10 @@ public class PlanktonClearingArea : MonoBehaviour {
 
 	public event Action<PlanktonCloudTag, float> onClearTick;
 
-	private Dictionary<string, object> properties = new Dictionary<string, object>();
+	private Dictionary<string, object> properties = new();
 
-	void Start() {
-		Rigidbody rb = gameObject.EnsureComponent<Rigidbody>();
+	private void Start() {
+		var rb = gameObject.EnsureComponent<Rigidbody>();
 		rb.isKinematic = true;
 		rb.mass = 9999999;
 		rb.useGravity = false;
@@ -31,18 +31,16 @@ public class PlanktonClearingArea : MonoBehaviour {
 		//SNUtil.writeToChat("Plankton clearer "+gameObject.name+" ticking with collider "+other.gameObject.GetFullHierarchyPath());
 		if (skipPlanktonClear)
 			return;
-		PlanktonCloudClearableContactZone pc = other.GetComponent<PlanktonCloudClearableContactZone>(); //NOT ancestor - only interact with specific colliders
+		var pc = other.GetComponent<PlanktonCloudClearableContactZone>(); //NOT ancestor - only interact with specific colliders
 		if (pc && pc.parent && pc.parent.enabled) {
-			float amt = Time.deltaTime*clearingRate;
+			var amt = Time.deltaTime*clearingRate;
 			pc.parent.damage(this, amt);
-			if (onClearTick != null)
-				onClearTick.Invoke(pc.parent, amt);
+			onClearTick?.Invoke(pc.parent, amt);
 		}
 	}
 
 	public void tickExternal(float r = 1) {
-		if (onClearTick != null)
-			onClearTick.Invoke(null, Time.deltaTime * clearingRate * r);
+		onClearTick?.Invoke(null, Time.deltaTime * clearingRate * r);
 	}
 
 	public void setProperty(string name, object value) {
@@ -54,12 +52,12 @@ public class PlanktonClearingArea : MonoBehaviour {
 	}
 
 	public E getProperty<E>(string name) {
-		object o = getProperty(name);
-		return o != null && o is E ? (E)o : default(E);
+		var o = getProperty(name);
+		return o != null && o is E e ? e : default(E);
 	}
 
 	public bool getBooleanProperty(string name) {
-		object o = getProperty(name);
+		var o = getProperty(name);
 		return o != null && o is bool b && b;
 	}
 

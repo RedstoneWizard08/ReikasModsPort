@@ -18,10 +18,10 @@ internal class AddLaserCutterSealed : ManipulationBase {
 	private string text;
 
 	public override void applyToObject(GameObject go) {
-		BulkheadDoor bk = go.GetComponentInChildren<BulkheadDoor>(true);
+		var bk = go.GetComponentInChildren<BulkheadDoor>(true);
 		if (bk != null)
 			go = bk.gameObject;
-		Sealed s = go.EnsureComponent<Sealed>();
+		var s = go.EnsureComponent<Sealed>();
 		s._sealed = true;
 		if (!string.IsNullOrEmpty(text)) {
 
@@ -30,7 +30,7 @@ internal class AddLaserCutterSealed : ManipulationBase {
 	}
 
 	public override void applyToObject(PlacedObject go) {
-		this.applyToObject(go.obj);
+		applyToObject(go.obj);
 	}
 
 	public override void loadFromXML(XmlElement e) {

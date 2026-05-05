@@ -19,13 +19,13 @@ public class BasicCustomPlant : CustomPrefab, DIPrefab<FloraPrefabFetch>, Flora 
 
     private readonly Assembly ownerMod;
 
-    private readonly List<BiomeBase> nativeBiomesCave = new List<BiomeBase>();
-    private readonly List<BiomeBase> nativeBiomesSurface = new List<BiomeBase>();
+    private readonly List<BiomeBase> nativeBiomesCave = [];
+    private readonly List<BiomeBase> nativeBiomesSurface = [];
 
     private static readonly Dictionary<TechType, BasicCustomPlant>
-        plants = new Dictionary<TechType, BasicCustomPlant>();
+        plants = new();
 
-    private static readonly Dictionary<string, BasicCustomPlant> plantIDs = new Dictionary<string, BasicCustomPlant>();
+    private static readonly Dictionary<string, BasicCustomPlant> plantIDs = new();
 
     public PDAManager.PDAPage pdaPage { get; private set; }
 
@@ -54,7 +54,7 @@ public class BasicCustomPlant : CustomPrefab, DIPrefab<FloraPrefabFetch>, Flora 
         AddOnRegister(() => {
                 plants[Info.TechType] = this;
                 plantIDs[Info.ClassID] = this;
-                if (collectionMethod != HarvestType.None || this.generateSeed()) {
+                if (collectionMethod != HarvestType.None || generateSeed()) {
                     ItemRegistry.instance.addItem(seed);
                     setPlantSeed(seed, this);
                     CraftDataHandler.SetHarvestType(Info.TechType, collectionMethod);
@@ -81,7 +81,7 @@ public class BasicCustomPlant : CustomPrefab, DIPrefab<FloraPrefabFetch>, Flora 
     }
 
     public bool isNativeToBiome(Vector3 vec) {
-        return this.isNativeToBiome(BiomeBase.getBiome(vec), WorldUtil.isInCave(vec));
+        return isNativeToBiome(BiomeBase.GetBiome(vec), WorldUtil.isInCave(vec));
     }
 
     public bool isNativeToBiome(BiomeBase b, bool cave) {
@@ -93,12 +93,13 @@ public class BasicCustomPlant : CustomPrefab, DIPrefab<FloraPrefabFetch>, Flora 
     }
 
     public void addPDAEntry(string text, float scanTime = 2, string header = null) {
-        PDAScanner.EntryData e = new PDAScanner.EntryData();
-        e.key = Info.TechType;
-        e.scanTime = scanTime;
-        e.locked = true;
+        var e = new PDAScanner.EntryData {
+            key = Info.TechType,
+            scanTime = scanTime,
+            locked = true,
+        };
         pdaPage = PDAManager.createPage("ency_" + Info.ClassID, Info.PrefabFileName, text, "Lifeforms");
-        pdaPage.addSubcategory("Flora").addSubcategory(this.isExploitable() ? "Exploitable" : "Sea");
+        pdaPage.addSubcategory("Flora").addSubcategory(isExploitable() ? "Exploitable" : "Sea");
         if (header != null)
             pdaPage.setHeaderImage(TextureManager.getTexture(ownerMod, "Textures/PDA/" + header));
         pdaPage.register();
@@ -106,16 +107,14 @@ public class BasicCustomPlant : CustomPrefab, DIPrefab<FloraPrefabFetch>, Flora 
         PDAHandler.AddCustomScannerEntry(e);
     }
 
-    public virtual Vector2int SizeInInventory {
-        get { return new Vector2int(1, 1); }
-    }
+    public virtual Vector2int SizeInInventory => new(1, 1);
 
     protected virtual Sprite GetItemSprite() {
         return TextureManager.getSprite(ownerMod, "Textures/Items/" + ObjectUtil.formatFileName(this));
     }
 
     public Sprite getSprite() {
-        return this.GetItemSprite();
+        return GetItemSprite();
     }
 
     public virtual void prepareGameObject(GameObject go, Renderer[] r) {
@@ -127,8 +126,8 @@ public class BasicCustomPlant : CustomPrefab, DIPrefab<FloraPrefabFetch>, Flora 
     }
 
     public GameObject GetGameObject() {
-        GameObject go = ObjectUtil.getModPrefabBaseObject(this);
-        Pickupable p = go.EnsureComponent<Pickupable>();
+        var go = ObjectUtil.getModPrefabBaseObject(this);
+        var p = go.EnsureComponent<Pickupable>();
         p.isPickupable = false;
         go.EnsureComponent<ImmuneToPropulsioncannon>();
         return go;
@@ -139,7 +138,7 @@ public class BasicCustomPlant : CustomPrefab, DIPrefab<FloraPrefabFetch>, Flora 
     }
 
     protected virtual bool isExploitable() {
-        return collectionMethod != HarvestType.None || this.isResource();
+        return collectionMethod != HarvestType.None || isResource();
     }
 
     protected virtual bool generateSeed() {
@@ -157,7 +156,7 @@ public class BasicCustomPlant : CustomPrefab, DIPrefab<FloraPrefabFetch>, Flora 
     }
 
     public Sprite getIcon() {
-        return this.GetItemSprite();
+        return GetItemSprite();
     }
 
     public virtual Plantable.PlantSize getSize() {
@@ -256,11 +255,11 @@ public class BasicCustomPlantSeed : CustomPrefab, DIPrefab<StringPrefabContainer
     }
 
     public GameObject GetGameObject() {
-        GameObject go = ObjectUtil.getModPrefabBaseObject(this);
-        Pickupable pp = go.EnsureComponent<Pickupable>();
+        var go = ObjectUtil.getModPrefabBaseObject(this);
+        var pp = go.EnsureComponent<Pickupable>();
         pp.isPickupable = true;
 
-        Plantable p = go.EnsureComponent<Plantable>();
+        var p = go.EnsureComponent<Plantable>();
         p.aboveWater = plant.canGrowAboveWater();
         p.underwater = plant.canGrowUnderWater();
         p.isSeedling = true;

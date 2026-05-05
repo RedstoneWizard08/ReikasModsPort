@@ -30,21 +30,21 @@ public sealed class VoidDebris : WorldGenerator {
     }
 
     public override bool generate(List<GameObject> li) {
-        for (int i = 0; i < 6; i++) {
-            li.Add(this.generateObjectInRange(6, 0.1F, 6));
+        for (var i = 0; i < 6; i++) {
+            li.Add(generateObjectInRange(6, 0.1F, 6));
         }
 
-        foreach (Prop s in PodDebris.alwaysPieces) {
-            li.Add(this.generateObjectInRange(9, 0.25F, 9, 0, s));
+        foreach (var s in PodDebris.alwaysPieces) {
+            li.Add(generateObjectInRange(9, 0.25F, 9, 0, s));
         }
 
-        for (int i = 0; i < 10; i++) {
-            li.Add(this.generateObjectInRange(12, 0.5F, 12));
+        for (var i = 0; i < 10; i++) {
+            li.Add(generateObjectInRange(12, 0.5F, 12));
         }
 
-        for (int i = 0; i < 8; i++) {
+        for (var i = 0; i < 8; i++) {
             li.Add(
-                this.generateObjectInRange(
+                generateObjectInRange(
                     4,
                     3,
                     4,
@@ -54,8 +54,8 @@ public sealed class VoidDebris : WorldGenerator {
             );
         }
 
-        GameObject go = spawner(databoxPrefab.ClassID);
-        go.transform.position = MathUtil.getRandomVectorAround(position + (Vector3.down * 3.5F), 1);
+        var go = spawner(databoxPrefab.ClassID);
+        go.transform.position = MathUtil.getRandomVectorAround(position + Vector3.down * 3.5F, 1);
         go.transform.rotation = UnityEngine.Random.rotationUniform;
         DamagedDataboxSystem.instance.onDataboxSpawn(go);
         go.fullyEnable();
@@ -76,7 +76,7 @@ public sealed class VoidDebris : WorldGenerator {
     }*/
 
     private GameObject generateObjectInRange(float dx, float dy, float dz, double offsetY = 0, Prop type = null) {
-        Prop p = type == null ? PodDebris.debrisProps.getRandomEntry() : type;
+        var p = type == null ? PodDebris.debrisProps.getRandomEntry() : type;
         float tilt = 0;
         if (p.freeAngle) {
             tilt = UnityEngine.Random.Range(0, 360F);
@@ -85,10 +85,10 @@ public sealed class VoidDebris : WorldGenerator {
             tilt = UnityEngine.Random.Range(tilt - 15F, tilt + 15F);
         }
 
-        GameObject go = spawner(p.prefab.ClassID);
+        var go = spawner(p.prefab.ClassID);
         if (go == null)
             return go;
-        Vector3 pos = MathUtil.getRandomVectorAround(position, new Vector3(dx, dy, dz));
+        var pos = MathUtil.getRandomVectorAround(position, new Vector3(dx, dy, dz));
         pos.y = Math.Min(pos.y, position.y) + (float)offsetY;
         go.transform.position = pos;
         go.transform.rotation = Quaternion.Euler(tilt, UnityEngine.Random.Range(0, 360F), 0);

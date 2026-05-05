@@ -7,31 +7,31 @@ internal class FCSWreck : MonoBehaviour {
 
 	private float lastCheckTime = -1;
 
-	void Apply() {
+	private void Apply() {
 		//SNUtil.writeToChat("Initializing FCS wreck");
 		gameObject.removeChildObject("ExteriorEntities/Starship_doors_frame");
 		gameObject.removeChildObject("ExteriorEntities/vent_constructor_section_01");
 		//GameObject hull1 = gameObject.getChildObject("ExteriorEntities/ExplorableWreckHull01");
-		GameObject hull2 = gameObject.getChildObject("ExteriorEntities/ExplorableWreckHull02");
+		var hull2 = gameObject.getChildObject("ExteriorEntities/ExplorableWreckHull02");
 
 		hull2.transform.rotation = Quaternion.Euler(0, 116, 210.7F);
 		hull2.transform.localPosition += new Vector3(-1, 0, -7.5F);
 	}
 
-	void Update() {
-		float time = DayNightCycle.main.timePassedAsFloat;
+	private void Update() {
+		var time = DayNightCycle.main.timePassedAsFloat;
 		if (time - lastCheckTime >= 1) {
 			lastCheckTime = time;
 			if (gameObject.getChildObject("ExteriorEntities/vent_constructor_section_01")) {
-				this.Apply();
+				Apply();
 
-				foreach (BlueprintHandTarget bpt in gameObject.GetComponentsInChildren<BlueprintHandTarget>()) {
+				foreach (var bpt in gameObject.GetComponentsInChildren<BlueprintHandTarget>()) {
 					bpt.gameObject.destroy(false);
 				}
-				foreach (DataboxSpawner bpt in gameObject.GetComponentsInChildren<DataboxSpawner>()) {
+				foreach (var bpt in gameObject.GetComponentsInChildren<DataboxSpawner>()) {
 					bpt.gameObject.destroy(false);
 				}
-				foreach (StoryHandTarget bpt in gameObject.GetComponentsInChildren<StoryHandTarget>()) {
+				foreach (var bpt in gameObject.GetComponentsInChildren<StoryHandTarget>()) {
 					bpt.gameObject.destroy(false);
 				}
 			}

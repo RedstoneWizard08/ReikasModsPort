@@ -10,27 +10,23 @@ public sealed class SeamothHeatSinkModule : SeamothModule {
 
     [SetsRequiredMembers]
     public SeamothHeatSinkModule() : base(
-        SeaToSeaMod.itemLocale.getEntry("SeamothHeatSinkModule"),
+        SeaToSeaMod.ItemLocale.getEntry("SeamothHeatSinkModule"),
         "742d2a09-a2d7-4acd-b9c7-1f97cb793932"
     ) {
-        this.preventNaturalUnlock();
+        preventNaturalUnlock();
     }
 
-    public override QuickSlotType QuickSlotType {
-        get { return TechData.GetSlotType(TechType.SeamothSonarModule); }
-    }
+    public override QuickSlotType QuickSlotType => TechData.GetSlotType(TechType.SeamothSonarModule);
 
-    public override Vector2int SizeInInventory {
-        get { return new Vector2int(2, 1); }
-    }
+    public override Vector2int SizeInInventory => new(2, 1);
     /*
     protected override Atlas.Sprite GetItemSprite()
     {
         return SpriteManager.Get(TechType.VehiclePowerUpgradeModule);
     }*/
 
-    public override SeamothModule.SeamothModuleStorage getStorage() {
-        return new SeamothModule.SeamothModuleStorage("HEAT SINK STORAGE", StorageAccessType.TORPEDO, 3, 4).addAmmo(
+    public override SeamothModuleStorage getStorage() {
+        return new SeamothModuleStorage("HEAT SINK STORAGE", StorageAccessType.TORPEDO, 3, 4).addAmmo(
             C2CItems.heatSink
         );
     }
@@ -54,10 +50,10 @@ public sealed class SeamothHeatSinkModule : SeamothModule {
     }
 
     public override void onFired(SeaMoth sm, int slotID, float charge) {
-        SeamothStorageContainer sc = this.getStorage(sm, slotID);
+        var sc = getStorage(sm, slotID);
         if ((FREE_CHEAT || sc.container.GetCount(C2CItems.heatSink.Info.TechType) > 0) &&
             !sm.GetComponent<C2CMoth>().isPurgingHeat) {
-            C2CMoth c2c = sm.GetComponent<C2CMoth>();
+            var c2c = sm.GetComponent<C2CMoth>();
             c2c.purgeHeat();
             if (!FREE_CHEAT)
                 sc.container.DestroyItem(C2CItems.heatSink.Info.TechType);
@@ -65,8 +61,8 @@ public sealed class SeamothHeatSinkModule : SeamothModule {
     }
 
     private SeamothStorageContainer getStorage(SeaMoth sm, int slotID) {
-        string slot = sm.slotIDs[slotID];
-        InventoryItem item = sm.modules.GetItemInSlot(slot);
+        var slot = sm.slotIDs[slotID];
+        var item = sm.modules.GetItemInSlot(slot);
         return item.item.GetComponent<SeamothStorageContainer>();
     }
 }

@@ -23,13 +23,12 @@ namespace ReikaKalseki.DIAlterra;
 public class DICustomPrefab : PositionedPrefab {
     public static readonly string TAGNAME = "customprefab";
 
-    private static readonly Dictionary<string, ModifiedObjectPrefab> prefabCache =
-        new Dictionary<string, ModifiedObjectPrefab>();
+    private static readonly Dictionary<string, ModifiedObjectPrefab> prefabCache = new();
 
-    private static HashSet<string> prefabNamespaces = new HashSet<string>() { "ReikaKalseki.DIAlterra" };
+    private static HashSet<string> prefabNamespaces = ["ReikaKalseki.DIAlterra"];
 
     [SerializeField] public TechType tech = TechType.None;
-    [SerializeField] internal readonly List<ManipulationBase> manipulations = new List<ManipulationBase>();
+    [SerializeField] internal readonly List<ManipulationBase> manipulations = [];
 
     public bool isSeabase { get; protected set; }
     public bool isBasePiece { get; internal set; }
@@ -70,7 +69,7 @@ public class DICustomPrefab : PositionedPrefab {
     }
 
     public override void saveToXML(XmlElement e) {
-        string n = prefabName;
+        var n = prefabName;
         if (isBasePiece) {
             e.addProperty("piece", prefabName);
             prefabName = "basePart";
@@ -81,9 +80,9 @@ public class DICustomPrefab : PositionedPrefab {
         if (tech != TechType.None)
             e.addProperty("tech", Enum.GetName(typeof(TechType), tech));
         if (manipulations.Count > 0) {
-            XmlElement e1 = e.OwnerDocument.CreateElement("objectManipulation");
-            foreach (ManipulationBase mb in manipulations) {
-                XmlElement e2 = e.OwnerDocument.CreateElement(mb.GetType().Name);
+            var e1 = e.OwnerDocument.CreateElement("objectManipulation");
+            foreach (var mb in manipulations) {
+                var e2 = e.OwnerDocument.CreateElement(mb.GetType().Name);
                 mb.saveToXML(e2);
                 e1.AppendChild(e2);
             }
@@ -94,7 +93,7 @@ public class DICustomPrefab : PositionedPrefab {
 
     public Action<GameObject> getManipulationsCallable() {
         return go => {
-            foreach (ManipulationBase mb in manipulations) {
+            foreach (var mb in manipulations) {
                 mb.applyToObject(go);
             }
         };
@@ -106,7 +105,7 @@ public class DICustomPrefab : PositionedPrefab {
 
     public override GameObject createWorldObject() {
         if (isBasePiece) {
-            GameObject go = ObjectUtil.getBasePiece(prefabName);
+            var go = ObjectUtil.getBasePiece(prefabName);
             if (go != null) {
                 go.transform.position = position;
                 go.transform.rotation = rotation;
@@ -140,7 +139,7 @@ public class DICustomPrefab : PositionedPrefab {
             SNUtil.log("Redirected customprefab to pipe " + prefabName, SNUtil.diDLL);
         } else if (prefabName == "crate") {
             isCrate = true;
-            string techn = e.getProperty("item");
+            var techn = e.getProperty("item");
             tech = SNUtil.getTechType(techn);
             if (tech == TechType.None)
                 throw new Exception("Cannot put nonexistent item '" + techn + "' in crate @ " + position + "!");
@@ -149,40 +148,40 @@ public class DICustomPrefab : PositionedPrefab {
             SNUtil.log("Redirected customprefab to crate " + prefabName, SNUtil.diDLL);
         } else if (prefabName == "databox") {
             isDatabox = true;
-            string techn = e.getProperty("tech");
+            var techn = e.getProperty("tech");
             tech = SNUtil.getTechType(techn);
             prefabName = GenUtil.getOrCreateDatabox(tech).ClassID;
             SNUtil.log("Redirected customprefab to databox " + prefabName, SNUtil.diDLL);
         } else if (prefabName == "fragment") {
             isFragment = true;
-            string techn = e.getProperty("tech");
+            var techn = e.getProperty("tech");
             tech = SNUtil.getTechType(techn);
-            GenUtil.ContainerPrefab g = GenUtil.getFragment(tech, e.getInt("index", 0));
+            var g = GenUtil.getFragment(tech, e.getInt("index", 0));
             if (g == null)
                 throw new Exception("No such fragment!");
             prefabName = g.ClassID;
             SNUtil.log("Redirected customprefab to fragment " + prefabName, SNUtil.diDLL);
         } else if (prefabName == "pda") {
             isPDA = true;
-            string pagen = e.getProperty("page");
-            PDAManager.PDAPage page = PDAManager.getPage(pagen);
+            var pagen = e.getProperty("page");
+            var page = PDAManager.getPage(pagen);
             prefabName = page.getPDAClassID();
             SNUtil.log("Redirected customprefab to pda " + prefabName, SNUtil.diDLL);
         } else if (prefabName == "wreck") {
             isWreck = true;
-            string template = e.getProperty("template");
+            var template = e.getProperty("template");
             prefabName = template;
             SNUtil.log("Redirected customprefab to wreck " + prefabName, SNUtil.diDLL);
         } else if (prefabName == "basePart") {
             isBasePiece = true;
             prefabName = e.getProperty("piece");
-            List<XmlElement> li0 = e.getDirectElementsByTagName("supportData");
+            var li0 = e.getDirectElementsByTagName("supportData");
             if (li0.Count == 1)
                 manipulations.Add(new SeabaseLegLengthPreservation(li0[0]));
             SNUtil.log(
                 "Redirected customprefab to base piece " + prefabName + " >> " + li0.Count + "::" + string.Join(
                     ", ",
-                    li0.Select<XmlElement, string>(el => el.OuterXml)
+                    li0.Select(el => el.OuterXml)
                 ),
                 SNUtil.diDLL
             );
@@ -198,19 +197,19 @@ public class DICustomPrefab : PositionedPrefab {
         //	string techn = e.getProperty("type");
         //	tech = SNUtil.getTechType(techn);
         //}
-        string tech2 = e.getProperty("tech", true);
+        var tech2 = e.getProperty("tech", true);
         if (tech == TechType.None && tech2 != null && tech2 != "None") {
             tech = SNUtil.getTechType(tech2);
         }
 
-        XmlNodeList xli = e.OwnerDocument.DocumentElement != null
+        var xli = e.OwnerDocument.DocumentElement != null
             ? e.OwnerDocument.DocumentElement.getAllChildrenIn("transforms")
             : null;
         if (xli != null)
             loadManipulations(xli, manipulations);
-        List<XmlElement> li = e.getDirectElementsByTagName("objectManipulation");
+        var li = e.getDirectElementsByTagName("objectManipulation");
         if (li.Count == 1) {
-            ModifiedObjectPrefab mod = getManipulatedObject(li[0], this);
+            var mod = getManipulatedObject(li[0], this);
             if (mod != null) {
                 mod.originalPrefab = prefabName;
                 mod.prefabSource = this;
@@ -223,8 +222,8 @@ public class DICustomPrefab : PositionedPrefab {
     public static ModifiedObjectPrefab getManipulatedObject(XmlElement e, DICustomPrefab pfb) {
         loadManipulations(e, pfb.manipulations);
         if (pfb.manipulations.Count > 0) {
-            bool needReapply = false;
-            foreach (ManipulationBase mb in pfb.manipulations) {
+            var needReapply = false;
+            foreach (var mb in pfb.manipulations) {
                 if (mb.needsReapplication()) {
                     needReapply = true;
                     break;
@@ -232,7 +231,7 @@ public class DICustomPrefab : PositionedPrefab {
             }
 
             if (needReapply) {
-                string xmlKey = pfb.prefabName + "##" + System.Security.SecurityElement.Escape(e.InnerXml);
+                var xmlKey = pfb.prefabName + "##" + System.Security.SecurityElement.Escape(e.InnerXml);
                 return getOrCreateModPrefab(pfb, xmlKey);
             }
         }
@@ -241,21 +240,22 @@ public class DICustomPrefab : PositionedPrefab {
     }
 
     private static ModifiedObjectPrefab getOrCreateModPrefab(DICustomPrefab orig, string key) {
-        ModifiedObjectPrefab pfb = prefabCache.ContainsKey(key) ? prefabCache[key] : null;
+        var pfb = prefabCache.ContainsKey(key) ? prefabCache[key] : null;
         if (pfb == null) {
             pfb = new ModifiedObjectPrefab(key, orig.prefabName, orig.manipulations);
             prefabCache[key] = pfb;
-            TechType from = orig.tech != TechType.None
+            var from = orig.tech != TechType.None
                 ? orig.tech
                 : CraftData.entClassTechTable.GetOrDefault(key, TechType.None);
             if (from != TechType.None) {
                 KnownTechHandler.SetAnalysisTechEntry(pfb.Info.TechType, new List<TechType>() { from });
-                PDAScanner.EntryData e = new PDAScanner.EntryData();
-                e.key = pfb.Info.TechType;
-                e.blueprint = from;
-                e.destroyAfterScan = false;
-                e.locked = true;
-                e.scanTime = 5;
+                var e = new PDAScanner.EntryData {
+                    key = pfb.Info.TechType,
+                    blueprint = from,
+                    destroyAfterScan = false,
+                    locked = true,
+                    scanTime = 5,
+                };
                 PDAHandler.AddCustomScannerEntry(e);
             }
 
@@ -271,7 +271,7 @@ public class DICustomPrefab : PositionedPrefab {
         if (es == null)
             return;
         foreach (XmlElement e2 in es) {
-            ManipulationBase mb = loadManipulation(e2);
+            var mb = loadManipulation(e2);
             if (mb != null)
                 li.Add(mb);
         }
@@ -286,7 +286,7 @@ public class DICustomPrefab : PositionedPrefab {
             if (e2 == null)
                 throw new Exception("Null XML elem");
             Type t = null;
-            foreach (string s in prefabNamespaces) {
+            foreach (var s in prefabNamespaces) {
                 t = InstructionHandlers.getTypeBySimpleName(s + "." + e2.Name);
                 if (t != null)
                     break;
@@ -297,18 +297,18 @@ public class DICustomPrefab : PositionedPrefab {
                     "Type '" + e2.Name + "' not found; is a namespace missing from " +
                     string.Join(", ", prefabNamespaces)
                 );
-            System.Reflection.ConstructorInfo ct = t.GetConstructor(new Type[0]);
+            var ct = t.GetConstructor([]);
             if (ct == null)
                 throw new Exception("Constructor not found");
             try {
-                ManipulationBase mb = (ManipulationBase)ct.Invoke(new object[0]);
+                var mb = (ManipulationBase)ct.Invoke([]);
                 mb.loadFromXML(e2);
                 return mb;
             } catch (Exception ex) {
                 throw new Exception("Construction error " + ex);
             }
         } catch (Exception ex) {
-            string err = "Could not rebuild manipulation from XML " + e2.Name + "/" + e2.InnerText + ": " + ex;
+            var err = "Could not rebuild manipulation from XML " + e2.Name + "/" + e2.InnerText + ": " + ex;
             SNUtil.log(err, SNUtil.diDLL);
             SNUtil.writeToChat(err);
             return null;
@@ -323,7 +323,7 @@ public class DICustomPrefab : PositionedPrefab {
 }
 
 public class ModifiedObjectPrefab : GenUtil.CustomPrefabImpl {
-    private readonly List<ManipulationBase> mods = new List<ManipulationBase>();
+    private readonly List<ManipulationBase> mods = [];
 
     public string originalPrefab { get; internal set; }
     public DICustomPrefab prefabSource { get; internal set; }
@@ -335,7 +335,7 @@ public class ModifiedObjectPrefab : GenUtil.CustomPrefabImpl {
 
     public override sealed void prepareGameObject(GameObject go, Renderer[] r) {
         SNUtil.log("Restoring manipulations on modified prefab " + originalPrefab + ":\n" + mods.toDebugString("\n"));
-        foreach (ManipulationBase mb in mods) {
+        foreach (var mb in mods) {
             mb.applyToObject(go);
         }
 

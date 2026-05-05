@@ -1,45 +1,45 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using Nautilus.Handlers;
+using ReikaKalseki.DIAlterra;
 using UnityEngine;
 
 namespace ReikaKalseki.Ecocean;
 
 public class GlowOilNatural : PickedUpAsOtherItem {
+    [SetsRequiredMembers]
+    internal GlowOilNatural() : base("NaturalGlowOil", EcoceanMod.glowOil.TechType) {
+        Info.WithIcon(GetItemSprite());
+    }
 
-	internal GlowOilNatural() : base("NaturalGlowOil", EcoceanMod.glowOil.TechType) {
+    protected Sprite GetItemSprite() {
+        return EcoceanMod.glowOil.getSprite();
+    }
 
-	}
+    public override GameObject GetGameObject() {
+        GameObject world = EcoceanMod.glowOil.GetGameObject().clone();
+        world.EnsureComponent<TechTag>().type = Info.TechType;
+        world.EnsureComponent<PrefabIdentifier>().ClassId = Info.ClassID;
+        world.EnsureComponent<Pickupable>().SetTechTypeOverride(Info.TechType);
+        world.EnsureComponent<GlowOilTag>().enabled = true;
+        world.fullyEnable();
+        return world;
+    }
 
-	protected sealed override Atlas.Sprite GetItemSprite() {
-		return EcoceanMod.glowOil.getSprite();
-	}
+    public override int getNumberCollectedAs() {
+        return EcoceanMod.config.getInt(ECConfig.ConfigEntries.GLOWCOUNT);
+    }
 
-	public override GameObject GetGameObject() {
-		GameObject world = EcoceanMod.glowOil.GetGameObject().clone();
-		world.EnsureComponent<TechTag>().type = TechType;
-		world.EnsureComponent<PrefabIdentifier>().ClassId = ClassID;
-		world.EnsureComponent<Pickupable>().SetTechTypeOverride(TechType);
-		world.fullyEnable();
-		return world;
-	}
-
-	protected override void ProcessPrefab(GameObject go) {
-		base.ProcessPrefab(go);
-		go.EnsureComponent<GlowOilTag>().enabled = true;
-	}
-
-	public override int getNumberCollectedAs() {
-		return EcoceanMod.config.getInt(ECConfig.ConfigEntries.GLOWCOUNT);
-	}
-
-	public void register() {
-		this.Patch();
-		PDAManager.PDAPage p = EcoceanMod.glowOil.getPDAEntry();
-		KnownTechHandler.Main.SetAnalysisTechEntry(TechType, new List<TechType>() { template });
-		PDAScanner.EntryData e = new PDAScanner.EntryData();
-		e.key = TechType;
-		e.locked = true;
-		e.scanTime = 3;
-		e.encyclopedia = p.id;
-		PDAHandler.AddCustomScannerEntry(e);
-	}
+    public void register() {
+        this.Register();
+        PDAManager.PDAPage p = EcoceanMod.glowOil.getPDAEntry();
+        KnownTechHandler.SetAnalysisTechEntry(Info.TechType, new List<TechType>() { template });
+        var e = new PDAScanner.EntryData {
+            key = Info.TechType,
+            locked = true,
+            scanTime = 3,
+            encyclopedia = p.id,
+        };
+        PDAHandler.AddCustomScannerEntry(e);
+    }
 }

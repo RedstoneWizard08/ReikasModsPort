@@ -9,12 +9,12 @@ namespace ReikaKalseki.DIAlterra;
 
 public class XMLLocale {
 
-	private static readonly LocaleEntry NOT_FOUND = new LocaleEntry(null, "NOTFOUND", "#NULL", "#NULL", "#NULL");
+	private static readonly LocaleEntry NOT_FOUND = new(null, "NOTFOUND", "#NULL", "#NULL", "#NULL");
 
 	public readonly string relativePath;
 	private readonly Assembly ownerMod;
 
-	private readonly Dictionary<string, LocaleEntry> entries = new Dictionary<string, LocaleEntry>();
+	private readonly Dictionary<string, LocaleEntry> entries = new();
 
 	private XmlDocument xmlFile;
 
@@ -24,11 +24,11 @@ public class XMLLocale {
 	}
 
 	public void load() {
-		xmlFile = this.loadXML();
+		xmlFile = loadXML();
 		if (xmlFile.DocumentElement == null)
 			throw new Exception("No XML file at " + relativePath);
 		foreach (XmlElement e in xmlFile.DocumentElement.ChildNodes) {
-			LocaleEntry lc = this.constructEntry(e);
+			var lc = constructEntry(e);
 			entries[lc.key] = lc;
 		}
 		SNUtil.log("XML DB '" + this + "' loaded " + entries.Count + " entries: " + string.Join(", ", entries.Keys), ownerMod);/*
@@ -38,9 +38,9 @@ public class XMLLocale {
 	}
 
 	private XmlDocument loadXML() {
-		string loc = Path.GetDirectoryName(ownerMod.Location);
-		string path = Path.Combine(loc, relativePath);
-		XmlDocument doc = new XmlDocument();
+		var loc = Path.GetDirectoryName(ownerMod.Location);
+		var path = Path.Combine(loc, relativePath);
+		var doc = new XmlDocument();
 		if (File.Exists(path)) {
 			doc.Load(path);
 		}
@@ -68,8 +68,8 @@ public class XMLLocale {
 	private static string cleanString(string input) {
 		if (string.IsNullOrEmpty(input))
 			return input;
-		string[] parts = input.Trim().Split('\n');
-		for (int i = 0; i < parts.Length; i++) {
+		var parts = input.Trim().Split('\n');
+		for (var i = 0; i < parts.Length; i++) {
 			parts[i] = parts[i].Trim();
 		}
 		return string.Join("\n", parts);
@@ -110,7 +110,7 @@ public class XMLLocale {
 		}
 
 		public T getField<T>(string key) where T : class {
-			return this.getField<T>(key, null);
+			return getField<T>(key, null);
 		}
 
 		public string getString(string key) {
@@ -120,21 +120,21 @@ public class XMLLocale {
 		public T getField<T>(string key, T fallback) {
 			if (element == null)
 				return fallback;
-			Type t = typeof(T);
+			var t = typeof(T);
 			if (t == typeof(Int3)) {
-				Vector3? vec = element.getVector(key);
+				var vec = element.getVector(key);
 				return vec != null && vec.HasValue ? (T)Convert.ChangeType(vec.Value.roundToInt3(), t) : fallback;
 			}
 			if (t == typeof(Vector3)) {
-				Vector3? vec = element.getVector(key);
+				var vec = element.getVector(key);
 				return vec != null && vec.HasValue ? (T)Convert.ChangeType(vec.Value, t) : fallback;
 			}
 			if (t == typeof(Quaternion)) {
-				Quaternion? vec = element.getQuaternion(key);
+				var vec = element.getQuaternion(key);
 				return vec != null && vec.HasValue ? (T)Convert.ChangeType(vec.Value, t) : fallback;
 			}
 			if (t == typeof(string)) {
-				string get = element.getProperty(key, true);
+				var get = element.getProperty(key, true);
 				return (T)Convert.ChangeType(get == null ? null : cleanString(get), t);
 			}
 			if (t == typeof(bool)) {
@@ -144,18 +144,18 @@ public class XMLLocale {
 				return (T)Convert.ChangeType(element.getInt(key, (int)(object)fallback, true), t);
 			}
 			if (t == typeof(float)) {
-				double fall = (double)(object)fallback;
+				var fall = (double)(object)fallback;
 				return (T)Convert.ChangeType((float)element.getFloat(key, fall), t);
 			}
 			if (t == typeof(double)) {
-				double fall = (double)(object)fallback;
+				var fall = (double)(object)fallback;
 				return (T)Convert.ChangeType(element.getFloat(key, fall), t);
 			}
 			throw new Exception("Undefined data type '" + t + "'");
 		}
 
 		public IEnumerable<KeyValuePair<string, string>> getFields() {
-			List<KeyValuePair<string, string>> li = new List<KeyValuePair<string, string>>();
+			List<KeyValuePair<string, string>> li = [];
 			foreach (XmlElement e in element.ChildNodes) {
 				li.Add(new KeyValuePair<string, string>(e.Name, e.InnerText.Trim()));
 			}

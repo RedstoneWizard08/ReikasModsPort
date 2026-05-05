@@ -7,40 +7,40 @@ using UnityEngine;
 namespace ReikaKalseki.DIAlterra;
 
 public static class WorldUtil {
-    private static readonly Int3 batchOffset = new Int3(13, 19, 13);
-    private static readonly Int3 batchOffsetM = new Int3(32, 0, 32);
+    private static readonly Int3 batchOffset = new(13, 19, 13);
+    private static readonly Int3 batchOffsetM = new(32, 0, 32);
     private static readonly int batchSize = 160;
 
-    public static readonly Vector3 DUNES_METEOR = new Vector3(-1125, -380, 1130);
-    public static readonly Vector3 LAVA_DOME = new Vector3(-273, -1355, -152);
-    public static readonly Vector3 COVE_TREE = new Vector3(-923, -920, 439);
-    public static readonly Vector3 SUNBEAM_SITE = new Vector3(301, 15, 1086);
-    public static readonly Vector3 DEGASI_FLOATING_BASE = new Vector3(-763, 20, -1104);
-    public static readonly Vector3 DEGASI_JELLY_BASE = new Vector3(85, -260, -356);
-    public static readonly Vector3 DEGASI_DGR_BASE = new Vector3(-643, -505, -944.5F);
+    public static readonly Vector3 DUNES_METEOR = new(-1125, -380, 1130);
+    public static readonly Vector3 LAVA_DOME = new(-273, -1355, -152);
+    public static readonly Vector3 COVE_TREE = new(-923, -920, 439);
+    public static readonly Vector3 SUNBEAM_SITE = new(301, 15, 1086);
+    public static readonly Vector3 DEGASI_FLOATING_BASE = new(-763, 20, -1104);
+    public static readonly Vector3 DEGASI_JELLY_BASE = new(85, -260, -356);
+    public static readonly Vector3 DEGASI_DGR_BASE = new(-643, -505, -944.5F);
 
-    public static readonly Vector3 SPARSE_VENT = new Vector3(-721.78F, -310.05F, -721.86F);
-    public static readonly Vector3 MOUNTAIN_VENT = new Vector3(750.04F, -289.33F, 1018.49F);
-    public static readonly Vector3 DUNES_VENT = new Vector3(-1158.62F, -253.64F, -140.30F);
-    public static readonly Vector3 MUSHROOM_VENT = new Vector3(651.31F, -176.35F, 478.29F);
-    public static readonly Vector3 GRANDREEF_VENT = new Vector3(-943.27F, -343.35F, -1220.01F);
-    public static readonly Vector3 UNDERISLAND_VENT = new Vector3(-465.46F, -80.58F, 873.23F);
+    public static readonly Vector3 SPARSE_VENT = new(-721.78F, -310.05F, -721.86F);
+    public static readonly Vector3 MOUNTAIN_VENT = new(750.04F, -289.33F, 1018.49F);
+    public static readonly Vector3 DUNES_VENT = new(-1158.62F, -253.64F, -140.30F);
+    public static readonly Vector3 MUSHROOM_VENT = new(651.31F, -176.35F, 478.29F);
+    public static readonly Vector3 GRANDREEF_VENT = new(-943.27F, -343.35F, -1220.01F);
+    public static readonly Vector3 UNDERISLAND_VENT = new(-465.46F, -80.58F, 873.23F);
 
-    public readonly static Vector3 lavaCastleCenter = new Vector3(-49, -1242, 118);
+    public readonly static Vector3 lavaCastleCenter = new(-49, -1242, 118);
     public readonly static float lavaCastleInnerRadius = 65; //75;
 
     public readonly static float lavaCastleRadius =
         Vector3.Distance(new Vector3(-116, -1194, 126), lavaCastleCenter) + 32;
 
-    private static readonly Vector3 auroraPoint1 = new Vector3(746, 0, -362 - 50);
-    private static readonly Vector3 auroraPoint2 = new Vector3(1295, 0, 110 - 50);
+    private static readonly Vector3 auroraPoint1 = new(746, 0, -362 - 50);
+    private static readonly Vector3 auroraPoint2 = new(1295, 0, 110 - 50);
     private static readonly float auroraPointRadius = 275;
 
     private static readonly Bounds prisonAquariumExpanded;
 
     //public static HashSet<PositionedPrefab> registeredGeysers = new HashSet<PositionedPrefab>();
 
-    private static readonly HashSet<Vector3> geysers = new HashSet<Vector3>();
+    private static readonly HashSet<Vector3> geysers = [];
 
     /*
     public static void dumpGeysers() {
@@ -71,7 +71,7 @@ public static class WorldUtil {
     }
 
     public static readonly Dictionary<CompassDirection, Vector3> compassAxes =
-        new Dictionary<CompassDirection, Vector3>() {
+        new() {
             { CompassDirection.NORTH, new Vector3(0, 0, 1) },
             { CompassDirection.EAST, new Vector3(1, 0, 0) },
             { CompassDirection.SOUTH, new Vector3(0, 0, -1) },
@@ -81,13 +81,13 @@ public static class WorldUtil {
     //private static readonly Dictionary<string, string> biomeNames = new Dictionary<string, string>();
 
     static WorldUtil() {
-        string file = Path.Combine(Path.GetDirectoryName(SNUtil.diDLL.Location), "geysers.xml");
+        var file = Path.Combine(Path.GetDirectoryName(SNUtil.diDLL.Location), "geysers.xml");
         if (File.Exists(file)) {
-            XmlDocument doc = new XmlDocument();
+            var doc = new XmlDocument();
             doc.Load(file);
             foreach (XmlElement e in doc.DocumentElement.ChildNodes) {
                 try {
-                    PositionedPrefab pfb = (PositionedPrefab)ObjectTemplate.construct(e);
+                    var pfb = (PositionedPrefab)ObjectTemplate.construct(e);
                     geysers.Add(pfb.position);
                 } catch (Exception ex) {
                     SNUtil.log(ex.ToString());
@@ -113,7 +113,7 @@ public static class WorldUtil {
 
     public static Int3 getBatch(Vector3 pos) {
         //"Therefore e.g. batch (12, 18, 12) covers the voxels from (-128, -160, -128) to (32, 0, 32)."
-        Int3 coord = pos.roundToInt3();
+        var coord = pos.roundToInt3();
         coord -= batchOffsetM;
         coord.x = (int)Math.Floor(coord.x / (float)batchSize);
         coord.y = (int)Math.Floor(coord.y / (float)batchSize);
@@ -124,7 +124,7 @@ public static class WorldUtil {
     /// <returns>The min XYZ corner</returns>
     public static Int3 getWorldCoord(Int3 batch) { //TODO https://i.imgur.com/sbXjIpq.png
         batch -= batchOffset;
-        return (batch * batchSize) + batchOffsetM;
+        return batch * batchSize + batchOffsetM;
     }
 
     /*
@@ -135,9 +135,9 @@ batch_id = (19, 17, 16)
      */
 
     public static GameObject dropItem(Vector3 pos, TechType item) {
-        string id = CraftData.GetClassIdForTechType(item);
+        var id = CraftData.GetClassIdForTechType(item);
         if (id != null) {
-            GameObject go = ObjectUtil.createWorldObject(id);
+            var go = ObjectUtil.createWorldObject(id);
             if (go != null)
                 go.transform.position = pos;
             return go;
@@ -148,10 +148,10 @@ batch_id = (19, 17, 16)
     }
 
     public static mset.Sky getSkybox(string biome, bool allowNotFoundError = true) {
-        BiomeBase bb = BiomeBase.getBiome(biome);
-        if (bb is CustomBiome)
-            return ((CustomBiome)bb).getSky();
-        int idx = WaterBiomeManager.main.GetBiomeIndex(biome);
+        var bb = BiomeBase.GetBiome(biome);
+        if (bb is CustomBiome customBiome)
+            return customBiome.getSky();
+        var idx = WaterBiomeManager.main.GetBiomeIndex(biome);
         if (idx < 0) {
             if (allowNotFoundError) {
                 SNUtil.writeToChat("Biome '" + biome + "' had no sky lookup. See log for biome table.");
@@ -171,7 +171,7 @@ batch_id = (19, 17, 16)
     public static C getClosest<C>(Vector3 pos) where C : Component {
         double distsq = -1;
         C ret = null;
-        foreach (C obj in UnityEngine.Object.FindObjectsOfType<C>()) {
+        foreach (var obj in UnityEngine.Object.FindObjectsOfType<C>()) {
             if (!obj)
                 continue;
             double dd = (pos - obj.transform.position).sqrMagnitude;
@@ -205,7 +205,7 @@ batch_id = (19, 17, 16)
     /// <remarks>Will not find things without colliders!</remarks>
     public static HashSet<R> getObjectsNear<R>(Vector3 pos, float r, Func<GameObject, R> converter = null)
         where R : UnityEngine.Object {
-        HashSet<R> set = new HashSet<R>();
+        HashSet<R> set = [];
         getObjectsNear(
             pos,
             r,
@@ -220,13 +220,13 @@ batch_id = (19, 17, 16)
 
     /// <remarks>Will not find things without colliders!</remarks>
     public static void getGameObjectsNear(Vector3 pos, float r, Action<GameObject> getter) {
-        getObjectsNear<GameObject>(pos, r, getter, null);
+        getObjectsNear(pos, r, getter, null);
     }
 
     /// <remarks>Will not find things without colliders!</remarks>
     public static void getObjectsNear<R>(Vector3 pos, float r, Action<R> getter, Func<GameObject, R> converter = null)
         where R : UnityEngine.Object {
-        getObjectsNear<R>(
+        getObjectsNear(
             pos,
             r,
             obj => {
@@ -244,10 +244,10 @@ batch_id = (19, 17, 16)
         Func<R, bool> getter,
         Func<GameObject, R> converter = null
     ) where R : UnityEngine.Object {
-        HashSet<GameObject> found = new HashSet<GameObject>();
-        foreach (RaycastHit hit in Physics.SphereCastAll(pos, r, Vector3.up, 0.1F)) {
+        HashSet<GameObject> found = [];
+        foreach (var hit in Physics.SphereCastAll(pos, r, Vector3.up, 0.1F)) {
             if (hit.transform) {
-                GameObject go = UWE.Utils.GetEntityRoot(hit.transform.gameObject);
+                var go = UWE.Utils.GetEntityRoot(hit.transform.gameObject);
                 if (!go)
                     go = hit.transform.gameObject;
                 if (!go)
@@ -255,7 +255,7 @@ batch_id = (19, 17, 16)
                 if (found.Contains(go)) //prevent duplicates
                     continue;
                 found.Add(go);
-                UnityEngine.Object obj = converter == null ? (UnityEngine.Object)go : converter(go);
+                var obj = converter == null ? (UnityEngine.Object)go : converter(go);
                 if (obj) {
                     if (getter((R)obj))
                         return;
@@ -267,7 +267,7 @@ batch_id = (19, 17, 16)
     /// <remarks>Will not find things without colliders!</remarks>
     public static GameObject areAnyObjectsNear(Vector3 pos, float r, Predicate<GameObject> check) {
         GameObject ret = null;
-        getObjectsNear<GameObject>(
+        getObjectsNear(
             pos,
             r,
             go => {
@@ -282,30 +282,30 @@ batch_id = (19, 17, 16)
     public static bool isPlantInNativeBiome(GameObject go) {
         if (!go)
             return false;
-        PrefabIdentifier pi = go.FindAncestor<PrefabIdentifier>();
-        TechType tt = CraftData.GetTechType(go);
+        var pi = go.FindAncestor<PrefabIdentifier>();
+        var tt = CraftData.GetTechType(go);
         if (tt == TechType.None) {
-            Plantable p = go.FindAncestor<Plantable>();
+            var p = go.FindAncestor<Plantable>();
             if (p)
                 tt = p.plantTechType;
         }
 
-        VanillaFlora vf = VanillaFlora.getFromID(pi ? pi.ClassId : CraftData.GetClassIdForTechType(tt));
+        var vf = VanillaFlora.getFromID(pi ? pi.ClassId : CraftData.GetClassIdForTechType(tt));
         if (vf != null && vf.isNativeToBiome(go.transform.position))
             return true;
-        BasicCustomPlant plant = BasicCustomPlant.getPlant(tt);
+        var plant = BasicCustomPlant.getPlant(tt);
         return plant != null && plant.isNativeToBiome(go.transform.position);
     }
 
     public static bool isInCave(Vector3 pos) {
-        if (BiomeBase.getBiome(pos).isCaveBiome())
+        if (BiomeBase.GetBiome(pos).IsCaveBiome())
             return true;
-        string b = WaterBiomeManager.main.GetBiome(pos, false);
+        var b = WaterBiomeManager.main.GetBiome(pos, false);
         return !string.IsNullOrEmpty(b) && b.ToLowerInvariant().Contains("_cave");
     }
 
     public static bool isInWreck(Vector3 pos) {
-        string biome = WaterBiomeManager.main.GetBiome(pos, false);
+        var biome = WaterBiomeManager.main.GetBiome(pos, false);
         return !string.IsNullOrEmpty(biome) && biome.ToLowerInvariant().Contains("wreck");
     }
 
@@ -325,9 +325,9 @@ batch_id = (19, 17, 16)
         if (hit) {
 
         }*/
-        Vector3 dd = pos2 - pos1;
-        RaycastHit[] hits = Physics.RaycastAll(pos1, dd.normalized, dd.magnitude);
-        foreach (RaycastHit hit in hits) {
+        var dd = pos2 - pos1;
+        var hits = Physics.RaycastAll(pos1, dd.normalized, dd.magnitude);
+        foreach (var hit in hits) {
             if (!hit.collider || hit.collider.isTrigger)
                 continue;
             if (hit.transform == o1.transform || hit.transform == o2.transform)
@@ -350,13 +350,13 @@ batch_id = (19, 17, 16)
     }*/
 
     public static List<RaycastHit> getTerrainMountedPositionsAround(Vector3 pos, float range, int num) {
-        List<RaycastHit> ret = new List<RaycastHit>();
-        for (int i = 0; i < num; i++) {
-            Vector3 diff =
+        List<RaycastHit> ret = [];
+        for (var i = 0; i < num; i++) {
+            var diff =
                 new Vector3(UnityEngine.Random.Range(-range, range), 0, UnityEngine.Random.Range(-range, range))
                     .setLength(UnityEngine.Random.Range(0.01F, range));
-            Vector3 pos2 = (pos + diff).setY(pos.y + 15);
-            RaycastHit? hit = getTerrainVectorAt(pos2, 25);
+            var pos2 = (pos + diff).setY(pos.y + 15);
+            var hit = getTerrainVectorAt(pos2, 25);
             if (hit.HasValue)
                 ret.Add(hit.Value);
         }
@@ -365,19 +365,19 @@ batch_id = (19, 17, 16)
     }
 
     public static RaycastHit? getTerrainVectorAt(Vector3 pos, float maxDown = 1, Vector3? axis = null) {
-        Ray ray = new Ray(pos, axis.HasValue ? axis.Value : Vector3.down);
+        var ray = new Ray(pos, axis.HasValue ? axis.Value : Vector3.down);
         return UWE.Utils.RaycastIntoSharedBuffer(ray, maxDown, Voxeland.GetTerrainLayerMask()) > 0
             ? UWE.Utils.sharedHitBuffer[0]
             : (RaycastHit?)null;
     }
 
     public static bool isPrecursorBiome(Vector3 pos) {
-        string over = AtmosphereDirector.main.GetBiomeOverride();
+        var over = AtmosphereDirector.main.GetBiomeOverride();
         return !string.IsNullOrEmpty(over) && over.ToLowerInvariant().Contains("precursor");
     }
 
     public static bool isInDRF(Vector3 pos) {
-        return VanillaBiomes.LOSTRIVER.isInBiome(pos) && isPrecursorBiome(pos);
+        return VanillaBiomes.Lostriver.IsInBiome(pos) && isPrecursorBiome(pos);
     }
 
     public static bool isInLavaCastle(Player ep) {
@@ -385,7 +385,7 @@ batch_id = (19, 17, 16)
     }
 
     public static bool isInLavaCastle(Vector3 pos) {
-        return VanillaBiomes.ILZ.isInBiome(pos) && isPrecursorBiome(pos);
+        return VanillaBiomes.Ilz.IsInBiome(pos) && isPrecursorBiome(pos);
     }
 
     public static bool isInsideAurora2D(Vector3 pos, float extra = 0) {
@@ -393,7 +393,7 @@ batch_id = (19, 17, 16)
     }
 
     public static bool isMountainIsland(Vector3 pos) {
-        return pos.y > 1 && ((pos - SUNBEAM_SITE).sqrMagnitude <= 2500 || VanillaBiomes.MOUNTAINS.isInBiome(pos));
+        return pos.y > 1 && ((pos - SUNBEAM_SITE).sqrMagnitude <= 2500 || VanillaBiomes.Mountains.IsInBiome(pos));
     }
 
     public static string getRegionalDescription(Vector3 pos, bool includeDepth) {
@@ -403,24 +403,24 @@ batch_id = (19, 17, 16)
             return "Meteor Crater";
         if (isMountainIsland(pos))
             return "Mountain Island";
-        float dist = (pos - lavaCastleCenter).sqrMagnitude;
-        if (dist <= (lavaCastleInnerRadius * lavaCastleInnerRadius) + 225)
+        var dist = (pos - lavaCastleCenter).sqrMagnitude;
+        if (dist <= lavaCastleInnerRadius * lavaCastleInnerRadius + 225)
             return "Lava Castle (Interior)";
-        if (dist <= (lavaCastleRadius * lavaCastleRadius) + 900)
+        if (dist <= lavaCastleRadius * lavaCastleRadius + 900)
             return "Lava Castle";
-        BiomeBase bb = BiomeBase.getBiome(pos);
-        if (pos.y < -650 && !bb.isCaveBiome()) {
+        var bb = BiomeBase.GetBiome(pos);
+        if (pos.y < -650 && !bb.IsCaveBiome()) {
             bb = pos.y < -1000
-                ? (pos.y < -1400 ? VanillaBiomes.ALZ : VanillaBiomes.ILZ)
-                : (pos.y < -870 && (pos - COVE_TREE).sqrMagnitude <= 40000
-                    ? VanillaBiomes.COVE
-                    : VanillaBiomes.LOSTRIVER);
+                ? pos.y < -1400 ? VanillaBiomes.Alz : VanillaBiomes.Ilz
+                : pos.y < -870 && (pos - COVE_TREE).sqrMagnitude <= 40000
+                    ? VanillaBiomes.Cove
+                    : VanillaBiomes.Lostriver;
         }
 
-        if (BiomeBase.isUnrecognized(bb))
+        if (BiomeBase.IsUnrecognized(bb))
             return "Unknown Biome @ " + pos;
-        if (bb == VanillaBiomes.LOSTRIVER || bb == VanillaBiomes.CRASH) {
-            switch (DIHooks.getBiomeAt(WaterBiomeManager.main.GetBiome(pos), pos)) {
+        if (bb == VanillaBiomes.Lostriver || bb == VanillaBiomes.Crash) {
+            switch (DIHooks.GetBiomeAt(WaterBiomeManager.main.GetBiome(pos), pos)) {
                 case "LostRiver_BonesField_Corridor":
                 case "LostRiver_BonesField_Corridor_Stream":
                 case "LostRiver_BonesField":
@@ -444,15 +444,15 @@ batch_id = (19, 17, 16)
             }
         }
 
-        if (bb == VanillaBiomes.CRASH) {
+        if (bb == VanillaBiomes.Crash) {
             if (isInsideAurora2D(pos, 100)) {
-                string ret = "The Aurora";
+                var ret = "The Aurora";
                 if (pos.y >= 5 && CrashedShipExploder.main.IsExploded()) {
                     ret += " (Inside)";
                 } else {
                     //Vector3 ship = (auroraPoint1+auroraPoint2)*0.5F;//CrashedShipExploder.main.transform.position;
-                    Vector3 point = MathUtil.getClosestPointToLineSegment(pos, auroraPoint1, auroraPoint2);
-                    float angle = Vector3.SignedAngle(auroraPoint2 - auroraPoint1, pos - point, Vector3.up);
+                    var point = MathUtil.getClosestPointToLineSegment(pos, auroraPoint1, auroraPoint2);
+                    var angle = Vector3.SignedAngle(auroraPoint2 - auroraPoint1, pos - point, Vector3.up);
                     angle = (angle + 360) % 360;
                     if (Mathf.Abs(angle) <= 30)
                         ret += " (Front)";
@@ -468,13 +468,13 @@ batch_id = (19, 17, 16)
             }
         }
 
-        string biome = bb.displayName;
-        int depth = (int)-pos.y;
-        string ew = pos.x < 0 ? "West" : "East";
-        string ns = pos.z > 0 ? "North" : "South";
-        if (!bb.existsInSeveralPlaces() || Math.Abs(pos.x) < 250 || Math.Abs(pos.x) < Math.Abs(pos.z) / 2.5F)
+        var biome = bb.DisplayName;
+        var depth = (int)-pos.y;
+        var ew = pos.x < 0 ? "West" : "East";
+        var ns = pos.z > 0 ? "North" : "South";
+        if (!bb.ExistsInSeveralPlaces() || Math.Abs(pos.x) < 250 || Math.Abs(pos.x) < Math.Abs(pos.z) / 2.5F)
             ew = "";
-        if (!bb.existsInSeveralPlaces() || Math.Abs(pos.z) < 250 || Math.Abs(pos.z) < Math.Abs(pos.x) / 2.5F)
+        if (!bb.ExistsInSeveralPlaces() || Math.Abs(pos.z) < 250 || Math.Abs(pos.z) < Math.Abs(pos.x) / 2.5F)
             ns = "";
         if (Vector3.Distance(pos, getNearestGeyserPosition(pos)) <= 50) {
             ew = "";
@@ -482,16 +482,16 @@ batch_id = (19, 17, 16)
             biome += " Geyser";
         }
 
-        bool pre = !string.IsNullOrEmpty(ew) || !string.IsNullOrEmpty(ns);
-        string loc = ns + ew + (pre ? " " : "") + biome;
+        var pre = !string.IsNullOrEmpty(ew) || !string.IsNullOrEmpty(ns);
+        var loc = ns + ew + (pre ? " " : "") + biome;
         if (includeDepth)
             loc += " (" + depth + "m)";
         return loc;
     }
 
     public static Vector3 getNearestGeyserPosition(Vector3 pos) {
-        Vector3 nearest = new Vector3(0, 8000, 0);
-        foreach (Vector3 at in geysers) {
+        var nearest = new Vector3(0, 8000, 0);
+        foreach (var at in geysers) {
             if ((at - pos).sqrMagnitude < (nearest - pos).sqrMagnitude)
                 nearest = at;
         }
@@ -512,12 +512,12 @@ batch_id = (19, 17, 16)
     */
     public static void setParticlesTemporary(ParticleSystem p, float dur, float killOffset = 5) {
         p.Play(true);
-        p.gameObject.EnsureComponent<TransientParticleTag>().Invoke("stop", dur);
+        p.gameObject.EnsureComponent<TransientParticleTag>().Invoke(nameof(TransientParticleTag.stop), dur);
         p.gameObject.destroy(false, dur + killOffset);
-        PrefabIdentifier pi = p.gameObject.FindAncestor<PrefabIdentifier>();
+        var pi = p.gameObject.FindAncestor<PrefabIdentifier>();
         if (pi)
             pi.destroy();
-        LargeWorldEntity lw = p.gameObject.FindAncestor<LargeWorldEntity>();
+        var lw = p.gameObject.FindAncestor<LargeWorldEntity>();
         if (lw)
             lw.destroy();
     }
@@ -531,18 +531,21 @@ batch_id = (19, 17, 16)
     ) {
         if (!forceSpawn && Vector3.Distance(pos, Player.main.transform.position) >= 200)
             return null;
-        GameObject particle = ObjectUtil.createWorldObject(pfb);
+        var particle = ObjectUtil.createWorldObject(pfb);
         particle.SetActive(true);
         particle.transform.position = pos;
-        ParticleSystem p = particle.GetComponent<ParticleSystem>();
+        var p = particle.GetComponent<ParticleSystem>();
         setParticlesTemporary(p, dur, killOffset);
         return p;
     }
 
     public static GameObject reparentAllNearTo(string name, Vector3 pos, float r, Predicate<GameObject> check) {
-        GameObject ctr = new GameObject(name);
-        ctr.transform.position = pos;
-        WorldUtil.getObjectsNear<GameObject>(
+        var ctr = new GameObject(name) {
+            transform = {
+                position = pos,
+            },
+        };
+        getObjectsNear(
             pos,
             r,
             go => ObjectUtil.reparentTo(ctr, go),
@@ -553,7 +556,7 @@ batch_id = (19, 17, 16)
 
     public static void reparentAllNearTo(GameObject ctr, Vector3 pos, float r, Predicate<GameObject> check) {
         ctr.transform.position = pos;
-        WorldUtil.getObjectsNear<GameObject>(
+        getObjectsNear(
             pos,
             r,
             go => ObjectUtil.reparentTo(ctr, go),
@@ -562,18 +565,18 @@ batch_id = (19, 17, 16)
     }
 
     public static GameObject getBatch(int x, int y, int z) {
-        Transform root = LargeWorld.main.transform.parent;
+        var root = LargeWorld.main.transform.parent;
         return root.gameObject.getChildObject("Batches/Batch " + x + "," + y + "," + z + " objects");
     }
 
     public static StasisSphere createStasisSphere(Vector3 pos, float r, float pwr = 1) {
-        GameObject sph = ObjectUtil.lookupPrefab(TechType.StasisRifle).GetResult().GetComponent<StasisRifle>()
+        var sph = ObjectUtil.lookupPrefab(TechType.StasisRifle).GetResult().GetComponent<StasisRifle>()
             .effectSpherePrefab;
         sph = sph.clone();
         sph.SetActive(true);
         sph.fullyEnable();
         sph.transform.position = pos;
-        StasisSphere ss = sph.GetComponent<StasisSphere>();
+        var ss = sph.GetComponent<StasisSphere>();
         ss.fieldEnergy = pwr;
         ss.time = Mathf.Lerp(ss.minTime, ss.maxTime, ss.fieldEnergy);
         ss.radius = r;
@@ -593,17 +596,17 @@ batch_id = (19, 17, 16)
         return Player.main.precursorOutOfWater && Player.main.transform.position.y > 30;
     }
 
-    class TransientParticleTag : MonoBehaviour {
+    private class TransientParticleTag : MonoBehaviour {
         public void stop() {
-            this.GetComponent<ParticleSystem>().Stop(true, ParticleSystemStopBehavior.StopEmitting);
+            GetComponent<ParticleSystem>().Stop(true, ParticleSystemStopBehavior.StopEmitting);
         }
 
-        void OnDestroy() {
+        private void OnDestroy() {
             if (gameObject)
                 gameObject.destroy(false);
         }
 
-        void OnDisable() {
+        private void OnDisable() {
             if (gameObject)
                 gameObject.destroy(false);
         }

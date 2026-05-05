@@ -5,12 +5,12 @@ using Nautilus.Assets;
 namespace ReikaKalseki.DIAlterra;
 
 public class ItemRegistry {
-    public static readonly ItemRegistry instance = new ItemRegistry();
+    public static readonly ItemRegistry instance = new();
 
-    private readonly Dictionary<string, CustomPrefab> registry = new Dictionary<string, CustomPrefab>();
-    private readonly Dictionary<TechType, CustomPrefab> registryTech = new Dictionary<TechType, CustomPrefab>();
+    private readonly Dictionary<string, CustomPrefab> registry = new();
+    private readonly Dictionary<TechType, CustomPrefab> registryTech = new();
 
-    private readonly List<Action<CustomPrefab>> listeners = new List<Action<CustomPrefab>>();
+    private readonly List<Action<CustomPrefab>> listeners = [];
 
     private ItemRegistry() {
     }
@@ -45,7 +45,7 @@ public class ItemRegistry {
         registry[di.Info.ClassID] = di;
         registryTech[di.Info.TechType] = di;
         SNUtil.log("Registering item '" + di + "'", SNUtil.tryGetModDLL(true));
-        foreach (Action<CustomPrefab> a in listeners) {
+        foreach (var a in listeners) {
             a(di);
         }
     }

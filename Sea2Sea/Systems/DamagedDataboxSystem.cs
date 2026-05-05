@@ -6,15 +6,15 @@ namespace ReikaKalseki.SeaToSea;
 
 public class DamagedDataboxSystem {
 
-	public static readonly DamagedDataboxSystem instance = new DamagedDataboxSystem();
+	public static readonly DamagedDataboxSystem instance = new();
 
-	private readonly Dictionary<Vector3, DamagedDatabox> data = new Dictionary<Vector3, DamagedDatabox>();
+	private readonly Dictionary<Vector3, DamagedDatabox> data = new();
 
 	private DamagedDataboxSystem() {
 		data[C2CHooks.crashMesa] = new DamagedDatabox(20, 0, 10, d: 4);
 		data[C2CHooks.trailerBaseBioreactor] = new DamagedDatabox(30, 0, 30, d: 2);
 		data[VoidSpikesBiome.signalLocation] = new DamagedDatabox(20, 0.33F, 60, d: 0.5F);
-		data[SeaToSeaMod.treaderSignal.initialPosition] = new DamagedDatabox(30, 0.15F, 10, d: 2.5F);
+		data[SeaToSeaMod.TreaderSignal.initialPosition] = new DamagedDatabox(30, 0.15F, 10, d: 2.5F);
 		data[new Vector3(-114.6F, -234.5F, 854)] = new DamagedDatabox(20, 0.4F); //autofarmer
 		data[new Vector3(986.3F, -271.8F, 1378.6F)] = new DamagedDatabox(45, 0.85F, d: 1.5F); //rebreather v2
 		data[new Vector3(110, -264, -369)] = new DamagedDatabox(20, 0.25F, 2, d: 1F); //high cap tank in jellyshroom
@@ -22,12 +22,13 @@ public class DamagedDataboxSystem {
 	}
 
 	internal void onDataboxSpawn(GameObject go) {
-		DamagedDatabox db = this.getEntry(go.transform.position);
+		var db = getEntry(go.transform.position);
 		if (db != null) {
-			LiveMixin lv = go.EnsureComponent<LiveMixin>();
-			lv.data = new LiveMixinData();
-			lv.data.maxHealth = db.secondsToRepair * 35;
-			lv.data.weldable = true;
+			var lv = go.EnsureComponent<LiveMixin>();
+			lv.data = new LiveMixinData {
+				maxHealth = db.secondsToRepair * 35,
+				weldable = true,
+			};
 			lv.health = Mathf.Max(0.01F, db.initialRepairFraction * lv.data.maxHealth);
 			go.EnsureComponent<BrokenDatabox>();
 			go.EnsureComponent<ImmuneToPropulsioncannon>();
@@ -36,7 +37,7 @@ public class DamagedDataboxSystem {
 	}
 
 	internal DamagedDatabox getEntry(Vector3 pos) {
-		foreach (KeyValuePair<Vector3, DamagedDatabox> kvp in data) {
+		foreach (var kvp in data) {
 			if (Vector3.Distance(kvp.Key, pos) <= kvp.Value.searchRadius) {
 				return kvp.Value;
 			}
@@ -44,7 +45,7 @@ public class DamagedDataboxSystem {
 		return null;
 	}
 
-	class BrokenDatabox : MonoBehaviour {
+	private class BrokenDatabox : MonoBehaviour {
 
 		private VFXController sparker;
 		private LiveMixin live;
@@ -53,16 +54,16 @@ public class DamagedDataboxSystem {
 
 		private DamagedDatabox entry;
 
-		void Update() {
+		private void Update() {
 			if (entry == null) {
 				entry = instance.getEntry(transform.position);
 			}
 
 			if (!live) {
-				live = this.GetComponent<LiveMixin>();
+				live = GetComponent<LiveMixin>();
 			}
 			if (!sparker) {
-				GameObject welder = ObjectUtil.createWorldObject("9ef36033-b60c-4f8b-8c3a-b15035de3116", false, false);
+				var welder = ObjectUtil.createWorldObject("9ef36033-b60c-4f8b-8c3a-b15035de3116", false, false);
 				sparker = welder.GetComponent<Welder>().fxControl.clone();
 				sparker.transform.parent = transform;
 				sparker.transform.localPosition = new Vector3(0, 0.2F, 0);
@@ -77,7 +78,7 @@ public class DamagedDataboxSystem {
 			else {
 				if (entry != null && live.health > live.maxHealth * 0.02F)
 					live.TakeDamage(Time.deltaTime * live.maxHealth * 0.01F * entry.degradeRate);
-				if (UnityEngine.Random.Range(0, isSparking ? 40 : 15) == 0) {
+				if (Random.Range(0, isSparking ? 40 : 15) == 0) {
 					if (isSparking)
 						sparker.StopAndDestroy(0);
 					else
@@ -104,7 +105,8 @@ public class DamagedDataboxSystem {
 		}
 
 		public override string ToString() {
-			return string.Format("[DamagedDatabox SecondsToRepair={0}, InitialRepairFraction={1}, SearchRadius={2}, degradeRate={3}]", secondsToRepair, initialRepairFraction, searchRadius, degradeRate);
+			return
+				$"[DamagedDatabox SecondsToRepair={secondsToRepair}, InitialRepairFraction={initialRepairFraction}, SearchRadius={searchRadius}, degradeRate={degradeRate}]";
 		}
 
 

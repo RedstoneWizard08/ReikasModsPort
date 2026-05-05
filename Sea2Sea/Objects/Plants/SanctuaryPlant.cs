@@ -5,11 +5,11 @@ using UnityEngine;
 namespace ReikaKalseki.SeaToSea;
 
 public class SanctuaryPlant : BasicCustomPlant, CustomHarvestBehavior {
-    public static readonly Color BASE_COLOR = new Color(26 / 255F, 231 / 255F, 220 / 255F, 1);
+    public static readonly Color BASE_COLOR = new(26 / 255F, 231 / 255F, 220 / 255F, 1);
 
     [SetsRequiredMembers]
     public SanctuaryPlant() : base(
-        SeaToSeaMod.itemLocale.getEntry("SANCTUARY_PLANT"),
+        SeaToSeaMod.ItemLocale.getEntry("SANCTUARY_PLANT"),
         new FloraPrefabFetch("99bbd145-d50e-4afb-bff0-27b33243642b"),
         "ce20c267-b52b-4866-8134-f3f78072af3e",
         "Core"
@@ -43,9 +43,7 @@ public class SanctuaryPlant : BasicCustomPlant, CustomHarvestBehavior {
             : null;
     }
 
-    public override Vector2int SizeInInventory {
-        get { return new Vector2int(2, 2); }
-    }
+    public override Vector2int SizeInInventory => new(2, 2);
 
     public override void prepareGameObject(GameObject go, Renderer[] r) {
         base.prepareGameObject(go, r);
@@ -59,21 +57,21 @@ public class SanctuaryPlant : BasicCustomPlant, CustomHarvestBehavior {
         go.removeComponent<Collider>();
         go.removeChildObject("Generic_plant_seed");
 
-        GameObject pfb = ObjectUtil.lookupPrefab(TechType.SeaTreaderPoop).GetResult();
-        GameObject collider = pfb.getChildObject("Sphere").clone();
-        GameObject render = pfb.getChildObject("sea_treader_poop_01").clone();
+        var pfb = ObjectUtil.lookupPrefab(TechType.SeaTreaderPoop).GetResult();
+        var collider = pfb.getChildObject("Sphere").clone();
+        var render = pfb.getChildObject("sea_treader_poop_01").clone();
         render.transform.SetParent(go.transform);
         collider.transform.SetParent(go.transform);
 
         go.GetComponent<Rigidbody>().copyObject(pfb.GetComponent<Rigidbody>());
 
-        Renderer r = render.GetComponentInChildren<Renderer>();
-        RenderUtil.swapTextures(SeaToSeaMod.modDLL, r, "Textures/Plants/Sanctuary_Seed");
+        var r = render.GetComponentInChildren<Renderer>();
+        RenderUtil.swapTextures(SeaToSeaMod.ModDLL, r, "Textures/Plants/Sanctuary_Seed");
         RenderUtil.makeTransparent(r);
-        Light l = go.addLight(1.4F, 8, BASE_COLOR);
+        var l = go.addLight(1.4F, 8, BASE_COLOR);
         l.shadows = LightShadows.Soft;
 
-        Eatable ea = go.EnsureComponent<Eatable>();
+        var ea = go.EnsureComponent<Eatable>();
         ea.decomposes = false;
         ea.foodValue = 12;
         ea.waterValue = 0;
@@ -96,40 +94,40 @@ internal class SanctuaryPlantTag : MonoBehaviour, IHandTarget {
     private SphereCollider bounds;
 
     private float lastHarvest = -1;
-    bool prevHarvested;
+    private bool prevHarvested;
 
     //private float lastAreaCheck = -1;
 
     private static readonly float GROW_TIME = 1200; //20 min
 
-    void Start() {
+    private void Start() {
         isGrown = gameObject.GetComponent<GrownPlant>() != null;
         //if (gameObject.transform.position.y > -10)
         //	gameObject.destroy(false);
         if (isGrown) {
             gameObject.SetActive(true);
-            gameObject.transform.localScale = Vector3.one * UnityEngine.Random.Range(0.7F, 1.0F);
+            gameObject.transform.localScale = Vector3.one * Random.Range(0.7F, 1.0F);
         } else {
             gameObject.transform.localScale = Vector3.one * 3;
         }
     }
 
-    void Update() {
+    private void Update() {
         ObjectUtil.cleanUpOriginObjects(this);
         gameObject.layer = LayerID.Useable;
         if (!light)
-            light = this.GetComponentInChildren<Light>();
+            light = GetComponentInChildren<Light>();
         if (!light) {
-            GameObject go = ObjectUtil.lookupPrefab("99bbd145-d50e-4afb-bff0-27b33243642b")
+            var go = ObjectUtil.lookupPrefab("99bbd145-d50e-4afb-bff0-27b33243642b")
                 .GetComponentInChildren<Light>().gameObject.clone();
             go.transform.SetParent(transform);
             light = go.GetComponent<Light>();
         }
 
         if (!bounds)
-            bounds = this.GetComponentInChildren<SphereCollider>();
+            bounds = GetComponentInChildren<SphereCollider>();
         if (mainRender == null)
-            mainRender = this.GetComponentInChildren<Renderer>();
+            mainRender = GetComponentInChildren<Renderer>();
         light.transform.localPosition = Vector3.up * 0.91F;
         /*
         if (!isGrown && DayNightCycle.main.timePassedAsFloat-lastAreaCheck >= 1 && CrashZoneSanctuaryBiome.instance.isInBiome(transform.position)) {
@@ -140,10 +138,10 @@ internal class SanctuaryPlantTag : MonoBehaviour, IHandTarget {
             lastAreaCheck = DayNightCycle.main.timePassedAsFloat;
         }*/
 
-        bool harvested = this.isHarvested();
+        var harvested = isHarvested();
         if (harvested != prevHarvested) {
-            string fn = harvested ? "_Harvest" : "";
-            RenderUtil.swapTextures(SeaToSeaMod.modDLL, mainRender, "Textures/Plants/SanctuaryPlant" + fn);
+            var fn = harvested ? "_Harvest" : "";
+            RenderUtil.swapTextures(SeaToSeaMod.ModDLL, mainRender, "Textures/Plants/SanctuaryPlant" + fn);
         }
 
         prevHarvested = harvested;
@@ -151,7 +149,7 @@ internal class SanctuaryPlantTag : MonoBehaviour, IHandTarget {
         bounds.radius = 0.3F;
         bounds.center = Vector3.up * 0.25F;
         light.transform.localPosition = Vector3.up * (harvested ? 1.4F : 0.91F);
-        light.intensity = harvested ? 0.75F : (isGrown ? 1.25F : 1.6F);
+        light.intensity = harvested ? 0.75F : isGrown ? 1.25F : 1.6F;
         light.range = harvested ? 7 : 24;
         light.color = harvested ? new Color(130 / 255F, 134 / 255F, 1, 1) : SanctuaryPlant.BASE_COLOR;
         light.shadows = LightShadows.Soft;
@@ -166,15 +164,15 @@ internal class SanctuaryPlantTag : MonoBehaviour, IHandTarget {
     }
 
     internal bool tryHarvest() {
-        if (this.isHarvested())
+        if (isHarvested())
             return false;
         lastHarvest = DayNightCycle.main.timePassedAsFloat;
         return true;
     }
 
     public void OnHandHover(GUIHand hand) {
-        if (this.isHarvested()) {
-            HandReticle.main.SetProgress(this.getGrowthProgress());
+        if (isHarvested()) {
+            HandReticle.main.SetProgress(getGrowthProgress());
             HandReticle.main.SetIcon(HandReticle.IconType.Progress, 1f);
             HandReticle.main.SetText(HandReticle.TextType.Use, "SanctuaryPlantGrowing", true);
             HandReticle.main.SetTargetDistance(8);
@@ -186,7 +184,7 @@ internal class SanctuaryPlantTag : MonoBehaviour, IHandTarget {
     }
 
     public void OnHandClick(GUIHand hand) {
-        if (this.tryHarvest())
+        if (tryHarvest())
             InventoryUtil.addItem(C2CItems.sanctuaryPlant.seed.Info.TechType);
     }
 }

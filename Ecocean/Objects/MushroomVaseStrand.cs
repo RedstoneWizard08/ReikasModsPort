@@ -1,381 +1,413 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using ReikaKalseki.DIAlterra;
 using UnityEngine;
 
 namespace ReikaKalseki.Ecocean;
 
 public class MushroomVaseStrand : BasicCustomPlant, CustomHarvestBehavior {
+    public static readonly Dictionary<BiomeBase, VaseStrandPlanktonSpawnData> planktonAreas = new();
+    public static readonly WeightedRandom<TechType> filterDrops = new WeightedRandom<TechType>();
 
-	public static readonly Dictionary<BiomeBase, VaseStrandPlanktonSpawnData> planktonAreas = new Dictionary<BiomeBase, VaseStrandPlanktonSpawnData>();
-	public static readonly WeightedRandom<TechType> filterDrops = new WeightedRandom<TechType>();
+    public static event Action<MushroomVaseStrandTag, TechType> vaseStrandFilterCollectEvent;
 
-	public static event Action<MushroomVaseStrandTag, TechType> vaseStrandFilterCollectEvent;
+    [SetsRequiredMembers]
+    public MushroomVaseStrand(XMLLocale.LocaleEntry e) : base(
+        e,
+        new FloraPrefabFetch(VanillaFlora.REDWORT),
+        "8bc4f11e-17b9-447e-be0c-2fbe324e64f5",
+        "Tendrils"
+    ) {
+        finalCutBonus = 0;
+        collectionMethod = HarvestType.None;
+        AddOnRegister(() => {
+                this.addPDAEntry(e.pda, 2F, e.getString("header"));
+                SaveSystem.addSaveHandler(
+                    ClassID,
+                    new SaveSystem.ComponentFieldSaveHandler<MushroomVaseStrandTag>()
+                        .addField("resourceGenerationProgress")
+                        .addField("lastHarvest")
+                );
+            }
+        );
 
-	public MushroomVaseStrand(XMLLocale.LocaleEntry e) : base(e, new FloraPrefabFetch(VanillaFlora.REDWORT), "8bc4f11e-17b9-447e-be0c-2fbe324e64f5", "Tendrils") {
-		finalCutBonus = 0;
-		collectionMethod = HarvestType.None;
-		OnFinishedPatching += () => {
-			this.addPDAEntry(e.pda, 2F, e.getString("header"));
-			SaveSystem.addSaveHandler(ClassID, new SaveSystem.ComponentFieldSaveHandler<MushroomVaseStrandTag>().addField("resourceGenerationProgress").addField("lastHarvest"));
-		};
+        PlanktonCloud.forSpawnData(s => addSpawnData(s.biome, s.spawnSuccessRate * 0.05F));
+        addSpawnData(VanillaBiomes.Dunes, planktonAreas[VanillaBiomes.Crag].spawnRate * 1.5F);
+        addSpawnData(VanillaBiomes.Treader, planktonAreas[VanillaBiomes.Crag].spawnRate * 1.5F);
+        addSpawnData(VanillaBiomes.Redgrass, planktonAreas[VanillaBiomes.Sparse].spawnRate * 0.5F);
+        addSpawnData(VanillaBiomes.Mushroom, planktonAreas[VanillaBiomes.Sparse].spawnRate * 0.5F);
+    }
 
-		PlanktonCloud.forSpawnData(s => addSpawnData(s.biome, s.spawnSuccessRate * 0.05F));
-		addSpawnData(VanillaBiomes.DUNES, planktonAreas[VanillaBiomes.CRAG].spawnRate * 1.5F);
-		addSpawnData(VanillaBiomes.TREADER, planktonAreas[VanillaBiomes.CRAG].spawnRate * 1.5F);
-		addSpawnData(VanillaBiomes.REDGRASS, planktonAreas[VanillaBiomes.SPARSE].spawnRate * 0.5F);
-		addSpawnData(VanillaBiomes.MUSHROOM, planktonAreas[VanillaBiomes.SPARSE].spawnRate * 0.5F);
-	}
+    private static void addSpawnData(BiomeBase bb, float r) {
+        planktonAreas[bb] = new VaseStrandPlanktonSpawnData(bb, r);
+    }
 
-	private static void addSpawnData(BiomeBase bb, float r) {
-		planktonAreas[bb] = new VaseStrandPlanktonSpawnData(bb, r);
-	}
+    internal static float getSpawnRate(BiomeBase biome) {
+        return planktonAreas.ContainsKey(biome) ? planktonAreas[biome].spawnRate : 0;
+    }
 
-	internal static float getSpawnRate(BiomeBase biome) {
-		return planktonAreas.ContainsKey(biome) ? planktonAreas[biome].spawnRate : 0;
-	}
+    protected override bool generateSeed() {
+        return true;
+    }
 
-	protected override bool generateSeed() {
-		return true;
-	}
+    public override Vector2int SizeInInventory => new(1, 1);
 
-	public override Vector2int SizeInInventory {
-		get { return new Vector2int(1, 1); }
-	}
+    public override void modifySeed(GameObject go) {
+    }
 
-	public override void modifySeed(GameObject go) {
+    public override void prepareGameObject(GameObject go, Renderer[] r0) {
+        base.prepareGameObject(go, r0);
 
-	}
+        var mdl = r0[0].transform.parent;
+        var lv = go.GetComponent<LiveMixin>();
+        lv.data.maxHealth = 80; //only applies to farmed
+        lv.data.knifeable = true;
+        lv.health = lv.maxHealth;
 
-	public override void prepareGameObject(GameObject go, Renderer[] r0) {
-		base.prepareGameObject(go, r0);
+        //SNUtil.log("r0: "+r0.Length+" = "+r0.Select(r => r.name+" @ "+r.gameObject.GetFullHierarchyPath()).toDebugString());
 
-		Transform mdl = r0[0].transform.parent;
-		LiveMixin lv = go.GetComponent<LiveMixin>();
-		lv.data.maxHealth = 80; //only applies to farmed
-		lv.data.knifeable = true;
-		lv.health = lv.maxHealth;
+        foreach (var r in r0)
+            r.gameObject.destroy(false);
 
-		//SNUtil.log("r0: "+r0.Length+" = "+r0.Select(r => r.name+" @ "+r.gameObject.GetFullHierarchyPath()).toDebugString());
+        GameObject pfb = ObjectUtil.lookupPrefab(DecoPlants.MUSHROOM_VASE_STRANDS.prefab);
+        var a = pfb.GetComponentInChildren<Animator>();
+        GameObject rg = a.gameObject.clone();
+        rg.transform.SetParent(mdl);
+        rg.transform.localPosition = Vector3.zero;
+        rg.transform.localRotation = Quaternion.Euler(90, 0, 0);
 
-		foreach (Renderer r in r0)
-			r.gameObject.destroy(false);
+        go.EnsureComponent<MushroomVaseStrandTag>();
+    }
 
-		GameObject pfb = ObjectUtil.lookupPrefab(DecoPlants.MUSHROOM_VASE_STRANDS.prefab);
-		Animator a = pfb.GetComponentInChildren<Animator>();
-		GameObject rg = a.gameObject.clone();
-		rg.transform.SetParent(mdl);
-		rg.transform.localPosition = Vector3.zero;
-		rg.transform.localRotation = Quaternion.Euler(90, 0, 0);
+    public static void setupCollider(GameObject go) {
+        var cc = go.EnsureComponent<CapsuleCollider>();
+        cc.radius = 0.15F;
+        cc.height = 2.5F;
+        cc.center = Vector3.up;
+        cc.isTrigger = false;
+    }
 
-		go.EnsureComponent<MushroomVaseStrandTag>();
-	}
+    public override float getScaleInGrowbed(bool indoors) {
+        return 0.33F;
+    }
 
-	public static void setupCollider(GameObject go) {
-		CapsuleCollider cc = go.EnsureComponent<CapsuleCollider>();
-		cc.radius = 0.15F;
-		cc.height = 2.5F;
-		cc.center = Vector3.up;
-		cc.isTrigger = false;
-	}
+    public override bool isResource() {
+        return false;
+    }
 
-	public override float getScaleInGrowbed(bool indoors) {
-		return 0.33F;
-	}
+    protected override bool isExploitable() {
+        return true;
+    }
 
-	public override bool isResource() {
-		return false;
-	}
+    public override Plantable.PlantSize getSize() {
+        return Plantable.PlantSize.Small;
+    }
 
-	protected override bool isExploitable() {
-		return true;
-	}
+    public override bool canGrowAboveWater() {
+        return false;
+    }
 
-	public override Plantable.PlantSize getSize() {
-		return Plantable.PlantSize.Small;
-	}
+    public override bool canGrowUnderWater() {
+        return true;
+    }
 
-	public override bool canGrowAboveWater() {
-		return false;
-	}
+    public bool canBeAutoharvested() {
+        return true;
+    }
 
-	public override bool canGrowUnderWater() {
-		return true;
-	}
+    public GameObject tryHarvest(GameObject go) {
+        return go.GetComponent<MushroomVaseStrandTag>().tryHarvest()
+            ? ObjectUtil.createWorldObject(seed.TechType)
+            : null;
+    }
 
-	public bool canBeAutoharvested() {
-		return true;
-	}
+    public class MushroomVaseStrandTag : MonoBehaviour, IHandTarget {
+        private static readonly string PLANKTON_AOE = "PlanktonAoE";
 
-	public GameObject tryHarvest(GameObject go) {
-		return go.GetComponent<MushroomVaseStrandTag>().tryHarvest() ? ObjectUtil.createWorldObject(seed.TechType) : null;
-	}
+        //private static readonly string INTERACT_TRIGGER = "InteractBox";
+        private static readonly float GROW_TIME = 300; //5 min
+        private static readonly float HARVEST_CYCLE_TIME = 180;
 
-	public class MushroomVaseStrandTag : MonoBehaviour, IHandTarget {
+        internal GrownPlant grown;
+        private CapsuleCollider planktonClearingArea;
+        private PlanktonClearingArea planktonClearingMgr;
 
-		private static readonly string PLANKTON_AOE = "PlanktonAoE";
-		//private static readonly string INTERACT_TRIGGER = "InteractBox";
-		private static readonly float GROW_TIME = 300; //5 min
-		private static readonly float HARVEST_CYCLE_TIME = 180;
+        private Animator animator;
 
-		internal GrownPlant grown;
-		private CapsuleCollider planktonClearingArea;
-		private PlanktonClearingArea planktonClearingMgr;
+        internal LiveMixin health;
 
-		private Animator animator;
+        private CapsuleCollider interactTrigger;
 
-		internal LiveMixin health;
+        private float lastSiblingCheck;
+        private int siblingCount; //includes self
 
-		private CapsuleCollider interactTrigger;
+        internal float resourceGenerationProgress;
+        internal float lastHarvest;
 
-		private float lastSiblingCheck;
-		private int siblingCount; //includes self
+        private Renderer[] renderers;
 
-		internal float resourceGenerationProgress;
-		internal float lastHarvest;
+        private bool strandsShowing = true;
+        private bool strandsShowingPrev = true;
 
-		private Renderer[] renderers;
+        private void Start() {
+            grown = gameObject.GetComponent<GrownPlant>();
+            if (grown) {
+                gameObject.SetActive(true);
+                var bc = GetComponentInChildren<BoxCollider>();
+                var flag = false;
+                if (bc) {
+                    bc.size = new Vector3(0.25F, 0.25F, 1F);
+                    bc.isTrigger = false;
+                    flag = true;
+                    bc.gameObject.EnsureComponent<MushroomVaseStrandTagInteractRelay>().owner = this;
+                } else {
+                    GameObject cdr = gameObject.getChildObject("Capsule");
+                    if (cdr) {
+                        var cc = cdr.GetComponent<CapsuleCollider>();
+                        if (cc) {
+                            cc.radius = 0.1F;
+                            cc.height = 0.5F;
+                            cc.transform.localPosition = new Vector3(0, 0, -0.3F);
+                            cc.transform.localEulerAngles = new Vector3(90, 0, 0);
+                            cc.isTrigger = false;
+                            flag = true;
+                        }
+                    }
+                }
 
-		private bool strandsShowing = true;
-		private bool strandsShowingPrev = true;
+                if (!flag)
+                    SNUtil.log("Failed to initialize " + this + " collider, was missing");
+                foreach (var r in GetComponentsInChildren<Renderer>()) {
+                    if (r.gameObject.name.StartsWith(
+                            "coral_reef_plant_middle_05",
+                            StringComparison.InvariantCultureIgnoreCase
+                        ))
+                        r.gameObject.destroy(false);
+                }
 
-		void Start() {
-			grown = gameObject.GetComponent<GrownPlant>();
-			if (grown) {
-				gameObject.SetActive(true);
-				BoxCollider bc = this.GetComponentInChildren<BoxCollider>();
-				bool flag = false;
-				if (bc) {
-					bc.size = new Vector3(0.25F, 0.25F, 1F);
-					bc.isTrigger = false;
-					flag = true;
-					bc.gameObject.EnsureComponent<MushroomVaseStrandTagInteractRelay>().owner = this;
-				}
-				else {
-					GameObject cdr = gameObject.getChildObject("Capsule");
-					if (cdr) {
-						CapsuleCollider cc = cdr.GetComponent<CapsuleCollider>();
-						if (cc) {
-							cc.radius = 0.1F;
-							cc.height = 0.5F;
-							cc.transform.localPosition = new Vector3(0, 0, -0.3F);
-							cc.transform.localEulerAngles = new Vector3(90, 0, 0);
-							cc.isTrigger = false;
-							flag = true;
-						}
-					}
-				}
-				if (!flag)
-					SNUtil.log("Failed to initialize " + this + " collider, was missing");
-				foreach (Renderer r in this.GetComponentsInChildren<Renderer>()) {
-					if (r.gameObject.name.StartsWith("coral_reef_plant_middle_05", StringComparison.InvariantCultureIgnoreCase))
-						r.gameObject.destroy(false);
-				}
-				if (!planktonClearingArea) {
-					GameObject go = gameObject.getChildObject(PLANKTON_AOE);
-					if (!go) {
-						go = new GameObject(PLANKTON_AOE);
-						go.transform.SetParent(transform);
-						Utils.ZeroTransform(go.transform);
-					}
-					planktonClearingArea = go.EnsureComponent<CapsuleCollider>();
-					planktonClearingArea.height = 7.5F;
-					planktonClearingArea.radius = 4.0F;
-					planktonClearingArea.isTrigger = true;
-					planktonClearingMgr = go.EnsureComponent<PlanktonClearingArea>();
-					planktonClearingMgr.clearingRate = 0.4F;
-					planktonClearingMgr.transform.localPosition = new Vector3(0, 0, 2);
-					planktonClearingMgr.transform.localRotation = Quaternion.Euler(90, 0, 0);
-					planktonClearingMgr.onClearTick += (pc, amt) => { resourceGenerationProgress = Mathf.Min(1, resourceGenerationProgress + (amt / HARVEST_CYCLE_TIME * this.getResourceFilterEfficiency())); };
-				}
+                if (!planktonClearingArea) {
+                    GameObject go = gameObject.getChildObject(PLANKTON_AOE);
+                    if (!go) {
+                        go = new GameObject(PLANKTON_AOE);
+                        go.transform.SetParent(transform);
+                        Utils.ZeroTransform(go.transform);
+                    }
 
-				if (!animator)
-					animator = this.GetComponentInChildren<Animator>();
+                    planktonClearingArea = go.EnsureComponent<CapsuleCollider>();
+                    planktonClearingArea.height = 7.5F;
+                    planktonClearingArea.radius = 4.0F;
+                    planktonClearingArea.isTrigger = true;
+                    planktonClearingMgr = go.EnsureComponent<PlanktonClearingArea>();
+                    planktonClearingMgr.clearingRate = 0.4F;
+                    planktonClearingMgr.transform.localPosition = new Vector3(0, 0, 2);
+                    planktonClearingMgr.transform.localRotation = Quaternion.Euler(90, 0, 0);
+                    planktonClearingMgr.onClearTick += (pc, amt) => {
+                        resourceGenerationProgress = Mathf.Min(
+                            1,
+                            resourceGenerationProgress + amt / HARVEST_CYCLE_TIME * getResourceFilterEfficiency()
+                        );
+                    };
+                }
 
-				if (!interactTrigger) {
-					GameObject go = gameObject;/*gameObject.getChildObject(INTERACT_TRIGGER);
-				    if (!go) {
-					    go = new GameObject(INTERACT_TRIGGER);
-					    go.transform.SetParent(transform);
-					    Utils.ZeroTransform(go.transform);
-				    }*/
-					interactTrigger = go.EnsureComponent<CapsuleCollider>();
-					interactTrigger.height = 2.0F;
-					interactTrigger.radius = 0.25F;
-					interactTrigger.isTrigger = true;
-					interactTrigger.direction = 2; //upright
-					interactTrigger.center = new Vector3(0, 0, 1.25F);
-					//interactTrigger.transform.localPosition = new Vector3(0, 0, 1.5F);
-					//interactTrigger.transform.localRotation = Quaternion.Euler(90, 0, 0);
-					//go.EnsureComponent<MushroomVaseStrandInteraction>().owner = this;
-				}
+                if (!animator)
+                    animator = GetComponentInChildren<Animator>();
 
-				renderers = this.GetComponentsInChildren<Renderer>();
-				foreach (Renderer r in renderers) {
-					if (r.gameObject.name.Contains("_LOD"))
-						r.gameObject.SetActive(false);
-				}
+                if (!interactTrigger) {
+                    var go = gameObject; /*gameObject.getChildObject(INTERACT_TRIGGER);
+                    if (!go) {
+                        go = new GameObject(INTERACT_TRIGGER);
+                        go.transform.SetParent(transform);
+                        Utils.ZeroTransform(go.transform);
+                    }*/
+                    interactTrigger = go.EnsureComponent<CapsuleCollider>();
+                    interactTrigger.height = 2.0F;
+                    interactTrigger.radius = 0.25F;
+                    interactTrigger.isTrigger = true;
+                    interactTrigger.direction = 2; //upright
+                    interactTrigger.center = new Vector3(0, 0, 1.25F);
+                    //interactTrigger.transform.localPosition = new Vector3(0, 0, 1.5F);
+                    //interactTrigger.transform.localRotation = Quaternion.Euler(90, 0, 0);
+                    //go.EnsureComponent<MushroomVaseStrandInteraction>().owner = this;
+                }
 
-				health = this.GetComponentInChildren<LiveMixin>();
-				health.data.maxHealth = 80; //only applies to farmed
-				health.data.knifeable = true;
-				health.health = health.maxHealth;
-			}
-		}
+                renderers = GetComponentsInChildren<Renderer>();
+                foreach (var r in renderers) {
+                    if (r.gameObject.name.Contains("_LOD"))
+                        r.gameObject.SetActive(false);
+                }
 
-		void Update() {
-			if (grown) {
-				if (renderers == null || renderers.Length == 0 || !renderers[0]) {
-					renderers = this.GetComponentsInChildren<Renderer>();
-					foreach (Renderer r in renderers) {
-						if (r.gameObject.name.Contains("_LOD"))
-							r.gameObject.SetActive(false);
-					}
-				}
-				float time = DayNightCycle.main.timePassedAsFloat;
-				if (DIHooks.getWorldAge() > 0.5F && time - lastSiblingCheck >= 2.5F) {
-					Planter p = grown.gameObject.FindAncestor<Planter>();
-					if (!p) {
-						SNUtil.log("Farmed mushroom vase strand without a planter?! " + gameObject.GetFullHierarchyPath());
-						gameObject.destroy(false);
-						return;
-					}
-					siblingCount = p.GetComponentsInChildren<MushroomVaseStrandTag>().Length;
-					lastSiblingCheck = time;
-				}
+                health = GetComponentInChildren<LiveMixin>();
+                health.data.maxHealth = 80; //only applies to farmed
+                health.data.knifeable = true;
+                health.health = health.maxHealth;
+            }
+        }
 
-				animator.transform.localScale = Vector3.one;
+        private void Update() {
+            if (grown) {
+                if (renderers == null || renderers.Length == 0 || !renderers[0]) {
+                    renderers = GetComponentsInChildren<Renderer>();
+                    foreach (var r in renderers) {
+                        if (r.gameObject.name.Contains("_LOD"))
+                            r.gameObject.SetActive(false);
+                    }
+                }
 
-				strandsShowing = !this.isHarvested();
-				foreach (Renderer r in renderers) {
-					if (strandsShowing != strandsShowingPrev) {
-						RenderUtil.swapTextures(EcoceanMod.modDLL, r, "Textures/Plants/MushroomVaseStrand_" + (strandsShowing ? "Full" : "Cut"));
-						RenderUtil.enableAlpha(r.materials[0]);
-					}
-					r.materials[0].SetColor("_GlowColor", new Color(1, 1, 1 + (3 * (int)Mathf.Clamp01(resourceGenerationProgress)), 1));
-				}
-			}
+                var time = DayNightCycle.main.timePassedAsFloat;
+                if (DIHooks.GetWorldAge() > 0.5F && time - lastSiblingCheck >= 2.5F) {
+                    var p = grown.gameObject.FindAncestor<Planter>();
+                    if (!p) {
+                        SNUtil.log(
+                            "Farmed mushroom vase strand without a planter?! " + gameObject.GetFullHierarchyPath()
+                        );
+                        gameObject.destroy(false);
+                        return;
+                    }
 
-			if (health && health.maxHealth < 80) {
-				health.data.maxHealth = 80;
-				health.data.knifeable = true;
-				health.health = health.maxHealth;
-			}
+                    siblingCount = p.GetComponentsInChildren<MushroomVaseStrandTag>().Length;
+                    lastSiblingCheck = time;
+                }
 
-			strandsShowingPrev = strandsShowing;
-			if (this.isHarvested())
-				resourceGenerationProgress = 0;
-		}
+                animator.transform.localScale = Vector3.one;
 
-		internal float getResourceFilterEfficiency() {
-			return (float)MathUtil.linterpolate(siblingCount, 2, 12, 1, 0.033F, true);
-		}
+                strandsShowing = !isHarvested();
+                foreach (var r in renderers) {
+                    if (strandsShowing != strandsShowingPrev) {
+                        RenderUtil.swapTextures(
+                            EcoceanMod.modDLL,
+                            r,
+                            "Textures/Plants/MushroomVaseStrand_" + (strandsShowing ? "Full" : "Cut")
+                        );
+                        RenderUtil.enableAlpha(r.materials[0]);
+                    }
 
-		internal bool isHarvested() {
-			return lastHarvest >= 0 && DayNightCycle.main.timePassedAsFloat - lastHarvest < GROW_TIME;
-		}
+                    r.materials[0].SetColor(
+                        "_GlowColor",
+                        new Color(1, 1, 1 + 3 * (int)Mathf.Clamp01(resourceGenerationProgress), 1)
+                    );
+                }
+            }
 
-		internal float getGrowthProgress() {
-			return (DayNightCycle.main.timePassedAsFloat - lastHarvest) / GROW_TIME;
-		}
+            if (health && health.maxHealth < 80) {
+                health.data.maxHealth = 80;
+                health.data.knifeable = true;
+                health.health = health.maxHealth;
+            }
 
-		internal bool tryHarvest() {
-			if (this.isHarvested()) {
-				if (DayNightCycle.main.timePassedAsFloat - lastHarvest > 0.25F) { //in case double code call, or a misclick
-					SNUtil.log("Destroying already-harvested mushroom vase strand, dT=" + (DayNightCycle.main.timePassedAsFloat - lastHarvest));
-					this.GetComponent<LiveMixin>().TakeDamage(9999, transform.position); //destroy
-				}
-				return false;
-			}
-			this.pickResource();
-			for (int i = 0; i < 2; i++) //two since three tendrils and vanilla code already drops one
-				InventoryUtil.addItem(EcoceanMod.mushroomVaseStrand.seed.TechType);
-			lastHarvest = DayNightCycle.main.timePassedAsFloat;
-			return true;
-		}
+            strandsShowingPrev = strandsShowing;
+            if (isHarvested())
+                resourceGenerationProgress = 0;
+        }
 
-		public void OnHandHover(GUIHand hand) {
-			if (!grown)
-				return;
-			if (resourceGenerationProgress >= 1) {
-				HandReticle.main.SetIcon(HandReticle.IconType.Interact, 1f);
-				HandReticle.main.SetInteractText("VaseStrandClick");
-				HandReticle.main.SetTargetDistance(8);
-			}
-			else if (!this.isHarvested()) { //tendril grown, collecting resources
-				float spawnRate = getSpawnRate(BiomeBase.getBiome(transform.position));
-				if (spawnRate > 0) {
-					HandReticle.main.SetProgress(Mathf.Min(1, resourceGenerationProgress));
-					HandReticle.main.SetIcon(HandReticle.IconType.Progress, 1f);
-					HandReticle.main.SetInteractText("VaseStrandCollecting");
-				}
-				else {
-					HandReticle.main.SetIcon(HandReticle.IconType.Info, 1f);
-					HandReticle.main.SetInteractText("VaseStrandNoSpawns");
-				}
-				HandReticle.main.SetTargetDistance(8);
-			}
-			else { //harvested, plant regrowing tendril
-				HandReticle.main.SetProgress(Mathf.Min(1, this.getGrowthProgress()));
-				HandReticle.main.SetIcon(HandReticle.IconType.Progress, 1f);
-				HandReticle.main.SetInteractText("VaseStrandGrowing");
-				HandReticle.main.SetTargetDistance(8);
-			}
-		}
+        internal float getResourceFilterEfficiency() {
+            return (float)MathUtil.linterpolate(siblingCount, 2, 12, 1, 0.033F, true);
+        }
 
-		public void OnHandClick(GUIHand hand) {
-			if (!grown)
-				return;
-			if (this.isHarvested())
-				return;
-			this.pickResource();
-		}
+        internal bool isHarvested() {
+            return lastHarvest >= 0 && DayNightCycle.main.timePassedAsFloat - lastHarvest < GROW_TIME;
+        }
 
-		private void pickResource() {
-			if (resourceGenerationProgress >= 1) {
-				TechType tt = MushroomVaseStrand.filterDrops.getRandomEntry();
-				TechType bias = planktonClearingMgr.getProperty<TechType>("dropBias");
-				if (bias != TechType.None && UnityEngine.Random.Range(0F, 1F) <= planktonClearingMgr.getProperty<float>("dropBiasChance"))
-					tt = bias;
-				InventoryUtil.addItem(tt);
-				if (vaseStrandFilterCollectEvent != null) {
-					vaseStrandFilterCollectEvent.Invoke(this, tt);
-				}
-				resourceGenerationProgress -= 1;
-			}
-		}
-	}
+        internal float getGrowthProgress() {
+            return (DayNightCycle.main.timePassedAsFloat - lastHarvest) / GROW_TIME;
+        }
 
-	class MushroomVaseStrandTagInteractRelay : MonoBehaviour, IHandTarget {
+        internal bool tryHarvest() {
+            if (isHarvested()) {
+                if (DayNightCycle.main.timePassedAsFloat - lastHarvest > 0.25F) {
+                    //in case double code call, or a misclick
+                    SNUtil.log(
+                        "Destroying already-harvested mushroom vase strand, dT=" +
+                        (DayNightCycle.main.timePassedAsFloat - lastHarvest)
+                    );
+                    GetComponent<LiveMixin>().TakeDamage(9999, transform.position); //destroy
+                }
 
-		internal MushroomVaseStrandTag owner;
+                return false;
+            }
 
-		void Start() {
-			if (!owner)
-				owner = gameObject.FindAncestor<MushroomVaseStrandTag>();
-		}
+            pickResource();
+            for (var i = 0; i < 2; i++) //two since three tendrils and vanilla code already drops one
+                InventoryUtil.addItem(EcoceanMod.mushroomVaseStrand.seed.TechType);
+            lastHarvest = DayNightCycle.main.timePassedAsFloat;
+            return true;
+        }
 
-		public void OnHandHover(GUIHand hand) {
-			if (owner)
-				owner.OnHandHover(hand);
-		}
+        public void OnHandHover(GUIHand hand) {
+            if (!grown)
+                return;
+            if (resourceGenerationProgress >= 1) {
+                HandReticle.main.SetIcon(HandReticle.IconType.Interact, 1f);
+                HandReticle.main.SetInteractText("VaseStrandClick");
+                HandReticle.main.SetTargetDistance(8);
+            } else if (!isHarvested()) { //tendril grown, collecting resources
+                var spawnRate = getSpawnRate(BiomeBase.GetBiome(transform.position));
+                if (spawnRate > 0) {
+                    HandReticle.main.SetProgress(Mathf.Min(1, resourceGenerationProgress));
+                    HandReticle.main.SetIcon(HandReticle.IconType.Progress, 1f);
+                    HandReticle.main.SetInteractText("VaseStrandCollecting");
+                } else {
+                    HandReticle.main.SetIcon(HandReticle.IconType.Info, 1f);
+                    HandReticle.main.SetInteractText("VaseStrandNoSpawns");
+                }
 
-		public void OnHandClick(GUIHand hand) {
-			if (owner)
-				owner.OnHandClick(hand);
-		}
+                HandReticle.main.SetTargetDistance(8);
+            } else { //harvested, plant regrowing tendril
+                HandReticle.main.SetProgress(Mathf.Min(1, getGrowthProgress()));
+                HandReticle.main.SetIcon(HandReticle.IconType.Progress, 1f);
+                HandReticle.main.SetInteractText("VaseStrandGrowing");
+                HandReticle.main.SetTargetDistance(8);
+            }
+        }
 
-	}
+        public void OnHandClick(GUIHand hand) {
+            if (!grown)
+                return;
+            if (isHarvested())
+                return;
+            pickResource();
+        }
 
-	public class VaseStrandPlanktonSpawnData {
+        private void pickResource() {
+            if (resourceGenerationProgress >= 1) {
+                TechType tt = filterDrops.getRandomEntry();
+                var bias = planktonClearingMgr.getProperty<TechType>("dropBias");
+                if (bias != TechType.None && UnityEngine.Random.Range(0F, 1F) <=
+                    planktonClearingMgr.getProperty<float>("dropBiasChance"))
+                    tt = bias;
+                InventoryUtil.addItem(tt);
+                vaseStrandFilterCollectEvent?.Invoke(this, tt);
+                resourceGenerationProgress -= 1;
+            }
+        }
+    }
 
-		public readonly BiomeBase biome;
-		public readonly float spawnRate;
+    private class MushroomVaseStrandTagInteractRelay : MonoBehaviour, IHandTarget {
+        internal MushroomVaseStrandTag owner;
 
-		public VaseStrandPlanktonSpawnData(BiomeBase bb, float amt) {
-			biome = bb;
-			spawnRate = amt;
-		}
+        private void Start() {
+            if (!owner)
+                owner = gameObject.FindAncestor<MushroomVaseStrandTag>();
+        }
 
-	}
+        public void OnHandHover(GUIHand hand) {
+            if (owner)
+                owner.OnHandHover(hand);
+        }
 
+        public void OnHandClick(GUIHand hand) {
+            if (owner)
+                owner.OnHandClick(hand);
+        }
+    }
+
+    public class VaseStrandPlanktonSpawnData {
+        public readonly BiomeBase biome;
+        public readonly float spawnRate;
+
+        public VaseStrandPlanktonSpawnData(BiomeBase bb, float amt) {
+            biome = bb;
+            spawnRate = amt;
+        }
+    }
 }

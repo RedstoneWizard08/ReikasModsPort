@@ -12,8 +12,7 @@ public class LockedPrecursorDoor : CustomPrefab {
     public readonly PositionedPrefab barrierLocation;
     public readonly PositionedPrefab keyTerminalLocation;
 
-    internal static readonly Dictionary<string, LockedPrecursorDoor> prefabs =
-        new Dictionary<string, LockedPrecursorDoor>();
+    internal static readonly Dictionary<string, LockedPrecursorDoor> prefabs = new();
 
     [SetsRequiredMembers]
     public LockedPrecursorDoor(
@@ -34,7 +33,7 @@ public class LockedPrecursorDoor : CustomPrefab {
     }
 
     public virtual GameObject GetGameObject() {
-        GameObject go = new GameObject("LockedPrecursorDoor_" + id + "(Clone)");
+        var go = new GameObject("LockedPrecursorDoor_" + id + "(Clone)");
         //SNUtil.log("Spawning LockedPrecursorDoor_"+id+" @ "+go.transform.position);
         go.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.Medium;
         go.EnsureComponent<PrefabIdentifier>().ClassId = Info.ClassID;
@@ -49,24 +48,24 @@ public class LockedPrecursorDoor : CustomPrefab {
     // 	base.ProcessPrefab(go);
     // }
 
-    class LockedPrecursorDoorTag : MonoBehaviour {
+    private class LockedPrecursorDoorTag : MonoBehaviour {
         private PrecursorKeyTerminal terminal;
         private PrecursorDoorway barrier;
         private LockedPrecursorDoor template;
 
         private ChangePrecursorDoor doorColor;
 
-        void Update() {
+        private void Update() {
             if (template == null)
-                template = LockedPrecursorDoor.prefabs[this.GetComponent<PrefabIdentifier>().ClassId];
+                template = prefabs[GetComponent<PrefabIdentifier>().ClassId];
             if (template == null)
                 return;
             if (doorColor == null)
                 doorColor = new ChangePrecursorDoor(template.key);
             if (!terminal)
-                terminal = this.GetComponentInChildren<PrecursorKeyTerminal>();
+                terminal = GetComponentInChildren<PrecursorKeyTerminal>();
             if (!barrier)
-                barrier = this.GetComponentInChildren<PrecursorDoorway>();
+                barrier = GetComponentInChildren<PrecursorDoorway>();
             if (!terminal) {
                 terminal = ObjectUtil.createWorldObject("c718547d-fe06-4247-86d0-efd1e3747af0")
                     .GetComponent<PrecursorKeyTerminal>();

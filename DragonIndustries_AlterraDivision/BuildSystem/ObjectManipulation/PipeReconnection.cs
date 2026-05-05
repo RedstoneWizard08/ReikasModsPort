@@ -27,7 +27,7 @@ internal class PipeReconnection : ManipulationBase {
 	}
 
 	public override void applyToObject(PlacedObject go) {
-		this.applyToObject(go.obj);
+		applyToObject(go.obj);
 	}
 
 	public override void loadFromXML(XmlElement e) {
@@ -44,24 +44,23 @@ internal class PipeReconnection : ManipulationBase {
 
 }
 
-class PipeReconnector : MonoBehaviour {
-
-	IPipeConnection pipe;
+internal class PipeReconnector : MonoBehaviour {
+	private IPipeConnection pipe;
 	internal Vector3 position;
-	IPipeConnection connection;
+	private IPipeConnection connection;
 
-	void Update() {
+	private void Update() {
 		if (pipe == null)
 			pipe = gameObject.GetComponent<IPipeConnection>();
 
 		if (connection == null) {
 			double dist = 9999;
-			List<IPipeConnection> li = new List<IPipeConnection>();
-			li.AddRange(UnityEngine.Object.FindObjectsOfType<OxygenPipe>());
-			li.AddRange(UnityEngine.Object.FindObjectsOfType<BasePipeConnector>());
-			SNUtil.log(string.Join(",", li.Select<IPipeConnection, string>(p => p + " @ " + ((MonoBehaviour)p).transform.position)));
-			foreach (IPipeConnection conn in li) {
-				Vector3 pos = ((MonoBehaviour)conn).transform.position;
+			List<IPipeConnection> li = [];
+			li.AddRange(FindObjectsOfType<OxygenPipe>());
+			li.AddRange(FindObjectsOfType<BasePipeConnector>());
+			SNUtil.log(string.Join(",", li.Select(p => p + " @ " + ((MonoBehaviour)p).transform.position)));
+			foreach (var conn in li) {
+				var pos = ((MonoBehaviour)conn).transform.position;
 				double dd = Vector3.Distance(pos, position);
 				SNUtil.log("Pipe " + gameObject.transform.position + " check against " + pos + " @ dist=" + dd);
 				if (connection == null || dd < dist) {

@@ -12,7 +12,7 @@ public class BKelpBumpWorm : InteractableSpawnable {
     }
 
     public override GameObject GetGameObject() {
-        GameObject go = ObjectUtil.createWorldObject(VanillaFlora.TIGER.getPrefabID());
+        var go = ObjectUtil.createWorldObject(VanillaFlora.TIGER.getPrefabID());
         go.removeComponent<SpikePlant>();
         go.removeComponent<LiveMixin>();
         go.removeComponent<RangeAttacker>();
@@ -23,8 +23,8 @@ public class BKelpBumpWorm : InteractableSpawnable {
         go.EnsureComponent<PrefabIdentifier>().ClassId = Info.ClassID;
         go.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.Medium;
         go.transform.localScale = new Vector3(2, 2, 2);
-        foreach (Renderer r in go.GetComponentsInChildren<Renderer>()) {
-            RenderUtil.swapTextures(SeaToSeaMod.modDLL, r, "Textures/Creature/BKelpBumpWorm");
+        foreach (var r in go.GetComponentsInChildren<Renderer>()) {
+            RenderUtil.swapTextures(SeaToSeaMod.ModDLL, r, "Textures/Creature/BKelpBumpWorm");
             RenderUtil.enableAlpha(r.materials[0], 0.2F);
             //looks bad RenderUtil.makeTransparent(r.materials[0]);
             r.materials[0].SetFloat("_Shininess", 0);
@@ -33,9 +33,9 @@ public class BKelpBumpWorm : InteractableSpawnable {
             RenderUtil.setEmissivity(r, 0.75F);
         }
 
-        Animator a = go.GetComponentInChildren<Animator>();
+        var a = go.GetComponentInChildren<Animator>();
         a.speed = 4;
-        SphereCollider sc = go.GetComponentInChildren<SphereCollider>();
+        var sc = go.GetComponentInChildren<SphereCollider>();
         sc.radius *= 1.25F;
         sc.transform.localPosition += Vector3.up * 0.4F;
         sc.gameObject.EnsureComponent<BKelpBumpWormInteractTag>();
@@ -53,27 +53,27 @@ public class BKelpBumpWorm : InteractableSpawnable {
 
         private float lastCollect = -9999;
 
-        void Start() {
-            animator = this.GetComponentInChildren<Animator>();
-            this.Invoke("cleanup", 1);
-            collider = this.GetComponentInChildren<SphereCollider>();
+        private void Start() {
+            animator = GetComponentInChildren<Animator>();
+            Invoke(nameof(cleanup), 1);
+            collider = GetComponentInChildren<SphereCollider>();
         }
 
-        void Update() {
+        private void Update() {
             animator.speed = 4;
-            bool visible = DayNightCycle.main.timePassedAsFloat - lastCollect >= REGROW_TIME;
+            var visible = DayNightCycle.main.timePassedAsFloat - lastCollect >= REGROW_TIME;
             animator.gameObject.SetActive(visible);
             collider.gameObject.SetActive(visible);
         }
 
-        void cleanup() {
-            this.cleanup(4.5F);
+        private void cleanup() {
+            cleanup(4.5F);
         }
 
-        void cleanup(float r) {
-            bool trig = Physics.queriesHitTriggers;
+        private void cleanup(float r) {
+            var trig = Physics.queriesHitTriggers;
             Physics.queriesHitTriggers = true;
-            foreach (PrefabIdentifier pi in WorldUtil.getObjectsNearWithComponent<PrefabIdentifier>(
+            foreach (var pi in WorldUtil.getObjectsNearWithComponent<PrefabIdentifier>(
                          transform.position,
                          r
                      )) {
@@ -86,7 +86,7 @@ public class BKelpBumpWorm : InteractableSpawnable {
         }
 
         public bool collect() {
-            float time = DayNightCycle.main.timePassedAsFloat;
+            var time = DayNightCycle.main.timePassedAsFloat;
             if (time - lastCollect < REGROW_TIME)
                 return false;
             InventoryUtil.addItem(C2CItems.bkelpBumpWormItem.Info.TechType);
@@ -95,10 +95,10 @@ public class BKelpBumpWorm : InteractableSpawnable {
         }
     }
 
-    class BKelpBumpWormInteractTag : MonoBehaviour, IHandTarget {
+    private class BKelpBumpWormInteractTag : MonoBehaviour, IHandTarget {
         private BKelpBumpWormTag owner;
 
-        void Start() {
+        private void Start() {
             owner = gameObject.FindAncestor<BKelpBumpWormTag>();
         }
 

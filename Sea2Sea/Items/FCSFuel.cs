@@ -6,8 +6,8 @@ namespace ReikaKalseki.SeaToSea;
 
 public class FCSFuel : BasicCraftingItem {
     [SetsRequiredMembers]
-    public FCSFuel() : base(SeaToSeaMod.itemLocale.getEntry("FCSFuel"), "WorldEntities/Natural/Lubricant") {
-        sprite = TextureManager.getSprite(SeaToSeaMod.modDLL, "Textures/Items/FCSFuel");
+    public FCSFuel() : base(SeaToSeaMod.ItemLocale.getEntry("FCSFuel"), "WorldEntities/Natural/Lubricant") {
+        sprite = TextureManager.getSprite(SeaToSeaMod.ModDLL, "Textures/Items/FCSFuel");
         unlockRequirement = TechType.Unobtanium;
         craftingTime = 6;
         numberCrafted = 4;
@@ -18,19 +18,11 @@ public class FCSFuel : BasicCraftingItem {
         base.prepareGameObject(go, r);
     }
 
-    public override CraftTree.Type FabricatorType {
-        get { return CraftTree.Type.Fabricator; }
-    }
+    public override CraftTree.Type FabricatorType => CraftTree.Type.Fabricator;
 
-    public override TechGroup GroupForPDA {
-        get { return TechGroup.Resources; }
-    }
+    public override TechGroup GroupForPDA => TechGroup.Resources;
 
-    public override TechCategory CategoryForPDA {
-        get { return C2CItems.chemistryCategory; }
-    }
+    public override TechCategory CategoryForPDA => C2CItems.chemistryCategory;
 
-    public override string[] StepsToFabricatorTab {
-        get { return new string[] { "Resources", "C2Chemistry" }; }
-    }
+    public override string[] StepsToFabricatorTab => ["Resources", "C2Chemistry"];
 }

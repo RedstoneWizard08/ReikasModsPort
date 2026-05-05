@@ -12,16 +12,16 @@ public class SanctuaryJellyray : RetexturedFish {
         locale = e;
         glowIntensity = 0.5F;
 
-        scanTime = 5;
-        eggBase = TechType.Jellyray;
-        eggMaturationTime = 3600;
+        ScanTime = 5;
+        EggBase = TechType.Jellyray;
+        EggMaturationTime = 3600;
         //eggSpawnRate = 0.25F;
         //eggSpawns.Add(BiomeType.GrandReef_TreaderPath);
     }
 
     public override void prepareGameObject(GameObject world, Renderer[] r0) {
-        PurpleJellyrayTag kc = world.EnsureComponent<PurpleJellyrayTag>();
-        foreach (Renderer r in r0) {
+        var kc = world.EnsureComponent<PurpleJellyrayTag>();
+        foreach (var r in r0) {
             r.materials[0].SetColor("_GlowColor", new Color(1, 1, 1, 1));
             RenderUtil.disableTransparency(r.materials[0]);
             r.materials[0].SetFloat("_EmissionLM", 0.1F);
@@ -29,41 +29,41 @@ public class SanctuaryJellyray : RetexturedFish {
         }
     }
 
-    public override BehaviourType getBehavior() {
+    public override BehaviourType GetBehavior() {
         return BehaviourType.MediumFish;
     }
 }
 
-class PurpleJellyrayTag : MonoBehaviour {
+internal class PurpleJellyrayTag : MonoBehaviour {
     private Renderer[] renders;
 
     private float lastEyeFlameCheckTime = -1;
-    private float lastEyeFlameEatTime = DayNightCycle.main.timePassedAsFloat - UnityEngine.Random.Range(0, 1200);
+    private float lastEyeFlameEatTime = DayNightCycle.main.timePassedAsFloat - Random.Range(0, 1200);
 
     private SanctuaryPlantTag currentTarget;
 
     private SwimRandom swimmer;
 
-    void Update() {
+    private void Update() {
         if (renders == null)
-            renders = this.GetComponentsInChildren<Renderer>();
+            renders = GetComponentsInChildren<Renderer>();
         if (!swimmer)
-            swimmer = this.GetComponentInChildren<SwimRandom>();
+            swimmer = GetComponentInChildren<SwimRandom>();
 
-        float time = DayNightCycle.main.timePassedAsFloat;
+        var time = DayNightCycle.main.timePassedAsFloat;
         if (time - lastEyeFlameCheckTime >= 10 && time - lastEyeFlameEatTime >= 600 &&
-            !this.GetComponent<WaterParkCreature>()) { //10 min each
+            !GetComponent<WaterParkCreature>()) { //10 min each
             lastEyeFlameCheckTime = time;
-            WorldUtil.getObjectsNear<SanctuaryPlantTag>(
+            WorldUtil.getObjectsNear(
                 transform.position,
                 180,
-                this.tryTarget,
+                tryTarget,
                 go => go.GetComponent<SanctuaryPlantTag>()
             );
         }
 
         if (currentTarget && swimmer) {
-            float dist = (currentTarget.transform.position - transform.position).sqrMagnitude;
+            var dist = (currentTarget.transform.position - transform.position).sqrMagnitude;
             if (dist < 5) {
                 if (currentTarget.tryHarvest()) { //does not spawn item
                     lastEyeFlameEatTime = time;
@@ -71,7 +71,7 @@ class PurpleJellyrayTag : MonoBehaviour {
                         SoundManager.buildSound(TechData.GetSoundPickup(TechType.SeaTreaderPoop)),
                         transform.position
                     );
-                    Jellyray jr = this.GetComponent<Jellyray>();
+                    var jr = GetComponent<Jellyray>();
                     jr.Hunger.Value = 0;
                     jr.Happy.Add(0.5F);
                     currentTarget = null;

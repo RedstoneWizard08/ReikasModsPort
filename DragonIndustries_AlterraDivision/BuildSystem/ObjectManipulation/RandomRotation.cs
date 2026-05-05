@@ -20,32 +20,32 @@ public class RandomRotation : ManipulationBase {
 
 	public override void applyToObject(GameObject go) {
 		if (randomX && randomY && randomZ) {
-			go.transform.rotation = UnityEngine.Random.rotationUniform;
+			go.transform.rotation = Random.rotationUniform;
 		}
 		else {
-			Vector3 angs = go.transform.rotation.eulerAngles;
+			var angs = go.transform.rotation.eulerAngles;
 			if (randomX)
-				angs.x = UnityEngine.Random.Range(0F, 360F);
+				angs.x = Random.Range(0F, 360F);
 			if (randomY)
-				angs.y = UnityEngine.Random.Range(0F, 360F);
+				angs.y = Random.Range(0F, 360F);
 			if (randomZ)
-				angs.z = UnityEngine.Random.Range(0F, 360F);
+				angs.z = Random.Range(0F, 360F);
 			go.transform.rotation = Quaternion.Euler(angs);
 		}
 	}
 
 	public override void applyToObject(PlacedObject go) {
 		if (randomX && randomY && randomZ) {
-			go.setRotation(UnityEngine.Random.rotationUniform);
+			go.setRotation(Random.rotationUniform);
 		}
 		else {
-			Vector3 angs = go.rotation.eulerAngles;
+			var angs = go.rotation.eulerAngles;
 			if (randomX)
-				angs.x = UnityEngine.Random.Range(0F, 360F);
+				angs.x = Random.Range(0F, 360F);
 			if (randomY)
-				angs.y = UnityEngine.Random.Range(0F, 360F);
+				angs.y = Random.Range(0F, 360F);
 			if (randomZ)
-				angs.z = UnityEngine.Random.Range(0F, 360F);
+				angs.z = Random.Range(0F, 360F);
 			go.setRotation(Quaternion.Euler(angs));
 		}
 	}

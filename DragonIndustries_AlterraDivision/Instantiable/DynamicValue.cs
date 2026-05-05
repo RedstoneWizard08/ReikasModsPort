@@ -61,7 +61,7 @@ public class LerpValue<E> : DynamicValue<E> {
 	}
 
 	public string ToString(string fmt) {
-		return string.Format("[{0}-{1}] -> [{2}-{3}]", minX.ToString(fmt), maxX.ToString(fmt), minY.ToString(fmt), maxY.ToString(fmt));
+		return $"[{minX.ToString(fmt)}-{maxX.ToString(fmt)}] -> [{minY.ToString(fmt)}-{maxY.ToString(fmt)}]";
 	}
 }
 

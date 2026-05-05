@@ -12,7 +12,7 @@ public class DeadMelon : CustomPrefab {
     }
 
     public GameObject GetGameObject() {
-        GameObject go = ObjectUtil.createWorldObject("e9445fdf-fbae-49dc-a005-48c05bf9f401");
+        var go = ObjectUtil.createWorldObject("e9445fdf-fbae-49dc-a005-48c05bf9f401");
         go.removeComponent<Pickupable>();
         go.removeComponent<PickPrefab>();
         go.removeComponent<LiveMixin>();

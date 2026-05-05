@@ -16,15 +16,9 @@ public class NotFabricable : BasicCraftingItem {
         base.prepareGameObject(go, r);
     }
 
-    public override CraftTree.Type FabricatorType {
-        get { return CraftTree.Type.None; }
-    }
+    public override CraftTree.Type FabricatorType => CraftTree.Type.None;
 
-    public override TechGroup GroupForPDA {
-        get { return TechGroup.Uncategorized; }
-    }
+    public override TechGroup GroupForPDA => TechGroup.Uncategorized;
 
-    public override TechCategory CategoryForPDA {
-        get { return TechCategory.Misc; }
-    }
+    public override TechCategory CategoryForPDA => TechCategory.Misc;
 }

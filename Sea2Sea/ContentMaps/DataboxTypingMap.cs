@@ -17,26 +17,26 @@ using UnityEngine;
 namespace ReikaKalseki.SeaToSea;
 
 public class DataboxTypingMap {
-	public static readonly DataboxTypingMap instance = new DataboxTypingMap();
+	public static readonly DataboxTypingMap instance = new();
 
-	private readonly Dictionary<Vector3, Dictionary<Vector3, TechType>> data = new Dictionary<Vector3, Dictionary<Vector3, TechType>>();
+	private readonly Dictionary<Vector3, Dictionary<Vector3, TechType>> data = new();
 
 	private DataboxTypingMap() {
 
 	}
 
 	public void load() {
-		string xml = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "XML/databoxes.xml");
+		var xml = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "XML/databoxes.xml");
 		if (File.Exists(xml)) {
 			SNUtil.log("Loading databox map from XML @ " + xml);
-			XmlDocument doc = new XmlDocument();
+			var doc = new XmlDocument();
 			doc.Load(xml);
 			foreach (XmlElement e in doc.DocumentElement.ChildNodes) {
 				try {
-					Vector3 pos = e.getVector("position").Value;
-					string tech = e.getProperty("tech");
-					TechType techt = (TechType)Enum.Parse(typeof(TechType), tech);
-					this.addValue(pos, techt);
+					var pos = e.getVector("position").Value;
+					var tech = e.getProperty("tech");
+					var techt = (TechType)Enum.Parse(typeof(TechType), tech);
+					addValue(pos, techt);
 				}
 				catch (Exception ex) {
 					SNUtil.log("Could not load element " + e.InnerText);
@@ -54,11 +54,11 @@ public class DataboxTypingMap {
 	}
 
 	public void addValue(double x, double y, double z, TechType type) {
-		this.addValue(new Vector3((float)x, (float)y, (float)z), type);
+		addValue(new Vector3((float)x, (float)y, (float)z), type);
 	}
 
 	public void addValue(Vector3 pos, TechType type) {
-		Vector3 rnd = this.getRounded(pos);
+		var rnd = getRounded(pos);
 		if (!data.ContainsKey(rnd)) {
 			data[rnd] = new Dictionary<Vector3, TechType>();
 		}
@@ -68,10 +68,10 @@ public class DataboxTypingMap {
 	}
 
 	public TechType getOverride(BlueprintHandTarget bpt) {
-		Vector3 pos = bpt.gameObject.transform.position;
-		Vector3 rounded = this.getRounded(pos);
-		if (data.TryGetValue(rounded, out Dictionary<Vector3, TechType> map)) {
-			foreach (KeyValuePair<Vector3, TechType> kvp in map) {
+		var pos = bpt.gameObject.transform.position;
+		var rounded = getRounded(pos);
+		if (data.TryGetValue(rounded, out var map)) {
+			foreach (var kvp in map) {
 				if (kvp.Key.DistanceSqrXZ(pos) <= 1) {
 					return kvp.Value;
 				}
@@ -81,9 +81,9 @@ public class DataboxTypingMap {
 	}
 
 	private Vector3 getRounded(Vector3 vec) {
-		int x = (int)Math.Floor(vec.x);
-		int y = (int)Math.Floor(vec.y);
-		int z = (int)Math.Floor(vec.z);
+		var x = (int)Math.Floor(vec.x);
+		var y = (int)Math.Floor(vec.y);
+		var z = (int)Math.Floor(vec.z);
 		return new Vector3(x / 64, y / 64, z / 64);
 	}
 

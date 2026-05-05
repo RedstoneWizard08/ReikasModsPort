@@ -11,17 +11,17 @@ using UnityEngine;
 namespace ReikaKalseki.DIAlterra;
 
 public class BasicCraftingItem : CustomPrefab, DIPrefab<BasicCraftingItem, StringPrefabContainer> {
-    private static bool addedTab = false;
+    private static bool addedTab;
 
-    private readonly List<PlannedIngredient> recipe = new List<PlannedIngredient>();
+    private readonly List<PlannedIngredient> recipe = [];
     public readonly string id;
 
     public int numberCrafted = 1;
     public TechType unlockRequirement = TechType.None;
     public Sprite sprite = null;
     public float craftingTime = 0;
-    public Vector2int inventorySize = new Vector2int(1, 1);
-    public readonly List<PlannedIngredient> byproducts = new List<PlannedIngredient>();
+    public Vector2int inventorySize = new(1, 1);
+    public readonly List<PlannedIngredient> byproducts = [];
     public string craftingSubCategory = "" + TechCategory.BasicMaterials;
     public Action<Renderer> renderModify = null;
 
@@ -62,9 +62,7 @@ public class BasicCraftingItem : CustomPrefab, DIPrefab<BasicCraftingItem, Strin
         Info.WithIcon(GetItemSprite()).WithSizeInInventory(SizeInInventory);
     }
 
-    public virtual CraftTree.Type FabricatorType {
-        get { return CraftTree.Type.Fabricator; }
-    }
+    public virtual CraftTree.Type FabricatorType => CraftTree.Type.Fabricator;
 
     /*
     public TechType getTechType() {
@@ -74,15 +72,15 @@ public class BasicCraftingItem : CustomPrefab, DIPrefab<BasicCraftingItem, Strin
     }*/
 
     public BasicCraftingItem addIngredient(ItemDef item, int amt) {
-        return this.addIngredient(item.getTechType(), amt);
+        return addIngredient(item.getTechType(), amt);
     }
 
     public BasicCraftingItem addIngredient(CustomPrefab item, int amt) {
-        return this.addIngredient(new ModPrefabTechReference(item), amt);
+        return addIngredient(new ModPrefabTechReference(item), amt);
     }
 
     public BasicCraftingItem addIngredient(TechType item, int amt) {
-        return this.addIngredient(new TechTypeContainer(item), amt);
+        return addIngredient(new TechTypeContainer(item), amt);
     }
 
     public BasicCraftingItem addIngredient(TechTypeReference item, int amt) {
@@ -92,40 +90,32 @@ public class BasicCraftingItem : CustomPrefab, DIPrefab<BasicCraftingItem, Strin
 
     public BasicCraftingItem scaleRecipe(float amt) {
         numberCrafted = (int)Mathf.Max(1, numberCrafted * amt);
-        foreach (PlannedIngredient pi in recipe)
+        foreach (var pi in recipe)
             pi.amount = (int)Mathf.Max(1, pi.amount * amt);
         return this;
     }
 
-    public virtual TechType RequiredForUnlock {
-        get { return unlockRequirement; }
-    }
+    public virtual TechType RequiredForUnlock => unlockRequirement;
 
-    public virtual TechGroup GroupForPDA {
-        get { return TechGroup.Resources; }
-    }
+    public virtual TechGroup GroupForPDA => TechGroup.Resources;
 
     public virtual TechCategory CategoryForPDA {
         get {
-            TechCategory ret = TechCategory.Misc;
+            var ret = TechCategory.Misc;
             return Enum.TryParse(craftingSubCategory, out ret) ? ret :
                 EnumHandler.TryGetValue(craftingSubCategory, out ret) ? ret :
                 TechCategory.BasicMaterials;
         }
     }
 
-    public virtual string[] StepsToFabricatorTab {
-        get {
-            //SNUtil.log("Fetching craftingsubcat "+craftingSubCategory+" from "+FriendlyName);
-            //RecipeUtil.dumpCraftTree(CraftTree.Type.Fabricator);
-            return new string[] { "Resources", craftingSubCategory };
-        }
-    }
+    public virtual string[] StepsToFabricatorTab =>
+        //SNUtil.log("Fetching craftingsubcat "+craftingSubCategory+" from "+FriendlyName);
+        //RecipeUtil.dumpCraftTree(CraftTree.Type.Fabricator);
+        ["Resources", craftingSubCategory];
 
     public virtual GameObject GetGameObject() {
-        GameObject go = ObjectUtil.getModPrefabBaseObject(this);
-        if (renderModify != null)
-            renderModify(go.GetComponentInChildren<Renderer>());
+        var go = ObjectUtil.getModPrefabBaseObject(this);
+        renderModify?.Invoke(go.GetComponentInChildren<Renderer>());
         return go;
     }
 
@@ -150,12 +140,12 @@ public class BasicCraftingItem : CustomPrefab, DIPrefab<BasicCraftingItem, Strin
         return new RecipeData {
             Ingredients = RecipeUtil.buildRecipeList(recipe),
             craftAmount = numberCrafted,
-            LinkedItems = RecipeUtil.buildLinkedItems(byproducts)
+            LinkedItems = RecipeUtil.buildLinkedItems(byproducts),
         };
     }
 
     public virtual RecipeData getRecipe() {
-        return this.GetBlueprintRecipe();
+        return GetBlueprintRecipe();
     }
 
     protected virtual Sprite GetItemSprite() {
@@ -163,16 +153,12 @@ public class BasicCraftingItem : CustomPrefab, DIPrefab<BasicCraftingItem, Strin
     }
 
     public Sprite getIcon() {
-        return this.GetItemSprite();
+        return GetItemSprite();
     }
 
-    public virtual float CraftingTime {
-        get { return craftingTime; }
-    }
+    public virtual float CraftingTime => craftingTime;
 
-    public virtual Vector2int SizeInInventory {
-        get { return inventorySize; }
-    }
+    public virtual Vector2int SizeInInventory => inventorySize;
 
     public sealed override string ToString() {
         return base.ToString() + " [" + Info.TechType + "] / " + Info.ClassID + " / " + Info.PrefabFileName;

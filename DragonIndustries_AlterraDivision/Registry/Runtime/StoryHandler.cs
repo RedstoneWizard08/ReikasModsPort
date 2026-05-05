@@ -10,15 +10,15 @@ namespace ReikaKalseki.DIAlterra;
 
 public class StoryHandler : SerializedTracker<StoryHandler.StoryGoalRecord>, IStoryGoalListener {
 
-	public static readonly StoryHandler instance = new StoryHandler();
+	public static readonly StoryHandler instance = new();
 
-	private readonly Dictionary<string, StoryGoalRecord> unlocks = new Dictionary<string, StoryGoalRecord>();
+	private readonly Dictionary<string, StoryGoalRecord> unlocks = new();
 
-	private readonly Dictionary<ProgressionTrigger, DelayedProgressionEffect> triggers = new Dictionary<ProgressionTrigger, DelayedProgressionEffect>();
-	private readonly List<IStoryGoalListener> listeners = new List<IStoryGoalListener>();
+	private readonly Dictionary<ProgressionTrigger, DelayedProgressionEffect> triggers = new();
+	private readonly List<IStoryGoalListener> listeners = [];
 
-	private readonly List<StoryGoal> queuedTickedGoals = new List<StoryGoal>();
-	private readonly Dictionary<string, OnGoalUnlock> queuedChainedGoalRedirects = new Dictionary<string, OnGoalUnlock>();
+	private readonly List<StoryGoal> queuedTickedGoals = [];
+	private readonly Dictionary<string, OnGoalUnlock> queuedChainedGoalRedirects = new();
 
 	public bool disableStoryHooks = false;
 
@@ -34,7 +34,7 @@ public class StoryHandler : SerializedTracker<StoryHandler.StoryGoalRecord>, ISt
 	}
 
 	private static StoryGoalRecord parseLegacy(string s) {
-		string[] parts = s.Split(',');
+		var parts = s.Split(',');
 		return new StoryGoalRecord(parts[0], float.Parse(parts[1]));
 	}
 
@@ -66,9 +66,9 @@ public class StoryHandler : SerializedTracker<StoryHandler.StoryGoalRecord>, ISt
 			SNUtil.log("Story biome goal tracker not initialized yet!", SNUtil.diDLL);
 			return;
 		}
-		LocationGoalTracker lgt = BiomeGoalTracker.main.gameObject.GetComponent<LocationGoalTracker>();
-		ConditionalLocationGoalTracker cg = lgt.gameObject.EnsureComponent<ConditionalLocationGoalTracker>();
-		foreach (StoryGoal g in queuedTickedGoals) {
+		var lgt = BiomeGoalTracker.main.gameObject.GetComponent<LocationGoalTracker>();
+		var cg = lgt.gameObject.EnsureComponent<ConditionalLocationGoalTracker>();
+		foreach (var g in queuedTickedGoals) {
 			if (g is ConditionalLocationGoal clg) {
 				SNUtil.log("Registering conditional location goal '" + g.key + "' for position " + clg.position, SNUtil.diDLL);
 				cg.goals.Add(clg);
@@ -85,8 +85,8 @@ public class StoryHandler : SerializedTracker<StoryHandler.StoryGoalRecord>, ISt
 				SNUtil.log("Unrecognized ticked goal '" + g.key + "' type: " + g.GetType().FullName + "!");
 			}
 		}
-		OnGoalUnlockTracker ut = lgt.gameObject.GetComponent<OnGoalUnlockTracker>();
-		foreach (KeyValuePair<string, OnGoalUnlock> kvp in queuedChainedGoalRedirects) {
+		var ut = lgt.gameObject.GetComponent<OnGoalUnlockTracker>();
+		foreach (var kvp in queuedChainedGoalRedirects) {
 			SNUtil.log("Applying redirect for goal '" + kvp.Key + "': " + kvp.Value);
 			if (kvp.Value == null) {
 				ut.goalUnlocks.Remove(kvp.Key);
@@ -96,48 +96,50 @@ public class StoryHandler : SerializedTracker<StoryHandler.StoryGoalRecord>, ISt
 			}
 		}
 
-		this.handleLoad(new WaitScreenHandler.WaitScreenTask("", null));
-		foreach (string goal in StoryGoalManager.main.completedGoals) {
+		handleLoad(new WaitScreenHandler.WaitScreenTask("", null));
+		foreach (var goal in StoryGoalManager.main.completedGoals) {
 			if (!unlocks.ContainsKey(goal)) {
-				this.add(new StoryGoalRecord(goal, -1));
+				add(new StoryGoalRecord(goal, -1));
 			}
 		}
 	}
 
 	public LocationGoal createLocationGoal(double x, double y, double z, double r, string key, float minStay = 0) {
-		return this.createLocationGoal(new Vector3((float)x, (float)y, (float)z), r, key, minStay);
+		return createLocationGoal(new Vector3((float)x, (float)y, (float)z), r, key, minStay);
 	}
 
 	public LocationGoal createLocationGoal(Vector3 pos, double r, string key, float minStay = 0) {
-		LocationGoal g =  new LocationGoal();
-		g.position = pos;
-		g.key = key;
-		g.range = (float)r;
+		var g =  new LocationGoal {
+			position = pos,
+			key = key,
+			range = (float)r,
+		};
 		g.location = g.key;
 		g.goalType = Story.GoalType.Story;
 		return g;
 	}
 
 	public ConditionalLocationGoal createLocationGoal(double x, double y, double z, double r, string key, Predicate<Vector3> condition, float minStay = 0) {
-		return this.createLocationGoal(new Vector3((float)x, (float)y, (float)z), r, key, condition, minStay);
+		return createLocationGoal(new Vector3((float)x, (float)y, (float)z), r, key, condition, minStay);
 	}
 
 	public ConditionalLocationGoal createLocationGoal(Vector3 pos, double r, string key, Predicate<Vector3> condition, float minStay = 0) {
-		ConditionalLocationGoal g = new ConditionalLocationGoal();
-		g.position = pos;
-		g.key = key;
-		g.range = (float)r;
-		g.goalType = Story.GoalType.Story;
-		g.condition = condition;
+		var g = new ConditionalLocationGoal {
+			position = pos,
+			key = key,
+			range = (float)r,
+			goalType = Story.GoalType.Story,
+			condition = condition,
+		};
 		return g;
 	}
 
 	public void tick(Player ep) {
-		if (disableStoryHooks || !DIHooks.isWorldLoaded())
+		if (disableStoryHooks || !DIHooks.IsWorldLoaded())
 			return;
-		foreach (KeyValuePair<ProgressionTrigger, DelayedProgressionEffect> kvp in triggers) {
+		foreach (var kvp in triggers) {
 			if (kvp.Key.isReady(ep)) {
-				DelayedProgressionEffect dt = kvp.Value;
+				var dt = kvp.Value;
 				dt.time += Time.deltaTime;
 				//if (!dt.isFired())
 				//	SNUtil.writeToChat("Trigger "+kvp.Key+" is ready, T="+dt.time.ToString("0.000")+"/"+dt.minDelay.ToString("0.0"));
@@ -162,7 +164,7 @@ public class StoryHandler : SerializedTracker<StoryHandler.StoryGoalRecord>, ISt
 	}
 
 	public float getTimeSince(string goal) {
-		StoryGoalRecord rec = this.getRecord(goal);
+		var rec = getRecord(goal);
 		return rec == null ? -1 : DayNightCycle.main.timePassedAsFloat - (float)rec.eventTime;
 	}
 
@@ -173,10 +175,10 @@ public class StoryHandler : SerializedTracker<StoryHandler.StoryGoalRecord>, ISt
 
 	public void NotifyGoalComplete(string key) {
 		SNUtil.log("Completed Story Goal '" + key + "' @ " + DayNightCycle.main.timePassedAsFloat, SNUtil.diDLL);
-		foreach (IStoryGoalListener ig in listeners) {
+		foreach (var ig in listeners) {
 			ig.NotifyGoalComplete(key);
 		}
-		this.add(new StoryGoalRecord(key, DayNightCycle.main.timePassedAsFloat));
+		add(new StoryGoalRecord(key, DayNightCycle.main.timePassedAsFloat));
 	}
 
 	private class DelegateGoalListener : IStoryGoalListener {
@@ -193,18 +195,18 @@ public class StoryHandler : SerializedTracker<StoryHandler.StoryGoalRecord>, ISt
 
 	}
 
-	class ConditionalLocationGoalTracker : MonoBehaviour {
+	private class ConditionalLocationGoalTracker : MonoBehaviour {
 
-		internal readonly List<ConditionalLocationGoal> goals = new List<ConditionalLocationGoal>();
+		internal readonly List<ConditionalLocationGoal> goals = [];
 
 		private void Start() {
-			base.InvokeRepeating("TrackLocation", UnityEngine.Random.value, 2);
+			InvokeRepeating(nameof(TrackLocation), UnityEngine.Random.value, 2);
 		}
 
 		private void TrackLocation() {
-			Vector3 position = Player.main.transform.position;
-			double timePassed = DayNightCycle.main.timePassed;
-			for (int i = goals.Count - 1; i >= 0; i--) {
+			var position = Player.main.transform.position;
+			var timePassed = DayNightCycle.main.timePassed;
+			for (var i = goals.Count - 1; i >= 0; i--) {
 				if (goals[i].Trigger(position, (float)timePassed)) {
 					goals.RemoveFast(i);
 				}
@@ -252,7 +254,7 @@ public class StoryHandler : SerializedTracker<StoryHandler.StoryGoalRecord>, ISt
 		}
 
 		public override string ToString() {
-			return string.Format("[StoryGoal Goal={0}, Time={1}]", goal, eventTime);
+			return $"[StoryGoal Goal={goal}, Time={eventTime}]";
 		}
 
 	}

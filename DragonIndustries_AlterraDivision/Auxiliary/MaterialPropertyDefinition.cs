@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 public class MaterialPropertyDefinition {
 
-	private static readonly Dictionary<string, ShaderPropertyDefinition> shaderPropTypes = new Dictionary<string, ShaderPropertyDefinition>();
+	private static readonly Dictionary<string, ShaderPropertyDefinition> shaderPropTypes = new();
 
 	static MaterialPropertyDefinition() { //this is not exhaustive but it covers most of the commonly used ones
 		addShaderProperty(new ShaderPropertyDefinition("_Fresnel", typeof(float)));
@@ -87,9 +87,9 @@ public class MaterialPropertyDefinition {
 
 	public string name;
 
-	public readonly Dictionary<string, TextureDefinition> textures = new Dictionary<string, TextureDefinition>();
-	public readonly HashSet<string> shaderFlags = new HashSet<string>();
-	public readonly Dictionary<string, ShaderProperty> shaderProperties = new Dictionary<string, ShaderProperty>();
+	public readonly Dictionary<string, TextureDefinition> textures = new();
+	public readonly HashSet<string> shaderFlags = [];
+	public readonly Dictionary<string, ShaderProperty> shaderProperties = new();
 
 	public Color color;
 	public int renderQueue;
@@ -103,36 +103,36 @@ public class MaterialPropertyDefinition {
 		color = m.color;
 		renderQueue = m.renderQueue;
 		illumFlags = m.globalIlluminationFlags;
-		foreach (string tex in m.GetTexturePropertyNames()) {
+		foreach (var tex in m.GetTexturePropertyNames()) {
 			textures[tex] = new TextureDefinition(m, tex);
 		}
-		foreach (string shd in m.shaderKeywords) {
+		foreach (var shd in m.shaderKeywords) {
 			shaderFlags.Add(shd);
 		}
-		foreach (ShaderPropertyDefinition shd in shaderPropTypes.Values) {
+		foreach (var shd in shaderPropTypes.Values) {
 			shaderProperties[shd.name] = new ShaderProperty(shd, m);
 		}
 	}
 
 	public void readFromFile(Assembly a, string folder) {
-		string defs = Path.Combine(folder, "defs.xml");
-		XmlDocument doc = new XmlDocument();
+		var defs = Path.Combine(folder, "defs.xml");
+		var doc = new XmlDocument();
 		doc.Load(defs);
-		XmlElement texs = (XmlElement)doc.DocumentElement.GetElementsByTagName("textures")[0];
-		XmlElement flags = (XmlElement)doc.DocumentElement.GetElementsByTagName("flags")[0];
-		XmlElement props = (XmlElement)doc.DocumentElement.GetElementsByTagName("properties")[0];
-		foreach (XmlElement e in texs.getDirectElementsByTagName("entry")) {
-			TextureDefinition tex = new TextureDefinition();
+		var texs = (XmlElement)doc.DocumentElement.GetElementsByTagName("textures")[0];
+		var flags = (XmlElement)doc.DocumentElement.GetElementsByTagName("flags")[0];
+		var props = (XmlElement)doc.DocumentElement.GetElementsByTagName("properties")[0];
+		foreach (var e in texs.getDirectElementsByTagName("entry")) {
+			var tex = new TextureDefinition();
 			tex.readFromFile(e);
 			textures[tex.name] = tex;
 			tex.texture = TextureManager.getTexture(a, Path.Combine(folder, tex.name));
 		}
-		foreach (XmlElement e in props.getDirectElementsByTagName("entry")) {
-			ShaderProperty shd = new ShaderProperty(shaderPropTypes[e.getProperty("name")]);
+		foreach (var e in props.getDirectElementsByTagName("entry")) {
+			var shd = new ShaderProperty(shaderPropTypes[e.getProperty("name")]);
 			shd.readFromFile(e);
 			shaderProperties[shd.definition.name] = shd;
 		}
-		foreach (XmlElement e in flags.getDirectElementsByTagName("entry")) {
+		foreach (var e in flags.getDirectElementsByTagName("entry")) {
 			shaderFlags.Add(e.InnerText);
 		}
 		color = doc.DocumentElement.getColor("color", true).Value;
@@ -142,24 +142,24 @@ public class MaterialPropertyDefinition {
 
 	public void writeToFile(string folder) {
 		Directory.CreateDirectory(folder);
-		string defs = Path.Combine(folder, "defs.xml");
-		XmlDocument doc = new XmlDocument();
-		XmlElement rootnode = doc.CreateElement("Root");
+		var defs = Path.Combine(folder, "defs.xml");
+		var doc = new XmlDocument();
+		var rootnode = doc.CreateElement("Root");
 		doc.AppendChild(rootnode);
-		XmlElement texs = doc.CreateElement("textures");
-		XmlElement flags = doc.CreateElement("flags");
-		XmlElement props = doc.CreateElement("properties");
-		foreach (TextureDefinition tex in textures.Values) {
-			XmlElement e = doc.CreateElement("entry");
+		var texs = doc.CreateElement("textures");
+		var flags = doc.CreateElement("flags");
+		var props = doc.CreateElement("properties");
+		foreach (var tex in textures.Values) {
+			var e = doc.CreateElement("entry");
 			tex.writeToFile(e);
 			texs.AppendChild(e);
 			RenderUtil.dumpTexture(SNUtil.diDLL, tex.name, (Texture2D)tex.texture, folder);
 		}
-		foreach (string s in shaderFlags) {
+		foreach (var s in shaderFlags) {
 			flags.addProperty("entry", s);
 		}
-		foreach (ShaderProperty shd in shaderProperties.Values) {
-			XmlElement e = doc.CreateElement("entry");
+		foreach (var shd in shaderProperties.Values) {
+			var e = doc.CreateElement("entry");
 			shd.writeToFile(e);
 			props.AppendChild(e);
 		}
@@ -180,18 +180,18 @@ public class MaterialPropertyDefinition {
 			m.globalIlluminationFlags = illumFlags;
 		}
 		if (useTex) {
-			foreach (TextureDefinition tex in textures.Values) {
+			foreach (var tex in textures.Values) {
 				tex.applyToMaterial(m);
 			}
 		}
 		if (vars) {
-			foreach (ShaderProperty shd in shaderProperties.Values) {
+			foreach (var shd in shaderProperties.Values) {
 				shd.applyToMaterial(m);
 			}
-			foreach (string flag in m.shaderKeywords) {
+			foreach (var flag in m.shaderKeywords) {
 				m.DisableKeyword(flag);
 			}
-			foreach (string flag in shaderFlags) {
+			foreach (var flag in shaderFlags) {
 				m.EnableKeyword(flag);
 			}
 		}

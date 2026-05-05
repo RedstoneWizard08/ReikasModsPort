@@ -4,14 +4,14 @@ namespace ReikaKalseki.DIAlterra;
 
 public class CommandTracker : SerializedTracker<CommandTracker.CommandEvent> {
 
-	public static readonly CommandTracker instance = new CommandTracker();
+	public static readonly CommandTracker instance = new();
 
 	private CommandTracker() : base("Commands.dat", true, parse, null) {
 
 	}
 
 	public void onCommand(string cmd) {
-		this.add(new CommandEvent(cmd, DayNightCycle.main.timePassedAsFloat));
+		add(new CommandEvent(cmd, DayNightCycle.main.timePassedAsFloat));
 	}
 
 	private static CommandEvent parse(XmlElement s) {
@@ -31,17 +31,17 @@ public class CommandTracker : SerializedTracker<CommandTracker.CommandEvent> {
 		}
 
 		internal static string buildCommand(XmlElement e) {
-			string cmd = e.getProperty("command");
-			foreach (XmlElement e2 in e.getDirectElementsByTagName("arg")) {
+			var cmd = e.getProperty("command");
+			foreach (var e2 in e.getDirectElementsByTagName("arg")) {
 				cmd += " " + e2.InnerText;
 			}
 			return cmd;
 		}
 
 		private static void splitCommand(string cmd, XmlElement e) {
-			string[] parts = cmd.Split(' ');
+			var parts = cmd.Split(' ');
 			e.addProperty("command", parts[0]);
-			for (int i = 1; i < parts.Length; i++) {
+			for (var i = 1; i < parts.Length; i++) {
 				e.addProperty("arg", parts[i]);
 			}
 		}

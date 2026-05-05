@@ -1,206 +1,167 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using ECCLibrary;
+using ECCLibrary.Data;
+using ECCLibrary.Mono;
+using Nautilus.Utility;
 using ReikaKalseki.DIAlterra;
 using UnityEngine;
 
 namespace ReikaKalseki.SeaToSea;
 
 public class VoidThalassacean : CreatureAsset {
-    private static readonly ThalassaceanPrefab template =
-        (ThalassaceanPrefab)DEIntegrationSystem.instance.getThalassacean().getModPrefabByTechType();
-
-    private readonly XMLLocale.LocaleEntry locale;
-
     internal VoidThalassacean(XMLLocale.LocaleEntry e)
-        : base(e.key, e.name, e.desc, (GameObject)getECCField(template, "model"), null) {
-        locale = e;
-        typeof(CreatureAsset).GetField("sprite", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(
+        : base(Nautilus.Assets.PrefabInfo.WithTechType(e.key, e.name, e.desc)) {
+        CreatureDataUtils.AddCreaturePDAEncyclopediaEntry(
             this,
-            (Atlas.Sprite)getECCField(template, "sprite")
+            "Lifeforms/Fauna/Carnivores",
+            e.name,
+            e.desc,
+            12,
+            null,
+            null
         );
     }
 
-    private static object getECCField(CreatureAsset c, string name) {
-        return typeof(CreatureAsset).GetField(name, BindingFlags.Instance | BindingFlags.NonPublic).GetValue(c);
-    }
+    protected override CreatureTemplate CreateTemplate() {
+        var liveMixinData = ScriptableObject.CreateInstance<LiveMixinData>();
 
-    public override GameObject GetGameObject() {
-        GameObject go = base.GetGameObject();
-        Renderer r = go.GetComponentInChildren<Renderer>();
-        RenderUtil.swapTextures(SeaToSeaMod.modDLL, r, "Textures/Creature/VoidThalassacean");
-        go.EnsureComponent<VoidThalassaceanTag>();
-        return go;
-    }
-
-    public override string GetEncyDesc {
-        get { return locale.pda; }
-    }
-
-    public override string GetEncyTitle {
-        get { return locale.name; }
-    }
-
-    public override ScannableItemData ScannableSettings {
-        get {
-            ScannableItemData dat = template.ScannableSettings;
-            dat.scanTime *= 1.5F;
-            return dat;
-        }
-    }
-
-    public override List<LootDistributionData.BiomeData> BiomesToSpawnIn {
-        get { return new List<LootDistributionData.BiomeData>(); }
-    }
-
-    //===========copy pasted from ThalassaceanPrefab, since QMM is stupid and shits itself if you reference another mod's type directly
-
-    public override LargeWorldEntity.CellLevel CellLevel {
-        get { return LargeWorldEntity.CellLevel.Global; }
-    }
-
-    public override CreatureAsset.SwimRandomData SwimRandomSettings {
-        get { return new CreatureAsset.SwimRandomData(true, new Vector3(30f, 0f, 30f), 1.2f, 5f, 0.5f); }
-    }
-
-    public override EcoTargetType EcoTargetType {
-        get { return EcoTargetType.Whale; }
-    }
-
-    public override TechType CreatureTraitsReference {
-        get { return TechType.SeaTreader; }
-    }
-
-    public override float Mass {
-        get { return 250f; }
-    }
-
-    public override float TurnSpeed {
-        get { return 0.15f; }
-    }
-
-    public override void SetLiveMixinData(ref LiveMixinData liveMixinData) {
         liveMixinData.maxHealth = 1800f;
         liveMixinData.knifeable = true;
+
+        var template = new CreatureTemplate(
+            DeIntegrationSystem.Instance.GetThalassacean(),
+            BehaviourType.Whale,
+            EcoTargetType.Whale,
+            160f
+        ) {
+            CellLevel = LargeWorldEntity.CellLevel.Global,
+            SwimRandomData = new SwimRandomData(0.5f, 1.2f, new Vector3(30f, 0f, 30f), 5f),
+            Mass = 250f,
+            LocomotionData = new LocomotionData(forwardRotationSpeed: 0.15f),
+            LiveMixinData = liveMixinData,
+            SizeDistribution = new AnimationCurve(
+                new Keyframe(0f, 0.8f),
+                new Keyframe(1f, 1f)
+            ),
+        };
+
+        return template;
     }
 
-    public override CreatureAsset.RoarAbilityData RoarAbilitySettings {
-        get {
-            return new CreatureAsset.RoarAbilityData(true, 4f, 30f, "ThalassaceanRoar", string.Empty, 0.51f, 20f, 30f);
-        }
-    }
+    protected override IEnumerator ModifyPrefab(GameObject prefab, CreatureComponents cc) {
+        if (cc.Locomotion) cc.Locomotion.maxVelocity = 6f;
 
-    public override AnimationCurve SizeDistribution {
-        get {
-            return new AnimationCurve(
-                new Keyframe[] {
-                    new Keyframe(0f, 0.8f),
-                    new Keyframe(1f, 1f)
-                }
-            );
-        }
-    }
+        var trailManagerBuilder = new TrailManagerBuilder(cc, prefab.transform.SearchChild("root")) {
+            Trails = [
+                prefab.transform.SearchChild("spine1"),
+                prefab.transform.SearchChild("spine2"),
+                prefab.transform.SearchChild("spine3"),
+                prefab.transform.SearchChild("spine4"),
+            ],
+            SegmentSnapSpeed = 0.2f,
+            MaxSegmentOffset = -1f,
+            AllowDisableOnScreen = false,
+        };
 
-    public override BehaviourType BehaviourType {
-        get { return BehaviourType.Whale; }
-    }
+        trailManagerBuilder.Apply();
 
-    public override float MaxVelocityForSpeedParameter {
-        get { return 6f; }
-    }
+        var voiceEmitter = prefab.AddComponent<FMOD_CustomEmitter>();
 
-    public override void AddCustomBehaviour(CreatureAsset.CreatureComponents components) {
-        base.CreateTrail(
-                GameObjectExtensions.SearchChild(prefab, "root", 0),
-                new Transform[] {
-                    GameObjectExtensions.SearchChild(prefab, "spine1", 0).transform,
-                    GameObjectExtensions.SearchChild(prefab, "spine2", 0).transform,
-                    GameObjectExtensions.SearchChild(prefab, "spine3", 0).transform,
-                    GameObjectExtensions.SearchChild(prefab, "spine4", 0).transform
-                },
-                components,
-                0.2f,
-                -1f
-            ); /*
-            FleeOnDamage fleeOnDamage = this.prefab.AddComponent<FleeOnDamage>();
-            fleeOnDamage.breakLeash = true;
-            fleeOnDamage.swimVelocity = 6f;
-            fleeOnDamage.damageThreshold = 40f;
-            fleeOnDamage.evaluatePriority = 0.9f;*/
+        voiceEmitter.followParent = true;
+
+        var voice = prefab.AddComponent<CreatureVoice>();
+
+        voice.emitter = voiceEmitter;
+        voice.closeIdleSound = AudioUtils.GetFmodAsset("ThalassaceanRoar");
+        voice.minInterval = 30;
+        voice.maxInterval = 70;
+
+        var r = prefab.GetComponentInChildren<Renderer>();
+        RenderUtil.swapTextures(SeaToSeaMod.ModDLL, r, "Textures/Creature/VoidThalassacean");
+        prefab.EnsureComponent<VoidThalassaceanTag>();
+
+        yield break;
     }
 }
 
-class VoidThalassaceanTag : MonoBehaviour, IOnTakeDamage {
-    private static readonly float AGGRESSION_TIME = 2.5F;
+internal class VoidThalassaceanTag : MonoBehaviour, IOnTakeDamage {
+    private const float AggressionTime = 2.5F;
 
-    private static readonly Color calmColor = new Color(0.2F, 0.5F, 1F);
-    private static readonly Color warnColor = new Color(1F, 0.75F, 0.15F);
-    private static readonly Color attackingColor = new Color(1F, 0.1F, 0.05F);
+    private static readonly Color CalmColor = new(0.2F, 0.5F, 1F);
+    private static readonly Color WarnColor = new(1F, 0.75F, 0.15F);
+    private static readonly Color AttackingColor = new(1F, 0.1F, 0.05F);
 
-    private static readonly SoundManager.SoundData aggroStartSound = SoundManager.registerSound(
-        SeaToSeaMod.modDLL,
+    private static readonly SoundManager.SoundData AggroStartSound = SoundManager.registerSound(
+        SeaToSeaMod.ModDLL,
         "voidthalaroar2",
         "Sounds/voidthalaroar2.ogg",
         SoundManager.soundMode3D,
-        s => { SoundManager.setup3D(s, 128); },
-        SoundSystem.masterBus
+        s => { SoundManager.setup3D(s, 128); }
     );
 
-    private static readonly SoundManager.SoundData attackStartSound = SoundManager.registerSound(
-        SeaToSeaMod.modDLL,
+    private static readonly SoundManager.SoundData AttackStartSound = SoundManager.registerSound(
+        SeaToSeaMod.ModDLL,
         "voidthalachirp",
         "Sounds/voidthalachirp.ogg",
         SoundManager.soundMode3D,
-        s => { SoundManager.setup3D(s, 128); },
-        SoundSystem.masterBus
+        s => { SoundManager.setup3D(s, 128); }
     );
 
-    private static readonly SoundManager.SoundData attackHitSound = SoundManager.registerSound(
-        SeaToSeaMod.modDLL,
+    private static readonly SoundManager.SoundData AttackHitSound = SoundManager.registerSound(
+        SeaToSeaMod.ModDLL,
         "voidthalahit",
         "Sounds/voidthalahit.ogg",
         SoundManager.soundMode3D,
-        s => { SoundManager.setup3D(s, 128); },
-        SoundSystem.masterBus
+        s => { SoundManager.setup3D(s, 128); }
     );
 
-    private Renderer renderer;
+    private Renderer _renderer;
 
     //private SwimRandom swimTarget;
     //private AggressiveWhenSeeTarget aggression;
     //private AggressiveToPilotingVehicle aggression2;
-    private AttackLastTarget attack;
-    internal Rigidbody body;
-    private SwimBehaviour behavior;
+    private AttackLastTarget _attack;
+    internal Rigidbody Body;
+    private SwimBehaviour _behavior;
 
-    private readonly List<VoidThalaHitDetection> triggers = new List<VoidThalaHitDetection>();
-    private static readonly List<int> aggroTokens = new List<int>() { 1, 2, 3 };
+    private readonly List<VoidThalaHitDetection> _triggers = [];
+    private static readonly List<int> AggroTokens = [1, 2, 3];
+
+    private static readonly int Shininess = Shader.PropertyToID("_Shininess");
+
+    private static readonly int SpecInt = Shader.PropertyToID("_SpecInt");
+
+    private static readonly int Fresnel = Shader.PropertyToID("_Fresnel");
+
+    private static readonly int GlowColor = Shader.PropertyToID("_GlowColor");
     //prevent more than three tag teaming
 
-    private float aggressionLevel;
-    private float aggressionColorFade;
+    private float _aggressionLevel;
+    private float _aggressionColorFade;
 
-    private float timeAggressive;
-    private float timeFleeing;
+    private float _timeAggressive;
+    private float _timeFleeing;
 
-    private float flashCycleVar;
+    private float _flashCycleVar;
 
-    private Vector3 runAwayTarget;
+    private Vector3 _runAwayTarget;
 
-    private int currentAggroToken;
+    private int _currentAggroToken;
 
-    private float returnAttackLifetime;
+    private float _returnAttackLifetime;
 
-    void Start() {
+    private void Start() {
         float r = 100;
-        renderer = this.GetComponentInChildren<Renderer>();
-        renderer.materials[0].SetFloat("_Shininess", 2.5F);
-        renderer.materials[0].SetFloat("_SpecInt", 5.0F);
-        renderer.materials[0].SetFloat("_Fresnel", 0.75F);
-        body = this.GetComponent<Rigidbody>();
-        behavior = this.GetComponent<SwimBehaviour>();
-        behavior.turnSpeed *= 1.5F;
+        _renderer = GetComponentInChildren<Renderer>();
+        _renderer.materials[0].SetFloat(Shininess, 2.5F);
+        _renderer.materials[0].SetFloat(SpecInt, 5.0F);
+        _renderer.materials[0].SetFloat(Fresnel, 0.75F);
+        Body = GetComponent<Rigidbody>();
+        _behavior = GetComponent<SwimBehaviour>();
+        _behavior.turnSpeed *= 1.5F;
         //swimTarget = GetComponent<SwimRandom>();
         /*
             aggression = gameObject.EnsureComponent<AggressiveWhenSeeTarget>();
@@ -219,41 +180,41 @@ class VoidThalassaceanTag : MonoBehaviour, IOnTakeDamage {
             aggression2.range = r;
             aggression2.updateAggressionInterval = 0.5F;
             */
-        attack = gameObject.EnsureComponent<AttackLastTarget>();
-        attack.aggressionThreshold = 0.5F;
-        attack.creature = this.GetComponent<Creature>(); //aggression.creature;
-        attack.lastTarget = gameObject.EnsureComponent<LastTarget>(); //aggression.lastTarget;
-        attack.maxAttackDuration = 60;
-        attack.minAttackDuration = 30;
-        attack.swimVelocity = 45;
-        attack.creature.ScanCreatureActions();
+        _attack = gameObject.EnsureComponent<AttackLastTarget>();
+        _attack.aggressionThreshold = 0.5F;
+        _attack.creature = GetComponent<Creature>(); //aggression.creature;
+        _attack.lastTarget = gameObject.EnsureComponent<LastTarget>(); //aggression.lastTarget;
+        _attack.maxAttackDuration = 60;
+        _attack.minAttackDuration = 30;
+        _attack.swimVelocity = 45;
+        _attack.creature.ScanCreatureActions();
 
-        this.GetComponent<LiveMixin>().damageReceivers = this.GetComponents<IOnTakeDamage>();
+        GetComponent<LiveMixin>().damageReceivers = GetComponents<IOnTakeDamage>();
 
-        this.Invoke("delayedStart", 0.5F);
+        Invoke(nameof(DelayedStart), 0.5F);
     }
 
-    void delayedStart() {
-        foreach (Collider c in this.GetComponentsInChildren<Collider>(true)) {
+    private void DelayedStart() {
+        foreach (var c in GetComponentsInChildren<Collider>(true)) {
             if (!c.isTrigger) {
-                c.gameObject.EnsureComponent<VoidThalaHitDetection>().owner = this;
+                c.gameObject.EnsureComponent<VoidThalaHitDetection>().Owner = this;
             }
         }
     }
 
-    private GameObject getTarget(out bool vehicle) {
+    private GameObject GetTarget(out bool vehicle) {
         if (GameModeUtils.IsInvisible()) {
             vehicle = false;
             return null;
         }
 
-        Vehicle v = Player.main.GetVehicle();
+        var v = Player.main.GetVehicle();
         vehicle = (bool)v;
         return v ? v.gameObject : Player.main.gameObject;
     }
 
-    void Update() {
-        float far = Player.main ? (Player.main.transform.position - transform.position).sqrMagnitude : 999999;
+    private void Update() {
+        var far = Player.main ? (Player.main.transform.position - transform.position).sqrMagnitude : 999999;
         //SNUtil.writeToChat("D="+((int)(Mathf.Sqrt(distSq)))/10*10);
         if (far > 90000) { //more than 300m
             gameObject.destroy(false);
@@ -261,186 +222,186 @@ class VoidThalassaceanTag : MonoBehaviour, IOnTakeDamage {
         }
 
         transform.localScale = Vector3.one * 1.5F;
-        GameObject go = this.getTarget(out bool vehicle);
-        bool flag = false;
-        Color c = calmColor;
+        var go = GetTarget(out var vehicle);
+        var flag = false;
+        var c = CalmColor;
 
-        float dT = Time.deltaTime;
+        var dT = Time.deltaTime;
 
         if (go) {
-            float distSq = (go.transform.position - transform.position).sqrMagnitude;
+            var distSq = (go.transform.position - transform.position).sqrMagnitude;
             //SNUtil.writeToChat("D="+((int)(Mathf.Sqrt(distSq)))/10*10);
-            if (distSq < (vehicle ? 2500 : 400) || aggressionLevel > 0.9F ||
-                (returnAttackLifetime > 0 && distSq < 25600)) {
+            if (distSq < (vehicle ? 2500 : 400) || _aggressionLevel > 0.9F ||
+                (_returnAttackLifetime > 0 && distSq < 25600)) {
                 //within 50m in vehicle or 20 on foot, or a queued attack
                 flag = true;
-            } else if (aggressionLevel < 0 &&
-                       (distSq > 2500 || (transform.position - runAwayTarget).sqrMagnitude < 900)) {
+            } else if (_aggressionLevel < 0 &&
+                       (distSq > 2500 || (transform.position - _runAwayTarget).sqrMagnitude < 900)) {
                 //more than 50m away while running, or at position
-                aggressionLevel = 0;
+                _aggressionLevel = 0;
                 //SNUtil.writeToChat("Zeroing flee");
             }
         } else {
-            aggressionLevel = 0;
+            _aggressionLevel = 0;
         }
 
-        if (Math.Abs(aggressionLevel) < 0.01F && body.velocity.magnitude >= 5) {
-            body.velocity *= 0.995F;
+        if (Math.Abs(_aggressionLevel) < 0.01F && Body.velocity.magnitude >= 5) {
+            Body.velocity *= 0.995F;
             //SNUtil.writeToChat("Braking");
         }
 
-        if (timeFleeing > 15)
-            aggressionLevel = 0;
+        if (_timeFleeing > 15)
+            _aggressionLevel = 0;
 
-        if (returnAttackLifetime > 0)
-            returnAttackLifetime -= dT;
+        if (_returnAttackLifetime > 0)
+            _returnAttackLifetime -= dT;
 
         if (flag) {
-            if (aggressionLevel >= 0) {
-                bool wasAny = aggressionLevel > 0;
-                bool was = aggressionLevel >= 1;
-                aggressionLevel = Mathf.Clamp01(aggressionLevel + (Time.deltaTime / AGGRESSION_TIME));
-                if (aggressionLevel >= 1 && !was) {
-                    SoundManager.playSoundAt(attackStartSound, transform.position, false, 128, 2);
-                } else if (aggressionLevel > 0 && !wasAny) {
-                    SoundManager.playSoundAt(aggroStartSound, transform.position, false, 128, 2);
+            if (_aggressionLevel >= 0) {
+                var wasAny = _aggressionLevel > 0;
+                var was = _aggressionLevel >= 1;
+                _aggressionLevel = Mathf.Clamp01(_aggressionLevel + Time.deltaTime / AggressionTime);
+                if (_aggressionLevel >= 1 && !was) {
+                    SoundManager.playSoundAt(AttackStartSound, transform.position, false, 128, 2);
+                } else if (_aggressionLevel > 0 && !wasAny) {
+                    SoundManager.playSoundAt(AggroStartSound, transform.position, false, 128, 2);
                 }
             }
         } else {
-            aggressionLevel = 0;
+            _aggressionLevel = 0;
             //SNUtil.writeToChat("No target, calming");
         }
 
-        bool flag2 = false;
-        if (aggressionLevel < 0) {
+        var flag2 = false;
+        if (_aggressionLevel < 0) {
             flag2 = true;
-            behavior.SwimTo(
-                runAwayTarget,
-                (runAwayTarget - transform.position).normalized,
-                attack.swimVelocity * 0.67F
+            _behavior.SwimTo(
+                _runAwayTarget,
+                (_runAwayTarget - transform.position).normalized,
+                _attack.swimVelocity * 0.67F
             );
-            timeFleeing += dT;
-        } else if (aggressionLevel >= 1 && this.tryAllocateAggroToken()) {
-            attack.lastTarget.target = go;
-            attack.currentTarget = go;
-            behavior.Attack(
+            _timeFleeing += dT;
+        } else if (_aggressionLevel >= 1 && TryAllocateAggroToken()) {
+            _attack.lastTarget.target = go;
+            _attack.currentTarget = go;
+            _behavior.Attack(
                 go.transform.position,
                 (go.transform.position - transform.position).normalized,
-                attack.swimVelocity
+                _attack.swimVelocity
             );
-            aggressionColorFade = Mathf.Clamp01(aggressionColorFade + (dT * 2));
-            timeAggressive += dT;
+            _aggressionColorFade = Mathf.Clamp01(_aggressionColorFade + dT * 2);
+            _timeAggressive += dT;
             //SNUtil.writeToChat("Attacking!");
-            timeFleeing = 0;
+            _timeFleeing = 0;
         } else {
             flag2 = true;
-            timeFleeing = 0;
+            _timeFleeing = 0;
         }
 
         if (flag2) {
-            aggressionColorFade = Mathf.Clamp01(aggressionColorFade - (dT * 0.5F));
-            this.clearAggro();
+            _aggressionColorFade = Mathf.Clamp01(_aggressionColorFade - dT * 0.5F);
+            ClearAggro();
         }
 
-        if (timeAggressive > 30)
-            this.resetAggro(true);
+        if (_timeAggressive > 30)
+            ResetAggro(true);
 
-        c = aggressionColorFade > 0
-            ? Color.Lerp(warnColor, attackingColor, aggressionColorFade)
-            : Color.Lerp(calmColor, warnColor, aggressionLevel);
+        c = _aggressionColorFade > 0
+            ? Color.Lerp(WarnColor, AttackingColor, _aggressionColorFade)
+            : Color.Lerp(CalmColor, WarnColor, _aggressionLevel);
 
-        float f = body.velocity.magnitude / attack.swimVelocity;
+        var f = Body.velocity.magnitude / _attack.swimVelocity;
         if (!flag2) //fast while fading from yellow to red
             f = 1.2F;
-        flashCycleVar += dT * Mathf.Deg2Rad * 6000 * f; //faster flashing the faster it goes
-        float glow = 3.5F + (2.5F * Mathf.Sin(flashCycleVar));
-        if (aggressionLevel < 0)
-            glow *= 1 + aggressionLevel;
+        _flashCycleVar += dT * Mathf.Deg2Rad * 6000 * f; //faster flashing the faster it goes
+        var glow = 3.5F + 2.5F * Mathf.Sin(_flashCycleVar);
+        if (_aggressionLevel < 0)
+            glow *= 1 + _aggressionLevel;
 
-        renderer.materials[0].SetColor("_GlowColor", c);
-        RenderUtil.setEmissivity(renderer, glow);
+        _renderer.materials[0].SetColor(GlowColor, c);
+        RenderUtil.setEmissivity(_renderer, glow);
     }
 
-    private bool tryAllocateAggroToken() {
-        if (currentAggroToken > 0)
+    private bool TryAllocateAggroToken() {
+        if (_currentAggroToken > 0)
             return true;
-        if (aggroTokens.Count == 0)
+        if (AggroTokens.Count == 0)
             return false;
-        currentAggroToken = aggroTokens[0];
-        aggroTokens.RemoveAt(0);
+        _currentAggroToken = AggroTokens[0];
+        AggroTokens.RemoveAt(0);
         return true;
     }
 
-    private void clearAggro() {
-        timeAggressive = 0;
-        attack.lastTarget.target = null;
-        attack.currentTarget = null;
-        if (currentAggroToken != 0) {
-            if (aggroTokens.Contains(currentAggroToken))
-                SNUtil.writeToChat("Two voidthala with same aggro token: " + currentAggroToken);
-            aggroTokens.Add(currentAggroToken);
-            currentAggroToken = 0;
+    private void ClearAggro() {
+        _timeAggressive = 0;
+        _attack.lastTarget.target = null;
+        _attack.currentTarget = null;
+        if (_currentAggroToken != 0) {
+            if (AggroTokens.Contains(_currentAggroToken))
+                SNUtil.writeToChat("Two voidthala with same aggro token: " + _currentAggroToken);
+            AggroTokens.Add(_currentAggroToken);
+            _currentAggroToken = 0;
         }
         //SNUtil.writeToChat("Clearing aggression values");
     }
 
-    public void resetAggro(bool deflect) {
-        aggressionLevel = -1;
-        Vector3 offset = body.velocity.setLength(120);
+    public void ResetAggro(bool deflect) {
+        _aggressionLevel = -1;
+        var offset = Body.velocity.setLength(120);
         offset = MathUtil.getRandomVectorAround(offset, deflect ? 90 : 50).setLength(120);
-        runAwayTarget =
+        _runAwayTarget =
             Player.main.transform.position + offset; //MathUtil.getRandomPointAtSetDistance(transform.position, 100);
-        if (runAwayTarget.y > -20)
-            runAwayTarget = runAwayTarget.setY(-20);
+        if (_runAwayTarget.y > -20)
+            _runAwayTarget = _runAwayTarget.setY(-20);
         //SNUtil.writeToChat("Resetting aggro");
-        this.Invoke("playFleeSound", 0.8F);
+        Invoke(nameof(PlayFleeSound), 0.8F);
     }
 
-    private void playFleeSound() {
-        this.CancelInvoke("playFleeSound");
-        SoundManager.playSoundAt(attackHitSound, transform.position, false, 128, 1);
+    private void PlayFleeSound() {
+        CancelInvoke(nameof(PlayFleeSound));
+        SoundManager.playSoundAt(AttackHitSound, transform.position, false, 128);
     }
 
     public void OnTakeDamage(DamageInfo info) {
-        if (info.type == DamageType.Electrical || info.type == DamageType.Normal)
-            this.resetAggro(true);
+        if (info.type is DamageType.Electrical or DamageType.Normal)
+            ResetAggro(true);
     }
 
-    public void returnAttack() {
-        returnAttackLifetime = 30;
+    public void ReturnAttack() {
+        _returnAttackLifetime = 30;
     }
 }
 
-class VoidThalaHitDetection : MonoBehaviour {
-    internal VoidThalassaceanTag owner;
+internal class VoidThalaHitDetection : MonoBehaviour {
+    internal VoidThalassaceanTag Owner;
 
-    void Start() {
-        if (!owner)
-            owner = gameObject.FindAncestor<VoidThalassaceanTag>();
+    private void Start() {
+        if (!Owner)
+            Owner = gameObject.FindAncestor<VoidThalassaceanTag>();
     }
 
-    void OnCollisionEnter(Collision c) {
-        if (!owner)
+    private void OnCollisionEnter(Collision c) {
+        if (!Owner)
             return;
         if (c.gameObject.FindAncestor<VoidThalaImpactImmunity>())
             return;
         if (c.collider.isPlayer() || c.collider.gameObject.FindAncestor<Vehicle>()) {
-            owner.resetAggro(false);
+            Owner.ResetAggro(false);
             if (UnityEngine.Random.Range(0F, 1F) < 0.67F) {
-                owner.Invoke("returnAttack", UnityEngine.Random.Range(10F, 20F));
+                Owner.Invoke(nameof(VoidThalassaceanTag.ReturnAttack), UnityEngine.Random.Range(10F, 20F));
             }
 
-            Vehicle v = c.collider.gameObject.FindAncestor<Vehicle>();
+            var v = c.collider.gameObject.FindAncestor<Vehicle>();
             if (v && v.liveMixin) {
-                v.liveMixin.TakeDamage(2, c.contacts[0].point, DamageType.Normal, owner.gameObject);
+                v.liveMixin.TakeDamage(2, c.contacts[0].point, DamageType.Normal, Owner.gameObject);
             }
 
-            c.rigidbody.AddForce(owner.body.velocity.setLength(15), ForceMode.VelocityChange);
+            c.rigidbody.AddForce(Owner.Body.velocity.setLength(15), ForceMode.VelocityChange);
             c.gameObject.EnsureComponent<VoidThalaImpactImmunity>().elapseWhen =
                 DayNightCycle.main.timePassedAsFloat + 0.5F;
         }
     }
 }
 
-class VoidThalaImpactImmunity : SelfRemovingComponent {
+internal class VoidThalaImpactImmunity : SelfRemovingComponent {
 }

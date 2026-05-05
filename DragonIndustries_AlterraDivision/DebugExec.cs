@@ -12,21 +12,21 @@ public static class DebugExec {
 
 	public static void run(string opcode, string type, string member, string instField) {
 		try {
-			Type t = InstructionHandlers.getTypeBySimpleName(type);
+			var t = InstructionHandlers.getTypeBySimpleName(type);
 			object inst = null;
-			FieldInfo main = t.GetField(instField);
+			var main = t.GetField(instField);
 			if (main != null && main.IsStatic && main.FieldType == t)
 				inst = main.GetValue(null);
 			switch (opcode) {
 				case "call": {
-					MethodInfo call = AccessTools.Method(t, member);
-					object ret = call.Invoke(inst, new object[0]);
+					var call = AccessTools.Method(t, member);
+					var ret = call.Invoke(inst, []);
 					SNUtil.writeToChat("Invoking " + type + "." + member + " returned: " + toString(ret));
 				}
 					break;
 				case "field": {
-					FieldInfo field = AccessTools.Field(t, member);
-					object ret = field.GetValue(inst);
+					var field = AccessTools.Field(t, member);
+					var ret = field.GetValue(inst);
 					SNUtil.writeToChat("Field " + type + "." + member + " contains: " + toString(ret));
 				}
 					break;

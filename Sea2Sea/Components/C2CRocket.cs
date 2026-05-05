@@ -12,30 +12,30 @@ internal class C2CRocket : MonoBehaviour {
 
 	private float lastPDAUpdate = -1;
 
-	void Awake() {
-		this.getLockers();
+	private void Awake() {
+		getLockers();
 	}
 
-	void getLockers() {
-		lockers = this.GetComponentsInChildren<RocketLocker>();
-		foreach (RocketLocker cl in lockers) {
-			StorageContainer sc = cl.GetComponent<StorageContainer>();
+	private void getLockers() {
+		lockers = GetComponentsInChildren<RocketLocker>();
+		foreach (var cl in lockers) {
+			var sc = cl.GetComponent<StorageContainer>();
 			sc.Resize(6, 8);
 		}
 	}
 
-	void Update() {
+	private void Update() {
 		if (C2CHooks.skipRocketTick)
 			return;
 		if (!rocket)
-			rocket = this.GetComponent<Rocket>();
+			rocket = GetComponent<Rocket>();
 		if (lockers == null)
-			this.getLockers();
+			getLockers();
 
-		float time = DayNightCycle.main.timePassedAsFloat;
+		var time = DayNightCycle.main.timePassedAsFloat;
 		if (time - lastPDAUpdate >= 0.5F) {
 			lastPDAUpdate = time;
-			List<ItemsContainer> li = lockers.Where(l => (bool)l).Select(sc => sc.GetComponent<StorageContainer>().container).ToList();
+			var li = lockers.Where(l => (bool)l).Select(sc => sc.GetComponent<StorageContainer>().container).ToList();
 			if (WorldUtil.isInRocket())
 				li.Add(Inventory.main.container);
 			FinalLaunchAdditionalRequirementSystem.instance.updateContentsAndPDAPageChecklist(rocket, li);

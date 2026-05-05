@@ -14,15 +14,15 @@ public class CrashZoneSanctuaryCoralSheet : CustomPrefab {
     }
 
     public GameObject GetGameObject() {
-        GameObject go = ObjectUtil.createWorldObject("");
+        var go = ObjectUtil.createWorldObject("");
         go.removeComponent<LiveMixin>();
         go.removeComponent<Collider>();
         go.removeComponent<PlantBehaviour>();
         go.removeComponent<FMOD_StudioEventEmitter>();
         go.removeComponent<CoralBlendWhite>();
         go.removeComponent<Light>();
-        Renderer r = go.GetComponentInChildren<Renderer>();
-        RenderUtil.swapTextures(SeaToSeaMod.modDLL, r, "Textures/SanctuaryCoral");
+        var r = go.GetComponentInChildren<Renderer>();
+        RenderUtil.swapTextures(SeaToSeaMod.ModDLL, r, "Textures/SanctuaryCoral");
         r.material.DisableKeyword("MARMO_EMISSION");
         r.receiveShadows = false;
         r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;

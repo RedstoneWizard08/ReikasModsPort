@@ -11,8 +11,8 @@ using UnityEngine;
 namespace ReikaKalseki.DIAlterra;
 
 public static class SignalManager {
-    private static readonly Dictionary<string, ModSignal> signals = new Dictionary<string, ModSignal>();
-    private static readonly Dictionary<PingType, string> types = new Dictionary<PingType, string>();
+    private static readonly Dictionary<string, ModSignal> signals = new();
+    private static readonly Dictionary<PingType, string> types = new();
 
     static SignalManager() {
     }
@@ -28,7 +28,7 @@ public static class SignalManager {
     public static ModSignal createSignal(string id, string name, string desc, string pda, string prompt) {
         if (signals.ContainsKey(id))
             throw new Exception("Signal ID '" + id + "' already in use!");
-        ModSignal sig = new ModSignal(id, name, desc, pda, prompt);
+        var sig = new ModSignal(id, name, desc, pda, prompt);
         signals[sig.id] = sig;
         SNUtil.log("Constructed signal " + sig);
         return sig;
@@ -74,13 +74,13 @@ public static class SignalManager {
         }
 
         public ModSignal addRadioTrigger(string soundPath) {
-            return this.addRadioTrigger(
+            return addRadioTrigger(
                 SoundManager.registerPDASound(SNUtil.tryGetModDLL(), "radio_" + id, soundPath).asset
             );
         }
 
         public ModSignal addRadioTrigger(FMODAsset sound) {
-            this.setStoryGate("radio_" + id);
+            setStoryGate("radio_" + id);
             radioMessage = SNUtil.addRadioMessage(storyGate, radioText, sound);
             return this;
         }
@@ -96,14 +96,14 @@ public static class SignalManager {
         }
 
         public void register(string pfb, Vector3 pos, float maxDist = -1) {
-            this.register(pfb, SpriteManager.Get(SpriteManager.Group.Pings, "Signal"), pos, maxDist);
+            register(pfb, SpriteManager.Get(SpriteManager.Group.Pings, "Signal"), pos, maxDist);
         }
 
         public void register(string pfb, Sprite icon, Vector3 pos, float maxDist = -1) {
             if (icon == null || icon == SpriteManager.defaultSprite)
                 throw new Exception("Null icon is not allowed");
             signalType = EnumHandler.AddEntry<PingType>(id).WithIcon(icon);
-            SignalManager.types[signalType] = id;
+            types[signalType] = id;
             CustomLocaleKeyDatabase.registerKey(id, "Signal");
             this.icon = icon;
 
@@ -120,11 +120,11 @@ public static class SignalManager {
         }
 
         public GameObject spawnGenericSignalHolder(Vector3 pos) {
-            GameObject go = genericSignalHolder.GetGameObject();
+            var go = genericSignalHolder.GetGameObject();
             go.SetActive(true);
 
             go.transform.position = pos;
-            PingInstance pi = go.GetComponent<PingInstance>();
+            var pi = go.GetComponent<PingInstance>();
             pi.origin = go.transform;
             pi.displayPingInManager = true;
             pi.SetVisible(true);
@@ -136,7 +136,7 @@ public static class SignalManager {
         }
 
         public PingInstance attachToObject(GameObject go) {
-            LargeWorldEntity lw = go.EnsureComponent<LargeWorldEntity>();
+            var lw = go.EnsureComponent<LargeWorldEntity>();
             lw.cellLevel = LargeWorldEntity.CellLevel.Global;
 
             go.SetActive(false);
@@ -150,7 +150,7 @@ public static class SignalManager {
             // signalInstance.maxDist = maxDistance >= 0 ? maxDistance : signalInstance.minDist;
             signalInstance.SetLabel(longName);
 
-            bool flag = true;
+            var flag = true;
             if (storyGate != null)
                 flag = StoryGoalManager.main.completedGoals.Contains(storyGate);
 
@@ -186,7 +186,7 @@ public static class SignalManager {
                 return;
             }
 
-            bool already = signalInstance.enabled;
+            var already = signalInstance.enabled;
             signalInstance.displayPingInManager = true;
             signalInstance.enabled = true;
             signalInstance.SetVisible(true);
@@ -195,7 +195,7 @@ public static class SignalManager {
                 return;
 
             if (delay > 0)
-                initializer.Invoke("triggerFX", delay);
+                initializer.Invoke(nameof(SignalInitializer.triggerFX), delay);
             else
                 initializer.triggerFX();
 
@@ -235,7 +235,7 @@ public static class SignalManager {
 
             if (ping != null && signal == null) {
                 //SNUtil.log("Signal was null, refetch");
-                signal = SignalManager.getSignal(SignalManager.types[ping.pingType]);
+                signal = getSignal(types[ping.pingType]);
             }
 
             SNUtil.log("Starting signal init of " + signal + " / " + ping, SNUtil.diDLL);
@@ -243,8 +243,8 @@ public static class SignalManager {
             signal.initializer = this;
             ping.SetLabel(signal.longName);
 
-            bool available = signal.storyGate == null ||
-                             StoryGoalManager.main.completedGoals.Contains(signal.storyGate);
+            var available = signal.storyGate == null ||
+                            StoryGoalManager.main.completedGoals.Contains(signal.storyGate);
             ping.displayPingInManager = available;
             if (!available)
                 ping.SetVisible(false);
@@ -271,7 +271,7 @@ public static class SignalManager {
         }
 
         internal SignalHolder registerPrefab() {
-            this.Register();
+            Register();
             return this;
         }
     }
@@ -286,12 +286,12 @@ public static class SignalManager {
         }
 
         public GameObject GetGameObject() {
-            GameObject go = new GameObject("Signal_" + signal.id + "(Clone)");
+            var go = new GameObject("Signal_" + signal.id + "(Clone)");
             go.EnsureComponent<PrefabIdentifier>().ClassId = Info.ClassID;
             go.EnsureComponent<TechTag>().type = Info.TechType;
             go.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.Global;
 
-            PingInstance ping = go.EnsureComponent<PingInstance>();
+            var ping = go.EnsureComponent<PingInstance>();
             ping.pingType = signal.signalType; //PingType.Beacon;
             EnumHandler.AddEntry<PingType>("").WithIcon(null);
             //ping.displayPingInManager = false;
@@ -300,7 +300,7 @@ public static class SignalManager {
             ping.minDist = 18f;
             // ping.maxDist = 1;
 
-            GenericSignalInitializer si = go.EnsureComponent<GenericSignalInitializer>();
+            var si = go.EnsureComponent<GenericSignalInitializer>();
             si.ping = ping;
             si.signal = signal;
 
@@ -322,14 +322,14 @@ public static class SignalManager {
 
             if (ping != null && signal == null) {
                 //SNUtil.log("Signal was null, refetch");
-                signal = SignalManager.getSignal(SignalManager.types[ping.pingType]);
+                signal = getSignal(types[ping.pingType]);
             }
 
             SNUtil.log("Starting signal init of " + signal + " / " + ping, SNUtil.diDLL);
             ping.SetLabel(signal.longName);
 
-            bool available = signal.storyGate == null ||
-                             StoryGoalManager.main.completedGoals.Contains(signal.storyGate);
+            var available = signal.storyGate == null ||
+                            StoryGoalManager.main.completedGoals.Contains(signal.storyGate);
             ping.displayPingInManager = available;
             if (!available)
                 ping.SetVisible(false);

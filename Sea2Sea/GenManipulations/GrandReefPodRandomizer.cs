@@ -16,7 +16,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal class GrandReefPodRandomizer : ManipulationBase {
 
-	private static readonly Dictionary<string, Pod> prefabs = new Dictionary<string, Pod>();
+	private static readonly Dictionary<string, Pod> prefabs = new();
 
 	private static readonly double measuredYDatum = -25.26;
 
@@ -32,36 +32,36 @@ internal class GrandReefPodRandomizer : ManipulationBase {
 		prefabs[prefab] = new Pod(prefab, ymax - measuredYDatum, ymin - measuredYDatum);
 	}
 
-	private bool randomType = false;
+	private bool randomType;
 	private bool allowMediumSize = true;
 	private bool allowLargeSize = true;
 
-	private bool randomHeight = false;
-	private double referenceY = 0;
-	private double groundThickness = 0;
+	private bool randomHeight;
+	private double referenceY;
+	private double groundThickness;
 	private double maxSinkFraction = 1;
 
 	public override void applyToObject(GameObject go) {
-		string id = ObjectUtil.getPrefabID(go);
+		var id = ObjectUtil.getPrefabID(go);
 		double hoff = 0;
 		if (randomType) {
-			Pod old = prefabs[id];
-			List<Pod> li = new List<Pod>(prefabs.Values);
-			int max = allowLargeSize ? prefabs.Count : (allowMediumSize ? prefabs.Count-1 : 2);
-			Pod p = li[UnityEngine.Random.Range(0, max)];
-			double dh = go.transform.position.y-referenceY;
+			var old = prefabs[id];
+			var li = new List<Pod>(prefabs.Values);
+			var max = allowLargeSize ? prefabs.Count : allowMediumSize ? prefabs.Count-1 : 2;
+			var p = li[UnityEngine.Random.Range(0, max)];
+			var dh = go.transform.position.y-referenceY;
 			go = ObjectUtil.replaceObject(go, p.prefab);
 			hoff = p.vineBaseOffset - old.vineBaseOffset;
 		}
 		if (randomHeight) {
-			Pod p = prefabs[id];
-			double maxSink = Math.Min(p.maximumSink*maxSinkFraction, groundThickness);
-			float sink = UnityEngine.Random.Range(0F, (float)maxSink);
-			double newY = referenceY+p.vineBaseOffset-sink;
+			var p = prefabs[id];
+			var maxSink = Math.Min(p.maximumSink*maxSinkFraction, groundThickness);
+			var sink = UnityEngine.Random.Range(0F, (float)maxSink);
+			var newY = referenceY+p.vineBaseOffset-sink;
 			hoff = newY - go.transform.position.y;
 		}
 		if (Math.Abs(hoff) > 0.01) {
-			go.transform.position = go.transform.position - new Vector3(0, (float)hoff, 0);
+			go.transform.position -= new Vector3(0, (float)hoff, 0);
 			SNUtil.writeToChat(id + " > " + hoff);
 		}
 	}
@@ -69,19 +69,19 @@ internal class GrandReefPodRandomizer : ManipulationBase {
 	public override void applyToObject(PlacedObject go) {
 		double hoff = 0;
 		if (randomType) {
-			Pod old = prefabs[go.prefabName];
-			List<Pod> li = new List<Pod>(prefabs.Values);
-			int max = allowLargeSize ? prefabs.Count : (allowMediumSize ? prefabs.Count-1 : 2);
-			Pod p = li[UnityEngine.Random.Range(0, max)];
-			double dh = go.obj.transform.position.y-referenceY;
+			var old = prefabs[go.prefabName];
+			var li = new List<Pod>(prefabs.Values);
+			var max = allowLargeSize ? prefabs.Count : allowMediumSize ? prefabs.Count-1 : 2;
+			var p = li[UnityEngine.Random.Range(0, max)];
+			var dh = go.obj.transform.position.y-referenceY;
 			go.replaceObject(p.prefab);
 			hoff = p.vineBaseOffset - old.vineBaseOffset;
 		}
 		if (randomHeight) {
-			Pod p = prefabs[go.prefabName];
-			double maxSink = Math.Min(p.maximumSink*maxSinkFraction, groundThickness);
-			float sink = UnityEngine.Random.Range(0F, (float)maxSink);
-			double newY = referenceY+p.vineBaseOffset-sink;
+			var p = prefabs[go.prefabName];
+			var maxSink = Math.Min(p.maximumSink*maxSinkFraction, groundThickness);
+			var sink = UnityEngine.Random.Range(0F, (float)maxSink);
+			var newY = referenceY+p.vineBaseOffset-sink;
 			hoff = newY - go.position.y;
 		}
 		if (Math.Abs(hoff) > 0.01) {
@@ -91,7 +91,7 @@ internal class GrandReefPodRandomizer : ManipulationBase {
 	}
 
 	public override void loadFromXML(XmlElement e) {
-		randomType = e.getBoolean("randomType", out XmlElement type);
+		randomType = e.getBoolean("randomType", out var type);
 		allowMediumSize = randomType && bool.Parse(type.GetAttribute("medium"));
 		allowLargeSize = randomType && bool.Parse(type.GetAttribute("large"));
 
@@ -102,7 +102,7 @@ internal class GrandReefPodRandomizer : ManipulationBase {
 	}
 
 	public override void saveToXML(XmlElement e) {
-		XmlElement prop = e.addProperty("randomType", randomType);
+		var prop = e.addProperty("randomType", randomType);
 		prop.SetAttribute("medium", allowMediumSize.ToString());
 		prop.SetAttribute("large", allowLargeSize.ToString());
 

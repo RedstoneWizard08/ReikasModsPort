@@ -8,20 +8,19 @@ using UnityEngine;
 namespace ReikaKalseki.SeaToSea;
 
 public static class CraftingItems {
-    private static readonly Dictionary<Items, BasicCraftingItem> mappings = new Dictionary<Items, BasicCraftingItem>();
+    private static readonly Dictionary<Items, BasicCraftingItem> mappings = new();
 
-    private static readonly Dictionary<TechType, BasicCraftingItem> techs =
-        new Dictionary<TechType, BasicCraftingItem>();
+    private static readonly Dictionary<TechType, BasicCraftingItem> techs = new();
 
     public static readonly string LATHING_DRONE_RENDER_OBJ_NAME = "DroneModel";
 
     static CraftingItems() {
         foreach (Items m in Enum.GetValues(typeof(Items))) {
-            string id = Enum.GetName(typeof(Items), m);
+            var id = Enum.GetName(typeof(Items), m);
             SNUtil.log("Constructing crafting item " + id);
-            Item attr = getAttr(m);
-            XMLLocale.LocaleEntry e = SeaToSeaMod.itemLocale.getEntry(id);
-            BasicCraftingItem item = (BasicCraftingItem)Activator.CreateInstance(
+            var attr = getAttr(m);
+            var e = SeaToSeaMod.ItemLocale.getEntry(id);
+            var item = (BasicCraftingItem)Activator.CreateInstance(
                 attr.itemClass,
                 new object[] { id, e.name, e.desc, attr.template }
             );
@@ -78,7 +77,7 @@ public static class CraftingItems {
                 case Items.CrystalLens:
                     item.inventorySize = new Vector2int(2, 2);
                     item.renderModify = r => {
-                        GameObject mdl = r.setModel(
+                        var mdl = r.setModel(
                             ObjectUtil.lookupPrefab("59381275-1f6e-4bb9-8b00-7bbe77f0df1c")
                                 .getChildObject("Coral_reef_shell_01")
                         );
@@ -88,13 +87,13 @@ public static class CraftingItems {
                         r.gameObject.EnsureComponent<CrystalLensAnimator>();
                         r.transform.localScale = Vector3.one * 0.5F;
 
-                        GameObject root = mdl.FindAncestor<PrefabIdentifier>().gameObject;
+                        var root = mdl.FindAncestor<PrefabIdentifier>().gameObject;
                         root.removeComponent<Collider>();
-                        SphereCollider sc = root.EnsureComponent<SphereCollider>();
+                        var sc = root.EnsureComponent<SphereCollider>();
                         sc.radius = 0.25F;
                         sc.center = Vector3.zero;
 
-                        VFXFabricating fab = root.GetComponentInChildren<VFXFabricating>();
+                        var fab = root.GetComponentInChildren<VFXFabricating>();
                         fab.posOffset = new Vector3(0, 0.3F, 0.1F);
                         fab.localMinY = -0.4F;
 
@@ -107,9 +106,9 @@ public static class CraftingItems {
                     item.inventorySize = new Vector2int(2, 2);
                     item.glowIntensity = 1.5F;
                     item.renderModify = r => {
-                        GameObject vehicleBayPrefab = ObjectUtil.lookupPrefab("dd0298c1-49c2-44a0-8b32-da98e12228fb");
-                        GameObject droneObj = vehicleBayPrefab.GetComponent<Constructor>().buildBotPrefab;
-                        GameObject mdl = r.setModel(droneObj.getChildObject("model/constructor_drone"))
+                        var vehicleBayPrefab = ObjectUtil.lookupPrefab("dd0298c1-49c2-44a0-8b32-da98e12228fb");
+                        var droneObj = vehicleBayPrefab.GetComponent<Constructor>().buildBotPrefab;
+                        var mdl = r.setModel(droneObj.getChildObject("model/constructor_drone"))
                             .setName(LATHING_DRONE_RENDER_OBJ_NAME);
                         r = mdl.GetComponentInChildren<Renderer>();
                         r.transform.localRotation = Quaternion.identity;
@@ -118,13 +117,13 @@ public static class CraftingItems {
                         //r.gameObject.transform.localScale
                         //RenderUtil.swapToModdedTextures(r, item);
 
-                        GameObject root = mdl.FindAncestor<PrefabIdentifier>().gameObject;
+                        var root = mdl.FindAncestor<PrefabIdentifier>().gameObject;
                         root.removeComponent<Collider>();
-                        SphereCollider sc = root.EnsureComponent<SphereCollider>();
+                        var sc = root.EnsureComponent<SphereCollider>();
                         sc.radius = 0.25F;
                         sc.center = Vector3.zero;
 
-                        VFXFabricating fab = root.GetComponentInChildren<VFXFabricating>();
+                        var fab = root.GetComponentInChildren<VFXFabricating>();
                         fab.eulerOffset = new Vector3(180, 0, 0);
                         //fab.posOffset = new Vector3(0, 0.5F, 0);
 
@@ -163,7 +162,7 @@ public static class CraftingItems {
                     item.inventorySize = new Vector2int(1, 2);
                     item.renderModify = r => {
                         RenderUtil.swapTextures(
-                            SeaToSeaMod.modDLL,
+                            SeaToSeaMod.ModDLL,
                             r,
                             "Textures/" + item.getTextureFolder() + "/" + ObjectUtil.formatFileName(item),
                             new Dictionary<int, string> { { 1, "" }, { 3, "" } }
@@ -213,13 +212,13 @@ public static class CraftingItems {
                     break;
                 case Items.BrokenT2Battery:
                     item.renderModify = r => {
-                        GameObject root = r.gameObject.FindAncestor<PrefabIdentifier>().gameObject;
+                        var root = r.gameObject.FindAncestor<PrefabIdentifier>().gameObject;
                         r.transform.localScale = new Vector3(3F, 2.4F, 2.4F);
                         root.removeComponent<Battery>();
                         root.gameObject.EnsureComponent<BrokenAzuriteBatterySparker>();
                         root.GetComponent<Pickupable>().destroyOnDeath = false;
                         RenderUtil.swapTextures(
-                            SeaToSeaMod.modDLL,
+                            SeaToSeaMod.ModDLL,
                             r,
                             "Textures/" + item.getTextureFolder() + "/" + ObjectUtil.formatFileName(C2CItems.t2Battery)
                         );
@@ -229,8 +228,8 @@ public static class CraftingItems {
                 case Items.AmoeboidSample:
                     item.inventorySize = new Vector2int(1, 1);
                     item.renderModify = r => {
-                        GameObject root = r.gameObject.FindAncestor<PrefabIdentifier>().gameObject;
-                        Eatable ea = root.GetComponent<Eatable>();
+                        var root = r.gameObject.FindAncestor<PrefabIdentifier>().gameObject;
+                        var ea = root.GetComponent<Eatable>();
                         ea.foodValue = 6;
                         ea.waterValue = 0;
                         ea.decomposes = false;
@@ -260,12 +259,12 @@ public static class CraftingItems {
             }
 
             if (item.sprite == null)
-                item.sprite = TextureManager.getSprite(SeaToSeaMod.modDLL, "Textures/Items/" + id);
+                item.sprite = TextureManager.getSprite(SeaToSeaMod.ModDLL, "Textures/Items/" + id);
         }
     }
 
     public static void addAll() {
-        foreach (BasicCraftingItem item in mappings.Values) {
+        foreach (var item in mappings.Values) {
             item.Register();
             techs[item.Info.TechType] = item;
             SNUtil.log(
@@ -535,7 +534,7 @@ public static class CraftingItems {
     }
 
     private static Item getAttr(Items key) {
-        FieldInfo info = typeof(Items).GetField(Enum.GetName(typeof(Items), key));
+        var info = typeof(Items).GetField(Enum.GetName(typeof(Items), key));
         return (Item)Attribute.GetCustomAttribute(info, typeof(Item));
     }
 
@@ -566,7 +565,7 @@ internal class NanocarbonTag : MonoBehaviour {
     private float wetTime;
 
     private DynamicBubbler bubbler;
-    private Renderer[] renderers = null;
+    private Renderer[] renderers;
 
     private static readonly float DISSOLUTION_TIME = 90; //30;
 
@@ -577,8 +576,8 @@ internal class NanocarbonTag : MonoBehaviour {
         }
 
         if (renderers == null) {
-            renderers = this.GetComponentsInChildren<MeshRenderer>();
-            foreach (Renderer r in renderers) {
+            renderers = GetComponentsInChildren<MeshRenderer>();
+            foreach (var r in renderers) {
                 r.materials[0].EnableKeyword("FX_BUILDING");
                 r.materials[0].SetColor("_BorderColor", Color.white);
                 r.materials[0].SetVector("_BuildParams", new Vector4(0, 0, 8, 0));
@@ -593,11 +592,11 @@ internal class NanocarbonTag : MonoBehaviour {
         if (gameObject.isInWater())
             wetTime += Time.deltaTime;
         else
-            this.reset();
+            reset();
 
         if (wetTime > DISSOLUTION_TIME / 6F) {
             if (wetTime > DISSOLUTION_TIME) {
-                this.dissolve();
+                dissolve();
             } else {
                 bubbler.currentIntensity = (float)MathUtil.linterpolate(
                     wetTime,
@@ -607,8 +606,8 @@ internal class NanocarbonTag : MonoBehaviour {
                     1,
                     true
                 );
-                float f = (float)MathUtil.linterpolate(wetTime, DISSOLUTION_TIME / 3F, DISSOLUTION_TIME, 1, 0, true);
-                foreach (Renderer r in renderers)
+                var f = (float)MathUtil.linterpolate(wetTime, DISSOLUTION_TIME / 3F, DISSOLUTION_TIME, 1, 0, true);
+                foreach (var r in renderers)
                     r.materials[0].SetFloat("_Built", f);
             }
         } else {
@@ -626,7 +625,7 @@ internal class NanocarbonTag : MonoBehaviour {
 
     private void dissolve() {
         bubbler.currentIntensity = Mathf.Max(0, bubbler.currentIntensity - Time.deltaTime);
-        foreach (Renderer r in renderers)
+        foreach (var r in renderers)
             r.gameObject.SetActive(false);
         gameObject.removeComponent<Pickupable>();
         if (bubbler.currentIntensity <= 0)
@@ -634,17 +633,17 @@ internal class NanocarbonTag : MonoBehaviour {
     }
 }
 
-class BrokenAzuriteBatterySparker : AzuriteSparker {
-    BrokenAzuriteBatterySparker() : base(1.5F, 1.0F, false, new Vector3(0, 0, -0.05F)) {
+internal class BrokenAzuriteBatterySparker : AzuriteSparker {
+    private BrokenAzuriteBatterySparker() : base(1.5F, 1.0F, false, new Vector3(0, 0, -0.05F)) {
     }
 }
 
-class LathingDroneSparker : AzuriteSparker {
-    LathingDroneSparker() : base(1.5F, 1.0F, true, new Vector3(0, 0, 0)) {
+internal class LathingDroneSparker : AzuriteSparker {
+    private LathingDroneSparker() : base(1.5F, 1.0F, true, new Vector3(0, 0, 0)) {
     }
 }
 
-class BacteriaAnimator : AnimatorComponent {
+internal class BacteriaAnimator : AnimatorComponent {
     private Renderer render;
 
     private void Update() {
@@ -656,7 +655,7 @@ class BacteriaAnimator : AnimatorComponent {
     }
 }
 
-class CrystalLensAnimator : AnimatorComponent {
+internal class CrystalLensAnimator : AnimatorComponent {
     private Renderer render;
 
     private void Update() {
@@ -664,20 +663,20 @@ class CrystalLensAnimator : AnimatorComponent {
             render = gameObject.GetComponent<Renderer>();
         }
 
-        float f = Mathf.Sin((DayNightCycle.main.timePassedAsFloat * 0.17F) + (gameObject.GetInstanceID() * 0.6943F));
-        float f2 = 0.5F + (0.5F * Mathf.Sin(
-            (DayNightCycle.main.timePassedAsFloat * 0.383F) + (gameObject.GetInstanceID() * 0.357F)
-        ));
-        render.materials[0].SetFloat("_SpecInt", 15F + (10 * f));
-        render.materials[0].SetFloat("_Shininess", 7.5F - (2.5F * f));
-        render.materials[0].SetFloat("_Fresnel", 0.5F + (0.4F * f));
-        Color c = new Color(f2, 0, 1, 1);
+        var f = Mathf.Sin(DayNightCycle.main.timePassedAsFloat * 0.17F + gameObject.GetInstanceID() * 0.6943F);
+        var f2 = 0.5F + 0.5F * Mathf.Sin(
+            DayNightCycle.main.timePassedAsFloat * 0.383F + gameObject.GetInstanceID() * 0.357F
+        );
+        render.materials[0].SetFloat("_SpecInt", 15F + 10 * f);
+        render.materials[0].SetFloat("_Shininess", 7.5F - 2.5F * f);
+        render.materials[0].SetFloat("_Fresnel", 0.5F + 0.4F * f);
+        var c = new Color(f2, 0, 1, 1);
         render.materials[0].SetColor("_GlowColor", c);
         RenderUtil.setEmissivity(render, 1 + f2);
     }
 }
 
-class RocketFuelAnimator : AnimatorComponent {
+internal class RocketFuelAnimator : AnimatorComponent {
     private Renderer render;
 
     private void Update() {
@@ -685,9 +684,9 @@ class RocketFuelAnimator : AnimatorComponent {
             render = gameObject.GetComponent<Renderer>();
         }
 
-        float f = Mathf.Sin((DayNightCycle.main.timePassedAsFloat * 0.37F) + (gameObject.GetInstanceID() * 0.6943F));
+        var f = Mathf.Sin(DayNightCycle.main.timePassedAsFloat * 0.37F + gameObject.GetInstanceID() * 0.6943F);
         RenderUtil.setEmissivity(render.materials[3], 2.5F - f);
-        Color c = new Color(0, 0.33F + (0.67F * f), 1, 1);
+        var c = new Color(0, 0.33F + 0.67F * f, 1, 1);
         render.materials[3].color = c;
         render.materials[3].SetColor("_SpecColor", c);
         render.materials[3].SetColor("_GlowColor", c);

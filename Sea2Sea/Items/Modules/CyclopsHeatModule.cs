@@ -5,17 +5,13 @@ namespace ReikaKalseki.SeaToSea;
 
 public sealed class CyclopsHeatModule : CyclopsModule {
     [SetsRequiredMembers]
-    public CyclopsHeatModule() : base(SeaToSeaMod.itemLocale.getEntry("CyclopsHeat")) {
-        this.preventNaturalUnlock();
+    public CyclopsHeatModule() : base(SeaToSeaMod.ItemLocale.getEntry("CyclopsHeat")) {
+        preventNaturalUnlock();
     }
 
-    public override QuickSlotType QuickSlotType {
-        get { return QuickSlotType.Passive; }
-    }
+    public override QuickSlotType QuickSlotType => QuickSlotType.Passive;
 
-    public override Vector2int SizeInInventory {
-        get { return new Vector2int(3, 3); }
-    }
+    public override Vector2int SizeInInventory => new(3, 3);
     /*
     protected override Atlas.Sprite GetItemSprite()
     {

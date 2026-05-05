@@ -16,162 +16,152 @@ public abstract class RetexturedFish : CustomPrefab, DIPrefab<StringPrefabContai
     public float glowIntensity { get; set; }
     public StringPrefabContainer baseTemplate { get; set; }
 
-    private readonly Assembly ownerMod;
+    private readonly Assembly _ownerMod;
+    private readonly List<BiomeBase> _nativeBiomesCave = [];
+    private readonly List<BiomeBase> _nativeBiomesSurface = [];
 
-    private readonly List<LootDistributionData.BiomeData> nativeBiomesCave = new List<LootDistributionData.BiomeData>();
+    private static readonly Dictionary<TechType, RetexturedFish> Creatures = new();
+    private static readonly Dictionary<string, RetexturedFish> CreatureIDs = new();
 
-    private readonly List<LootDistributionData.BiomeData> nativeBiomesSurface =
-        new List<LootDistributionData.BiomeData>();
-
-    private static readonly Dictionary<TechType, RetexturedFish> creatures = new Dictionary<TechType, RetexturedFish>();
-    private static readonly Dictionary<string, RetexturedFish> creatureIDs = new Dictionary<string, RetexturedFish>();
-
-    public float scanTime = 2;
-    public int cookableIntoBase = 0;
-    private XMLLocale.LocaleEntry locale;
-    public TechType eggBase = TechType.None;
-    public float eggScale = 1;
-    public float eggMaturationTime = 2400;
-    public float acuSizeScale = 1;
-    public bool bigEgg = true;
-    public float eggSpawnRate = 0;
-    public readonly List<BiomeType> eggSpawns = new List<BiomeType>();
-    public WaterParkCreatureData data = null;
+    public float ScanTime = 2;
+    public int CookableIntoBase = 0;
+    private XMLLocale.LocaleEntry _locale;
+    public TechType EggBase = TechType.None;
+    public float EggScale = 1;
+    public float EggMaturationTime = 2400;
+    public float AcuSizeScale = 1;
+    public bool BigEgg = true;
+    public float EggSpawnRate = 0;
+    public readonly List<BiomeType> EggSpawns = [];
+    public WaterParkCreatureData Data = null;
 
     [SetsRequiredMembers]
     protected RetexturedFish(XMLLocale.LocaleEntry e, string pfb) : this(e.key, e.name, e.desc, pfb) {
-        locale = e;
+        _locale = e;
     }
 
     [SetsRequiredMembers]
     protected RetexturedFish(string id, string name, string desc, string pfb) : base(id, name, desc) {
         baseTemplate = new StringPrefabContainer(pfb);
-        ownerMod = SNUtil.tryGetModDLL();
-        Info.WithIcon(getSprite());
-        this.SetGameObject(GetGameObject);
-        this.SetSpawns(nativeBiomesSurface.ToArray());
+        _ownerMod = SNUtil.tryGetModDLL();
+        Info.WithIcon(GetSprite());
+        SetGameObject(GetGameObject);
+        // TODO
+        // this.SetSpawns(_nativeBiomesSurface.ToArray());
         Info.WithSizeInInventory(SizeInInventory);
 
         // typeof(ModPrefab).GetField("Mod", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(this, ownerMod);
         AddOnRegister(() => {
-                creatures[Info.TechType] = this;
-                creatureIDs[Info.ClassID] = this;
+                Creatures[Info.TechType] = this;
+                CreatureIDs[Info.ClassID] = this;
 
-                if (locale != null && !string.IsNullOrEmpty(locale.pda))
+                if (_locale != null && !string.IsNullOrEmpty(_locale.pda))
                     SNUtil.addPDAEntry(
                         this,
-                        scanTime,
-                        locale.getString("category"),
-                        locale.pda,
-                        locale.getString("header"),
+                        ScanTime,
+                        _locale.getString("category"),
+                        _locale.pda,
+                        _locale.getString("header"),
                         null
                     );
 
-                if (eggBase != TechType.None) {
-                    SNUtil.log("Creating egg for " + this + " from " + eggBase.AsString());
-                    if (eggBase.AsString().EndsWith("egg", StringComparison.InvariantCultureIgnoreCase))
+                if (EggBase != TechType.None) {
+                    SNUtil.log("Creating egg for " + this + " from " + EggBase.AsString());
+                    if (EggBase.AsString().EndsWith("egg", StringComparison.InvariantCultureIgnoreCase))
                         throw new Exception("Egg base is invalid - choose the creature not the egg");
                     CustomEgg.createAndRegisterEgg(
                         this,
-                        eggBase,
-                        eggScale,
+                        EggBase,
+                        EggScale,
                         "", // Description
-                        bigEgg,
+                        BigEgg,
                         e => {
-                            e.eggProperties.daysToGrow = eggMaturationTime / 1200;
-                            e.eggProperties.initialSize *= acuSizeScale;
-                            e.eggProperties.maxSize *= acuSizeScale;
+                            e.eggProperties.daysToGrow = EggMaturationTime / 1200;
+                            e.eggProperties.initialSize *= AcuSizeScale;
+                            e.eggProperties.maxSize *= AcuSizeScale;
                         },
-                        eggSpawnRate,
-                        eggSpawns.ToArray()
+                        EggSpawnRate,
+                        EggSpawns.ToArray()
                     );
                 }
 
                 //GenUtil.registerSlotWorldgen(ClassID, PrefabFileName, TechType, EntitySlot.Type.Creature, LargeWorldEntity.CellLevel.Medium, BiomeType.SeaTreaderPath_OpenDeep_CreatureOnly, 1, 0.15F);
                 //GenUtil.registerSlotWorldgen(ClassID, PrefabFileName, TechType, EntitySlot.Type.Medium, LargeWorldEntity.CellLevel.Medium, BiomeType.GrandReef_TreaderPath, 1, 0.3F);
 
-                CreatureData.behaviourTypeList[Info.TechType] = this.getBehavior();
+                CreatureData.behaviourTypeList[Info.TechType] = GetBehavior();
 
-                TechType basis = CraftData.entClassTechTable.ContainsKey(baseTemplate.prefab)
-                    ? CraftData.entClassTechTable[baseTemplate.prefab]
+                var basis = CraftData.entClassTechTable.TryGetValue(baseTemplate.prefab, out var tech)
+                    ? tech
                     : TechType.None;
-                if (basis != TechType.None && BaseBioReactor.charge.ContainsKey(basis))
-                    BioReactorHandler.SetBioReactorCharge(Info.TechType, BaseBioReactor.charge[basis]);
 
-                if (basis != TechType.None && TechData.GetEquipmentType(basis) != null &&
-                    TechData.GetEquipmentType(basis) == EquipmentType.Hand)
+                if (basis != TechType.None && BaseBioReactor.charge.TryGetValue(basis, out var charge))
+                    BioReactorHandler.SetBioReactorCharge(Info.TechType, charge);
+
+                if (basis != TechType.None && TechData.GetEquipmentType(basis) == EquipmentType.Hand)
                     CraftDataHandler.SetEquipmentType(Info.TechType, EquipmentType.Hand);
 
-                // TODO
-                // if (basis != TechType.None && cookableIntoBase > 0 && TechData.cookedCreatureList.ContainsKey(basis)) {
-                //     TechType cooked = TechData.cookedCreatureList[basis];
-                //     TechType cured = SNUtil.getTechType(("Cured" + cooked).Replace("Cooked", ""));
-                //     CraftDataHandler.SetCookedVariant(Info.TechType, cooked);
-                //     SNUtil.log("Adding delegate cooking/curing of " + this + " into " + cooked + " & " + cured);
-                //
-                //     RecipeData rec = new RecipeData();
-                //     rec.Ingredients.Add(new Ingredient(Info.TechType, 1));
-                //     DuplicateRecipeDelegateWithRecipe alt = new DuplicateRecipeDelegateWithRecipe(cooked, rec);
-                //     alt.category = TechCategory.CookedFood;
-                //     alt.group = TechGroup.Survival;
-                //     alt.craftingType = CraftTree.Type.Fabricator;
-                //     alt.craftingMenuTree = new string[] { "Survival", "CookedFood" };
-                //     alt.ownerMod = ownerMod;
-                //     alt.craftTime = 2; //time not fetchable, not in dict(?!)
-                //     alt.setRecipe(cookableIntoBase);
-                //     alt.unlock = Info.TechType;
-                //     alt.allowUnlockPopups = true;
-                //     alt.Register();
-                //     TechnologyUnlockSystem.instance.addDirectUnlock(Info.TechType, alt.Info.TechType);
-                //
-                //     rec = new RecipeData();
-                //     rec.Ingredients.Add(new Ingredient(Info.TechType, 1));
-                //     rec.Ingredients.Add(new Ingredient(TechType.Salt, 1));
-                //     alt = new DuplicateRecipeDelegateWithRecipe(cured, rec);
-                //     alt.category = TechCategory.CuredFood;
-                //     alt.group = TechGroup.Survival;
-                //     alt.craftingType = CraftTree.Type.Fabricator;
-                //     alt.craftingMenuTree = new string[] { "Survival", "CuredFood" };
-                //     alt.ownerMod = ownerMod;
-                //     alt.craftTime = 2;
-                //     alt.setRecipe(cookableIntoBase);
-                //     alt.unlock = Info.TechType;
-                //     alt.allowUnlockPopups = true;
-                //     alt.Register();
-                //     TechnologyUnlockSystem.instance.addDirectUnlock(Info.TechType, alt.Info.TechType);
-                // }
+                if (basis == TechType.None || CookableIntoBase <= 0 || TechData.GetProcessed(basis) == null) return;
+                var cooked = TechData.GetProcessed(basis);
+                var cured = SNUtil.getTechType(("Cured" + cooked).Replace("Cooked", ""));
+                CraftDataHandler.SetCookedVariant(Info.TechType, cooked);
+                SNUtil.log("Adding delegate cooking/curing of " + this + " into " + cooked + " & " + cured);
+
+                var rec = new RecipeData();
+                rec.Ingredients.Add(new Ingredient(Info.TechType, 1));
+                var alt = new DuplicateRecipeDelegateWithRecipe(cooked, rec) {
+                    category = TechCategory.CookedFood,
+                    group = TechGroup.Survival,
+                    craftingType = CraftTree.Type.Fabricator,
+                    craftingMenuTree = ["Survival", "CookedFood"],
+                    ownerMod = _ownerMod,
+                    craftTime = 2, //time not fetchable, not in dict(?!)
+                };
+                alt.setRecipe(CookableIntoBase);
+                alt.unlock = Info.TechType;
+                alt.allowUnlockPopups = true;
+                alt.Register();
+                TechnologyUnlockSystem.instance.addDirectUnlock(Info.TechType, alt.Info.TechType);
+
+                rec = new RecipeData();
+                rec.Ingredients.Add(new Ingredient(Info.TechType, 1));
+                rec.Ingredients.Add(new Ingredient(TechType.Salt, 1));
+                alt = new DuplicateRecipeDelegateWithRecipe(cured, rec) {
+                    category = TechCategory.CuredFood,
+                    group = TechGroup.Survival,
+                    craftingType = CraftTree.Type.Fabricator,
+                    craftingMenuTree = ["Survival", "CuredFood"],
+                    ownerMod = _ownerMod,
+                    craftTime = 2,
+                };
+                alt.setRecipe(CookableIntoBase);
+                alt.unlock = Info.TechType;
+                alt.allowUnlockPopups = true;
+                alt.Register();
+                TechnologyUnlockSystem.instance.addDirectUnlock(Info.TechType, alt.Info.TechType);
             }
         );
     }
 
-    public RetexturedFish addNativeBiome(BiomeType b, bool caveOnly = false) {
-        nativeBiomesCave.Add(
-            new LootDistributionData.BiomeData {
-                biome = b
-            }
-        );
+    public RetexturedFish AddNativeBiome(BiomeBase b, bool caveOnly = false) {
+        _nativeBiomesCave.Add(b);
+
         if (!caveOnly)
-            nativeBiomesSurface.Add(
-                new LootDistributionData.BiomeData {
-                    biome = b
-                }
-            );
+            _nativeBiomesSurface.Add(b);
+
         return this;
     }
 
-    // public bool isNativeToBiome(Vector3 vec) {
-    //     return this.isNativeToBiome(BiomeBase.getBiome(vec), WorldUtil.isInCave(vec));
-    // }
-
-    public virtual Vector2int SizeInInventory {
-        get { return new Vector2int(1, 1); }
+    public bool IsNativeToBiome(Vector3 vec) {
+        return IsNativeToBiome(BiomeBase.GetBiome(vec), WorldUtil.isInCave(vec));
     }
 
-    public bool isNativeToBiome(BiomeType b, bool cave) {
-        return (cave ? nativeBiomesCave : nativeBiomesSurface).Any(it => it.biome == b);
+    public virtual Vector2int SizeInInventory => new(1, 1);
+
+    public bool IsNativeToBiome(BiomeBase b, bool cave) {
+        return (cave ? _nativeBiomesCave : _nativeBiomesSurface).Contains(b);
     }
 
-    public string getPrefabID() {
+    public string GetPrefabID() {
         return Info.ClassID;
     }
 
@@ -186,28 +176,28 @@ public abstract class RetexturedFish : CustomPrefab, DIPrefab<StringPrefabContai
     }
 
     public virtual GameObject GetGameObject() {
-        GameObject world = ObjectUtil.getModPrefabBaseObject(this);
+        var world = ObjectUtil.getModPrefabBaseObject(this);
         world.EnsureComponent<TechTag>().type = Info.TechType;
         world.EnsureComponent<PrefabIdentifier>().ClassId = Info.ClassID;
         world.SetActive(true);
 
-        if (data != null) {
-            world.EnsureComponent<WaterParkCreature>().data = data;
+        if (Data != null) {
+            world.EnsureComponent<WaterParkCreature>().data = Data;
         }
 
         return world;
     }
 
     public virtual Sprite getIcon() {
-        return this.GetItemSprite();
+        return GetItemSprite();
     }
 
     protected virtual Sprite GetItemSprite() {
-        return TextureManager.getSprite(ownerMod, "Textures/Items/" + ObjectUtil.formatFileName(this));
+        return TextureManager.getSprite(_ownerMod, "Textures/Items/" + ObjectUtil.formatFileName(this));
     }
 
-    public virtual Sprite getSprite() {
-        return this.GetItemSprite();
+    public virtual Sprite GetSprite() {
+        return GetItemSprite();
     }
 
     public virtual void prepareGameObject(GameObject go, Renderer[] r) {
@@ -218,16 +208,16 @@ public abstract class RetexturedFish : CustomPrefab, DIPrefab<StringPrefabContai
     }
 
     public Assembly getOwnerMod() {
-        return ownerMod;
+        return _ownerMod;
     }
 
-    public abstract BehaviourType getBehavior();
+    public abstract BehaviourType GetBehavior();
 
-    public static RetexturedFish getFish(string id) {
-        return creatureIDs.ContainsKey(id) ? creatureIDs[id] : null;
+    public static RetexturedFish GetFish(string id) {
+        return CreatureIDs.TryGetValue(id, out var fish) ? fish : null;
     }
 
-    public static RetexturedFish getFish(TechType tt) {
-        return creatures.ContainsKey(tt) ? creatures[tt] : null;
+    public static RetexturedFish GetFish(TechType tt) {
+        return Creatures.TryGetValue(tt, out var fish) ? fish : null;
     }
 }

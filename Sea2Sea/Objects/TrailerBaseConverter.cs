@@ -14,7 +14,7 @@ public class TrailerBaseConverter : CustomPrefab {
     }
 
     public GameObject GetGameObject() {
-        GameObject go = new GameObject();
+        var go = new GameObject();
         go.EnsureComponent<TrailerBaseConverterTag>();
         go.EnsureComponent<TechTag>().type = Info.TechType;
         go.EnsureComponent<PrefabIdentifier>().ClassId = Info.ClassID;
@@ -22,8 +22,8 @@ public class TrailerBaseConverter : CustomPrefab {
         return go;
     }
 
-    class TrailerBaseConverterTag : MonoBehaviour {
-        private static readonly HashSet<string> darken = new HashSet<string>() {
+    private class TrailerBaseConverterTag : MonoBehaviour {
+        private static readonly HashSet<string> darken = [
             "BaseCorridorRoomGenericInteriorConnection",
             "BaseRoomGenericInteriorCoverTop01",
             "BaseInteriorRoomGenericWallmods02",
@@ -32,32 +32,32 @@ public class TrailerBaseConverter : CustomPrefab {
             "BaseCorridorXShapeInterior",
             "BaseRoomCoverTop",
             "BaseCorridorInteriorWallHatch",
-        };
+        ];
 
         private Text text;
-        private Renderer[] baseParts = null;
+        private Renderer[] baseParts;
 
-        void Update() {
+        private void Update() {
             if (text) {
                 text.text = "<color=#ff0000>ERROR\n\nREACTOR VESSEL\nDAMAGED</color>";
                 return;
             }
 
-            BaseBioReactorGeometry go = WorldUtil.getClosest<BaseBioReactorGeometry>(C2CHooks.trailerBaseBioreactor);
+            var go = WorldUtil.getClosest<BaseBioReactorGeometry>(C2CHooks.trailerBaseBioreactor);
             if (go && Vector3.Distance(go.transform.position, C2CHooks.trailerBaseBioreactor) < 5F) {
-                GameObject child = go.gameObject.getChildObject("UI/Canvas/Text");
+                var child = go.gameObject.getChildObject("UI/Canvas/Text");
                 text = child.GetComponent<Text>();
                 go.gameObject.removeChildObject("Bio_reactor/Bio_Reactor_glass_geo");
                 baseParts = go.gameObject.FindAncestor<SeabaseReconstruction.WorldgenSeabaseController>()
                     .GetComponentsInChildren<Renderer>(true);
                 //SNUtil.log("Checking for decayed textures for "+baseParts.toDebugString(), SNUtil.diDLL);
-                foreach (Renderer r in baseParts) {
+                foreach (var r in baseParts) {
                     if (!r)
                         continue;
-                    foreach (Material m in r.materials) {
+                    foreach (var m in r.materials) {
                         if (!m)
                             continue;
-                        string rn = r.name;
+                        var rn = r.name;
                         if (rn == "LODs")
                             rn = r.transform.parent.name;
                         rn = rn.Replace("(Clone)", "");
@@ -68,7 +68,7 @@ public class TrailerBaseConverter : CustomPrefab {
                         }
 
                         m.DisableKeyword("MARMO_EMISSION");
-                        string refName = m.mainTexture && m.mainTexture.name != null ? m.mainTexture.name : null;
+                        var refName = m.mainTexture && m.mainTexture.name != null ? m.mainTexture.name : null;
                         if (refName != null) {
                             refName = refName.Replace(" (Instance)", "").Replace("_LOD1", "").Replace("_LOD2", "")
                                 .Replace("_LOD3", "").ToLowerInvariant();
@@ -96,7 +96,7 @@ public class TrailerBaseConverter : CustomPrefab {
                             refName = "starship_work_desk_01_empty";
                         } else if (refName == "base_abandoned_interior_room_generic_window_side_01_glass") {
                             float a = 0;
-                            switch (UnityEngine.Random.Range(0, 3)) {
+                            switch (Random.Range(0, 3)) {
                                 case 0:
                                     a = 0.33F;
                                     refName = "base_interior_window_side_01_glass";
@@ -113,17 +113,17 @@ public class TrailerBaseConverter : CustomPrefab {
 
                             SNUtil.log("Set glass ref tex to " + refName);
                             if (a > 0) {
-                                Color c = m.GetColor("_Color");
+                                var c = m.GetColor("_Color");
                                 m.SetColor("_Color", new Color(c.r, c.g, c.b, a));
                             }
                         }
 
                         if (!string.IsNullOrEmpty(refName)) {
                             //SNUtil.log("Checking for decayed textures for "+r.gameObject.GetFullHierarchyPath()+" >>> "+refName, SNUtil.diDLL);
-                            if (SeaToSeaMod.hasDegasiBaseTextures(refName)) {
-                                HashSet<string> found = new HashSet<string>();
-                                foreach (string tex in m.GetTexturePropertyNames()) {
-                                    Texture2D img = SeaToSeaMod.getDegasiBaseTexture(refName, tex);
+                            if (SeaToSeaMod.HasDegasiBaseTextures(refName)) {
+                                HashSet<string> found = [];
+                                foreach (var tex in m.GetTexturePropertyNames()) {
+                                    var img = SeaToSeaMod.GetDegasiBaseTexture(refName, tex);
                                     if (img != null) {
                                         m.SetTexture(tex, img);
                                         found.Add(tex);

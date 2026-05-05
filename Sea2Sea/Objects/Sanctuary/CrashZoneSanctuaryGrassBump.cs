@@ -14,8 +14,8 @@ public class CrashZoneSanctuaryGrassBump : CustomPrefab {
     }
 
     public GameObject GetGameObject() {
-        string pfb = VanillaFlora.MUSHROOM_BUMP.getRandomPrefab(false);
-        GameObject go = ObjectUtil.createWorldObject(pfb);
+        var pfb = VanillaFlora.MUSHROOM_BUMP.getRandomPrefab(false);
+        var go = ObjectUtil.createWorldObject(pfb);
         go.removeComponent<LiveMixin>();
         go.removeComponent<Collider>();
         go.removeComponent<PlantBehaviour>();
@@ -23,8 +23,8 @@ public class CrashZoneSanctuaryGrassBump : CustomPrefab {
         go.removeComponent<CoralBlendWhite>();
         go.removeComponent<Light>();
         go.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.Near;
-        foreach (Renderer r in go.GetComponentsInChildren<Renderer>()) {
-            RenderUtil.swapTextures(SeaToSeaMod.modDLL, r, "Textures/SanctuaryGrassBump");
+        foreach (var r in go.GetComponentsInChildren<Renderer>()) {
+            RenderUtil.swapTextures(SeaToSeaMod.ModDLL, r, "Textures/SanctuaryGrassBump");
             r.material.DisableKeyword("MARMO_EMISSION");
             r.receiveShadows = false;
             r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;

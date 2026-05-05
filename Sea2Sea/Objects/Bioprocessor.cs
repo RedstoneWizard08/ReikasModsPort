@@ -11,18 +11,17 @@ using UnityEngine;
 namespace ReikaKalseki.SeaToSea;
 
 public class Bioprocessor : CustomMachine<BioprocessorLogic> {
-    internal static readonly Dictionary<TechType, BioRecipe> recipes = new Dictionary<TechType, BioRecipe>();
+    internal static readonly Dictionary<TechType, BioRecipe> recipes = new();
 
-    private static readonly Dictionary<TechType, DuplicateRecipeDelegate> delegates =
-        new Dictionary<TechType, DuplicateRecipeDelegate>();
+    private static readonly Dictionary<TechType, DuplicateRecipeDelegate> delegates = new();
 
-    internal static readonly Arrow leftArrow = new Arrow("arrowL", "", "", "");
-    internal static readonly Arrow rightArrow = new Arrow("arrowR", "", "", "");
-    internal static readonly Arrow returnArrow = new Arrow("arrowRet", "", "", "");
-    internal static readonly Arrow spacer = new Arrow("spacer", "", "", "");
+    internal static readonly Arrow leftArrow = new("arrowL", "", "", "");
+    internal static readonly Arrow rightArrow = new("arrowR", "", "", "");
+    internal static readonly Arrow returnArrow = new("arrowRet", "", "", "");
+    internal static readonly Arrow spacer = new("spacer", "", "", "");
 
-    internal static readonly NotFabricable sparklePeeperDisplay = new NotFabricable(
-        SeaToSeaMod.miscLocale.getEntry("EnzymePeeperDisplay"),
+    internal static readonly NotFabricable sparklePeeperDisplay = new(
+        SeaToSeaMod.MiscLocale.getEntry("EnzymePeeperDisplay"),
         CraftData.GetClassIdForTechType(TechType.Peeper)
     );
 
@@ -34,7 +33,7 @@ public class Bioprocessor : CustomMachine<BioprocessorLogic> {
     internal static Sound workingSoundReference;
 
     internal static readonly SoundManager.SoundData workingSound = SoundManager.registerSound(
-        SeaToSeaMod.modDLL,
+        SeaToSeaMod.ModDLL,
         "bioprocwork",
         "Sounds/bioproc-loop.ogg",
         SoundManager.soundMode3D,
@@ -66,7 +65,7 @@ public class Bioprocessor : CustomMachine<BioprocessorLogic> {
     }
 
     public static void addRecipes() {
-        bool hard = SeaToSeaMod.config.getBoolean(C2CConfig.ConfigEntries.HARDMODE);
+        var hard = SeaToSeaMod.ModConfig.getBoolean(C2CConfig.ConfigEntries.HARDMODE);
         addRecipe(new TypeInput(TechType.CreepvineSeedCluster), TechType.Lubricant, 2, 10, 120, 1, 2);
         addRecipe(
             new TypeInput(TechType.AcidMushroom),
@@ -158,7 +157,7 @@ public class Bioprocessor : CustomMachine<BioprocessorLogic> {
             throw new Exception("You may not register a recipe using null!");
         if (o == TechType.None)
             throw new Exception("You may not register a recipe making null!");
-        BioRecipe r = new BioRecipe(enzy, secs, energy, inp, o);
+        var r = new BioRecipe(enzy, secs, energy, inp, o);
         recipes[r.inputItem.getBaseType()] = r;
         r.inputCount = inamt;
         r.outputCount = outamt;
@@ -166,15 +165,15 @@ public class Bioprocessor : CustomMachine<BioprocessorLogic> {
     }
 
     private static TechType createRecipeDelegate(BioRecipe r, bool preventUnlock = false) {
-        BasicCraftingItem to = CraftingItems.getItemByTech(r.outputItem);
-        string rec = " (x" + r.outputCount + ")\n(" + Mathf.CeilToInt(r.totalEnergyCost) + " Power)";
-        DuplicateRecipeDelegate item = to == null
+        var to = CraftingItems.getItemByTech(r.outputItem);
+        var rec = " (x" + r.outputCount + ")\n(" + Mathf.CeilToInt(r.totalEnergyCost) + " Power)";
+        var item = to == null
             ? new DuplicateRecipeDelegate(r.outputItem, rec)
             : new DuplicateRecipeDelegate(to, rec);
         item.category = bioprocCategory;
         item.group = TechGroup.Resources;
         item.unlock = preventUnlock ? TechType.Unobtanium : r.inputItem.getBaseType();
-        item.ownerMod = SeaToSeaMod.modDLL;
+        item.ownerMod = SeaToSeaMod.ModDLL;
         item.allowUnlockPopups = true;
         if (item.sprite == null && to != null)
             item.sprite = to.getIcon();
@@ -216,7 +215,7 @@ public class Bioprocessor : CustomMachine<BioprocessorLogic> {
     }
 
     public static BioRecipe getByOutput(TechType output) {
-        foreach (BioRecipe r in recipes.Values) {
+        foreach (var r in recipes.Values) {
             if (r.outputItem == output || (r.outputDelegate != null && r.outputDelegate.Info.TechType == output)) {
                 return r;
             }
@@ -227,59 +226,57 @@ public class Bioprocessor : CustomMachine<BioprocessorLogic> {
 
     [SetsRequiredMembers]
     public Bioprocessor(XMLLocale.LocaleEntry e) : base(e.key, e.name, e.desc, "6d71afaa-09b6-44d3-ba2d-66644ffe6a99") {
-        this.addIngredient(TechType.TitaniumIngot, 1);
-        this.addIngredient(TechType.Magnetite, 4);
-        this.addIngredient(CustomMaterials.getItem(CustomMaterials.Materials.PLATINUM).Info.TechType, 6);
-        this.addIngredient(TechType.CopperWire, 1);
-        this.addIngredient(TechType.EnameledGlass, 3);
+        addIngredient(TechType.TitaniumIngot, 1);
+        addIngredient(TechType.Magnetite, 4);
+        addIngredient(CustomMaterials.getItem(CustomMaterials.Materials.PLATINUM).Info.TechType, 6);
+        addIngredient(TechType.CopperWire, 1);
+        addIngredient(TechType.EnameledGlass, 3);
     }
 
-    public virtual bool UnlockedAtStart {
-        get { return false; }
-    }
+    public virtual bool UnlockedAtStart => false;
 
     public override void initializeMachine(GameObject go) {
         base.initializeMachine(go);
         go.removeComponent<Aquarium>();
         go.removeChildObject("Bubbles");
 
-        StorageContainer con = go.GetComponentInChildren<StorageContainer>();
-        this.initializeStorageContainer(con, 6, 6);
+        var con = go.GetComponentInChildren<StorageContainer>();
+        initializeStorageContainer(con, 6, 6);
         //con.prefabRoot = go;
-        BioprocessorLogic lgc = go.GetComponent<BioprocessorLogic>();
+        var lgc = go.GetComponent<BioprocessorLogic>();
         //lgc.storage = con;
 
-        GameObject mdl = go.setModel(
+        var mdl = go.setModel(
             "model",
             ObjectUtil.lookupPrefab("6ca93e93-5209-4c27-ba60-5f68f36a95fb")
                 .getChildObject("Starship_control_terminal_01")
         );
         mdl.transform.localEulerAngles = new Vector3(270, 0, 0);
 
-        GameObject machineMdl = go.getChildObject(MACHINE_GO_NAME);
+        var machineMdl = go.getChildObject(MACHINE_GO_NAME);
         go.removeChildObject("Submarine_engine_fragments_02");
         if (machineMdl == null) {
             machineMdl = ObjectUtil.createWorldObject("02dfa77b-5407-4474-90c6-fcb0003ecf2d", true, false)
                 .setName(MACHINE_GO_NAME);
-            Vector3 vec = new Vector3(0, 1.41F, -0.975F);
+            var vec = new Vector3(0, 1.41F, -0.975F);
             machineMdl.transform.localPosition = vec;
             machineMdl.transform.localScale = new Vector3(1, 1, 0.75F);
             machineMdl.transform.eulerAngles = new Vector3(90, 180, 0);
             machineMdl.transform.parent = go.transform;
         }
 
-        foreach (Collider c in machineMdl.GetComponentsInChildren<Collider>()) {
+        foreach (var c in machineMdl.GetComponentsInChildren<Collider>()) {
             c.destroy(false);
         }
 
-        SphereCollider cc = machineMdl.AddComponent<SphereCollider>();
+        var cc = machineMdl.AddComponent<SphereCollider>();
         cc.radius = 0.85F;
         cc.center = new Vector3(0, 0, 0.2F);
         cc = machineMdl.AddComponent<SphereCollider>();
         cc.radius = 0.85F;
         cc.center = new Vector3(0, 0, 1F);
 
-        Renderer r = machineMdl.GetComponentInChildren<Renderer>();
+        var r = machineMdl.GetComponentInChildren<Renderer>();
         //SNUtil.dumpTextures(r);
         RenderUtil.swapToModdedTextures(r, this);
         RenderUtil.setEmissivity(r, 2);
@@ -290,7 +287,7 @@ public class Bioprocessor : CustomMachine<BioprocessorLogic> {
 
         lgc.soundLoop = go.EnsureComponent<FMOD_CustomLoopingEmitter>();
         lgc.soundLoop.asset = workingSound.asset;
-        workingSoundReference.getLength(out uint millis, TIMEUNIT.MS);
+        workingSoundReference.getLength(out var millis, TIMEUNIT.MS);
         lgc.soundLoop.length = millis / 1000F;
 
         go.GetComponent<Constructable>().model = machineMdl;
@@ -307,7 +304,7 @@ public class Bioprocessor : CustomMachine<BioprocessorLogic> {
     }
 
     internal static void setTerminalBox(GameObject go) {
-        BoxCollider box = go.getChildObject("Collider").EnsureComponent<BoxCollider>();
+        var box = go.getChildObject("Collider").EnsureComponent<BoxCollider>();
         box.center = new Vector3(0, 0.5F, 0);
         box.size = new Vector3(0.5F, 1.5F, 0.5F);
     }
@@ -320,11 +317,11 @@ public class BioprocessorLogic : DiscreteOperationalMachineLogic {
 
     private float operationCooldown = -1;
 
-    private static readonly Color offlineColor = new Color(0.1F, 0.1F, 0.1F);
-    private static readonly Color noRecipeColor = new Color(1, 0, 0);
-    private static readonly Color recipeStalledColor = new Color(1, 1, 0);
-    private static readonly Color workingColor = new Color(0, 1, 0);
-    private static readonly Color completeColor = new Color(0.25F, 0.7F, 1);
+    private static readonly Color offlineColor = new(0.1F, 0.1F, 0.1F);
+    private static readonly Color noRecipeColor = new(1, 0, 0);
+    private static readonly Color recipeStalledColor = new(1, 1, 0);
+    private static readonly Color workingColor = new(0, 1, 0);
+    private static readonly Color completeColor = new(0.25F, 0.7F, 1);
 
     private float lastWorkingSound = -1;
 
@@ -338,10 +335,10 @@ public class BioprocessorLogic : DiscreteOperationalMachineLogic {
     private float powerConsumedThisRecipe;
     private float timeThisRecipe;
 
-    void Start() {
+    private void Start() {
         SNUtil.log("Reinitializing bioproc");
         C2CItems.processor.initializeMachine(gameObject);
-        this.setEmissiveColor(new Color(0, 0, 1));
+        setEmissiveColor(new Color(0, 0, 1));
     }
 
     public override bool isWorking() {
@@ -351,19 +348,19 @@ public class BioprocessorLogic : DiscreteOperationalMachineLogic {
     public float getRemainingTime() {
         return currentOperation == null
             ? 0
-            : ((enzyRequired - 1) * currentOperation.secondsPerEnzyme) + nextEnzyTimeRemaining;
+            : (enzyRequired - 1) * currentOperation.secondsPerEnzyme + nextEnzyTimeRemaining;
     }
 
     public override float getProgressScalar() {
-        float ret = this.getRemainingTime();
-        return ret <= 0 ? 0 : 1 - (ret / currentOperation.processTime);
+        var ret = getRemainingTime();
+        return ret <= 0 ? 0 : 1 - ret / currentOperation.processTime;
     }
 
     protected override void load(System.Xml.XmlElement data) {
         operationCooldown = (float)data.getFloat("cooldown", float.NaN);
 
-        string rec = data.getProperty("recipe");
-        TechType inp = string.IsNullOrEmpty(rec) ? TechType.None : SNUtil.getTechType(rec);
+        var rec = data.getProperty("recipe");
+        var inp = string.IsNullOrEmpty(rec) ? TechType.None : SNUtil.getTechType(rec);
         currentOperation = inp == TechType.None ? null : Bioprocessor.recipes[inp];
         nextEnzyTimeRemaining = (float)data.getFloat("countdown", float.NaN);
         enzyRequired = data.getInt("required", 0, false);
@@ -381,14 +378,14 @@ public class BioprocessorLogic : DiscreteOperationalMachineLogic {
 
     private void checkPower() {
         powerErrorKey = defaultPowerErrorKey;
-        PowerRelay pwr = sub.powerRelay;
+        var pwr = sub.powerRelay;
         if (!pwr) {
             powerErrorKey = "NoBioprocBasePower";
             return;
         }
 
-        int valid = 0;
-        foreach (IPowerInterface src in pwr.inboundPowerSources) {
+        var valid = 0;
+        foreach (var src in pwr.inboundPowerSources) {
             if (src is SolarPanel) {
             } else if (src.GetMaxPower() >= 400) {
                 valid++;
@@ -396,7 +393,7 @@ public class BioprocessorLogic : DiscreteOperationalMachineLogic {
         }
 
         if (valid < 2 || pwr.GetMaxPower() <
-            (SeaToSeaMod.config.getBoolean(C2CConfig.ConfigEntries.HARDMODE) ? 2500 : 1200)) {
+            (SeaToSeaMod.ModConfig.getBoolean(C2CConfig.ConfigEntries.HARDMODE) ? 2500 : 1200)) {
             powerErrorKey = "WeakBioprocBasePower";
         }
     }
@@ -406,12 +403,12 @@ public class BioprocessorLogic : DiscreteOperationalMachineLogic {
     }
 
     protected override Renderer[] findRenderers() {
-        return new Renderer[] { gameObject.getChildObject("model").GetComponent<Renderer>() };
+        return [gameObject.getChildObject("model").GetComponent<Renderer>()];
     }
 
     protected override void updateEntity(float seconds) {
         if (!storage) {
-            this.setEmissiveColor(new Color(1, 0, 1)); //error
+            setEmissiveColor(new Color(1, 0, 1)); //error
             return;
         }
 
@@ -430,9 +427,9 @@ public class BioprocessorLogic : DiscreteOperationalMachineLogic {
             setCollision = true;
         }
 
-        float time = DayNightCycle.main.timePassedAsFloat;
+        var time = DayNightCycle.main.timePassedAsFloat;
         if (time - lastPowerCheck >= 5) {
-            this.checkPower();
+            checkPower();
             lastPowerCheck = time;
         }
 
@@ -442,25 +439,25 @@ public class BioprocessorLogic : DiscreteOperationalMachineLogic {
             operationCooldown -= seconds;
             powerConsumedThisRecipe = 0;
             timeThisRecipe = 0;
-        } else if (powerErrorKey == null && this.consumePower(Bioprocessor.POWER_COST_IDLE * seconds)) {
+        } else if (powerErrorKey == null && consumePower(Bioprocessor.POWER_COST_IDLE * seconds)) {
             powerConsumedThisRecipe += powerConsumedLastAttempt;
-            this.setEmissiveColor(noRecipeColor);
+            setEmissiveColor(noRecipeColor);
             if (currentOperation != null) {
                 //SNUtil.writeToChat("ticking recipe: "+currentOperation+", want "+(currentOperation.powerPerSecond-Bioprocessor.POWER_COST_IDLE)*seconds+" pwr");
-                float drain = (currentOperation.powerPerSecond - Bioprocessor.POWER_COST_IDLE) * seconds;
-                if (this.consumePower(drain)) {
+                var drain = (currentOperation.powerPerSecond - Bioprocessor.POWER_COST_IDLE) * seconds;
+                if (consumePower(drain)) {
                     powerConsumedThisRecipe += powerConsumedLastAttempt;
                     timeThisRecipe += seconds;
-                    IList<InventoryItem> kelp = storage.container.GetItems(
+                    var kelp = storage.container.GetItems(
                         CraftingItems.getItem(CraftingItems.Items.KelpEnzymes).Info.TechType
                     );
-                    bool hasKelp = kelp != null && kelp.Count > 0;
+                    var hasKelp = kelp != null && kelp.Count > 0;
                     //SNUtil.writeToChat("has kelp: "+(kelp == null ? 0 : kelp.Count));
-                    this.setEmissiveColor(recipeStalledColor);
+                    setEmissiveColor(recipeStalledColor);
                     nextEnzyTimeRemaining -= seconds;
                     //SNUtil.writeToChat("remaining: "+nextEnzyTimeRemaining);
                     if (nextEnzyTimeRemaining <= 0) {
-                        IList<InventoryItem> enzy = storage.container.GetItems(
+                        var enzy = storage.container.GetItems(
                             CraftingItems.getItem(CraftingItems.Items.BioEnzymes).Info.TechType
                         );
                         if (enzy != null && enzy.Count >= 1) {
@@ -470,22 +467,22 @@ public class BioprocessorLogic : DiscreteOperationalMachineLogic {
                                 SoundManager.buildSound("event:/loot/pickup_lubricant"),
                                 gameObject.transform.position
                             );
-                            this.setEmissiveColor(
+                            setEmissiveColor(
                                 workingColor,
-                                cooldown: 1 + this.getOperationTime(currentOperation.secondsPerEnzyme)
+                                cooldown: 1 + getOperationTime(currentOperation.secondsPerEnzyme)
                             );
                         } else {
-                            this.setRecipe(null);
+                            setRecipe(null);
                         }
 
-                        nextEnzyTimeRemaining = this.getOperationTime(currentOperation.secondsPerEnzyme);
+                        nextEnzyTimeRemaining = getOperationTime(currentOperation.secondsPerEnzyme);
                         if (enzyRequired <= 0) {
                             //SNUtil.writeToChat("try craft");
-                            IEnumerable<InventoryItem> ing = currentOperation.inputItem.getMatchingItems(storage);
+                            var ing = currentOperation.inputItem.getMatchingItems(storage);
                             if (ing != null && ing.Count() >= currentOperation.inputCount) {
                                 //SNUtil.writeToChat("success");
-                                for (int i = 0; i < currentOperation.inputCount; i++) {
-                                    InventoryItem ii = ing.ElementAt(0);
+                                for (var i = 0; i < currentOperation.inputCount; i++) {
+                                    var ii = ing.ElementAt(0);
                                     SNUtil.log(
                                         "Removing " + ii.item + " (" + ii.item.gameObject.GetInstanceID() +
                                         ") from bioproc inventory"
@@ -493,17 +490,17 @@ public class BioprocessorLogic : DiscreteOperationalMachineLogic {
                                     storage.forceRemoveItem(ii); //list is updated in realtime
                                 }
 
-                                int n = currentOperation.outputCount;
+                                var n = currentOperation.outputCount;
                                 if (hasKelp) {
                                     n *= 2;
                                     storage.forceRemoveItem(kelp[0]); //list is updated in realtime
                                 }
 
-                                this.addItemToInventory(currentOperation.outputItem, n);
-                                string msg = prefab.Info.PrefabFileName + " crafted " +
-                                             Language.main.Get(currentOperation.outputItem) + " x" + n + " in " +
-                                             timeThisRecipe.ToString("0.00") + "s using a total of " +
-                                             powerConsumedThisRecipe.ToString("0.0") + " power";
+                                addItemToInventory(currentOperation.outputItem, n);
+                                var msg = prefab.Info.PrefabFileName + " crafted " +
+                                          Language.main.Get(currentOperation.outputItem) + " x" + n + " in " +
+                                          timeThisRecipe.ToString("0.00") + "s using a total of " +
+                                          powerConsumedThisRecipe.ToString("0.0") + " power";
                                 SNUtil.writeToChat(msg);
                                 msg += "\nPower cost factor: " +
                                        (powerConsumedThisRecipe / currentOperation.totalEnergyCost)
@@ -511,9 +508,9 @@ public class BioprocessorLogic : DiscreteOperationalMachineLogic {
                                 msg += "\nTime cost factor: " +
                                        (timeThisRecipe / currentOperation.processTime).ToString("0.00000") + "x";
                                 SNUtil.log(msg);
-                                this.setRecipe(null);
-                                this.resetEmissiveCooldown();
-                                this.setEmissiveColor(completeColor, cooldown: 4);
+                                setRecipe(null);
+                                resetEmissiveCooldown();
+                                setEmissiveColor(completeColor, cooldown: 4);
                                 SoundManager.playSoundAt(
                                     SoundManager.buildSound("event:/tools/knife/heat_hit"),
                                     gameObject.transform.position
@@ -521,7 +518,7 @@ public class BioprocessorLogic : DiscreteOperationalMachineLogic {
                                 operationCooldown = 2;
                             } else {
                                 SNUtil.log("Bioprocessor shutdown due to invalid ingredients");
-                                this.abort(noRecipeColor);
+                                abort(noRecipeColor);
                             }
                         }
                     }
@@ -531,26 +528,26 @@ public class BioprocessorLogic : DiscreteOperationalMachineLogic {
                         "Bioprocessor shutdown due to insufficient power during operation; wanted " + drain +
                         ", relay has " + sub.powerRelay.GetPower()
                     );
-                    this.abort(offlineColor);
+                    abort(offlineColor);
                 }
             } else {
                 //SNUtil.writeToChat("Looking for recipe");
-                IList<InventoryItem> enzy =
+                var enzy =
                     storage.container.GetItems(CraftingItems.getItem(CraftingItems.Items.BioEnzymes).Info.TechType);
                 if (enzy != null && enzy.Count > 0) {
-                    foreach (BioRecipe r in Bioprocessor.recipes.Values) {
-                        if (this.canRunRecipe(storage, r, enzy.Count)) {
+                    foreach (var r in Bioprocessor.recipes.Values) {
+                        if (canRunRecipe(storage, r, enzy.Count)) {
                             //SNUtil.writeToChat("Found "+r);
-                            this.setRecipe(r);
+                            setRecipe(r);
                             break;
                         }
                     }
                 }
             }
         } else {
-            this.setRecipe(null);
+            setRecipe(null);
             //SNUtil.writeToChat("Insufficient power");
-            this.setEmissiveColor(offlineColor);
+            setEmissiveColor(offlineColor);
             operationCooldown = 5;
         }
 
@@ -570,34 +567,34 @@ public class BioprocessorLogic : DiscreteOperationalMachineLogic {
     private void abort(Color c) {
         //SNUtil.writeToChat("aborting operation");
         if (currentOperation != null) {
-            int n = currentOperation.enzyCount - enzyRequired;
+            var n = currentOperation.enzyCount - enzyRequired;
             if (n > 0) {
                 SNUtil.log("Refunding " + n + " enzymes");
-                this.addItemToInventory(CraftingItems.getItem(CraftingItems.Items.BioEnzymes).Info.TechType, n);
+                addItemToInventory(CraftingItems.getItem(CraftingItems.Items.BioEnzymes).Info.TechType, n);
             }
         }
 
-        this.setRecipe(null);
-        this.resetEmissiveCooldown();
+        setRecipe(null);
+        resetEmissiveCooldown();
         operationCooldown = 10;
-        this.setEmissiveColor(c, cooldown: 2);
+        setEmissiveColor(c, cooldown: 2);
     }
 
     private bool canRunRecipe(StorageContainer sc, BioRecipe r, int enzy) {
         if (!KnownTech.knownTech.Contains(r.outputItem))
             return false;
-        IEnumerable<InventoryItem> ing = r.inputItem.getMatchingItems(sc);
+        var ing = r.inputItem.getMatchingItems(sc);
         return ing != null && enzy >= r.enzyCount && ing.Count() >= r.inputCount;
     }
 
     private void setRecipe(BioRecipe r) {
         //SNUtil.writeToChat(r == null ? "null" : r.inputItem.AsString()+" > "+r.outputItem.AsString());
-        bool had = currentOperation != null;
-        bool has = r != null;
+        var had = currentOperation != null;
+        var has = r != null;
         currentOperation = r;
         enzyRequired = r != null ? r.enzyCount : -1;
-        nextEnzyTimeRemaining = r != null ? this.getOperationTime(r.secondsPerEnzyme) : -1;
-        this.setEmissiveColor(r == null ? noRecipeColor : recipeStalledColor);
+        nextEnzyTimeRemaining = r != null ? getOperationTime(r.secondsPerEnzyme) : -1;
+        setEmissiveColor(r == null ? noRecipeColor : recipeStalledColor);
         powerConsumedThisRecipe = 0;
         timeThisRecipe = 0;
         if (has != had) {
@@ -616,7 +613,7 @@ public class BioprocessorLogic : DiscreteOperationalMachineLogic {
     }
 #pragma warning restore CS0642
     public static bool hasBioprocessorUpgrade() {
-        return Story.StoryGoalManager.main.completedGoals.Contains(SeaToSeaMod.bioProcessorBoost.goal.key);
+        return Story.StoryGoalManager.main.completedGoals.Contains(SeaToSeaMod.BioProcessorBoost.goal.key);
     }
 }
 
@@ -626,12 +623,12 @@ public abstract class BioInput {
     public abstract TechType getBaseType();
 
     public virtual TechType getIngredientDisplay() {
-        return this.getBaseType();
+        return getBaseType();
     }
 
     public IEnumerable<InventoryItem> getMatchingItems(StorageContainer sc) {
-        IList<InventoryItem> li = sc.container.GetItems(this.getBaseType());
-        return li == null ? null : li.Where(ii => this.isItemValid(ii.item));
+        var li = sc.container.GetItems(getBaseType());
+        return li == null ? null : li.Where(ii => isItemValid(ii.item));
     }
 }
 
@@ -657,11 +654,11 @@ public sealed class TypeInput : BioInput {
     }
 
     public override string ToString() {
-        return string.Format("[TypeInput Type={0}]", type);
+        return $"[TypeInput Type={type}]";
     }
 }
 
-sealed class SparklePeeperInput : BioInput {
+internal sealed class SparklePeeperInput : BioInput {
     public override bool isItemValid(Pickupable pp) {
         //SNUtil.writeToChat("Comparing against "+pp+" ("+(pp.GetComponent<Peeper>() ? pp.GetComponent<Peeper>().isHero.ToString() : "no")+")");
         return pp.GetTechType() == TechType.Peeper && pp.GetComponent<Peeper>().isHero;
@@ -700,7 +697,7 @@ public class BioRecipe {
         outputItem = o;
         enzyCount = s;
         processTime = t;
-        if (SeaToSeaMod.config.getBoolean(C2CConfig.ConfigEntries.HARDMODE))
+        if (SeaToSeaMod.ModConfig.getBoolean(C2CConfig.ConfigEntries.HARDMODE))
             e *= 2.5F;
         totalEnergyCost = e;
         secondsPerEnzyme = processTime / enzyCount;

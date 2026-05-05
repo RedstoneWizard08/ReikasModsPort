@@ -17,30 +17,30 @@ public class WreckDoorSwaps : ManipulationBase {
 
 	private static readonly string DOOR_FRAME = "055b3160-f57b-46ba-80f5-b708d0c8180e";
 
-	private List<DoorSwap> swaps = new List<DoorSwap>();
+	private List<DoorSwap> swaps = [];
 
 	public override void applyToObject(GameObject go) {
-		WreckDoorSwapper sw = go.EnsureComponent<WreckDoorSwapper>();
+		var sw = go.EnsureComponent<WreckDoorSwapper>();
 		sw.swaps = swaps;
-		sw.Invoke("applyDelayed", 2);
+		sw.Invoke(nameof(WreckDoorSwapper.applyDelayed), 2);
 		SNUtil.log("Queuing door swaps " + swaps.toDebugString("\n")+" on wreck "+go.name+" @ "+go.transform.position);
 	}
 
 	public override void applyToObject(PlacedObject go) {
-		this.applyToObject(go.obj);
+		applyToObject(go.obj);
 	}
 
 	public override void loadFromXML(XmlElement e) {
 		swaps.Clear();
-		foreach (XmlElement e2 in e.getDirectElementsByTagName("door")) {
-			DoorSwap d = new DoorSwap(e2.getVector("position").Value, e2.getProperty("type"));
+		foreach (var e2 in e.getDirectElementsByTagName("door")) {
+			var d = new DoorSwap(e2.getVector("position").Value, e2.getProperty("type"));
 			swaps.Add(d);
 		}
 	}
 
 	public override void saveToXML(XmlElement e) {
-		foreach (DoorSwap d in swaps) {
-			XmlElement e2 = e.OwnerDocument.CreateElement("door");
+		foreach (var d in swaps) {
+			var e2 = e.OwnerDocument.CreateElement("door");
 			e2.addProperty("position", d.position);
 			e2.addProperty("type", d.doorType);
 			e.AppendChild(e2);
@@ -48,8 +48,8 @@ public class WreckDoorSwaps : ManipulationBase {
 	}
 
 	public static void setupRepairableDoor(GameObject panel) {
-		WeldableWallPanelGeneric weld = panel.EnsureComponent<WeldableWallPanelGeneric>();
-		LiveMixin lv = weld.GetComponentInChildren<LiveMixin>();
+		var weld = panel.EnsureComponent<WeldableWallPanelGeneric>();
+		var lv = weld.GetComponentInChildren<LiveMixin>();
 		lv.data.canResurrect = true;
 	}
 
@@ -58,7 +58,7 @@ public class WreckDoorSwaps : ManipulationBase {
 		public readonly Vector3 position;
 		public readonly string doorType;
 
-		internal static readonly Dictionary<string, string> doorPrefabs = new Dictionary<string, string>{
+		internal static readonly Dictionary<string, string> doorPrefabs = new() {
 			{"Blocked", "d79ab37f-23b6-42b9-958c-9a1f4fc64cfd"},
 			{"Handle", "d9524ffa-11cf-4265-9f61-da6f0fe84a3f"},
 			{"Laser", "6f01d2df-03b8-411f-808f-b3f0f37b0d5c"},
@@ -67,7 +67,7 @@ public class WreckDoorSwaps : ManipulationBase {
 			{"Delete", "b86d345e-0517-4f6e-bea4-2c5b40f623b4"},
 		};
 
-		internal static readonly HashSet<string> doorPrefabIDs = new HashSet<string>(doorPrefabs.Values);
+		internal static readonly HashSet<string> doorPrefabIDs = [..doorPrefabs.Values];
 
 		public DoorSwap(Vector3 pos, string t) {
 			position = pos;
@@ -76,8 +76,8 @@ public class WreckDoorSwaps : ManipulationBase {
 
 		public void applyTo(GameObject go) {
 			SNUtil.log("Matched to door "+go.transform.position+", converted to "+doorType, SNUtil.diDLL);
-			Transform par = go.transform.parent;
-			GameObject put = ObjectUtil.createWorldObject(doorPrefabs[doorType], true, true);
+			var par = go.transform.parent;
+			var put = ObjectUtil.createWorldObject(doorPrefabs[doorType], true, true);
 			if (put == null) {
 				SNUtil.writeToChat("Could not find prefab for door type " + doorType);
 				return;
@@ -86,7 +86,7 @@ public class WreckDoorSwaps : ManipulationBase {
 			put.transform.rotation = go.transform.rotation;
 			put.transform.parent = par;
 			go.destroy();
-			StarshipDoor d = put.GetComponent<StarshipDoor>();
+			var d = put.GetComponent<StarshipDoor>();
 			if (d) {
 				if (doorType == "Delete") {
 					put.removeChildObject("Starship_doors_manual_01/Starship_doors_automatic");
@@ -96,7 +96,7 @@ public class WreckDoorSwaps : ManipulationBase {
 				}
 				else if (doorType == "Repair") {
 					d.LockDoor();
-					GameObject panel = ObjectUtil.createWorldObject("bb16d2bf-bc85-4bfa-a90e-ddc7343b0ac2", true, true);
+					var panel = ObjectUtil.createWorldObject("bb16d2bf-bc85-4bfa-a90e-ddc7343b0ac2", true, true);
 					panel.transform.position = put.transform.position;
 					panel.transform.rotation = put.transform.rotation;
 					setupRepairableDoor(panel);
@@ -105,7 +105,7 @@ public class WreckDoorSwaps : ManipulationBase {
 		}
 
 		public override string ToString() {
-			return string.Format("[DoorSwap @ {0}, type={1}]", position, doorType);
+			return $"[DoorSwap @ {position}, type={doorType}]";
 		}
 
 
@@ -113,22 +113,22 @@ public class WreckDoorSwaps : ManipulationBase {
 	}
 
 	public static bool areWreckDoorSwapsPending(GameObject go) {
-		WreckDoorSwapper wr = go.GetComponent<WreckDoorSwapper>();
+		var wr = go.GetComponent<WreckDoorSwapper>();
 		return wr && wr.swaps.Count > 0;
 	}
 
-	class WreckDoorSwapper : MonoBehaviour {
+	private class WreckDoorSwapper : MonoBehaviour {
 			
-		internal List<DoorSwap> swaps = new List<DoorSwap>();
+		internal List<DoorSwap> swaps = [];
 
 		private void doSimpleSearch(GameObject doors, List<DoorSwap> unfound) {
-			foreach (DoorSwap d in swaps) {
-				bool found = false;
+			foreach (var d in swaps) {
+				var found = false;
 				if (doors) {
 					foreach (Transform t in doors.transform) {
 						if (!t || !t.gameObject)
 							continue;
-						Vector3 pos = t.position;
+						var pos = t.position;
 						//SNUtil.log("Checking door "+t.position);
 						if (Vector3.Distance(d.position, pos) <= 0.5) {
 							found = true;
@@ -143,11 +143,11 @@ public class WreckDoorSwaps : ManipulationBase {
 		}
 
 		private void doPrefabSearch(List<DoorSwap> unfound) {
-			foreach (PrefabIdentifier pi in GetComponentsInChildren<PrefabIdentifier>(true)) {
+			foreach (var pi in GetComponentsInChildren<PrefabIdentifier>(true)) {
 				if (pi && (pi.ClassId == DOOR_FRAME || DoorSwap.doorPrefabIDs.Contains(pi.ClassId))) {
 					try {
-						for (int i = unfound.Count - 1; i >= 0; i--) {
-							DoorSwap d = unfound[i];
+						for (var i = unfound.Count - 1; i >= 0; i--) {
+							var d = unfound[i];
 							if (Vector3.Distance(d.position, pi.transform.position) <= 0.5) {
 								d.applyTo(pi.gameObject);
 								unfound.RemoveAt(i);
@@ -166,7 +166,7 @@ public class WreckDoorSwaps : ManipulationBase {
 		}
 
 		private void printCandidates(GameObject doors, List<DoorSwap> unfound) {
-			string has = "Door candidates:{\n";
+			var has = "Door candidates:{\n";
 			if (doors) {
 				foreach (Transform t in doors.transform) {
 					if (t) {
@@ -174,7 +174,7 @@ public class WreckDoorSwaps : ManipulationBase {
 					}
 				}
 			}
-			foreach (PrefabIdentifier pi in GetComponentsInChildren<PrefabIdentifier>()) {
+			foreach (var pi in GetComponentsInChildren<PrefabIdentifier>()) {
 				if (pi && (pi.ClassId == DOOR_FRAME || DoorSwap.doorPrefabIDs.Contains(pi.ClassId))) {
 					has += "[PREFAB] "+pi.name + " [" + pi.ClassId + "] @ " + pi.transform.position + "\n";
 				}
@@ -184,8 +184,8 @@ public class WreckDoorSwaps : ManipulationBase {
 		}
 
 		public void applyDelayed() {
-			GameObject doors = gameObject.getChildObject("Doors");
-			List<DoorSwap> unfound = new List<DoorSwap>();
+			var doors = gameObject.getChildObject("Doors");
+			List<DoorSwap> unfound = [];
 			try {
 				doSimpleSearch(doors, unfound);
 			}
@@ -209,7 +209,7 @@ public class WreckDoorSwaps : ManipulationBase {
 				catch (Exception e) {
 					SNUtil.log("Threw exception printing candidates: " + e);
 				}
-				Invoke("applyDelayed", 2);
+				Invoke(nameof(applyDelayed), 2);
 				swaps = unfound;
 			}
 			else {

@@ -9,12 +9,10 @@ public class CameraLeviathanAttractor : MonoBehaviour, AggroAttractor {
 
     private MapRoomCamera cam;
 
-    public bool isAggroable {
-        get { return !cam.dockingPoint; }
-    }
+    public bool isAggroable => !cam.dockingPoint;
 
     public void Update() {
-        float time = DayNightCycle.main.timePassedAsFloat;
+        var time = DayNightCycle.main.timePassedAsFloat;
         if (!cam)
             cam = GetComponent<MapRoomCamera>();
         if (time - lastLeviCheckTime >= 2 && cam && !cam.dockingPoint) {

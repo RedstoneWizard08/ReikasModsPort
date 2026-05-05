@@ -10,12 +10,11 @@ public class PrecursorFabricatorConsole : CustomPrefab {
     //public readonly CraftingIdentifier craftingSet;
     public readonly CraftTree.Type craftingSet;
     public readonly Color renderColor;
-    internal readonly Dictionary<string, string> storyGoals = new Dictionary<string, string>();
+    internal readonly Dictionary<string, string> storyGoals = new();
 
-    internal static readonly Dictionary<string, PrecursorFabricatorConsole> map =
-        new Dictionary<string, PrecursorFabricatorConsole>();
+    internal static readonly Dictionary<string, PrecursorFabricatorConsole> map = new();
 
-    private static readonly List<PositionedPrefab> modelParts = new List<PositionedPrefab>() {
+    private static readonly List<PositionedPrefab> modelParts = [
         new PositionedPrefab("78009225-a9fa-4d21-9580-8719a3368373"),
         new PositionedPrefab("a0a9237e-dee3-4efa-81ff-fea3893a6eb7", new Vector3(0, 1, 0), Quaternion.Euler(0, 0, 90)),
         new PositionedPrefab(
@@ -24,31 +23,36 @@ public class PrecursorFabricatorConsole : CustomPrefab {
             Quaternion.Euler(0, 0, 270),
             new Vector3(0.1F, 1, 1)
         ),
+
         new PositionedPrefab(
             "6a01a336-fb46-469a-9f7d-1659e07d11d7",
             new Vector3(0, 1.35F, 0.1F),
             Quaternion.Euler(90, 0, 0),
             new Vector3(0.8F, 0.8F, 0.8F)
         ),
+
         new PositionedPrefab(
             "6a01a336-fb46-469a-9f7d-1659e07d11d7",
             new Vector3(0.1F, 1.35F, 0),
             Quaternion.Euler(90, 90, 0),
             new Vector3(0.8F, 0.8F, 0.8F)
         ),
+
         new PositionedPrefab(
             "6a01a336-fb46-469a-9f7d-1659e07d11d7",
             new Vector3(0, 1.35F, -0.1F),
             Quaternion.Euler(90, 180, 0),
             new Vector3(0.8F, 0.8F, 0.8F)
         ),
+
         new PositionedPrefab(
             "6a01a336-fb46-469a-9f7d-1659e07d11d7",
             new Vector3(-0.1F, 1.35F, 0),
             Quaternion.Euler(90, 270, 0),
             new Vector3(0.8F, 0.8F, 0.8F)
         ),
-    };
+
+    ];
 
     [SetsRequiredMembers]
     public PrecursorFabricatorConsole( /*CraftingIdentifier rec*/ CraftTree.Type rec, string id, Color c) : base(
@@ -107,21 +111,21 @@ public class PrecursorFabricatorConsole : CustomPrefab {
     }
         */
     public GameObject GetGameObject() {
-        GameObject world = ObjectUtil.createWorldObject("81cf2223-455d-4400-bac3-a5bcd02b3638");
+        var world = ObjectUtil.createWorldObject("81cf2223-455d-4400-bac3-a5bcd02b3638");
         world.EnsureComponent<TechTag>().type = Info.TechType;
         world.EnsureComponent<PrefabIdentifier>().ClassId = Info.ClassID;
         world.removeComponent<StoryHandTarget>();
         //if (craftingSet is CraftTreeID) {
-        CrafterLogic lgc = world.EnsureComponent<CrafterLogic>();
-        GhostCrafter f = world.EnsureComponent<GhostCrafter>();
+        var lgc = world.EnsureComponent<CrafterLogic>();
+        var f = world.EnsureComponent<GhostCrafter>();
         f.closeDistance = 5;
         //f.craftTree = ((CraftTreeID)craftingSet).craftingTree;
         f.craftTree = craftingSet;
         f.logic = lgc;
         //}
         world.EnsureComponent<PrecursorFabricatorConsoleTag>();
-        GameObject fx = world.GetComponent<PrecursorComputerTerminal>().fx;
-        foreach (Renderer r in fx.GetComponentsInChildren<Renderer>()) {
+        var fx = world.GetComponent<PrecursorComputerTerminal>().fx;
+        foreach (var r in fx.GetComponentsInChildren<Renderer>()) {
             //r.materials[0].SetColor("_Color", new Color(0.8F, 0.25F, 1F));
             r.materials[0].SetColor("_Color", renderColor);
         }
@@ -134,29 +138,29 @@ public class PrecursorFabricatorConsole : CustomPrefab {
     }
 
     internal static GameObject createModels(GameObject world) {
-        GameObject mdl = new GameObject("models");
+        var mdl = new GameObject("models");
         mdl.transform.SetParent(world.transform);
         mdl.transform.localScale = Vector3.one * 0.75F;
         mdl.transform.localRotation = Quaternion.Euler(0, 45, 0);
         mdl.transform.localPosition = Vector3.zero;
-        foreach (PositionedPrefab pfb in modelParts) {
-            GameObject go = ObjectUtil.createWorldObject(pfb.prefabName);
+        foreach (var pfb in modelParts) {
+            var go = ObjectUtil.createWorldObject(pfb.prefabName);
             go.transform.SetParent(mdl.transform);
             go.transform.localScale = pfb.scale;
             go.transform.localRotation = pfb.rotation;
             go.transform.localPosition = pfb.position;
             go.removeComponent<Collider>();
             if (pfb.prefabName == "6a01a336-fb46-469a-9f7d-1659e07d11d7") {
-                Transform t = go.getChildObject("Precursor_Lab_surgical_machine/Precursor_lab_surgical_machine_base")
+                var t = go.getChildObject("Precursor_Lab_surgical_machine/Precursor_lab_surgical_machine_base")
                     .transform;
                 t.localScale = Vector3.one * 0.99F; //zfight fix
                 t.localPosition = new Vector3(0, 2.1F, 0);
-                foreach (Renderer r in go.GetComponentsInChildren<Renderer>()) {
+                foreach (var r in go.GetComponentsInChildren<Renderer>()) {
                     RenderUtil.swapTextures(SNUtil.diDLL, r, "Textures/PrecursorFabricatorArms");
                     //r.materials[0].SetFloat("_SpecInt", 5F);
                 }
             } else if (pfb.prefabName == "a0a9237e-dee3-4efa-81ff-fea3893a6eb7") {
-                foreach (Renderer r in go.GetComponentsInChildren<Renderer>()) {
+                foreach (var r in go.GetComponentsInChildren<Renderer>()) {
                     RenderUtil.swapTextures(SNUtil.diDLL, r, "Textures/PrecursorFabricatorBase");
                     RenderUtil.setEmissivity(r, 1);
                     r.materials[0].SetFloat("_SpecInt", 2F);
@@ -169,22 +173,22 @@ public class PrecursorFabricatorConsole : CustomPrefab {
         return mdl;
     }
 
-    class PrecursorFabricatorConsoleTag : MonoBehaviour /*, IHandTarget {*/ {
+    private class PrecursorFabricatorConsoleTag : MonoBehaviour /*, IHandTarget {*/ {
         private PrecursorFabricatorConsole template;
         private GhostCrafter fab;
 
         private GameObject models;
 
-        void Update() {
+        private void Update() {
             if (template == null)
-                template = PrecursorFabricatorConsole.map[this.GetComponent<PrefabIdentifier>().ClassId];
+                template = map[GetComponent<PrefabIdentifier>().ClassId];
 
             if (!fab /* && template.craftingSet is CraftTreeID*/)
                 fab = gameObject.GetComponent<GhostCrafter>();
             if (fab && !fab.logic)
-                fab.logic = this.GetComponent<CrafterLogic>();
+                fab.logic = GetComponent<CrafterLogic>();
 
-            bool flag = false;
+            var flag = false;
             if (!models) {
                 flag = true;
                 models = gameObject.getChildObject("models");
@@ -192,19 +196,19 @@ public class PrecursorFabricatorConsole : CustomPrefab {
 
             if (!models) {
                 flag = true;
-                models = PrecursorFabricatorConsole.createModels(gameObject);
+                models = createModels(gameObject);
             }
 
             if (flag) {
-                SkyApplier sk0 = this.GetComponent<SkyApplier>();
-                foreach (SkyApplier sk2 in models.GetComponentsInChildren<SkyApplier>()) {
+                var sk0 = GetComponent<SkyApplier>();
+                foreach (var sk2 in models.GetComponentsInChildren<SkyApplier>()) {
                     sk2.SetCustomSky(sk0.applySky);
                 }
             }
 
             if (template != null && fab) {
                 string barrier = null;
-                foreach (KeyValuePair<string, string> kvp in template.storyGoals) {
+                foreach (var kvp in template.storyGoals) {
                     if (!StoryGoalManager.main.IsGoalComplete(kvp.Key)) {
                         barrier = kvp.Value;
                         break;
@@ -214,7 +218,7 @@ public class PrecursorFabricatorConsole : CustomPrefab {
 
                 }*/
 
-                bool working = barrier == null;
+                var working = barrier == null;
                 fab.handOverText = working ? "Craft" : barrier;
 
                 float trash;

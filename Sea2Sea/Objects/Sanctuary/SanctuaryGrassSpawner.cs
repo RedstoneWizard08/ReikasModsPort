@@ -16,45 +16,45 @@ public class SanctuaryGrassSpawner : CustomPrefab {
     }
 
     public GameObject GetGameObject() {
-        GameObject go = new GameObject();
+        var go = new GameObject();
         go.EnsureComponent<CrashZoneSanctuaryGrassSpawnerTag>();
         go.EnsureComponent<TechTag>().type = Info.TechType;
         go.EnsureComponent<PrefabIdentifier>().ClassId = Info.ClassID;
         return go;
     }
 
-    class CrashZoneSanctuaryGrassSpawnerTag : MonoBehaviour {
+    private class CrashZoneSanctuaryGrassSpawnerTag : MonoBehaviour {
         private float age;
 
-        void Update() {
+        private void Update() {
             if (Vector3.Distance(Player.main.transform.position, transform.position) < 100)
                 age += Time.deltaTime;
             if (age < 2)
                 return;
-            RaycastHit? at = WorldUtil.getTerrainVectorAt(transform.position, 90);
+            var at = WorldUtil.getTerrainVectorAt(transform.position, 90);
             if (!at.HasValue) {
                 //SNUtil.log("Grass spawner @ "+transform.position+" not finding ground");
                 age = 0;
                 return;
             }
 
-            List<RaycastHit> li = WorldUtil.getTerrainMountedPositionsAround(at.Value.point, 24F, 240);
+            var li = WorldUtil.getTerrainMountedPositionsAround(at.Value.point, 24F, 240);
             if (li.Count < 30) {
                 //SNUtil.log("Grass spawner @ "+at.Value.point+" found too few hits, only "+li.Count);
                 age = 0;
                 return;
             }
 
-            foreach (RaycastHit hit in li) {
+            foreach (var hit in li) {
                 if (Vector3.Angle(hit.normal, Vector3.up) >= 30)
                     continue;
                 if (densityNoise.getValue(hit.point) <= 0.25)
                     continue;
-                GameObject go = ObjectUtil.createWorldObject(SeaToSeaMod.crashSanctuaryFern.Info.ClassID);
+                var go = ObjectUtil.createWorldObject(SeaToSeaMod.CrashSanctuaryFern.Info.ClassID);
                 go.transform.position = hit.point;
                 go.transform.rotation = MathUtil.unitVecToRotation(hit.normal);
-                go.transform.Rotate(new Vector3(0, UnityEngine.Random.Range(0F, 360F), 0), Space.Self);
-                go.transform.position = go.transform.position + (go.transform.up * -0.25F);
+                go.transform.Rotate(new Vector3(0, Random.Range(0F, 360F), 0), Space.Self);
+                go.transform.position += go.transform.up * -0.25F;
             }
 
             gameObject.destroy();

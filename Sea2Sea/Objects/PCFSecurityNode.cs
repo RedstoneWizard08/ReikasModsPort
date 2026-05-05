@@ -1,4 +1,5 @@
-﻿using ReikaKalseki.DIAlterra;
+﻿using System.Diagnostics.CodeAnalysis;
+using ReikaKalseki.DIAlterra;
 using UnityEngine;
 
 namespace ReikaKalseki.SeaToSea;
@@ -9,6 +10,7 @@ public class PCFSecurityNode : InteractableSpawnable {
 
 	private readonly bool isLiveVariant;
 
+	[SetsRequiredMembers]
 	public PCFSecurityNode(XMLLocale.LocaleEntry e, bool isLive) : base(e) {
 		scanTime = 2;
 		isLiveVariant = isLive;
@@ -16,30 +18,30 @@ public class PCFSecurityNode : InteractableSpawnable {
 
 	public override GameObject GetGameObject() {
 		//GameObject go1 = ObjectUtil.createWorldObject("78009225-a9fa-4d21-9580-8719a3368373").setName("Base"); //block
-		GameObject baseObj = ObjectUtil.createWorldObject("473a8c4d-162f-4575-bbef-16c1c97d1e9d"); //light on top/projector base
-		GameObject fx = ObjectUtil.lookupPrefab("2834aa49-4721-4d4c-9ccf-13fbbd324745").getChildObject("FX").clone();
+		var baseObj = ObjectUtil.createWorldObject("473a8c4d-162f-4575-bbef-16c1c97d1e9d"); //light on top/projector base
+		var fx = ObjectUtil.lookupPrefab("2834aa49-4721-4d4c-9ccf-13fbbd324745").getChildObject("FX").clone();
 		fx.removeChildObject("x_Precursor_ComputerTerminal_Symbol");
 		fx.removeChildObject("x_Precursor_ComputerTerminal_SmallSymbol");
-		GameObject cone = fx.getChildObject("x_Precursor_ComputerTerminal_Halo");
+		var cone = fx.getChildObject("x_Precursor_ComputerTerminal_Halo");
 		cone.transform.localPosition = new Vector3(0, 0, -0.375F);
-		Color c = new Color(0.2F, 1.0F, 1.5F, 1F);
-		foreach (Renderer r in fx.GetComponentsInChildren<Renderer>()) {
-			foreach (Material m in r.materials) {
+		var c = new Color(0.2F, 1.0F, 1.5F, 1F);
+		foreach (var r in fx.GetComponentsInChildren<Renderer>()) {
+			foreach (var m in r.materials) {
 				m.SetColor("_Color", c);
 			}
 		}
-		GameObject dots = fx.getChildObject("x_Precursor_ComputerTerminal_ScreenBG");
+		var dots = fx.getChildObject("x_Precursor_ComputerTerminal_ScreenBG");
 		c = new Color(0.2F, 2.5F, 4F, 1);
 		for (float ang = 30; ang < 360; ang += 30) {
-			string n = "BCGAng_"+ang.ToString("0");
-			GameObject go3b = fx.getChildObject(n);
+			var n = "BCGAng_"+ang.ToString("0");
+			var go3b = fx.getChildObject(n);
 			if (!go3b)
 				go3b = dots.clone().setName("BCGAng_" + ang.ToString("0"));
 			go3b.transform.SetParent(fx.transform);
 			Utils.ZeroTransform(go3b.transform);
 			go3b.transform.localEulerAngles = new Vector3(270, ang, 0);
 			go3b.transform.localPosition = new Vector3(0, ang / 360F * 0.8F - 0.4F, 0);
-			Material m = go3b.GetComponent<Renderer>().material;
+			var m = go3b.GetComponent<Renderer>().material;
 			m.SetColor("_Color", c);
 		}
 		dots.GetComponent<Renderer>().material.SetColor("_Color", c);
@@ -65,13 +67,13 @@ public class PCFSecurityNode : InteractableSpawnable {
 	}
 
 	public void postRegister() {
-		countGen(SeaToSeaMod.worldgen);
+		countGen(SeaToSeaMod.WorldGen);
 		registerEncyPage();
 	}
 }
 
-class BrokenPCFSecurityNodeTag : PCFSecurityNodeTag {
-	void Update() {
+internal class BrokenPCFSecurityNodeTag : PCFSecurityNodeTag {
+	private void Update() {
 		if (pillarTrigger) {
 			pillarTrigger.flare.gameObject.SetActive(false);
 			pillarTrigger.enabled = false;
@@ -81,11 +83,10 @@ class BrokenPCFSecurityNodeTag : PCFSecurityNodeTag {
 	}
 }
 
-class LivePCFSecurityNodeTag : PCFSecurityNodeTag {
-		
-	void Update() {
-		Vector3 dist = (Camera.main.transform.position-fxObject.transform.position);
-		float ang = Mathf.Atan2(dist.y, dist.x);
+internal class LivePCFSecurityNodeTag : PCFSecurityNodeTag {
+	private void Update() {
+		var dist = Camera.main.transform.position-fxObject.transform.position;
+		var ang = Mathf.Atan2(dist.y, dist.x);
 		fxObject.transform.localEulerAngles = new Vector3(0, ang + rotation, 0);
 
 		rotation += Time.deltaTime * 30;
@@ -95,7 +96,7 @@ class LivePCFSecurityNodeTag : PCFSecurityNodeTag {
 
 }
 
-abstract class PCFSecurityNodeTag : MonoBehaviour {
+internal abstract class PCFSecurityNodeTag : MonoBehaviour {
 
 	//private GameObject baseObject;
 	protected GameObject fxObject;
@@ -106,9 +107,9 @@ abstract class PCFSecurityNodeTag : MonoBehaviour {
 
 	protected float rotation;
 
-	private static readonly SoundManager.SoundData breakSound = SoundManager.registerSound(SeaToSeaMod.modDLL, "pcfnodebreak", "Sounds/pcfnodebreak.ogg", SoundManager.soundMode3D);
+	private static readonly SoundManager.SoundData breakSound = SoundManager.registerSound(SeaToSeaMod.ModDLL, "pcfnodebreak", "Sounds/pcfnodebreak.ogg", SoundManager.soundMode3D);
 
-	void Start() {
+	private void Start() {
 		//baseObject = gameObject.getChildObject("Base");
 		fxObject = gameObject.getChildObject("FX");
 
@@ -118,7 +119,7 @@ abstract class PCFSecurityNodeTag : MonoBehaviour {
 		pillarTrigger.flare.color = new Color(0.25F, 0.8F, 1F);
 		pillarTrigger.flare.intensity = 2.5F;
 
-		GameObject go = pillarTrigger.gameObject.getChildObject("Precursor_prison_exterior_box_01");
+		var go = pillarTrigger.gameObject.getChildObject("Precursor_prison_exterior_box_01");
 		baseRender = go.GetComponent<Renderer>();
 		baseRender.material.SetColor("_GlowColor", new Color(0, 1, 2.5F, 1));
 	}
@@ -126,8 +127,8 @@ abstract class PCFSecurityNodeTag : MonoBehaviour {
 	public void BashHit() { //prawn hit
 		if (this is BrokenPCFSecurityNodeTag || !pillarTrigger.enabled || !fxObject.activeInHierarchy)
 			return;
-		C2CProgression.instance.stepPCFSecurity();
-		for (int i = 0; i < 20; i++)
+		C2CProgression.Instance.StepPcfSecurity();
+		for (var i = 0; i < 20; i++)
 			WorldUtil.spawnParticlesAt(transform.position + transform.up * 1.5F, "361b23ed-58dd-4f45-9c5f-072fa66db88a", 0.5F, true);
 		SoundManager.playSoundAt(breakSound, transform.position, false, -1);
 		/*
@@ -136,7 +137,7 @@ abstract class PCFSecurityNodeTag : MonoBehaviour {
 		RenderUtil.setEmissivity(baseRender, 0);
 		fxObject.SetActive(false);
 		*/
-		GameObject repl = ObjectUtil.createWorldObject(SeaToSeaMod.securityNodeBroken.ClassID);
+		var repl = ObjectUtil.createWorldObject(SeaToSeaMod.SecurityNodeBroken.ClassID);
 		repl.transform.SetParent(transform.parent);
 		repl.transform.position = transform.position;
 		repl.transform.rotation = transform.rotation;
@@ -146,8 +147,8 @@ abstract class PCFSecurityNodeTag : MonoBehaviour {
 
 }
 
-class PCFSecurityNodeRelay : MonoBehaviour {
-	void BashHit() { //prawn hit
+internal class PCFSecurityNodeRelay : MonoBehaviour {
+	private void BashHit() { //prawn hit
 		GetComponentInParent<PCFSecurityNodeTag>().BashHit();
 	}
 }

@@ -18,7 +18,7 @@ public class Platinum : BasicCustomOre {
     }
 }
 
-class PlatinumTag : MonoBehaviour {
+internal class PlatinumTag : MonoBehaviour {
     private float lastTime;
 
     private float lastPickupTime;
@@ -31,14 +31,14 @@ class PlatinumTag : MonoBehaviour {
     private float lastPlayerDistanceCheckTime;
     private float lastDensityCheckTime;
 
-    void Start() {
+    private void Start() {
     }
 
-    void Update() {
+    private void Update() {
         if (!resource)
-            resource = this.GetComponent<ResourceTracker>();
-        float time = DayNightCycle.main.timePassedAsFloat;
-        float dT = time - lastTime;
+            resource = GetComponent<ResourceTracker>();
+        var time = DayNightCycle.main.timePassedAsFloat;
+        var dT = time - lastTime;
         if (spawnTime <= 0)
             spawnTime = time;
         if (spawnTime > 0 && time - lastPlayerDistanceCheckTime >= 0.5) {

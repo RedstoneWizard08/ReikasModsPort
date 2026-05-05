@@ -20,7 +20,7 @@ public class GunPoolBarrier : LockedPrecursorDoor {
     }
 
     public override GameObject GetGameObject() {
-        GameObject go = base.GetGameObject();
+        var go = base.GetGameObject();
         go.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.Far;
         return go;
     }

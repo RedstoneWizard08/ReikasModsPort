@@ -9,73 +9,73 @@ namespace ReikaKalseki.SeaToSea;
 
 public class FinalLaunchAdditionalRequirementSystem {
 
-	public static readonly FinalLaunchAdditionalRequirementSystem instance = new FinalLaunchAdditionalRequirementSystem();
+	public static readonly FinalLaunchAdditionalRequirementSystem instance = new();
 
-	private readonly Dictionary<TechType, RequiredItem> requiredItems = new Dictionary<TechType, RequiredItem>();
+	private readonly Dictionary<TechType, RequiredItem> requiredItems = new();
 
 	internal static readonly string NEED_CARGO_PDA = "needlaunchcargo";
 
 	private FinalLaunchAdditionalRequirementSystem() {
-		bool hard = SeaToSeaMod.config.getBoolean(C2CConfig.ConfigEntries.HARDMODE);
-		this.addRequiredItem(TechType.BoneShark, 1, "A large, armored, territorial predator");
-		this.addRequiredItem(TechType.Sandshark, 1, "A burrowing ambush predator, infected with Kharaa").setSorting(2000).setAdditionalCheck(pp => {
-			InfectedMixin mix = pp.GetComponent<InfectedMixin>();
+		var hard = SeaToSeaMod.ModConfig.getBoolean(C2CConfig.ConfigEntries.HARDMODE);
+		addRequiredItem(TechType.BoneShark, 1, "A large, armored, territorial predator");
+		addRequiredItem(TechType.Sandshark, 1, "A burrowing ambush predator, infected with Kharaa").setSorting(2000).setAdditionalCheck(pp => {
+			var mix = pp.GetComponent<InfectedMixin>();
 			//SNUtil.writeToChat("Sandshark is infected: "+(mix && mix.IsInfected()));
 			return mix && mix.IsInfected() && !mix.IsHealedByPeeper();
 		});
-		this.addRequiredItem(TechType.LavaLizard, 1, "A creature with extreme thermal resistance due to regular direct lava exposure");
-		this.addRequiredItem(TechType.Crabsnake, 1, "A symbiotic predator");
-		this.addRequiredItem(TechType.Cutefish, hard ? 3 : 1, "A highly intelligent herbivore");
+		addRequiredItem(TechType.LavaLizard, 1, "A creature with extreme thermal resistance due to regular direct lava exposure");
+		addRequiredItem(TechType.Crabsnake, 1, "A symbiotic predator");
+		addRequiredItem(TechType.Cutefish, hard ? 3 : 1, "A highly intelligent herbivore");
 		if (hard) {
-			this.addRequiredItem(TechType.RabbitRay, 1, "A small ray species with vibration-detection capabilities, suitable for aquariums");
-			this.addRequiredItem(TechType.SpineEel, 1, "A transparent-bodied predator");
+			addRequiredItem(TechType.RabbitRay, 1, "A small ray species with vibration-detection capabilities, suitable for aquariums");
+			addRequiredItem(TechType.SpineEel, 1, "A transparent-bodied predator");
 		}
-		this.addRequiredItem(TechType.Mesmer, 1, "A predator that uses psychological manipulation");
-		this.addRequiredItem(TechType.Jumper, 2, "A small cave-dwelling scavenger");
+		addRequiredItem(TechType.Mesmer, 1, "A predator that uses psychological manipulation");
+		addRequiredItem(TechType.Jumper, 2, "A small cave-dwelling scavenger");
 
-		this.addRequiredItem(C2CItems.deepStalker.TechType, 1, "A semi-intelligent predator with a strong attraction to shiny objects, adapted for deep water");
+		addRequiredItem(C2CItems.deepStalker.TechType, 1, "A semi-intelligent predator with a strong attraction to shiny objects, adapted for deep water");
 
-		this.addRequiredItem(TechType.Bladderfish, 2, "A fish with water filtering capabilities");
-		this.addRequiredItem(TechType.Peeper, hard ? 6 : 3, "Enzyme host peeper").setSorting(2000).setAdditionalCheck(pp => {
-			Creature c = pp.GetComponent<Creature>();
-			return c is Peeper && ((Peeper)c).isHero;
+		addRequiredItem(TechType.Bladderfish, 2, "A fish with water filtering capabilities");
+		addRequiredItem(TechType.Peeper, hard ? 6 : 3, "Enzyme host peeper").setSorting(2000).setAdditionalCheck(pp => {
+			var c = pp.GetComponent<Creature>();
+			return c is Peeper peeper && peeper.isHero;
 		});
-		this.addRequiredItem(TechType.Hoverfish, 4, "A small herbivore using ionic charge to maneuver, suitable as a small pet");
-		this.addRequiredItem(TechType.Floater, 6, "A parasitic lifeform consisting of two symbiotic components");
+		addRequiredItem(TechType.Hoverfish, 4, "A small herbivore using ionic charge to maneuver, suitable as a small pet");
+		addRequiredItem(TechType.Floater, 6, "A parasitic lifeform consisting of two symbiotic components");
 
-		this.addRequiredItem(TechType.SeaCrownSeed, 1, "Flora with an internal bacteria-rich chamber");
+		addRequiredItem(TechType.SeaCrownSeed, 1, "Flora with an internal bacteria-rich chamber");
 		if (hard)
-			this.addRequiredItem(TechType.SmallFanSeed, 2, "A small rare plant that grows vanes of tissue between rigid spokes, adapted for living in groups");
+			addRequiredItem(TechType.SmallFanSeed, 2, "A small rare plant that grows vanes of tissue between rigid spokes, adapted for living in groups");
 		else
-			this.addRequiredItem(TechType.MembrainTreeSeed, 1, "Flora with a large bell filled with microbial and coral colonies");
-		this.addRequiredItem(TechType.FernPalmSeed, 1, "Flora exhibiting signs of genetic modification");
-		this.addRequiredItem(TechType.JellyPlant, 3, "An edible and low-density flora sample");
-		this.addRequiredItem(TechType.JeweledDiskPiece, hard ? 6 : 4, "Coral containing rare resource nodules");
+			addRequiredItem(TechType.MembrainTreeSeed, 1, "Flora with a large bell filled with microbial and coral colonies");
+		addRequiredItem(TechType.FernPalmSeed, 1, "Flora exhibiting signs of genetic modification");
+		addRequiredItem(TechType.JellyPlant, 3, "An edible and low-density flora sample");
+		addRequiredItem(TechType.JeweledDiskPiece, hard ? 6 : 4, "Coral containing rare resource nodules");
 
-		this.addRequiredItem(C2CItems.kelp.seed.TechType, 2, "Flora with symbiotic chemosynethetic bacteria in the leaves");
-		this.addRequiredItem(C2CItems.healFlower.seed.TechType, 4, "Leaves coated in oils suitable for medical applications");
-		this.addRequiredItem(C2CItems.mountainGlow.seed.TechType, 1, "Aggressively parasitic flora that eats its host from within");
-		this.addRequiredItem(C2CItems.sanctuaryPlant.seed.TechType, 2, "A glowing seed-bearing organ from a plant on the verge of extinction");
-		this.addRequiredItem(C2CItems.purpleHolefish.TechType, 1, "A large slow-moving herbivore whose life revolves around the kelp it feeds on and lays eggs in");
+		addRequiredItem(C2CItems.kelp.seed.TechType, 2, "Flora with symbiotic chemosynethetic bacteria in the leaves");
+		addRequiredItem(C2CItems.healFlower.seed.TechType, 4, "Leaves coated in oils suitable for medical applications");
+		addRequiredItem(C2CItems.mountainGlow.seed.TechType, 1, "Aggressively parasitic flora that eats its host from within");
+		addRequiredItem(C2CItems.sanctuaryPlant.seed.TechType, 2, "A glowing seed-bearing organ from a plant on the verge of extinction");
+		addRequiredItem(C2CItems.purpleHolefish.TechType, 1, "A large slow-moving herbivore whose life revolves around the kelp it feeds on and lays eggs in");
 
-		this.addRequiredItem(TechType.PrecursorIonCrystal, hard ? 8 : 3, "Alien Power Storage Units").setSorting(1000);
-		this.addRequiredItem(TechType.Diamond, 1, "*").setSorting(1000);
+		addRequiredItem(TechType.PrecursorIonCrystal, hard ? 8 : 3, "Alien Power Storage Units").setSorting(1000);
+		addRequiredItem(TechType.Diamond, 1, "*").setSorting(1000);
 
-		this.addRequiredItem(TechType.PrecursorKey_Purple, 1, "*").setSorting(3000);
-		this.addRequiredItem(TechType.PrecursorKey_Orange, 1, "*").setSorting(3000);
-		this.addRequiredItem(TechType.PrecursorKey_Blue, 1, "*").setSorting(3000);
-		this.addRequiredItem(TechType.PrecursorKey_White, 1, "*").setSorting(3000);
-		this.addRequiredItem(TechType.PrecursorKey_Red, 1, "*").setSorting(3000);
+		addRequiredItem(TechType.PrecursorKey_Purple, 1, "*").setSorting(3000);
+		addRequiredItem(TechType.PrecursorKey_Orange, 1, "*").setSorting(3000);
+		addRequiredItem(TechType.PrecursorKey_Blue, 1, "*").setSorting(3000);
+		addRequiredItem(TechType.PrecursorKey_White, 1, "*").setSorting(3000);
+		addRequiredItem(TechType.PrecursorKey_Red, 1, "*").setSorting(3000);
 	}
 
 	public RequiredItem addRequiredItem(TechType tt, int amt, string desc) {
-		RequiredItem ri = new RequiredItem(tt, amt, desc);
+		var ri = new RequiredItem(tt, amt, desc);
 		requiredItems[tt] = ri;
 		return ri;
 	}
 
 	internal string hasAllCargo() {
-		foreach (RequiredItem ri in requiredItems.Values) {
+		foreach (var ri in requiredItems.Values) {
 			if (ri.currentlyHas < ri.count)
 				return "Missing cargo: " + ri;
 		}
@@ -83,17 +83,17 @@ public class FinalLaunchAdditionalRequirementSystem {
 	}
 
 	internal void updateCounts(List<ItemsContainer> lockers) {
-		foreach (RequiredItem ri in requiredItems.Values) {
+		foreach (var ri in requiredItems.Values) {
 			ri.currentlyHas = 0;
 		}
-		foreach (ItemsContainer sc in lockers) {
-			foreach (KeyValuePair<TechType, ItemsContainer.ItemGroup> kvp in sc._items) {
-				TechType tt = kvp.Key;
+		foreach (var sc in lockers) {
+			foreach (var kvp in sc._items) {
+				var tt = kvp.Key;
 				if (!requiredItems.ContainsKey(tt))
 					continue;
-				RequiredItem ri = requiredItems[tt];
+				var ri = requiredItems[tt];
 				//SNUtil.writeToChat("Checking list of "+ri+": "+kvp.Value.items.toDebugString());
-				foreach (InventoryItem ii in kvp.Value.items) {
+				foreach (var ii in kvp.Value.items) {
 					if (ii != null && ii.item && ri.match(ii.item))
 						ri.currentlyHas++;
 					//else
@@ -104,7 +104,7 @@ public class FinalLaunchAdditionalRequirementSystem {
 	}
 
 	internal void forceLaunch() {
-		this.forceLaunch(UnityEngine.Object.FindObjectOfType<LaunchRocket>());
+		forceLaunch(UnityEngine.Object.FindObjectOfType<LaunchRocket>());
 	}
 
 	internal void forceLaunch(LaunchRocket r) {
@@ -116,14 +116,14 @@ public class FinalLaunchAdditionalRequirementSystem {
 	}
 
 	internal void spawnItems() {
-		foreach (RequiredItem ri in requiredItems.Values) {
-			for (int i = 0; i < ri.count; i++)
+		foreach (var ri in requiredItems.Values) {
+			for (var i = 0; i < ri.count; i++)
 				InventoryUtil.addItem(ri.item);
 		}
 	}
 
 	public bool checkIfFullyLoaded() {
-		return C2CUtil.checkConditionAndShowPDAAndVoicelogIfNot(this.hasAllCargo() == null, NEED_CARGO_PDA, PDAMessages.Messages.NeedLaunchCargoMessage);
+		return C2CUtil.checkConditionAndShowPDAAndVoicelogIfNot(hasAllCargo() == null, NEED_CARGO_PDA, PDAMessages.Messages.NeedLaunchCargoMessage);
 	}
 
 	public bool checkIfScannedAllLifeforms() {
@@ -140,17 +140,17 @@ public class FinalLaunchAdditionalRequirementSystem {
 	}
 
 	internal void updateContentsAndPDAPageChecklist(Rocket r, List<ItemsContainer> lockers) {
-		this.updateCounts(lockers);
-		PDAManager.getPage(FinalLaunchAdditionalRequirementSystem.NEED_CARGO_PDA).update(this.generateCargoPDAContent(), true);
+		updateCounts(lockers);
+		PDAManager.getPage(NEED_CARGO_PDA).update(generateCargoPDAContent(), true);
 	}
 
 	private string generateCargoPDAContent() {
-		string desc = SeaToSeaMod.pdaLocale.getEntry(NEED_CARGO_PDA).pda+"\n";
-		List<RequiredItem> li = requiredItems.Values.ToList();
+		var desc = SeaToSeaMod.PdaLocale.getEntry(NEED_CARGO_PDA).pda+"\n";
+		var li = requiredItems.Values.ToList();
 		li.Sort();
-		foreach (RequiredItem ri in li) {
-			int has = ri.currentlyHas;
-			string color = has < ri.count ? (has == 0 ? "FF2040" : "FFE020") : "20FF40";
+		foreach (var ri in li) {
+			var has = ri.currentlyHas;
+			var color = has < ri.count ? has == 0 ? "FF2040" : "FFE020" : "20FF40";
 			desc += string.Format("\t- {1} (<color=#{0}>{2}/{3}</color>)\n\n", color, ri.getDesc(), has, ri.count);
 		}
 		return desc;
@@ -168,13 +168,13 @@ public class RequiredItem : IComparable<RequiredItem> {
 	private Func<Pickupable, bool> extraCheck;
 	private int sortIndex;
 
-	internal int currentlyHas = 0;
+	internal int currentlyHas;
 
 	internal RequiredItem(TechType tt, int amt, string desc) {
 		item = tt;
 		count = amt;
 		description = desc;
-		string s = desc.Trim();
+		var s = desc.Trim();
 		while (s.StartsWith("A ", StringComparison.InvariantCultureIgnoreCase))
 			s = s.Substring(2);
 		while (s.StartsWith("An ", StringComparison.InvariantCultureIgnoreCase))
@@ -201,7 +201,7 @@ public class RequiredItem : IComparable<RequiredItem> {
 	}
 
 	public string getDesc() {
-		return description == "*" ? this.cleanString(Language.main.Get("Tooltip_" + item.AsString())) : description;
+		return description == "*" ? cleanString(Language.main.Get("Tooltip_" + item.AsString())) : description;
 	}
 
 	private string cleanString(string s) {

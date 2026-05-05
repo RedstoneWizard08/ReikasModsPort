@@ -15,17 +15,17 @@ public class LargeOxygenite : CustomPrefab {
     }
 
     public GameObject GetGameObject() {
-        GameObject go = ObjectUtil.createWorldObject(VanillaResources.LARGE_QUARTZ.prefab);
+        var go = ObjectUtil.createWorldObject(VanillaResources.LARGE_QUARTZ.prefab);
         Oxygenite.setupOxygeniteRender(go, 2.5F);
-        Drillable dr = go.GetComponent<Drillable>();
+        var dr = go.GetComponent<Drillable>();
         dr.Start();
         dr.minResourcesToSpawn = 1;
         dr.maxResourcesToSpawn = 1;
         dr.primaryTooltip = locale.name;
         // dr.kChanceToSpawnResources = 1;
-        TechType ox = CustomMaterials.getItem(CustomMaterials.Materials.OXYGENITE).Info.TechType;
-        dr.resources = new Drillable.ResourceType[1] { new Drillable.ResourceType { techType = ox, chance = 1 } };
-        ResourceTracker rt = go.EnsureComponent<ResourceTracker>();
+        var ox = CustomMaterials.getItem(CustomMaterials.Materials.OXYGENITE).Info.TechType;
+        dr.resources = [new() { techType = ox, chance = 1 }];
+        var rt = go.EnsureComponent<ResourceTracker>();
         rt.techType = ox;
         rt.overrideTechType = ox;
         return go;

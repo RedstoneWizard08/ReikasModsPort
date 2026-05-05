@@ -13,17 +13,17 @@ public class CrashZoneSanctuaryFern : CustomPrefab {
     }
 
     public GameObject GetGameObject() {
-        GameObject go = ObjectUtil.createWorldObject(VanillaFlora.VEINED_NETTLE.getRandomPrefab(false));
+        var go = ObjectUtil.createWorldObject(VanillaFlora.VEINED_NETTLE.getRandomPrefab(false));
         go.removeComponent<LiveMixin>();
         go.removeComponent<Collider>();
         go.removeComponent<Rigidbody>();
         go.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.Near;
         Renderer main = null;
-        foreach (Renderer r in go.GetComponentsInChildren<Renderer>()) {
+        foreach (var r in go.GetComponentsInChildren<Renderer>()) {
             if (!r.name.Contains("LOD"))
                 main = r;
             RenderUtil.swapTextures(
-                SeaToSeaMod.modDLL,
+                SeaToSeaMod.ModDLL,
                 r,
                 "Textures/Plants/SanctuaryGrass",
                 new Dictionary<int, string> { { 0, "" }, { 1, "" }, { 2, "" }, { 3, "" } }
@@ -34,11 +34,11 @@ public class CrashZoneSanctuaryFern : CustomPrefab {
             r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         }
 
-        GameObject r2 = main.gameObject.clone();
+        var r2 = main.gameObject.clone();
         r2.transform.SetParent(main.transform.parent);
         r2.transform.localPosition = Vector3.zero;
         r2.transform.localScale = Vector3.one;
-        r2.transform.localRotation = Quaternion.Euler(270, UnityEngine.Random.Range(50, 130), 0);
+        r2.transform.localRotation = Quaternion.Euler(270, Random.Range(50, 130), 0);
         go.transform.localScale = new Vector3(2.5F, 3F, 2.5F);
         return go;
     }

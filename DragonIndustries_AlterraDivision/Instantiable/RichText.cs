@@ -7,7 +7,7 @@ public sealed class RichText {
 
 	public readonly string baseText;
 
-	private List<string> parts = new List<string>();
+	private List<string> parts = [];
 
 	public RichText(string text) {
 		baseText = text;
@@ -15,15 +15,15 @@ public sealed class RichText {
 	}
 
 	public void addBold() {
-		this.addFormatPair("b", "b");
+		addFormatPair("b", "b");
 	}
 
 	public void addColor(Color c) {
-		this.addColor(c.toARGB());
+		addColor(c.toARGB());
 	}
 
 	public void addColor(int c) {
-		this.addFormatPair("color=#" + c.ToString("X").ToUpperInvariant(), "color");
+		addFormatPair("color=#" + c.ToString("X").ToUpperInvariant(), "color");
 	}
 	/* not supported
 	public void addUnderline() {
@@ -31,7 +31,7 @@ public sealed class RichText {
 	}*/
 
 	public void addItalic() {
-		this.addFormatPair("i", "i");
+		addFormatPair("i", "i");
 	}
 
 	private void addFormatPair(string pre, string post) {

@@ -11,12 +11,12 @@ namespace ReikaKalseki.DIAlterra;
 public sealed class DataChit : CustomPrefab {
     public readonly StoryGoal goal;
 
-    public Color renderColor = new Color(229 / 255F, 133 / 255F, 0); //avali aerogel color
+    public Color renderColor = new(229 / 255F, 133 / 255F, 0); //avali aerogel color
     public bool showOnScannerRoom = true;
 
     private readonly System.Reflection.Assembly ownerMod;
 
-    private static readonly Dictionary<string, SNUtil.PopupData> popupData = new Dictionary<string, SNUtil.PopupData>();
+    private static readonly Dictionary<string, SNUtil.PopupData> popupData = new();
 
     private static bool registeredCommonTechType;
     public static TechType scannerRoomChitType { get; private set; }
@@ -49,11 +49,11 @@ public sealed class DataChit : CustomPrefab {
         }
 
         AddOnRegister(() => {
-                SNUtil.PopupData data = new SNUtil.PopupData("Digital Data Downloaded", desc);
-                data.sound = "event:/tools/scanner/scan_complete";
+                var data = new SNUtil.PopupData("Digital Data Downloaded", desc) {
+                    sound = "event:/tools/scanner/scan_complete",
+                };
                 data.onUnlock = () => { SNUtil.triggerUnlockPopup(data); };
-                if (a != null)
-                    a(data);
+                a?.Invoke(data);
                 popupData[Info.ClassID] = data;
             }
         );
@@ -62,11 +62,11 @@ public sealed class DataChit : CustomPrefab {
     }
 
     public GameObject GetGameObject() {
-        GameObject world = ObjectUtil.createWorldObject("1bdbad41-adcb-47db-ab2c-0dc4a7180860");
+        var world = ObjectUtil.createWorldObject("1bdbad41-adcb-47db-ab2c-0dc4a7180860");
         world.transform.localScale = new Vector3(0.4F, 1, 1F);
         world.EnsureComponent<TechTag>().type = Info.TechType;
         world.EnsureComponent<PrefabIdentifier>().ClassId = Info.ClassID;
-        StoryHandTarget tgt = world.EnsureComponent<StoryHandTarget>();
+        var tgt = world.EnsureComponent<StoryHandTarget>();
         tgt.goal = goal;
         tgt.primaryTooltip = Info.PrefabFileName;
         tgt.informGameObject = world;
@@ -76,32 +76,31 @@ public sealed class DataChit : CustomPrefab {
             world.removeComponent<ResourceTracker>();
         world.EnsureComponent<DataChitTag>();
         world.removeChildObject("PDALight");
-        Renderer r = world.GetComponentInChildren<Renderer>();
+        var r = world.GetComponentInChildren<Renderer>();
         RenderUtil.swapTextures(
             SNUtil.diDLL,
             r,
             "Textures/DataChit/",
             new Dictionary<int, string> { { 0, "" }, { 1, "" }, { 2, "" } }
         );
-        foreach (Material m in r.materials)
+        foreach (var m in r.materials)
             m.SetColor("_GlowColor", renderColor.WithAlpha(1));
-        Light l = world.addLight(0.5F, 6, renderColor);
+        var l = world.addLight(0.5F, 6, renderColor);
         l.transform.localPosition = new Vector3(0.0F, 0.5F, 0.15F);
         l = world.addLight(1.5F, 1.2F, renderColor);
         l.transform.localPosition = new Vector3(0.0F, 0.125F, 0.15F);
         return world;
     }
 
-    class DataChitTag : MonoBehaviour {
-        void Start() {
-            if (this.GetComponent<ResourceTracker>())
-                ObjectUtil.makeMapRoomScannable(gameObject, DataChit.scannerRoomChitType).Register();
+    private class DataChitTag : MonoBehaviour {
+        private void Start() {
+            if (GetComponent<ResourceTracker>())
+                ObjectUtil.makeMapRoomScannable(gameObject, scannerRoomChitType).Register();
         }
 
-        void OnStoryHandTarget() {
-            SNUtil.PopupData popup = popupData[this.GetComponent<PrefabIdentifier>().ClassId];
-            if (popup.onUnlock != null)
-                popup.onUnlock.Invoke();
+        private void OnStoryHandTarget() {
+            var popup = popupData[GetComponent<PrefabIdentifier>().ClassId];
+            popup.onUnlock?.Invoke();
         }
     }
 }

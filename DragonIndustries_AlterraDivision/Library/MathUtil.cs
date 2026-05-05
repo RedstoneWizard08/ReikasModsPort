@@ -10,9 +10,9 @@ public static class MathUtil {
 	}
 
 	public static double py3d(double rawX, double rawY, double rawZ, double rawX2, double rawY2, double rawZ2) {
-		double dx = rawX2-rawX;
-		double dy = rawY2-rawY;
-		double dz = rawZ2-rawZ;
+		var dx = rawX2-rawX;
+		var dy = rawY2-rawY;
+		var dz = rawZ2-rawZ;
 		return py3d(dx, dy, dz);
 	}
 
@@ -21,21 +21,21 @@ public static class MathUtil {
 	}
 
 	public static double py3dS(double rawX, double rawY, double rawZ, double rawX2, double rawY2, double rawZ2) {
-		double dx = rawX2-rawX;
-		double dy = rawY2-rawY;
-		double dz = rawZ2-rawZ;
+		var dx = rawX2-rawX;
+		var dy = rawY2-rawY;
+		var dz = rawZ2-rawZ;
 		return py3dS(dx, dy, dz);
 	}
 
 	public static double py3dS(double dx, double dy, double dz) {
-		return (dx * dx) + (dy * dy) + (dz * dz);
+		return dx * dx + dy * dy + dz * dz;
 	}
 
 	public static Vector3 findRandomPointInsideEllipse(Vector3 center, float length, float width) {
-		Rect rec = new Rect(center.x-(length/2), center.z-(width/2), length, width);
-		Vector2 vec = getRandomVectorInside(rec);
+		var rec = new Rect(center.x-length/2, center.z-width/2, length, width);
+		var vec = getRandomVectorInside(rec);
 		//SBUtil.log(rec.ToString());
-		int i = 0;
+		var i = 0;
 		while (!isPointInsideEllipse(vec.x - center.x, 0, vec.y - center.z, length / 2, 0, width / 2)) {
 			double ra = length/2;
 			double rc = width/2;
@@ -49,13 +49,13 @@ public static class MathUtil {
 	}
 
 	public static Vector2 getRandomVectorInside(Rect rec) {
-		float x = UnityEngine.Random.Range(rec.xMin, rec.xMax);
-		float z = UnityEngine.Random.Range(rec.yMin, rec.yMax);
+		var x = UnityEngine.Random.Range(rec.xMin, rec.xMax);
+		var z = UnityEngine.Random.Range(rec.yMin, rec.yMax);
 		return new Vector2(x, z);
 	}
 
 	public static bool isPointInsideEllipse(double x, double y, double z, double ra, double rb, double rc) {
-		return (ra > 0 ? (x * x / (ra * ra)) : 0) + (rb > 0 ? (y * y / (rb * rb)) : 0) + (rc > 0 ? (z * z / (rc * rc)) : 0) <= 1;
+		return (ra > 0 ? x * x / (ra * ra) : 0) + (rb > 0 ? y * y / (rb * rb) : 0) + (rc > 0 ? z * z / (rc * rc) : 0) <= 1;
 	}
 
 	public static bool isPointInCylinder(Vector3 center, Vector3 point, double r, double h) {
@@ -79,11 +79,11 @@ public static class MathUtil {
 	}
 
 	public static Vector3 getRandomVectorAround(Vector3 pos, float r0, float r1) {
-		float r = UnityEngine.Random.Range(r0, r1);
-		float ang = UnityEngine.Random.Range(0, 360F);
-		float cos = (float)Math.Cos(ang*Math.PI/180D);
-		float sin = (float)Math.Sin(ang*Math.PI/180D);
-		return pos + (r * new Vector3(cos, 0, sin));
+		var r = UnityEngine.Random.Range(r0, r1);
+		var ang = UnityEngine.Random.Range(0, 360F);
+		var cos = (float)Math.Cos(ang*Math.PI/180D);
+		var sin = (float)Math.Sin(ang*Math.PI/180D);
+		return pos + r * new Vector3(cos, 0, sin);
 	}
 
 	public static double getDistanceToLine(Vector3 point, Vector3 a, Vector3 b) {
@@ -91,8 +91,8 @@ public static class MathUtil {
 	}
 	//just like when I did it for ChokePoint: https://wikimedia.org/api/rest_v1/media/math/render/svg/aad3f60fa75c4e1dcbe3c1d3a3792803b6e78bf6
 	public static double getDistanceToLine(Vector3 point, double x1, double y1, double z1, double x2, double y2, double z2) {
-		double denom = ((x2-x1)*(x2-x1))+((z2-z1)*(z2-z1));
-		double num = ((x2-x1)*(z1-point.z))-((x1-point.x)*(z2-z1));
+		var denom = (x2-x1)*(x2-x1)+(z2-z1)*(z2-z1);
+		var num = (x2-x1)*(z1-point.z)-(x1-point.x)*(z2-z1);
 		return Math.Abs(num) / Math.Sqrt(denom);
 	}
 
@@ -101,10 +101,10 @@ public static class MathUtil {
 	}
 
 	public static double getScalarOfClosestPointToLineSegment(Vector3 point, double x1, double y1, double z1, double x2, double y2, double z2) {
-		double dist = py3dS(x1, y1, z1, x2, y2, z2);
+		var dist = py3dS(x1, y1, z1, x2, y2, z2);
 		if (dist <= 0.001)
 			return py3d(point.x, point.y, point.z, x1, y1, z1);
-		double t = (((point.x-x1)*(x2-x1))+((point.y-y1)*(y2-y1))+((point.z-z1)*(z2-z1)))/dist;
+		var t = ((point.x-x1)*(x2-x1)+(point.y-y1)*(y2-y1)+(point.z-z1)*(z2-z1))/dist;
 		return t.Clamp(0D, 1D);
 	}
 
@@ -113,13 +113,13 @@ public static class MathUtil {
 	}
 
 	public static Vector3 getClosestPointToLineSegment(Vector3 point, double x1, double y1, double z1, double x2, double y2, double z2) {
-		float t = (float)getScalarOfClosestPointToLineSegment(point, x1, y1, z1, x2, y2, z2);
+		var t = (float)getScalarOfClosestPointToLineSegment(point, x1, y1, z1, x2, y2, z2);
 		return Vector3.Lerp(new Vector3((float)x1, (float)y1, (float)z1), new Vector3((float)x2, (float)y2, (float)z2), t);
 	}
 
 	public static double getDistanceToLineSegment(Vector3 point, double x1, double y1, double z1, double x2, double y2, double z2) {
-		double t = getScalarOfClosestPointToLineSegment(point, x1, y1, z1, x2, y2, z2);
-		return py3d(point.x, point.y, point.z, x1 + (t * (x2 - x1)), y1 + (t * (y2 - y1)), z1 + (t * (z2 - z1)));
+		var t = getScalarOfClosestPointToLineSegment(point, x1, y1, z1, x2, y2, z2);
+		return py3d(point.x, point.y, point.z, x1 + t * (x2 - x1), y1 + t * (y2 - y1), z1 + t * (z2 - z1));
 	}
 
 	public static double linterpolate(double x, double x1, double x2, double y1, double y2, bool clamp = false) {
@@ -127,11 +127,11 @@ public static class MathUtil {
 			return y1;
 		else if (clamp && x >= x2)
 			return y2;
-		return y1 + ((x - x1) / (x2 - x1) * (y2 - y1));
+		return y1 + (x - x1) / (x2 - x1) * (y2 - y1);
 	}
 
 	public static Vector3 interpolate(Vector3 a, Vector3 b, float amt) {
-		return a + ((b - a) * amt);
+		return a + (b - a) * amt;
 	}
 
 	public static float getRandomPlusMinus(float val, float range) {
@@ -143,9 +143,9 @@ public static class MathUtil {
 	}
 
 	public static Bounds getBounds(double x1, double y1, double z1, double x2, double y2, double z2) {
-		Vector3 v1 = new Vector3((float)x1, (float)y1, (float)z1);
-		Vector3 v2 = new Vector3((float)x2, (float)y2, (float)z2);
-		Bounds b = new Bounds(Vector3.zero, Vector3.zero);
+		var v1 = new Vector3((float)x1, (float)y1, (float)z1);
+		var v2 = new Vector3((float)x2, (float)y2, (float)z2);
+		var b = new Bounds(Vector3.zero, Vector3.zero);
 		b.SetMinMax(v1, v2);
 		return b;
 	}
@@ -153,7 +153,7 @@ public static class MathUtil {
 	//starts at 1 for the first digit after '.'
 	public static int getNthDecimalPlace(double value, int place) {
 		value = Math.Abs(value) * Math.Pow(10, place);
-		return ((int)value) % 10;
+		return (int)value % 10;
 	}
 
 	public static Quaternion unitVecToRotation(Vector3 unit) {

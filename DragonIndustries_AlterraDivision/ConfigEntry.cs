@@ -33,7 +33,7 @@ public class ConfigEntry : Attribute {
 	*/
 	internal string enumIndex;
 
-	public readonly List<ConfigEntry> children = new List<ConfigEntry>();
+	public readonly List<ConfigEntry> children = [];
 	/*
 	public ConfigEntry(string d, string val, string van) : this(d, typeof(string), 0, 0, 0, 0) {
 		defaultString = val;
@@ -61,7 +61,7 @@ public class ConfigEntry : Attribute {
 		if (type == typeof(string) || type == typeof(bool)) {
 			return true;
 		}
-		bool flag = true;
+		var flag = true;
 		if (val < minValue) {
 			val = minValue;
 			flag = false;

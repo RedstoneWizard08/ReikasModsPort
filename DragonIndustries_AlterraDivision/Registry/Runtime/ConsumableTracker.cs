@@ -6,7 +6,7 @@ namespace ReikaKalseki.DIAlterra;
 
 public class ConsumableTracker : SerializedTracker<ConsumableTracker.ConsumeItemEvent> {
 
-	public static readonly ConsumableTracker instance = new ConsumableTracker();
+	public static readonly ConsumableTracker instance = new();
 
 	private ConsumableTracker() : base("Consumption.dat", true, parseConsumption, null) {
 
@@ -19,7 +19,7 @@ public class ConsumableTracker : SerializedTracker<ConsumableTracker.ConsumeItem
 	public void onConsume(TechType tt, bool isEating) {
 		//SNUtil.writeToChat("Log eat of "+tt.AsString());
 		if (tt != TechType.None)
-			this.add(new ConsumeItemEvent(tt, DayNightCycle.main.timePassedAsFloat, isEating));
+			add(new ConsumeItemEvent(tt, DayNightCycle.main.timePassedAsFloat, isEating));
 	}
 
 	private static ConsumeItemEvent parseConsumption(XmlElement s) {
@@ -27,7 +27,7 @@ public class ConsumableTracker : SerializedTracker<ConsumableTracker.ConsumeItem
 	}
 
 	public ReadOnlyCollection<ConsumeItemEvent> getEvents() {
-		return this.data.AsReadOnly();
+		return data.AsReadOnly();
 	}
 
 	public class ConsumeItemEvent : SerializedTrackedEvent {
@@ -46,7 +46,7 @@ public class ConsumableTracker : SerializedTracker<ConsumableTracker.ConsumeItem
 		}
 
 		public override string ToString() {
-			return string.Format("[ConsumeItemEvent Tech={0}, Time={1}, Eat={2}]", itemType, eventTime, isEating);
+			return $"[ConsumeItemEvent Tech={itemType}, Time={eventTime}, Eat={isEating}]";
 		}
 
 

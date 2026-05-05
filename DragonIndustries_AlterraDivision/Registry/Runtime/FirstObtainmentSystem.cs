@@ -6,26 +6,26 @@ namespace ReikaKalseki.DIAlterra;
 
 public class FirstObtainmentSystem {
 
-	public static readonly FirstObtainmentSystem instance = new FirstObtainmentSystem();
+	public static readonly FirstObtainmentSystem instance = new();
 
-	private static readonly Dictionary<TechType, List<Action>> events = new Dictionary<TechType, List<Action>>();
+	private static readonly Dictionary<TechType, List<Action>> events = new();
 
 	private FirstObtainmentSystem() {
 
 	}
 
 	public void registerEvent(TechType tt, Action a) {
-		List<Action> li = events.ContainsKey(tt) ? events[tt] : new List<Action>();
+		var li = events.ContainsKey(tt) ? events[tt] : [];
 		li.Add(a);
 		events[tt] = li;
 	}
 
 	public void onPickup(TechType tt) {
-		string key = getGoal(tt);
+		var key = getGoal(tt);
 		if (!StoryGoalManager.main.IsGoalComplete(key)) {
 			StoryGoal.Execute(key, Story.GoalType.Story);
 			if (events.ContainsKey(tt)) {
-				foreach (Action a in events[tt]) {
+				foreach (var a in events[tt]) {
 					a.Invoke();
 				}
 			}

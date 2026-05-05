@@ -23,13 +23,13 @@ public class HealingOverTime : MonoBehaviour, CustomSerializedComponent {
 	}
 
 	public void activate() {
-		this.CancelInvoke("tick");
+		CancelInvoke(nameof(tick));
 		startTime = Time.time;
-		this.InvokeRepeating("tick", 0f, TICK_RATE);
+		InvokeRepeating(nameof(tick), 0f, TICK_RATE);
 	}
 
 	internal void tick() {
-		float amt = Mathf.Min(healingRemaining, healRate);
+		var amt = Mathf.Min(healingRemaining, healRate);
 		Player.main.GetComponent<LiveMixin>().AddHealth(amt);
 		healingRemaining -= amt;
 		if (healingRemaining <= 0)
@@ -53,7 +53,7 @@ public class HealingOverTime : MonoBehaviour, CustomSerializedComponent {
 		healingRemaining = (float)e.getFloat("remaining", 0);
 		totalDuration = (float)e.getFloat("duration", 0);
 		healRate = (float)e.getFloat("rate", 0);
-		this.activate();
+		activate();
 		startTime = (float)e.getFloat("time", 0);
 	}
 

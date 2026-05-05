@@ -8,7 +8,7 @@ internal class GeyserSonarSignal : PassiveSonarEntity {
 
 	protected new void Update() {
 		if (!geyser)
-			geyser = this.GetComponent<Geyser>();
+			geyser = GetComponent<Geyser>();
 		base.Update();
 	}
 

@@ -11,7 +11,7 @@ public sealed class AllPlants : WorldGenerator {
 	private static double step = 25;
 	private double offsetX = -80;
 	private double offsetZ = -step;
-	private int index = 0;
+	private int index;
 
 	public AllPlants(Vector3 pos) : base(pos) {
 
@@ -26,14 +26,14 @@ public sealed class AllPlants : WorldGenerator {
 	}
 
 	public override bool generate(List<GameObject> li) {
-		GameObject rock = spawner("a474e5fa-1552-4cea-abdb-945f85ed4b1a");
+		var rock = spawner("a474e5fa-1552-4cea-abdb-945f85ed4b1a");
 		rock.transform.position = position;
 		rock.transform.localScale = new Vector3(150, 1, 150);
 
-		foreach (VanillaFlora vf in VanillaFlora.getAll()) {
-			li.Add(this.spawnPlant(vf));
+		foreach (var vf in VanillaFlora.getAll()) {
+			li.Add(spawnPlant(vf));
 			if (vf.maximumSink > 0.01) {
-				li.Add(this.spawnPlant(vf, vf.maximumSink));
+				li.Add(spawnPlant(vf, vf.maximumSink));
 			}
 		}
 		return true;
@@ -44,9 +44,9 @@ public sealed class AllPlants : WorldGenerator {
 	}
 
 	private GameObject spawnPlant(VanillaFlora f, double sink = 0) {
-		offsetZ = ((index % 5) - 2) * step;
-		GameObject go = spawner(f.getRandomPrefab(false));
-		double d = f.baseOffset < -99 ? 6 : f.baseOffset;
+		offsetZ = (index % 5 - 2) * step;
+		var go = spawner(f.getRandomPrefab(false));
+		var d = f.baseOffset < -99 ? 6 : f.baseOffset;
 		d -= sink;
 		go.transform.position = new Vector3(position.x + (float)offsetX, position.y + (float)d, position.z + (float)offsetZ);
 		index++;

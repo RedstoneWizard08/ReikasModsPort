@@ -6,12 +6,12 @@ namespace ReikaKalseki.SeaToSea;
 
 public sealed class SeamothVoidStealthModule : SeamothModule {
     internal static readonly IrreplaceableItemRegistry.IrreplaceableItemData lossData =
-        new IrreplaceableItemRegistry.IrreplaceableItemData(
+        new(
             IrreplaceableItemRegistry.DEFAULT_EFFECTS.onAttemptToDrop,
             IrreplaceableItemRegistry.DEFAULT_EFFECTS.onDiedWhileHolding,
             (v, m, ii, li) => {
                 if (m) {
-                    GameObject go = ObjectUtil.lookupPrefab(VanillaCreatures.CRASHFISH.prefab).GetComponent<Crash>()
+                    var go = ObjectUtil.lookupPrefab(VanillaCreatures.CRASHFISH.prefab).GetComponent<Crash>()
                         .detonateParticlePrefab;
                     Utils.PlayOneShotPS(go, v.transform.position, v.transform.rotation);
                     go.transform.localScale =
@@ -27,13 +27,11 @@ public sealed class SeamothVoidStealthModule : SeamothModule {
         ); //to destroy the seamoth and cause the shockwave from it overcharging just destroy the seamoth, which will trigger this because of the IrreplaceableItemRegistry
 
     [SetsRequiredMembers]
-    public SeamothVoidStealthModule() : base(SeaToSeaMod.itemLocale.getEntry("SeamothVoidStealth")) {
-        this.preventNaturalUnlock();
+    public SeamothVoidStealthModule() : base(SeaToSeaMod.ItemLocale.getEntry("SeamothVoidStealth")) {
+        preventNaturalUnlock();
     }
 
-    public override QuickSlotType QuickSlotType {
-        get { return TechData.GetSlotType(TechType.SeamothSonarModule); }
-    }
+    public override QuickSlotType QuickSlotType => TechData.GetSlotType(TechType.SeamothSonarModule);
 
     public override float getUsageCooldown() {
         return 5;
@@ -43,9 +41,7 @@ public sealed class SeamothVoidStealthModule : SeamothModule {
         sm.GetComponent<C2CMoth>().dumpSoundEnergy();
     }
 
-    public override Vector2int SizeInInventory {
-        get { return new Vector2int(2, 2); }
-    }
+    public override Vector2int SizeInInventory => new(2, 2);
     /*
     protected override Atlas.Sprite GetItemSprite()
     {

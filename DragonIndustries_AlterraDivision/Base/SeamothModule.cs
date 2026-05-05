@@ -8,8 +8,7 @@ using UnityEngine;
 namespace ReikaKalseki.DIAlterra;
 
 public abstract class SeamothModule : CustomEquipable {
-    private static readonly Dictionary<TechType, SeamothModuleStorage> storageHandlers =
-        new Dictionary<TechType, SeamothModuleStorage>();
+    private static readonly Dictionary<TechType, SeamothModuleStorage> storageHandlers = new();
 
     static SeamothModule() {
         storageHandlers[TechType.SeamothTorpedoModule] = new SeamothModuleStorage(null, StorageAccessType.BOX, -1, -1)
@@ -21,7 +20,7 @@ public abstract class SeamothModule : CustomEquipable {
     }
 
     internal static void updateLocale() {
-        foreach (KeyValuePair<TechType, SeamothModuleStorage> kvp in storageHandlers) {
+        foreach (var kvp in storageHandlers) {
             if (!string.IsNullOrEmpty(kvp.Value.localeKey) && !string.IsNullOrEmpty(kvp.Value.localizedHoverText)) {
                 CustomLocaleKeyDatabase.registerKey(kvp.Value.localeKey, kvp.Value.localizedHoverText);
                 SNUtil.log(
@@ -56,7 +55,7 @@ public abstract class SeamothModule : CustomEquipable {
                     CraftDataHandler.SetEnergyCost(Info.TechType, getChargingPowerCost());
                 }
 
-                SeamothModuleStorage s = this.getStorage();
+                var s = getStorage();
                 if (s != null) {
                     storageHandlers[Info.TechType] = s;
                     s.localeKey = "SeamothModuleStorageAccess_" + id;
@@ -67,37 +66,24 @@ public abstract class SeamothModule : CustomEquipable {
     }
 
     public override void prepareGameObject(GameObject go, Renderer[] r) {
-        SeamothModuleStorage s = this.getStorage();
+        var s = getStorage();
         if (s != null) {
-            SeamothStorageContainer storage = go.GetComponent<SeamothStorageContainer>();
+            var storage = go.GetComponent<SeamothStorageContainer>();
             if (storage) {
                 s.apply(storage);
             }
         }
     }
 
-    public override CraftTree.Type FabricatorType {
-        get { return CraftTree.Type.SeamothUpgrades; }
-    }
+    public override CraftTree.Type FabricatorType => CraftTree.Type.SeamothUpgrades;
 
-    public override string[] StepsToFabricatorTab {
-        get {
-            return
-                new string[] { "SeamothModules" }; //return new string[]{"DISeamoth"};//new string[]{"SeamothModules"};
-        }
-    }
+    public override string[] StepsToFabricatorTab => ["SeamothModules"]; //return new string[]{"DISeamoth"};//new string[]{"SeamothModules"};
 
-    public override sealed EquipmentType EquipmentType {
-        get { return EquipmentType.SeamothModule; }
-    }
+    public override sealed EquipmentType EquipmentType => EquipmentType.SeamothModule;
 
-    public override TechGroup GroupForPDA {
-        get { return TechGroup.VehicleUpgrades; }
-    }
+    public override TechGroup GroupForPDA => TechGroup.VehicleUpgrades;
 
-    public override TechCategory CategoryForPDA {
-        get { return TechCategory.VehicleUpgrades; }
-    }
+    public override TechCategory CategoryForPDA => TechCategory.VehicleUpgrades;
 
     protected virtual float getMaxCharge() {
         return TechData.GetMaxCharge(TechType.SeamothElectricalDefense);
@@ -123,7 +109,7 @@ public abstract class SeamothModule : CustomEquipable {
         public readonly int width;
         public readonly int height;
         private readonly Action<SeamothStorageContainer> additionalModifications;
-        public readonly List<TechType> allowedAmmo = new List<TechType>();
+        public readonly List<TechType> allowedAmmo = [];
         public StorageAccessType storageType;
 
         public string localeKey { get; internal set; }
@@ -165,11 +151,11 @@ public abstract class SeamothModule : CustomEquipable {
         }
 
         public SeamothModuleStorage addAmmo(PrefabReference s) {
-            return this.addAmmo(CraftData.entClassTechTable[s.getPrefabID()]);
+            return addAmmo(CraftData.entClassTechTable[s.getPrefabID()]);
         }
 
         public SeamothModuleStorage addAmmo(CustomPrefab s) {
-            return this.addAmmo(s.Info.TechType);
+            return addAmmo(s.Info.TechType);
         }
 
         public SeamothModuleStorage addAmmo(TechType tt) {

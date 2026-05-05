@@ -7,10 +7,10 @@ namespace ReikaKalseki.SeaToSea;
 public class SeamothHeatSink : BasicCraftingItem {
     [SetsRequiredMembers]
     public SeamothHeatSink() : base(
-        SeaToSeaMod.itemLocale.getEntry("SeamothHeatSink"),
+        SeaToSeaMod.ItemLocale.getEntry("SeamothHeatSink"),
         "WorldEntities/Natural/CopperWire"
     ) {
-        sprite = TextureManager.getSprite(SeaToSeaMod.modDLL, "Textures/Items/Seamothheatsink");
+        sprite = TextureManager.getSprite(SeaToSeaMod.ModDLL, "Textures/Items/Seamothheatsink");
         craftingSubCategory = "Tools";
         craftingTime = 4;
         unlockRequirement = TechType.Unobtanium;
@@ -22,19 +22,11 @@ public class SeamothHeatSink : BasicCraftingItem {
         base.prepareGameObject(go, r);
     }
 
-    public override CraftTree.Type FabricatorType {
-        get { return CraftTree.Type.SeamothUpgrades; }
-    }
+    public override CraftTree.Type FabricatorType => CraftTree.Type.SeamothUpgrades;
 
-    public override TechGroup GroupForPDA {
-        get { return TechGroup.VehicleUpgrades; }
-    }
+    public override TechGroup GroupForPDA => TechGroup.VehicleUpgrades;
 
-    public override TechCategory CategoryForPDA {
-        get { return TechCategory.VehicleUpgrades; }
-    }
+    public override TechCategory CategoryForPDA => TechCategory.VehicleUpgrades;
 
-    public override string[] StepsToFabricatorTab {
-        get { return new string[] { "Torpedoes" }; }
-    }
+    public override string[] StepsToFabricatorTab => ["Torpedoes"];
 }

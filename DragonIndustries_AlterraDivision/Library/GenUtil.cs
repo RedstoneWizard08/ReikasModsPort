@@ -12,18 +12,15 @@ namespace ReikaKalseki.DIAlterra;
 public static class GenUtil {
     public static readonly Bounds allowableGenBounds = MathUtil.getBounds(-2299, -3100, -2299, 2299, 150, 2299);
 
-    private static readonly HashSet<string> alreadyRegisteredGen = new HashSet<string>();
-    private static readonly Dictionary<TechType, Databox> databoxes = new Dictionary<TechType, Databox>();
+    private static readonly HashSet<string> alreadyRegisteredGen = [];
+    private static readonly Dictionary<TechType, Databox> databoxes = new();
     private static readonly Dictionary<TechType, Crate>[] crates = new Dictionary<TechType, Crate>[2];
 
-    private static readonly Dictionary<TechType, FragmentGroup> fragments =
-        new Dictionary<TechType, FragmentGroup>();
+    private static readonly Dictionary<TechType, FragmentGroup> fragments = new();
 
-    private static readonly Dictionary<LargeWorldEntity.CellLevel, WorldGeneratorPrefab> worldGeneratorPrefabs =
-        new Dictionary<LargeWorldEntity.CellLevel, WorldGeneratorPrefab>();
+    private static readonly Dictionary<LargeWorldEntity.CellLevel, WorldGeneratorPrefab> worldGeneratorPrefabs = new();
 
-    private static readonly Dictionary<string, WorldGenerator> generatorTable =
-        new Dictionary<string, WorldGenerator>();
+    private static readonly Dictionary<string, WorldGenerator> generatorTable = new();
 
     static GenUtil() {
         crates[0] = new Dictionary<TechType, Crate>();
@@ -73,15 +70,16 @@ public static class GenUtil {
         if (alreadyRegisteredGen.Contains(id)) {
             LootDistributionHandler.EditLootDistributionData(id, biome, chance, amt); //will add if not present
         } else {
-            LootDistributionData.BiomeData b = new LootDistributionData.BiomeData
+            var b = new LootDistributionData.BiomeData
                 { biome = biome, count = amt, probability = chance };
-            List<LootDistributionData.BiomeData> li = new List<LootDistributionData.BiomeData> { b };
-            UWE.WorldEntityInfo info = new UWE.WorldEntityInfo();
-            info.cellLevel = size;
-            info.classId = id;
-            info.localScale = Vector3.one;
-            info.slotType = type;
-            info.techType = tech;
+            List<LootDistributionData.BiomeData> li = [b];
+            var info = new UWE.WorldEntityInfo {
+                cellLevel = size,
+                classId = id,
+                localScale = Vector3.one,
+                slotType = type,
+                techType = tech,
+            };
             WorldEntityDatabaseHandler.AddCustomInfo(id, info);
             LootDistributionHandler.AddLootDistributionData(id, file, li, info);
 
@@ -98,8 +96,7 @@ public static class GenUtil {
                 if (!Mathf.Approximately(pfb.scale.x, 1) || !Mathf.Approximately(pfb.scale.y, 1) ||
                     !Mathf.Approximately(pfb.scale.z, 1))
                     go.transform.localScale = pfb.scale;
-                if (call != null)
-                    call(go);
+                call?.Invoke(go);
             }
         );
     }
@@ -122,7 +119,7 @@ public static class GenUtil {
         if (string.IsNullOrEmpty(prefab))
             throw new Exception("Tried to register worldgen of null!");
         validateCoords(pos);
-        SpawnInfo info = new SpawnInfo(prefab, pos, getOrIdentity(rot), Vector3.one, call);
+        var info = new SpawnInfo(prefab, pos, getOrIdentity(rot), Vector3.one, call);
         CoordinatedSpawnsHandler.RegisterCoordinatedSpawn(info);
         //SNUtil.log("Registering prefab "+prefab+" @ "+pos);
         return info;
@@ -133,12 +130,12 @@ public static class GenUtil {
             throw new Exception("You cannot register a null gen!");
         validateCoords(gen.position);
         Action<GameObject> call = go => {
-            string id = gen.uniqueID;
+            var id = gen.uniqueID;
             SNUtil.log("Placing world generator " + gen + " [" + id + "]");
             generatorTable[id] = gen;
             go.EnsureComponent<WorldGeneratorHolder>().generatorID = id;
         };
-        SpawnInfo info = new SpawnInfo(
+        var info = new SpawnInfo(
             getOrCreateWorldgenHolder(gen).Info.ClassID,
             gen.position,
             Quaternion.identity,
@@ -151,7 +148,7 @@ public static class GenUtil {
     }
 
     private static WorldGeneratorPrefab getOrCreateWorldgenHolder(WorldGenerator gen) {
-        LargeWorldEntity.CellLevel lvl = gen.getCellLevel();
+        var lvl = gen.getCellLevel();
         if (!worldGeneratorPrefabs.ContainsKey(lvl)) {
             worldGeneratorPrefabs[lvl] = new WorldGeneratorPrefab(lvl);
         }
@@ -189,7 +186,7 @@ public static class GenUtil {
 
     public static SpawnInfo spawnTechType(TechType tech, Vector3 pos, Vector3? rot = null) {
         validateCoords(pos);
-        SpawnInfo info = new SpawnInfo(tech, pos, getOrZero(rot));
+        var info = new SpawnInfo(tech, pos, getOrZero(rot));
         CoordinatedSpawnsHandler.RegisterCoordinatedSpawn(info);
         return info;
     }
@@ -211,8 +208,8 @@ public static class GenUtil {
     }
 
     public static CustomPrefab getOrCreateCrate(TechType tech, bool needsCutter = false, string goal = null) {
-        int idx = needsCutter ? 1 : 0;
-        Crate box = crates[idx].ContainsKey(tech) ? crates[idx][tech] : null;
+        var idx = needsCutter ? 1 : 0;
+        var box = crates[idx].ContainsKey(tech) ? crates[idx][tech] : null;
         if (box == null) {
             box = new Crate(tech, needsCutter, goal);
             crates[idx][tech] = box;
@@ -222,7 +219,7 @@ public static class GenUtil {
     }
 
     public static ContainerPrefab getOrCreateDatabox(TechType tech, Action<GameObject> modify = null) {
-        Databox box = databoxes.ContainsKey(tech) ? databoxes[tech] : null;
+        var box = databoxes.ContainsKey(tech) ? databoxes[tech] : null;
         if (box == null) {
             box = new Databox(tech, "1b8e6f01-e5f0-4ab7-8ba9-b2b909ce68d6", modify); //compass databox
             databoxes[tech] = box;
@@ -245,13 +242,13 @@ public static class GenUtil {
         string template,
         Action<GameObject> modify = null
     ) {
-        FragmentGroup li = fragments.ContainsKey(tech) ? fragments[tech] : null;
+        var li = fragments.ContainsKey(tech) ? fragments[tech] : null;
         if (li == null) {
             li = new FragmentGroup();
             fragments[tech] = li;
         }
 
-        Fragment f = li.variants.ContainsKey(template) ? li.variants[template] : null;
+        var f = li.variants.ContainsKey(template) ? li.variants[template] : null;
         if (f == null) {
             f = li.addVariant(tech, name, template, modify);
         }
@@ -260,7 +257,7 @@ public static class GenUtil {
     }
 
     public static ContainerPrefab getFragment(TechType tech, int idx) {
-        FragmentGroup li = fragments.ContainsKey(tech) ? fragments[tech] : null;
+        var li = fragments.ContainsKey(tech) ? fragments[tech] : null;
         return li == null || li.variantList.Count == 0 ? null : (ContainerPrefab)li.variantList[idx];
     }
 
@@ -268,10 +265,10 @@ public static class GenUtil {
         WorldgenLog.log("Running world generator " + gen);
         if (gen.generate(generatedObjects)) {
             WorldgenLog.log("Generator " + gen + " complete. Generation list (" + generatedObjects.Count + "):");
-            foreach (GameObject go in generatedObjects)
+            foreach (var go in generatedObjects)
                 WorldgenLog.log(go);
             if (generatedObjects.Count == 0) {
-                string msg = "Warning: Nothing generated!";
+                var msg = "Warning: Nothing generated!";
                 WorldgenLog.log(msg);
             }
 
@@ -297,7 +294,7 @@ public static class GenUtil {
         }
 
         public virtual GameObject GetGameObject() {
-            return ObjectUtil.getModPrefabBaseObject<StringPrefabContainer>(this);
+            return ObjectUtil.getModPrefabBaseObject(this);
         }
 
         public string ClassID => Info.ClassID;
@@ -340,31 +337,30 @@ public static class GenUtil {
             string disp = ""
         ) : base(pre + "_" + tech + suff, template, disp) {
             if (tech == TechType.None)
-                throw new Exception("TechType for worldgen container " + this.GetType() + " was null!");
+                throw new Exception("TechType for worldgen container " + GetType() + " was null!");
             containedTech = tech;
             modify = m;
         }
 
         internal void modifyObject(GameObject go) {
-            if (modify != null)
-                modify(go);
+            modify?.Invoke(go);
         }
     }
 
-    class Databox : ContainerPrefab, Story.IStoryGoalListener {
+    private class Databox : ContainerPrefab, Story.IStoryGoalListener {
         [SetsRequiredMembers]
         internal Databox(TechType tech, string template, Action<GameObject> modify) : base(tech, template, modify) {
         }
 
         public override void prepareGameObject(GameObject go, Renderer[] r) {
             Story.StoryGoalManager.main.AddListener(this);
-            BlueprintHandTarget bpt = go.EnsureComponent<BlueprintHandTarget>();
+            var bpt = go.EnsureComponent<BlueprintHandTarget>();
             bpt.unlockTechType = containedTech;
             bpt.primaryTooltip = containedTech.AsString();
-            string arg = Language.main.Get(containedTech);
-            string arg2 = Language.main.Get(TooltipFactory.techTypeTooltipStrings.Get(containedTech));
-            bpt.secondaryTooltip = Language.main.GetFormat<string, string>("DataboxToolipFormat", arg, arg2);
-            bpt.alreadyUnlockedTooltip = Language.main.GetFormat<string, string>(
+            var arg = Language.main.Get(containedTech);
+            var arg2 = Language.main.Get(TooltipFactory.techTypeTooltipStrings.Get(containedTech));
+            bpt.secondaryTooltip = Language.main.GetFormat("DataboxToolipFormat", arg, arg2);
+            bpt.alreadyUnlockedTooltip = Language.main.GetFormat(
                 "DataboxAlreadyUnlockedToolipFormat",
                 arg,
                 arg2
@@ -372,7 +368,7 @@ public static class GenUtil {
             //redundant with the goal//bpt.useSound = SNUtil.getSound("event:/tools/scanner/new_blueprint");
             bpt.onUseGoal = new Story.StoryGoal(bpt.primaryTooltip, Story.GoalType.Encyclopedia, 0);
 
-            this.modifyObject(go);
+            modifyObject(go);
         }
 
         public void NotifyGoalComplete(string key) {
@@ -401,30 +397,30 @@ public static class GenUtil {
             bpt.defaultTechType = containedTech;
             bpt.techList.Clear();
             bpt.techList.Add(new TechFragment.RandomTech{techType = containedTech, chance = 100});*/
-            TechType tt = fragments[containedTech].sharedTechType; // NOT our techtype since needs to be shared!
+            var tt = fragments[containedTech].sharedTechType; // NOT our techtype since needs to be shared!
             go.EnsureComponent<TechTag>().type = tt;
-            Pickupable p = go.EnsureComponent<Pickupable>();
+            var p = go.EnsureComponent<Pickupable>();
             p.overrideTechType = tt;
-            ResourceTracker rt = go.EnsureComponent<ResourceTracker>();
+            var rt = go.EnsureComponent<ResourceTracker>();
             rt.techType = TechType.Fragment;
             rt.overrideTechType = TechType.Fragment;
             rt.prefabIdentifier = go.GetComponent<PrefabIdentifier>();
             rt.pickupable = p;
             p.isPickupable = false;
-            this.modifyObject(go);
+            modifyObject(go);
         }
 
         public override GameObject GetGameObject() {
             var go = base.GetGameObject();
-            TechType tt = fragments[containedTech].sharedTechType; // NOT our techtype since needs to be shared!
+            var tt = fragments[containedTech].sharedTechType; // NOT our techtype since needs to be shared!
             go.EnsureComponent<TechTag>().type = tt;
             return go;
         }
     }
 
-    class FragmentGroup {
-        internal readonly Dictionary<string, Fragment> variants = new Dictionary<string, Fragment>();
-        internal readonly List<Fragment> variantList = new List<Fragment>();
+    private class FragmentGroup {
+        internal readonly Dictionary<string, Fragment> variants = new();
+        internal readonly List<Fragment> variantList = [];
 
         internal TechType sharedTechType = TechType.None;
 
@@ -432,7 +428,7 @@ public static class GenUtil {
         }
 
         internal Fragment addVariant(TechType tech, string name, string template, Action<GameObject> modify) {
-            Fragment f = new Fragment(tech, name, template, modify, variantList.Count);
+            var f = new Fragment(tech, name, template, modify, variantList.Count);
             variants[template] = f;
             variantList.Add(f);
             if (sharedTechType == TechType.None)
@@ -441,7 +437,7 @@ public static class GenUtil {
         }
     }
 
-    class Crate : CustomPrefab {
+    private class Crate : CustomPrefab {
         private readonly bool needsCutter;
         private readonly string storyGoal;
         private readonly TechType containedItem;
@@ -472,18 +468,18 @@ public static class GenUtil {
         }
 
         public GameObject GetGameObject() {
-            GameObject pfb = ObjectUtil.lookupPrefab("580154dd-b2a3-4da1-be14-9a22e20385c8");
-            GameObject go = new GameObject(Info.ClassID + "(Clone)");
+            var pfb = ObjectUtil.lookupPrefab("580154dd-b2a3-4da1-be14-9a22e20385c8");
+            var go = new GameObject(Info.ClassID + "(Clone)");
             go.EnsureComponent<PrefabIdentifier>().ClassId = Info.ClassID;
             go.EnsureComponent<TechTag>().type = Info.TechType;
             go.EnsureComponent<LargeWorldEntity>().cellLevel = pfb.GetComponent<LargeWorldEntity>().cellLevel;
-            Animation a = pfb.GetComponentInChildren<Animation>();
-            GameObject mdl = a.gameObject.clone();
+            var a = pfb.GetComponentInChildren<Animation>();
+            var mdl = a.gameObject.clone();
             mdl.transform.SetParent(go.transform);
             mdl.transform.localRotation = Quaternion.identity;
             mdl.transform.localPosition = new Vector3(0, 0.36F, 0.02F);
             mdl.transform.localScale = Vector3.one * 5.5F;
-            CrateManagement mgr = go.EnsureComponent<CrateManagement>();
+            var mgr = go.EnsureComponent<CrateManagement>();
             mgr.itemToSpawn = containedItem;
             mgr.collectionGoal = storyGoal;
 
@@ -537,25 +533,25 @@ public static class GenUtil {
 
         private Pickupable itemInside;
 
-        void Start() {
-            laserSeal = this.GetComponent<Sealed>();
-            SupplyCrate sc = ObjectUtil.lookupPrefab("580154dd-b2a3-4da1-be14-9a22e20385c8")
+        private void Start() {
+            laserSeal = GetComponent<Sealed>();
+            var sc = ObjectUtil.lookupPrefab("580154dd-b2a3-4da1-be14-9a22e20385c8")
                 .GetComponent<SupplyCrate>();
             openText = sc.openText;
             openSound = sc.openSound;
             openAnimation = sc.openClipName;
             snapOpenAnimation = sc.snapOpenOnLoad;
-            this.Invoke("delayedStart", 0.5F);
+            Invoke(nameof(delayedStart), 0.5F);
         }
 
-        void delayedStart() {
-            if (isOpened && !this.GetComponentInChildren<Animation>().Play(snapOpenAnimation)) {
-                this.Invoke("delayedStart", 0.5F);
+        private void delayedStart() {
+            if (isOpened && !GetComponentInChildren<Animation>().Play(snapOpenAnimation)) {
+                Invoke(nameof(delayedStart), 0.5F);
                 return;
             }
 
             if (itemToSpawn != TechType.None) {
-                this.cacheItem();
+                cacheItem();
                 if (!itemInside && !itemGrabbed && (collectionGoal == null ||
                                                     !Story.StoryGoalManager.main.IsGoalComplete(collectionGoal))) {
                     itemInside = ObjectUtil.createWorldObject(itemToSpawn).GetComponent<Pickupable>();
@@ -569,7 +565,7 @@ public static class GenUtil {
             }
         }
 
-        void Update() {
+        private void Update() {
             if (itemInside)
                 itemInside.isPickupable = isOpened;
             if (string.IsNullOrEmpty(collectionGoal))
@@ -577,12 +573,12 @@ public static class GenUtil {
         }
 
         private void cacheItem() {
-            itemInside = this.GetComponentInChildren<Pickupable>();
+            itemInside = GetComponentInChildren<Pickupable>();
         }
 
         public void OnHandHover(GUIHand h) {
-            this.cacheItem();
-            bool flag = false;
+            cacheItem();
+            var flag = false;
             if (!isOpened) {
                 if (!laserSeal || !laserSeal.IsSealed()) {
                     HandReticle.main.SetText(HandReticle.TextType.Use, openText, true);
@@ -603,12 +599,12 @@ public static class GenUtil {
         }
 
         public void OnHandClick(GUIHand h) {
-            this.cacheItem();
+            cacheItem();
             if (!laserSeal || !laserSeal.IsSealed()) {
                 if (!isOpened) {
                     isOpened = true;
                     Utils.PlayFMODAsset(openSound, transform, 20f);
-                    Animation a = this.GetComponentInChildren<Animation>();
+                    var a = GetComponentInChildren<Animation>();
                     if (a) {
                         a.Play(openAnimation);
                     }
@@ -618,14 +614,14 @@ public static class GenUtil {
 
                 if (itemInside) {
                     Inventory.main.Pickup(itemInside, false);
-                    this.clear();
+                    clear();
                 }
             }
         }
 
         public void onPickup(Pickupable p) {
             if (p && p.GetTechType() == itemToSpawn) {
-                this.clear();
+                clear();
             }
         }
 
@@ -637,7 +633,7 @@ public static class GenUtil {
         }
     }
 
-    class WorldGeneratorPrefab : CustomPrefab {
+    private class WorldGeneratorPrefab : CustomPrefab {
         public readonly LargeWorldEntity.CellLevel cellLevel;
 
         [SetsRequiredMembers]
@@ -651,7 +647,7 @@ public static class GenUtil {
         }
 
         public GameObject GetGameObject() {
-            GameObject go = new GameObject("WorldGeneratorHolder");
+            var go = new GameObject("WorldGeneratorHolder");
             go.EnsureComponent<PrefabIdentifier>().ClassId = Info.ClassID;
             go.EnsureComponent<TechTag>().type = Info.TechType;
             go.EnsureComponent<LargeWorldEntity>().cellLevel = cellLevel;
@@ -660,12 +656,12 @@ public static class GenUtil {
         }
     }
 
-    class WorldGeneratorHolder : MonoBehaviour {
+    private class WorldGeneratorHolder : MonoBehaviour {
         internal string generatorID;
 
         private WorldGenerator generatorInstance;
 
-        private readonly List<GameObject> generatedObjects = new List<GameObject>();
+        private readonly List<GameObject> generatedObjects = [];
 
         internal bool generate() {
             generatorInstance = generatorTable.ContainsKey(generatorID) ? generatorTable[generatorID] : null;
@@ -677,7 +673,7 @@ public static class GenUtil {
                 return false;
             }
 
-            bool flag = GenUtil.fireGenerator(generatorInstance, generatedObjects);
+            var flag = fireGenerator(generatorInstance, generatedObjects);
             if (flag) {
                 gameObject.destroy(false);
             }
@@ -685,13 +681,13 @@ public static class GenUtil {
             return flag;
         }
 
-        void Start() {
-            this.Invoke("tryGenerate", 0);
+        private void Start() {
+            Invoke(nameof(tryGenerate), 0);
         }
 
-        void tryGenerate() {
-            if (!this.generate())
-                this.Invoke("tryGenerate", 1F);
+        private void tryGenerate() {
+            if (!generate())
+                Invoke(nameof(tryGenerate), 1F);
         }
     }
 }

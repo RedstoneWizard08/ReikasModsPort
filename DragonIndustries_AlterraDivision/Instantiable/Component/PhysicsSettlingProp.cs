@@ -6,7 +6,7 @@ namespace ReikaKalseki.DIAlterra;
 
 public class PhysicsSettlingProp : MonoBehaviour {
 
-	public static readonly Dictionary<string, List<PositionedPrefab>> locations = new Dictionary<string, List<PositionedPrefab>>();
+	public static readonly Dictionary<string, List<PositionedPrefab>> locations = new();
 
 	public PositionedPrefab prefabMarker { get; private set; }
 
@@ -24,14 +24,14 @@ public class PhysicsSettlingProp : MonoBehaviour {
 			SNUtil.writeToChat("No physprops with key '" + key + "'");
 			return;
 		}
-		List<PositionedPrefab> li = locations[key];
-		string file = BuildingHandler.instance.dumpPrefabs(key, li);
+		var li = locations[key];
+		var file = BuildingHandler.instance.dumpPrefabs(key, li);
 		SNUtil.writeToChat("Exported " + li.Count + " physprops of key '" + key + "' to " + file);
 	}
 
 	private static void addPrefab(string key, PositionedPrefab pfb) {
 		if (!locations.ContainsKey(key))
-			locations[key] = new List<PositionedPrefab>();
+			locations[key] = [];
 		if (!locations[key].Contains(pfb))
 			locations[key].Add(pfb);
 	}
@@ -42,19 +42,19 @@ public class PhysicsSettlingProp : MonoBehaviour {
 		locations[key].Remove(pfb);
 	}
 
-	void Start() {
-		body = this.GetComponentInChildren<Rigidbody>();
+	private void Start() {
+		body = GetComponentInChildren<Rigidbody>();
 	}
 
 	public void Update() {
 		if (!body)
-			body = this.GetComponentInChildren<Rigidbody>();
+			body = GetComponentInChildren<Rigidbody>();
 		time += Time.deltaTime;
-		this.onUpdate();
+		onUpdate();
 		if (destroyCondition != null && destroyCondition.Invoke(this))
 			gameObject.destroy(false);
-		else if (time > 15F && body.velocity.magnitude < 0.05 && body.angularVelocity.magnitude < 0.05 && !this.GetComponent<PropulseCannonAmmoHandler>())
-			this.fixInPlace();
+		else if (time > 15F && body.velocity.magnitude < 0.05 && body.angularVelocity.magnitude < 0.05 && !GetComponent<PropulseCannonAmmoHandler>())
+			fixInPlace();
 	}
 
 	protected virtual void onUpdate() {
@@ -64,15 +64,15 @@ public class PhysicsSettlingProp : MonoBehaviour {
 	public void init(string key, int duration) {
 		freeTime = duration;
 		this.key = key;
-		this.Start();
-		this.Invoke("fixInPlace", freeTime);
+		Start();
+		Invoke(nameof(fixInPlace), freeTime);
 	}
 
 	public void fixInPlace() {
 		if (body.isKinematic)
 			return;
 		body.isKinematic = true;
-		prefabMarker = new PositionedPrefab(this.GetComponent<PrefabIdentifier>());
+		prefabMarker = new PositionedPrefab(GetComponent<PrefabIdentifier>());
 		addPrefab(key, prefabMarker);
 		//SNUtil.log("Locked "+prefabMarker+" at time "+time);
 		//this.destroy(false);
@@ -85,19 +85,19 @@ public class PhysicsSettlingProp : MonoBehaviour {
 		prefabMarker = null;
 		time = 0;
 		body.isKinematic = false;
-		this.Invoke("fixInPlace", freeTime);
+		Invoke(nameof(fixInPlace), freeTime);
 	}
 
 	public void bump(float vel) {
-		this.bump(UnityEngine.Random.onUnitSphere * vel);
+		bump(UnityEngine.Random.onUnitSphere * vel);
 	}
 
 	public void bump(Vector3 vec) {
-		this.unlock();
+		unlock();
 		body.velocity = vec;
 	}
 
-	void OnDestroy() {
+	private void OnDestroy() {
 		removePrefab(key, prefabMarker);
 	}
 

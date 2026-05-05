@@ -25,15 +25,9 @@ public class CustomBattery : BasicCraftingItem {
         AddOnRegister(() => { CraftDataHandler.SetEquipmentType(Info.TechType, EquipmentType.BatteryCharger); });
     }
 
-    public sealed override TechCategory CategoryForPDA {
-        get { return TechCategory.Electronics; }
-    }
+    public sealed override TechCategory CategoryForPDA => TechCategory.Electronics;
 
-    public sealed override string[] StepsToFabricatorTab {
-        get {
-            return new string[] { "Resources", "Electronics" }; //new string[]{"DIIntermediate"};
-        }
-    }
+    public sealed override string[] StepsToFabricatorTab => ["Resources", "Electronics"]; //new string[]{"DIIntermediate"};
 
     public override void prepareGameObject(GameObject go, Renderer[] r) {
         base.prepareGameObject(go, r);

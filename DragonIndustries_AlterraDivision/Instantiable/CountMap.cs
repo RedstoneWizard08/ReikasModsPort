@@ -5,9 +5,9 @@ namespace ReikaKalseki.DIAlterra;
 
 public sealed class CountMap<V> {
 
-	private readonly Dictionary<V, int> data = new Dictionary<V, int>();
+	private readonly Dictionary<V, int> data = new();
 
-	public int this[V obj] { get { return getCount(obj); } }
+	public int this[V obj] => getCount(obj);
 
 	public void add(V obj, int amt = 1) {
 		data[obj] = data.ContainsKey(obj) ? data[obj] + amt : amt;
@@ -27,7 +27,7 @@ public sealed class CountMap<V> {
 	}
 
 	public bool isEmpty() {
-		return this.size() == 0;
+		return size() == 0;
 	}
 
 	public int size() {

@@ -14,18 +14,16 @@ public class DuplicateRecipeDelegate : CustomPrefab, DuplicateItemDelegate {
     public readonly TechType basis;
     public readonly string nameSuffix;
 
-    public Sprite sprite = null;
+    public Sprite sprite;
     public TechType unlock = TechType.None;
     public TechCategory category = TechCategory.Misc;
     public TechGroup group = TechGroup.Uncategorized;
     public Assembly ownerMod;
     public bool allowUnlockPopups = false;
 
-    private static readonly Dictionary<TechType, List<DuplicateItemDelegate>> delegates =
-        new Dictionary<TechType, List<DuplicateItemDelegate>>();
+    private static readonly Dictionary<TechType, List<DuplicateItemDelegate>> delegates = new();
 
-    private static readonly Dictionary<TechType, DuplicateItemDelegate> delegateItems =
-        new Dictionary<TechType, DuplicateItemDelegate>();
+    private static readonly Dictionary<TechType, DuplicateItemDelegate> delegateItems = new();
 
     [SetsRequiredMembers]
     public DuplicateRecipeDelegate(CustomPrefab s, string suff = "") : base(
@@ -39,8 +37,8 @@ public class DuplicateRecipeDelegate : CustomPrefab, DuplicateItemDelegate {
         group = s.GetGadget<ScanningGadget>().GroupForPda;
         category = s.GetGadget<ScanningGadget>().CategoryForPda;
         nameSuffix = suff;
-        if (s is DIPrefab<PrefabReference>)
-            ownerMod = ((DIPrefab<PrefabReference>)s).getOwnerMod();
+        if (s is DIPrefab<PrefabReference> diPrefab)
+            ownerMod = diPrefab.getOwnerMod();
         AddOnRegister(onPatched);
 
         Info.WithIcon(GetItemSprite()).WithSizeInInventory(SizeInInventory);
@@ -78,12 +76,12 @@ public class DuplicateRecipeDelegate : CustomPrefab, DuplicateItemDelegate {
     }
 
     private static string getIndexSuffix(TechType tt) {
-        int count = delegates.ContainsKey(tt) ? delegates[tt].Count : 0;
+        var count = delegates.ContainsKey(tt) ? delegates[tt].Count : 0;
         return count <= 0 ? "" : "_" + (count + 1).ToString();
     }
 
     public static void addDelegate(DuplicateItemDelegate d) {
-        TechType tt = d.getBasis();
+        var tt = d.getBasis();
         // FieldInfo fi = typeof(ModPrefab).GetField("Mod", BindingFlags.Instance | BindingFlags.NonPublic);
         // ModPrefab pfb = tt.getModPrefabByTechType();
         // Assembly
@@ -99,7 +97,7 @@ public class DuplicateRecipeDelegate : CustomPrefab, DuplicateItemDelegate {
         // Dictionary<TechType, Assembly> dict = (Dictionary<TechType, Assembly>)fi.GetValue(null);
         // TechType ttsrc = ((Spawnable)d).TechType;
         // dict[ttsrc] = a;
-        List<DuplicateItemDelegate> li = delegates.ContainsKey(tt) ? delegates[tt] : new List<DuplicateItemDelegate>();
+        var li = delegates.ContainsKey(tt) ? delegates[tt] : [];
         li.Add(d);
         delegates[tt] = li;
         // delegateItems.Add(ttsrc, d);
@@ -121,11 +119,11 @@ public class DuplicateRecipeDelegate : CustomPrefab, DuplicateItemDelegate {
     }
 
     public static void updateLocale() {
-        foreach (List<DuplicateItemDelegate> li in delegates.Values) {
-            foreach (DuplicateItemDelegate d in li) {
+        foreach (var li in delegates.Values) {
+            foreach (var d in li) {
                 if (d.getPrefab() == null || !string.IsNullOrEmpty(d.getNameSuffix())) {
-                    TechType tt = d.getBasis();
-                    TechType dt = ((CustomPrefab)d).Info.TechType;
+                    var tt = d.getBasis();
+                    var dt = ((CustomPrefab)d).Info.TechType;
                     CustomLocaleKeyDatabase.registerKey(dt.AsString(), Language.main.Get(tt) + d.getNameSuffix());
                     CustomLocaleKeyDatabase.registerKey("Tooltip_" + dt.AsString(), d.getTooltip());
                     SNUtil.log(
@@ -141,17 +139,11 @@ public class DuplicateRecipeDelegate : CustomPrefab, DuplicateItemDelegate {
         return Language.main.Get("Tooltip_" + basis.AsString());
     }
 
-    public virtual TechGroup GroupForPDA {
-        get { return group; }
-    }
+    public virtual TechGroup GroupForPDA => group;
 
-    public virtual TechCategory CategoryForPDA {
-        get { return category; }
-    }
+    public virtual TechCategory CategoryForPDA => category;
 
-    public virtual TechType RequiredForUnlock {
-        get { return unlock; }
-    }
+    public virtual TechType RequiredForUnlock => unlock;
 
     public virtual GameObject GetGameObject() {
         return ObjectUtil.createWorldObject(CraftData.GetClassIdForTechType(basis), true, false);
@@ -167,9 +159,7 @@ public class DuplicateRecipeDelegate : CustomPrefab, DuplicateItemDelegate {
                "/" + CategoryForPDA;
     }
 
-    public virtual Vector2int SizeInInventory {
-        get { return TechData.GetItemSize(basis); }
-    }
+    public virtual Vector2int SizeInInventory => TechData.GetItemSize(basis);
 
     public virtual string getNameSuffix() {
         return nameSuffix;

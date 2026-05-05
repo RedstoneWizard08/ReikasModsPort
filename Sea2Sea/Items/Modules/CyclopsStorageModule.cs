@@ -5,16 +5,12 @@ namespace ReikaKalseki.SeaToSea;
 
 public sealed class CyclopsStorageModule : CyclopsModule {
     [SetsRequiredMembers]
-    public CyclopsStorageModule() : base(SeaToSeaMod.itemLocale.getEntry("CyclopsStorage")) {
+    public CyclopsStorageModule() : base(SeaToSeaMod.ItemLocale.getEntry("CyclopsStorage")) {
     }
 
-    public override QuickSlotType QuickSlotType {
-        get { return QuickSlotType.Passive; }
-    }
+    public override QuickSlotType QuickSlotType => QuickSlotType.Passive;
 
-    public override Vector2int SizeInInventory {
-        get { return new Vector2int(2, 2); }
-    }
+    public override Vector2int SizeInInventory => new(2, 2);
     /*
     protected override Atlas.Sprite GetItemSprite()
     {

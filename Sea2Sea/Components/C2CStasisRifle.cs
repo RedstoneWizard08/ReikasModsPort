@@ -13,10 +13,10 @@ internal class C2CStasisRifle : CustomGrindable, ReactsOnDrilled {
 	}
 
 	public void onDrilled(Vector3 pos) {
-		float time = DayNightCycle.main.timePassedAsFloat;
+		var time = DayNightCycle.main.timePassedAsFloat;
 		if (time >= nextSphereTime) {
-			StasisSphere ss = WorldUtil.createStasisSphere(pos, 2, 0.5F);
-			SoundManager.playSoundAt(this.GetComponent<StasisRifle>().fireSound, pos);
+			var ss = WorldUtil.createStasisSphere(pos, 2, 0.5F);
+			SoundManager.playSoundAt(GetComponent<StasisRifle>().fireSound, pos);
 			Utils.PlayOneShotPS(ObjectUtil.lookupPrefab(VanillaCreatures.CRASHFISH.prefab).GetComponent<Crash>().detonateParticlePrefab, transform.position, transform.rotation);
 			nextSphereTime = time + ss.getLifespan();
 		}

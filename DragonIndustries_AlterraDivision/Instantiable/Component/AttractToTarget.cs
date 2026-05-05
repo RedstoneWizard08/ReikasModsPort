@@ -11,7 +11,7 @@ public class AttractToTarget : MonoBehaviour {
     ) {
         if (obj is BaseRoot)
             obj = obj.GetComponentsInChildren<BaseCell>().GetRandom().GetComponent<LiveMixin>();
-        AttractToTarget ac = c.gameObject.EnsureComponent<AttractToTarget>();
+        var ac = c.gameObject.EnsureComponent<AttractToTarget>();
         //SNUtil.writeToChat("Attracted "+c+" @ "+c.transform.position+" to "+obj+" @ "+obj.transform.position);
         ac.fire(obj, isHorn, maxDuration);
         if (c is Reefback && isHorn)
@@ -51,30 +51,30 @@ public class AttractToTarget : MonoBehaviour {
 
     public void OnMeleeAttack(GameObject target) {
         if (target && target.isAncestorOf(this.target) && deleteOnAttack) {
-            this.setTarget(null);
+            setTarget(null);
             this.destroy();
         }
     }
 
-    void Update() {
+    private void Update() {
         if (!owner)
-            owner = this.GetComponent<Creature>();
+            owner = GetComponent<Creature>();
         if (!swimmer)
-            swimmer = this.GetComponent<SwimBehaviour>();
+            swimmer = GetComponent<SwimBehaviour>();
         if (!leash)
-            leash = this.GetComponent<StayAtLeashPosition>();
+            leash = GetComponent<StayAtLeashPosition>();
         if (!cyclopsAttacker)
-            cyclopsAttacker = this.GetComponent<AttackCyclops>();
+            cyclopsAttacker = GetComponent<AttackCyclops>();
         if (!targeter)
-            targeter = this.GetComponent<LastTarget>();
+            targeter = GetComponent<LastTarget>();
         if (attacks == null)
-            attacks = this.GetComponents<MeleeAttack>();
+            attacks = GetComponents<MeleeAttack>();
         if (targeting == null)
-            targeting = this.GetComponents<AggressiveWhenSeeTarget>();
+            targeting = GetComponents<AggressiveWhenSeeTarget>();
         if (attacker == null)
-            attacker = this.GetComponent<AttackLastTarget>();
+            attacker = GetComponent<AttackLastTarget>();
 
-        float time = DayNightCycle.main.timePassedAsFloat;
+        var time = DayNightCycle.main.timePassedAsFloat;
         if (time >= delete) {
             this.destroy();
             return;
@@ -84,7 +84,7 @@ public class AttractToTarget : MonoBehaviour {
             if (Player.main.currentSub) {
                 target = Player.main.currentSub;
             } else {
-                Vehicle v = Player.main.GetVehicle();
+                var v = Player.main.GetVehicle();
                 if (v)
                     target = v;
             }
@@ -102,10 +102,9 @@ public class AttractToTarget : MonoBehaviour {
             return;
         lastTick = time;
 
-        if (owner is Reefback && isHorn) {
-            Reefback r = (Reefback)owner;
-            swimmer.SwimTo(target.transform.position, r.maxMoveSpeed);
-            r.SetFriend(target.gameObject);
+        if (owner is Reefback reefback && isHorn) {
+            swimmer.SwimTo(target.transform.position, reefback.maxMoveSpeed);
+            reefback.SetFriend(target.gameObject);
             return;
         }
 
@@ -117,7 +116,7 @@ public class AttractToTarget : MonoBehaviour {
         if (Vector3.Distance(transform.position, target.transform.position) >= 40)
             swimmer.SwimTo(target.transform.position, 10);
 
-        owner.Aggression.Add(deleteOnAttack && delete - time > 1000 ? 1 : (isHorn ? 0.5F : 0.05F));
+        owner.Aggression.Add(deleteOnAttack && delete - time > 1000 ? 1 : isHorn ? 0.5F : 0.05F);
         if (owner is CrabSnake cs) {
             if (cs.IsInMushroom()) {
                 cs.ExitMushroom(target.transform.position);
@@ -140,9 +139,9 @@ public class AttractToTarget : MonoBehaviour {
 
         if (attacker)
             attacker.currentTarget = go;
-        foreach (MeleeAttack a in attacks)
+        foreach (var a in attacks)
             a.lastTarget.SetTarget(go);
-        foreach (AggressiveWhenSeeTarget a in targeting)
+        foreach (var a in targeting)
             a.lastTarget.SetTarget(go);
     }
 

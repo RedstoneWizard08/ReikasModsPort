@@ -20,25 +20,25 @@ using UnityEngine;
 namespace ReikaKalseki.DIAlterra;
 
 public class BuildingHandler {
-    public static readonly BuildingHandler instance = new BuildingHandler();
+    public static readonly BuildingHandler instance = new();
 
     public bool isEnabled { get; private set; }
 
-    private PlacedObject lastPlaced = null;
-    private Dictionary<int, PlacedObject> items = new Dictionary<int, PlacedObject>();
+    private PlacedObject lastPlaced;
+    private Dictionary<int, PlacedObject> items = new();
 
-    private readonly List<ManipulationBase> globalTransforms = new List<ManipulationBase>();
+    private readonly List<ManipulationBase> globalTransforms = [];
 
-    private List<string> text = new List<string>();
-    private BasicText controlHint = new BasicText(TextAlignmentOptions.Center);
+    private List<string> text = [];
+    private BasicText controlHint = new(TextAlignmentOptions.Center);
 
-    private static readonly List<PositionedPrefab> objectCache = new List<PositionedPrefab>();
+    private static readonly List<PositionedPrefab> objectCache = [];
 
     private BuildingHandler() {
-        this.addText("LMB to select, Lalt+RMB to place selected on ground at look, LCtrl+RMB to duplicate them there");
-        this.addText("Lalt+Arrow keys to move L/R Fwd/Back; +/- for U/D; add Z to make relative to obj");
-        this.addText("Lalt+QR to yaw; [] to pitch (Z); ,. to roll (X); add Z to make relative to obj");
-        this.addText("Add C for fast, X for slow; DEL to delete all selected");
+        addText("LMB to select, Lalt+RMB to place selected on ground at look, LCtrl+RMB to duplicate them there");
+        addText("Lalt+Arrow keys to move L/R Fwd/Back; +/- for U/D; add Z to make relative to obj");
+        addText("Lalt+QR to yaw; [] to pitch (Z); ,. to roll (X); add Z to make relative to obj");
+        addText("Add C for fast, X for slow; DEL to delete all selected");
     }
 
     private void addText(string s) {
@@ -48,33 +48,33 @@ public class BuildingHandler {
     }
 
     public void addCommand(string key, Action call) {
-        ConsoleCommandsHandler.RegisterConsoleCommand<Action>(key, call);
-        this.addText("/" + key + ": " + call.Method.Name);
+        ConsoleCommandsHandler.RegisterConsoleCommand(key, call);
+        addText("/" + key + ": " + call.Method.Name);
     }
 
     public void addCommand<T>(string key, Action<T> call) {
-        ConsoleCommandsHandler.RegisterConsoleCommand<Action<T>>(key, call);
-        this.addText("/" + key + ": " + call.Method.Name);
+        ConsoleCommandsHandler.RegisterConsoleCommand(key, call);
+        addText("/" + key + ": " + call.Method.Name);
     }
 
     public void addCommand<T, R>(string key, Func<T, R> call) {
-        ConsoleCommandsHandler.RegisterConsoleCommand<Func<T, R>>(key, call);
-        this.addText("/" + key + ": " + call.Method.Name);
+        ConsoleCommandsHandler.RegisterConsoleCommand(key, call);
+        addText("/" + key + ": " + call.Method.Name);
     }
 
     public void addCommand<T1, T2>(string key, Action<T1, T2> call) {
-        ConsoleCommandsHandler.RegisterConsoleCommand<Action<T1, T2>>(key, call);
-        this.addText("/" + key + ": " + call.Method.Name);
+        ConsoleCommandsHandler.RegisterConsoleCommand(key, call);
+        addText("/" + key + ": " + call.Method.Name);
     }
 
     public void addCommand<T1, T2, T3>(string key, Action<T1, T2, T3> call) {
-        ConsoleCommandsHandler.RegisterConsoleCommand<Action<T1, T2, T3>>(key, call);
-        this.addText("/" + key + ": " + call.Method.Name);
+        ConsoleCommandsHandler.RegisterConsoleCommand(key, call);
+        addText("/" + key + ": " + call.Method.Name);
     }
 
     public void setEnabled(bool on) {
         isEnabled = on;
-        foreach (PlacedObject go in items.Values) {
+        foreach (var go in items.Values) {
             try {
                 go.fx.SetActive(go.isSelected);
             } catch (Exception ex) {
@@ -90,7 +90,7 @@ public class BuildingHandler {
     }
 
     public void selectedInfo() {
-        foreach (PlacedObject go in items.Values) {
+        foreach (var go in items.Values) {
             if (go.isSelected) {
                 SNUtil.writeToChat(go.ToString());
             }
@@ -98,7 +98,7 @@ public class BuildingHandler {
     }
 
     public void activateObject() {
-        foreach (PlacedObject go in items.Values) {
+        foreach (var go in items.Values) {
             if (go.isSelected) {
                 go.obj.fullyEnable();
             }
@@ -106,8 +106,8 @@ public class BuildingHandler {
     }
 
     public void setScale(float sc) {
-        Vector3 sc2 = Vector3.one * sc;
-        foreach (PlacedObject go in items.Values) {
+        var sc2 = Vector3.one * sc;
+        foreach (var go in items.Values) {
             if (go.isSelected) {
                 go.obj.transform.localScale = sc2;
                 go.scale = sc2;
@@ -116,8 +116,8 @@ public class BuildingHandler {
     }
 
     public void setScaleXYZ(float x, float y, float z) {
-        Vector3 sc2 = new Vector3(x, y, z);
-        foreach (PlacedObject go in items.Values) {
+        var sc2 = new Vector3(x, y, z);
+        foreach (var go in items.Values) {
             if (go.isSelected) {
                 go.obj.transform.localScale = sc2;
                 go.scale = sc2;
@@ -126,9 +126,9 @@ public class BuildingHandler {
     }
 
     public void dumpTextures() {
-        foreach (PlacedObject go in items.Values) {
+        foreach (var go in items.Values) {
             if (go.isSelected) {
-                foreach (Renderer r in go.obj.GetComponentsInChildren<Renderer>())
+                foreach (var r in go.obj.GetComponentsInChildren<Renderer>())
                     RenderUtil.dumpTextures(SNUtil.diDLL, r);
             }
         }
@@ -142,18 +142,18 @@ public class BuildingHandler {
     }
 
     public void handleRClick(bool isCtrl = false) {
-        Transform transform = MainCamera.camera.transform;
-        Vector3 position = transform.position;
-        Vector3 forward = transform.forward;
-        Ray ray = new Ray(position, forward);
+        var transform = MainCamera.camera.transform;
+        var position = transform.position;
+        var forward = transform.forward;
+        var ray = new Ray(position, forward);
         if (UWE.Utils.RaycastIntoSharedBuffer(ray, 30, -5, QueryTriggerInteraction.Ignore) > 0) {
-            RaycastHit hit = UWE.Utils.sharedHitBuffer[0];
+            var hit = UWE.Utils.sharedHitBuffer[0];
             if (hit.transform != null) {
                 if (isCtrl) {
-                    List<PlacedObject> added = new List<PlacedObject>();
-                    foreach (PlacedObject p in new List<PlacedObject>(items.Values)) {
+                    List<PlacedObject> added = [];
+                    foreach (var p in new List<PlacedObject>(items.Values)) {
                         if (p.isSelected) {
-                            PlacedObject b = PlacedObject.createNewObject(p);
+                            var b = PlacedObject.createNewObject(p);
                             items[b.referenceID] = b;
                             b.setRotation(MathUtil.unitVecToRotation(hit.normal));
                             b.setPosition(hit.point);
@@ -162,11 +162,11 @@ public class BuildingHandler {
                         }
                     }
 
-                    this.clearSelection();
-                    foreach (PlacedObject b in added)
-                        this.select(b);
+                    clearSelection();
+                    foreach (var b in added)
+                        select(b);
                 } else if (Input.GetKeyDown(KeyCode.LeftAlt)) {
-                    foreach (PlacedObject go in items.Values) {
+                    foreach (var go in items.Values) {
                         if (go.isSelected) {
                             go.setRotation(MathUtil.unitVecToRotation(hit.normal));
                             go.setPosition(hit.point);
@@ -178,39 +178,39 @@ public class BuildingHandler {
     }
 
     public void handleClick(bool isCtrl = false) {
-        Targeting.GetTarget(Player.main.gameObject, 40, out GameObject found, out float dist);
+        Targeting.GetTarget(Player.main.gameObject, 40, out var found, out var dist);
         Targeting.Reset();
         if (found == null) {
             SNUtil.writeToChat("Raytrace found nothing.");
         }
 
-        PlacedObject has = this.getPlacement(found);
+        var has = getPlacement(found);
         //SNUtil.writeToChat("Has is "+has);
         if (has == null) {
             if (!isCtrl) {
-                this.clearSelection();
+                clearSelection();
             }
         } else if (isCtrl) {
             if (has.isSelected)
-                this.deselect(has);
+                deselect(has);
             else
-                this.select(has);
+                select(has);
         } else {
-            this.clearSelection();
-            this.select(has);
+            clearSelection();
+            select(has);
         }
     }
 
     public void selectAll() {
-        foreach (PlacedObject go in items.Values) {
-            this.select(go);
+        foreach (var go in items.Values) {
+            select(go);
         }
     }
 
     public void selectOfID(string id) {
-        foreach (PlacedObject go in items.Values) {
+        foreach (var go in items.Values) {
             if (go.prefabName == id)
-                this.select(go);
+                select(go);
         }
     }
 
@@ -219,9 +219,9 @@ public class BuildingHandler {
     }
 
     public void cache() {
-        int n = 0;
-        foreach (PlacedObject obj in new List<PlacedObject>(items.Values)) {
-            PositionedPrefab pfb = new PositionedPrefab(obj.prefabName, obj.position, obj.rotation, obj.scale);
+        var n = 0;
+        foreach (var obj in new List<PlacedObject>(items.Values)) {
+            var pfb = new PositionedPrefab(obj.prefabName, obj.position, obj.rotation, obj.scale);
             if (objectCache.Contains(pfb))
                 continue;
             objectCache.Add(pfb);
@@ -233,11 +233,11 @@ public class BuildingHandler {
     }
 
     public void loadCache() {
-        foreach (PositionedPrefab pfb in objectCache) {
-            PlacedObject b = PlacedObject.createNewObject(pfb.prefabName);
+        foreach (var pfb in objectCache) {
+            var b = PlacedObject.createNewObject(pfb.prefabName);
             if (b != null) {
                 b.obj.transform.SetPositionAndRotation(pfb.position, pfb.rotation);
-                this.registerObject(b);
+                registerObject(b);
             }
         }
 
@@ -245,33 +245,33 @@ public class BuildingHandler {
     }
 
     public void saveCache(string id) {
-        string file = dumpPrefabs(id, objectCache);
+        var file = dumpPrefabs(id, objectCache);
         SNUtil.writeToChat("Exported " + objectCache.Count + " cached prefabs to " + file);
         //objectCache.Clear();
     }
 
     public void saveSelection(string file) {
-        this.dumpSome(file, s => s.isSelected);
+        dumpSome(file, s => s.isSelected);
     }
 
     public void saveAll(string file) {
-        this.dumpSome(file, s => true);
+        dumpSome(file, s => true);
     }
 
     private string dumpSome(string file, Func<PlacedObject, bool> flag) {
-        string path = this.getDumpFile(file);
-        XmlDocument doc = new XmlDocument();
-        XmlElement rootnode = doc.CreateElement("Root");
-        int added = 0;
+        var path = getDumpFile(file);
+        var doc = new XmlDocument();
+        var rootnode = doc.CreateElement("Root");
+        var added = 0;
         doc.AppendChild(rootnode);
         SNUtil.log("=================================");
         SNUtil.log("Building Handler has " + items.Count + " items: ");
-        foreach (PlacedObject go in items.Values) {
+        foreach (var go in items.Values) {
             try {
-                bool use = flag(go);
+                var use = flag(go);
                 SNUtil.log(go.ToString() + " dump = " + use);
                 if (use) {
-                    XmlElement e = doc.CreateElement(go.getTagName());
+                    var e = doc.CreateElement(go.getTagName());
                     go.saveToXML(e);
                     doc.DocumentElement.AppendChild(e);
                     added++;
@@ -288,34 +288,34 @@ public class BuildingHandler {
     }
 
     public string dumpObjectChildren(string file, GameObject go) {
-        return this.dumpObjects(file, ObjectUtil.getChildObjects(go));
+        return dumpObjects(file, ObjectUtil.getChildObjects(go));
     }
 
     public string dumpObjects(string file, IEnumerable<GameObject> li) {
-        return this.dumpPIs(file, li.Select(go => go.GetComponent<PrefabIdentifier>()));
+        return dumpPIs(file, li.Select(go => go.GetComponent<PrefabIdentifier>()));
     }
 
     public string dumpNear(string file, float r) {
-        return this.dumpPIs(
+        return dumpPIs(
             file,
             WorldUtil.getObjectsNearWithComponent<PrefabIdentifier>(Player.main.transform.position, r)
         );
     }
 
     public string dumpPIs(string file, IEnumerable<PrefabIdentifier> li) {
-        return this.dumpPrefabs(file, li.Where(pi => (bool)pi).Select(pi => new PositionedPrefab(pi)));
+        return dumpPrefabs(file, li.Where(pi => (bool)pi).Select(pi => new PositionedPrefab(pi)));
     }
 
     public string dumpPrefabs(string file, IEnumerable<PositionedPrefab> li) {
-        string path = this.getDumpFile(file);
-        XmlDocument doc = new XmlDocument();
-        XmlElement rootnode = doc.CreateElement("Root");
+        var path = getDumpFile(file);
+        var doc = new XmlDocument();
+        var rootnode = doc.CreateElement("Root");
         doc.AppendChild(rootnode);
         SNUtil.log("=================================");
         SNUtil.log("Exporting " + li.Count() + " PositionedPrefabs: ");
-        foreach (PositionedPrefab pfb in li) {
+        foreach (var pfb in li) {
             try {
-                XmlElement e = doc.CreateElement(pfb.getTagName());
+                var e = doc.CreateElement(pfb.getTagName());
                 pfb.saveToXML(e);
                 doc.DocumentElement.AppendChild(e);
             } catch (Exception e) {
@@ -329,16 +329,16 @@ public class BuildingHandler {
     }
 
     public void loadFile(string file) {
-        XmlDocument doc = new XmlDocument();
-        doc.Load(this.getDumpFile(file));
-        XmlElement rootnode = doc.DocumentElement;
+        var doc = new XmlDocument();
+        doc.Load(getDumpFile(file));
+        var rootnode = doc.DocumentElement;
         globalTransforms.Clear();
         DICustomPrefab.loadManipulations(rootnode.getAllChildrenIn("transforms"), globalTransforms);
         foreach (XmlElement e in rootnode.ChildNodes) {
             if (e.Name == "transforms")
                 continue;
             try {
-                this.buildElement(e);
+                buildElement(e);
             } catch (Exception ex) {
                 SNUtil.log(ex.ToString());
                 SNUtil.writeToChat(
@@ -349,19 +349,19 @@ public class BuildingHandler {
     }
 
     private void buildElement(XmlElement e) {
-        string count = e.GetAttribute("count");
-        int amt = string.IsNullOrEmpty(count) ? 1 : int.Parse(count);
-        for (int i = 0; i < amt; i++) {
-            ObjectTemplate ot = ObjectTemplate.construct(e);
+        var count = e.GetAttribute("count");
+        var amt = string.IsNullOrEmpty(count) ? 1 : int.Parse(count);
+        for (var i = 0; i < amt; i++) {
+            var ot = ObjectTemplate.construct(e);
             if (ot == null) {
                 throw new Exception("Could not load XML block, null result from '" + e.Name + "': " + e.format());
             }
 
             switch (e.Name) {
                 case "object":
-                    PlacedObject b = (PlacedObject)ot;
-                    this.addObject(b);
-                    foreach (ManipulationBase mb in globalTransforms) {
+                    var b = (PlacedObject)ot;
+                    addObject(b);
+                    foreach (var mb in globalTransforms) {
                         SNUtil.log("Applying global " + mb + " to " + b);
                         mb.applyToObject(b);
                         SNUtil.log("Is now " + b.ToString());
@@ -370,13 +370,13 @@ public class BuildingHandler {
                     break;
                 case "customprefab":
                 case "basicprefab":
-                    PositionedPrefab p = (PositionedPrefab)ot;
-                    GameObject go0 = p.createWorldObject();
-                    PlacedObject p2 = new PlacedObject(go0, go0.getPrefabID());
-                    this.addObject(p2);
-                    BuilderPlaced sel0 = go0.AddComponent<BuilderPlaced>();
+                    var p = (PositionedPrefab)ot;
+                    var go0 = p.createWorldObject();
+                    var p2 = new PlacedObject(go0, go0.getPrefabID());
+                    addObject(p2);
+                    var sel0 = go0.AddComponent<BuilderPlaced>();
                     sel0.placement = p2;
-                    foreach (ManipulationBase mb in globalTransforms) {
+                    foreach (var mb in globalTransforms) {
                         SNUtil.log("Applying global " + mb + " to " + p2);
                         mb.applyToObject(p2);
                         SNUtil.log("Is now " + p2.ToString());
@@ -384,19 +384,19 @@ public class BuildingHandler {
 
                     break;
                 case "generator":
-                    WorldGenerator gen = (WorldGenerator)ot;
-                    List<GameObject> li = new List<GameObject>();
+                    var gen = (WorldGenerator)ot;
+                    List<GameObject> li = [];
                     gen.generate(li);
                     SNUtil.writeToChat("Ran generator " + gen + " which produced " + li.Count + " objects");
-                    foreach (GameObject go in li) {
+                    foreach (var go in li) {
                         if (go == null) {
                             SNUtil.writeToChat("Generator " + gen + " produced a null object!");
                             continue;
                         }
 
-                        PlacedObject b2 = new PlacedObject(go, go.getPrefabID());
-                        this.addObject(b2);
-                        BuilderPlaced sel = go.AddComponent<BuilderPlaced>();
+                        var b2 = new PlacedObject(go, go.getPrefabID());
+                        addObject(b2);
+                        var sel = go.AddComponent<BuilderPlaced>();
                         sel.placement = b2;
                     }
 
@@ -409,11 +409,11 @@ public class BuildingHandler {
         SNUtil.log("Loaded a " + b);
         items[b.referenceID] = b;
         lastPlaced = b;
-        this.selectLastPlaced();
+        selectLastPlaced();
     }
 
     public string getDumpFile(string name) {
-        string folder = Path.Combine(
+        var folder = Path.Combine(
             Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location),
             "ObjectDump"
         );
@@ -422,10 +422,10 @@ public class BuildingHandler {
     }
 
     public void deleteSelected() {
-        List<PlacedObject> li = new List<PlacedObject>(items.Values);
-        foreach (PlacedObject go in li) {
+        var li = new List<PlacedObject>(items.Values);
+        foreach (var go in li) {
             if (go.isSelected) {
-                this.delete(go);
+                delete(go);
             }
         }
     }
@@ -446,18 +446,18 @@ public class BuildingHandler {
     }*/
 
     public bool isSelected(GameObject go) {
-        PlacedObject s = this.getPlacement(go);
+        var s = getPlacement(go);
         return s != null && s.isSelected;
     }
 
     public void selectLastPlaced() {
         if (lastPlaced != null) {
-            this.select(lastPlaced);
+            select(lastPlaced);
         }
     }
 
     public void syncObjects() {
-        foreach (PlacedObject p in items.Values) {
+        foreach (var p in items.Values) {
             if (p.isSelected)
                 p.sync();
         }
@@ -466,7 +466,7 @@ public class BuildingHandler {
     private PlacedObject getPlacement(GameObject go) {
         if (go == null)
             return null;
-        BuilderPlaced pre = go.GetComponentInParent<BuilderPlaced>();
+        var pre = go.GetComponentInParent<BuilderPlaced>();
         if (pre != null) {
             return pre.placement;
         } else {
@@ -478,11 +478,11 @@ public class BuildingHandler {
     }
 
     public void select(GameObject go) {
-        PlacedObject pre = this.getPlacement(go);
+        var pre = getPlacement(go);
         if (go != null && pre == null)
             ObjectUtil.dumpObjectData(go);
         if (pre != null) {
-            this.select(pre);
+            select(pre);
         }
     }
 
@@ -492,9 +492,9 @@ public class BuildingHandler {
     }
 
     public void deselect(GameObject go) {
-        PlacedObject pre = this.getPlacement(go);
+        var pre = getPlacement(go);
         if (pre != null) {
-            this.deselect(pre);
+            deselect(pre);
         }
     }
 
@@ -504,25 +504,25 @@ public class BuildingHandler {
     }
 
     public void clearSelection() {
-        foreach (PlacedObject go in items.Values) {
-            this.deselect(go);
+        foreach (var go in items.Values) {
+            deselect(go);
         }
     }
 
     public void manipulateSelected() {
-        float s = Input.GetKeyDown(KeyCode.C) ? 0.15F : (Input.GetKeyDown(KeyCode.X) ? 0.02F : 0.05F);
-        foreach (PlacedObject go in items.Values) {
+        var s = Input.GetKeyDown(KeyCode.C) ? 0.15F : Input.GetKeyDown(KeyCode.X) ? 0.02F : 0.05F;
+        foreach (var go in items.Values) {
             if (!go.isSelected)
                 continue;
-            Transform t = MainCamera.camera.transform;
-            bool rel = Input.GetKeyDown(KeyCode.Z);
+            var t = MainCamera.camera.transform;
+            var rel = Input.GetKeyDown(KeyCode.Z);
             if (rel) {
                 t = go.obj.transform;
             }
 
-            Vector3 vec = t.forward.normalized;
-            Vector3 right = t.right.normalized;
-            Vector3 up = t.up.normalized;
+            var vec = t.forward.normalized;
+            var right = t.right.normalized;
+            var up = t.up.normalized;
             if (Input.GetKeyDown(KeyCode.UpArrow))
                 go.move(vec * s);
             if (Input.GetKeyDown(KeyCode.DownArrow))
@@ -536,25 +536,25 @@ public class BuildingHandler {
             if (Input.GetKeyDown(KeyCode.Minus))
                 go.move(up * -s);
             if (Input.GetKeyDown(KeyCode.R))
-                go.rotateYaw(s * 20, rel ? null : this.getCenter());
+                go.rotateYaw(s * 20, rel ? null : getCenter());
             if (Input.GetKeyDown(KeyCode.Q))
-                go.rotateYaw(-s * 20, rel ? null : this.getCenter());
+                go.rotateYaw(-s * 20, rel ? null : getCenter());
             if (Input.GetKeyDown(KeyCode.LeftBracket))
-                go.rotate(0, 0, -s * 20, rel ? null : this.getCenter());
+                go.rotate(0, 0, -s * 20, rel ? null : getCenter());
             if (Input.GetKeyDown(KeyCode.RightBracket))
-                go.rotate(0, 0, s * 20, rel ? null : this.getCenter());
+                go.rotate(0, 0, s * 20, rel ? null : getCenter());
             if (Input.GetKeyDown(KeyCode.Comma))
-                go.rotate(-s * 20, 0, 0, rel ? null : this.getCenter());
+                go.rotate(-s * 20, 0, 0, rel ? null : getCenter());
             if (Input.GetKeyDown(KeyCode.Period))
-                go.rotate(s * 20, 0, 0, rel ? null : this.getCenter());
+                go.rotate(s * 20, 0, 0, rel ? null : getCenter());
         }
     }
 
     private Vector3? getCenter() {
         if (items.Count == 0)
             return null;
-        Vector3 vec = Vector3.zero;
-        foreach (PlacedObject obj in items.Values) {
+        var vec = Vector3.zero;
+        foreach (var obj in items.Values) {
             vec += obj.position;
         }
 
@@ -563,8 +563,8 @@ public class BuildingHandler {
     }
 
     private int selectionCount() {
-        int ret = 0;
-        foreach (PlacedObject p in items.Values) {
+        var ret = 0;
+        foreach (var p in items.Values) {
             if (p.isSelected)
                 ret++;
         }
@@ -575,15 +575,15 @@ public class BuildingHandler {
     internal PlacedObject spawnPrefabAtLook(string arg) {
         if (!isEnabled)
             return null;
-        Transform transform = MainCamera.camera.transform;
-        Vector3 position = transform.position;
-        Vector3 forward = transform.forward;
-        Vector3 pos = position + (forward.normalized * 7.5F);
-        string id = this.getPrefabKeyFromID(arg);
-        PlacedObject b = PlacedObject.createNewObject(id);
+        var transform = MainCamera.camera.transform;
+        var position = transform.position;
+        var forward = transform.forward;
+        var pos = position + forward.normalized * 7.5F;
+        var id = getPrefabKeyFromID(arg);
+        var b = PlacedObject.createNewObject(id);
         if (b != null) {
             b.obj.transform.SetPositionAndRotation(pos, Quaternion.identity);
-            this.registerObject(b);
+            registerObject(b);
             SNUtil.writeToChat("Spawned a " + b);
             SNUtil.log("Spawned a " + b);
         }
@@ -611,31 +611,31 @@ public class BuildingHandler {
         }*/
 
     public void addRealObjects(IEnumerable<GameObject> li, bool withChildren = false) {
-        foreach (GameObject go in li)
-            this.addRealObject(go, withChildren);
+        foreach (var go in li)
+            addRealObject(go, withChildren);
     }
 
     public void addRealObject_External(GameObject go, bool withChildren = false) {
-        this.addRealObject(go, withChildren);
+        addRealObject(go, withChildren);
     }
 
     internal PlacedObject addRealObject(GameObject go, bool withChildren = false) {
         if (go.GetComponent<Base>() != null) {
-            PlacedObject bo = PlacedObject.createNewObject(go);
-            this.registerObject(bo);
+            var bo = PlacedObject.createNewObject(go);
+            registerObject(bo);
             bo.setSeabase();
             return bo;
         }
 
-        PlacedObject b = PlacedObject.createNewObject(go);
+        var b = PlacedObject.createNewObject(go);
         if (b != null) {
-            this.registerObject(b);
+            registerObject(b);
             SNUtil.writeToChat("Registered a pre-existing " + b);
             SNUtil.log("Registered a pre-existing " + b, SNUtil.diDLL);
             if (withChildren) {
                 foreach (Transform t in go.transform) {
                     if (t.gameObject != go && t.gameObject != null) {
-                        PlacedObject b2 = this.addRealObject(t.gameObject, true);
+                        var b2 = addRealObject(t.gameObject, true);
                         if (b2 != null)
                             b2.parent = b;
                     }
@@ -649,7 +649,7 @@ public class BuildingHandler {
     private void registerObject(PlacedObject b) {
         items[b.referenceID] = b;
         lastPlaced = b;
-        this.selectLastPlaced();
+        selectLastPlaced();
     }
     /*
     public void spawnTechTypeAtLook(string tech) {
@@ -708,10 +708,10 @@ public class BuildingHandler {
 
         if (id.StartsWith("fragment_", StringComparison.InvariantCultureIgnoreCase)) {
             try {
-                int idx1 = id.IndexOf('_');
-                int idx2 = id.IndexOf('_', idx1 + 1);
-                int index = int.Parse(id.Substring(idx1 + 1, idx2 - idx1 - 1));
-                TechType tt = SNUtil.getTechType(id.Substring(idx2 + 1));
+                var idx1 = id.IndexOf('_');
+                var idx2 = id.IndexOf('_', idx1 + 1);
+                var index = int.Parse(id.Substring(idx1 + 1, idx2 - idx1 - 1));
+                var tt = SNUtil.getTechType(id.Substring(idx2 + 1));
                 return tt == TechType.None
                     ? throw new Exception("No techtype found")
                     : GenUtil.getFragment(tt, index).ClassID;
@@ -723,7 +723,7 @@ public class BuildingHandler {
 
         if (id.StartsWith("pda_", StringComparison.InvariantCultureIgnoreCase)) {
             try {
-                PDAManager.PDAPage page = PDAManager.getPage(id.Substring(4));
+                var page = PDAManager.getPage(id.Substring(4));
                 return page == null ? throw new Exception("No page found") : page.getPDAClassID();
             } catch (Exception ex) {
                 SNUtil.log("Unable to fetch pda '" + id + "': " + ex);

@@ -7,7 +7,7 @@ namespace ReikaKalseki.SeaToSea;
 public class AlkaliPlant : BasicCustomPlant {
     [SetsRequiredMembers]
     public AlkaliPlant() : base(
-        SeaToSeaMod.itemLocale.getEntry("ALKALI_PLANT"),
+        SeaToSeaMod.ItemLocale.getEntry("ALKALI_PLANT"),
         new FloraPrefabFetch(VanillaFlora.REDWORT),
         "daff0e31-dd08-4219-8793-39547fdb745e",
         "Samples"
@@ -17,9 +17,7 @@ public class AlkaliPlant : BasicCustomPlant {
         //seed.sprite = TextureManager.getSprite("Textures/Items/"+ObjectUtil.formatFileName(this));
     }
 
-    public override Vector2int SizeInInventory {
-        get { return new Vector2int(2, 2); }
-    }
+    public override Vector2int SizeInInventory => new(2, 2);
 
     public override void prepareGameObject(GameObject go, Renderer[] r) {
         base.prepareGameObject(go, r);
@@ -45,8 +43,8 @@ public class AlkaliPlant : BasicCustomPlant {
         }
         p.modelEulerAngles = new Vector3(270*0, UnityEngine.Random.Range(0, 360F), 0);*/
         go.EnsureComponent<LiveMixin>().data.maxHealth /= 2;
-        foreach (Renderer rr in r) {
-            foreach (Material m in rr.materials) {
+        foreach (var rr in r) {
+            foreach (var m in rr.materials) {
                 m.SetColor("_GlowColor", new Color(1, 1, 1, 1));
                 m.SetVector("_Scale", new Vector4(0.35F, 0.2F, 0.1F, 0.0F));
                 m.SetVector("_Frequency", new Vector4(1.2F, 0.5F, 1.5F, 0.5F));
@@ -62,29 +60,29 @@ public class AlkaliPlant : BasicCustomPlant {
     }
 }
 
-class AlkaliPlantTag : MonoBehaviour {
+internal class AlkaliPlantTag : MonoBehaviour {
     private Renderer renderer;
 
     private bool isGrown;
     private float rootScale;
 
-    private float timeVisible = 0;
+    private float timeVisible;
     private float currentScale = 1;
-    private bool currentlyHiding = false;
+    private bool currentlyHiding;
 
-    private float timePlayerStationary = 0;
+    private float timePlayerStationary;
 
     private bool isFrozen;
 
-    private static readonly Vector3 deleteArea = new Vector3(-1264, -282, -724);
+    private static readonly Vector3 deleteArea = new(-1264, -282, -724);
 
-    void Start() {
+    private void Start() {
         isGrown = gameObject.GetComponent<GrownPlant>() != null;
         currentScale = 1;
-        rootScale = UnityEngine.Random.Range(2, 2.5F);
+        rootScale = Random.Range(2, 2.5F);
         if (isGrown) {
             gameObject.SetActive(true);
-            transform.localScale = Vector3.one * UnityEngine.Random.Range(0.8F, 1.2F);
+            transform.localScale = Vector3.one * Random.Range(0.8F, 1.2F);
         } else if (transform.position.y > -10 || Vector3.Distance(transform.position, deleteArea) <= 20) {
             gameObject.destroy(false);
         } else {
@@ -104,67 +102,67 @@ class AlkaliPlantTag : MonoBehaviour {
         timeVisible = 1;
     }
 
-    void Update() {
+    private void Update() {
         ObjectUtil.cleanUpOriginObjects(this);
         if (!renderer)
-            renderer = this.GetComponentInChildren<Renderer>();
-        Player ep = Player.main;
+            renderer = GetComponentInChildren<Renderer>();
+        var ep = Player.main;
         if (!isFrozen && ep &&
             (!isGrown || Vector3.Distance(transform.position, C2CHooks.mountainBaseGeoCenter) <= 30)) {
-            float dT = Time.deltaTime;
-            Vehicle v = ep.GetVehicle();
+            var dT = Time.deltaTime;
+            var v = ep.GetVehicle();
             if ((v && v.useRigidbody ? v.useRigidbody : ep.rigidBody).velocity.magnitude > 0.05F)
                 timePlayerStationary = 0;
             else
                 timePlayerStationary += dT;
-            float dd = Vector3.Distance(ep.transform.position, transform.position);
-            if (dd <= (v ? 25F : 15F) && this.canSeePlayer(ep) && timePlayerStationary < (v ? 20 : 30 * 999))
+            var dd = Vector3.Distance(ep.transform.position, transform.position);
+            if (dd <= (v ? 25F : 15F) && canSeePlayer(ep) && timePlayerStationary < (v ? 20 : 30 * 999))
                 timeVisible += dT;
             else
                 timeVisible = 0;
             currentlyHiding = timeVisible >= 0.67F;
             if (currentlyHiding) {
-                float sp = 1F * dT;
+                var sp = 1F * dT;
                 if (dd <= 8)
                     sp *= 1.5F;
                 currentScale = Mathf.Max(0.045F, currentScale - sp);
             } else {
-                currentScale = Mathf.Min(1, currentScale + (0.15F * dT));
+                currentScale = Mathf.Min(1, currentScale + 0.15F * dT);
             }
 
             if (float.IsInfinity(currentScale) || float.IsNaN(currentScale)) //how this happens is beyond me
                 currentScale = 1;
             currentScale = Mathf.Clamp(currentScale, 0.03F, 1);
-            float f = rootScale * currentScale;
-            float glow = C2CItems.alkali.glowIntensity * currentScale;
+            var f = rootScale * currentScale;
+            var glow = C2CItems.alkali.glowIntensity * currentScale;
             if (glow <= 0.035)
                 glow = 0;
             RenderUtil.setEmissivity(renderer, glow);
             transform.localScale = new Vector3(
-                0.33F + (f * 0.67F),
+                0.33F + f * 0.67F,
                 f,
-                0.33F + (f * 0.67F)
+                0.33F + f * 0.67F
             ); //Vector3.one*f;//new Vector3(0.75F+f*0.25F, f, 0.75F+f*0.25F);
-            this.GetComponent<LiveMixin>().data.knifeable = this.isHarvestable();
+            GetComponent<LiveMixin>().data.knifeable = isHarvestable();
         }
     }
 
     private bool canSeePlayer(Player ep) {
         if (ep.IsInBase())
             return false;
-        Vehicle v = ep.GetVehicle();
+        var v = ep.GetVehicle();
         if (v)
             return Vector3.Distance(v.transform.position, transform.position) <= 4 ||
                    (v.useRigidbody && v.useRigidbody.velocity.magnitude > 0.05F);
-        Vector3 pos1 = ep.transform.position;
-        Vector3 pos2 = transform.position + (transform.up.normalized * 0.5F);
+        var pos1 = ep.transform.position;
+        var pos2 = transform.position + transform.up.normalized * 0.5F;
         if (WorldUtil.lineOfSight(ep.gameObject, gameObject, pos1, pos2))
             return true;
-        pos2 = transform.position + (transform.up.normalized * 1.5F);
+        pos2 = transform.position + transform.up.normalized * 1.5F;
         return WorldUtil.lineOfSight(ep.gameObject, gameObject, pos1, pos2);
     }
 
     public bool isHarvestable() {
-        return currentScale >= 0.75F && this.canSeePlayer(Player.main);
+        return currentScale >= 0.75F && canSeePlayer(Player.main);
     }
 }

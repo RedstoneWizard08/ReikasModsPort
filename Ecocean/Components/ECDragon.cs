@@ -7,7 +7,7 @@ internal class ECDragon : PassiveSonarEntity {
 	protected new void Update() {
 		base.Update();
 		if (!roar) {
-			roar = this.GetComponent<FMOD_CustomLoopingEmitterWithCallback>();
+			roar = GetComponent<FMOD_CustomLoopingEmitterWithCallback>();
 		}
 	}
 
@@ -17,7 +17,7 @@ internal class ECDragon : PassiveSonarEntity {
 	}
 
 	protected override bool isAudible() {
-		return this.isRoaring(roar);
+		return isRoaring(roar);
 	}
 
 }

@@ -17,25 +17,13 @@ public abstract class CyclopsModule : CustomEquipable {
         dependency = TechType.Cyclops;
     }
 
-    public override CraftTree.Type FabricatorType {
-        get { return CraftTree.Type.CyclopsFabricator; }
-    }
+    public override CraftTree.Type FabricatorType => CraftTree.Type.CyclopsFabricator;
 
-    public override string[] StepsToFabricatorTab {
-        get {
-            return new string[0]; //return new string[]{"DICyclops"};//new string[]{"CyclopsModules"};
-        }
-    }
+    public override string[] StepsToFabricatorTab => []; //return new string[]{"DICyclops"};//new string[]{"CyclopsModules"};
 
-    public override sealed EquipmentType EquipmentType {
-        get { return EquipmentType.CyclopsModule; }
-    }
+    public override sealed EquipmentType EquipmentType => EquipmentType.CyclopsModule;
 
-    public override sealed TechGroup GroupForPDA {
-        get { return TechGroup.Cyclops; }
-    }
+    public override sealed TechGroup GroupForPDA => TechGroup.Cyclops;
 
-    public override sealed TechCategory CategoryForPDA {
-        get { return TechCategory.CyclopsUpgrades; }
-    }
+    public override sealed TechCategory CategoryForPDA => TechCategory.CyclopsUpgrades;
 }

@@ -15,33 +15,33 @@ public class DeepStalker : RetexturedFish {
         locale = e;
         glowIntensity = 1.25F;
 
-        scanTime = 8;
-        eggBase = TechType.Stalker;
-        eggMaturationTime = 2400;
-        eggSpawnRate = 0.25F;
-        eggSpawns.Add(BiomeType.GrandReef_TreaderPath);
+        ScanTime = 8;
+        EggBase = TechType.Stalker;
+        EggMaturationTime = 2400;
+        EggSpawnRate = 0.25F;
+        EggSpawns.Add(BiomeType.GrandReef_TreaderPath);
     }
 
     public override void prepareGameObject(GameObject world, Renderer[] r0) {
-        DeepStalkerTag kc = world.EnsureComponent<DeepStalkerTag>();
-        foreach (Renderer r in r0) {
+        var kc = world.EnsureComponent<DeepStalkerTag>();
+        foreach (var r in r0) {
             r.materials[0].SetColor("_GlowColor", new Color(1, 1, 1, 1));
         }
 
-        AggressiveToPilotingVehicle agv = world.EnsureComponent<AggressiveToPilotingVehicle>();
+        var agv = world.EnsureComponent<AggressiveToPilotingVehicle>();
         agv.aggressionPerSecond = 0.2F;
         agv.creature = world.GetComponent<Creature>();
         agv.lastTarget = world.EnsureComponent<LastTarget>();
     }
 
-    public override BehaviourType getBehavior() {
+    public override BehaviourType GetBehavior() {
         return BehaviourType.Shark;
     }
 }
 
-class DeepStalkerTag : MonoBehaviour {
+internal class DeepStalkerTag : MonoBehaviour {
     private static readonly SoundManager.SoundData biteSound = SoundManager.registerSound(
-        SeaToSeaMod.modDLL,
+        SeaToSeaMod.ModDLL,
         "deepstalkerbite",
         "Sounds/deepstalker-bite.ogg",
         SoundManager.soundMode3D,
@@ -58,12 +58,12 @@ class DeepStalkerTag : MonoBehaviour {
     private SwimBehaviour swimmer;
     private WaterParkCreature acuComponent;
 
-    private readonly Color peacefulColor = new Color(0.2F, 0.67F, 1F, 1);
-    private readonly Color aggressiveColor = new Color(1, 0, 0, 1);
+    private readonly Color peacefulColor = new(0.2F, 0.67F, 1F, 1);
+    private readonly Color aggressiveColor = new(1, 0, 0, 1);
     private readonly float colorChangeSpeed = 1;
 
-    private float aggressionForColor = 0;
-    private float aggressionForACUColor = 0;
+    private float aggressionForColor;
+    private float aggressionForACUColor;
 
     private float platinumGrabTime = -1;
     private float lastAreaCheck = -1;
@@ -71,28 +71,28 @@ class DeepStalkerTag : MonoBehaviour {
 
     private float lastTextureSwapTime;
 
-    private float targetCooldown = 0;
+    private float targetCooldown;
 
     private GameObject currentForcedTarget;
 
     private SeaTreader treaderTarget;
 
-    void Start() {
-        acuComponent = this.GetComponent<WaterParkCreature>();
+    private void Start() {
+        acuComponent = GetComponent<WaterParkCreature>();
     }
 
     private void Update() {
         if (!render) {
-            render = this.GetComponentInChildren<Renderer>();
+            render = GetComponentInChildren<Renderer>();
         }
 
         if (!creatureComponent) {
-            creatureComponent = this.GetComponent<Stalker>();
+            creatureComponent = GetComponent<Stalker>();
             creatureComponent.liveMixin.data.maxHealth = 800; //stalker base is 300
         }
 
         if (!attackComponent) {
-            attackComponent = this.GetComponent<MeleeAttack>();
+            attackComponent = GetComponent<MeleeAttack>();
             attackComponent.biteDamage *= 0.67F;
             attackComponent.biteAggressionDecrement *= 2;
             attackComponent.biteAggressionThreshold *= 0.8F;
@@ -107,16 +107,16 @@ class DeepStalkerTag : MonoBehaviour {
         }
 
         if (!collectorComponent) {
-            collectorComponent = this.GetComponent<CollectShiny>();
+            collectorComponent = GetComponent<CollectShiny>();
             //collectorComponent.priorityMultiplier.
         }
 
         if (!swimmer) {
-            swimmer = this.GetComponent<SwimBehaviour>();
+            swimmer = GetComponent<SwimBehaviour>();
         }
 
         if (!playerHuntComponent) {
-            foreach (AggressiveWhenSeeTarget agg in this.GetComponents<AggressiveWhenSeeTarget>()) {
+            foreach (var agg in GetComponents<AggressiveWhenSeeTarget>()) {
                 if (agg.targetType == EcoTargetType.Shark) {
                     agg.aggressionPerSecond *= 0.15F;
                     agg.ignoreSameKind = false;
@@ -127,32 +127,32 @@ class DeepStalkerTag : MonoBehaviour {
             }
         }
 
-        float dT = Time.deltaTime;
+        var dT = Time.deltaTime;
 
         if (render && creatureComponent) {
-            float target = creatureComponent.Aggression.Value;
+            var target = creatureComponent.Aggression.Value;
             if (acuComponent) {
-                if (UnityEngine.Random.Range(0F, 1F) <= 0.008F) {
-                    aggressionForACUColor = UnityEngine.Random.Range(0F, 1F);
+                if (Random.Range(0F, 1F) <= 0.008F) {
+                    aggressionForACUColor = Random.Range(0F, 1F);
                 }
 
                 target = aggressionForACUColor;
             }
 
             if (aggressionForColor < target) {
-                aggressionForColor = Mathf.Min(target, aggressionForColor + (dT * colorChangeSpeed));
+                aggressionForColor = Mathf.Min(target, aggressionForColor + dT * colorChangeSpeed);
             } else if (aggressionForColor > target) {
-                aggressionForColor = Mathf.Max(target, aggressionForColor - (dT * colorChangeSpeed));
+                aggressionForColor = Mathf.Max(target, aggressionForColor - dT * colorChangeSpeed);
             }
 
             render.materials[0].SetColor("_GlowColor", Color.Lerp(peacefulColor, aggressiveColor, aggressionForColor));
         }
 
-        float time = DayNightCycle.main.timePassedAsFloat;
+        var time = DayNightCycle.main.timePassedAsFloat;
 
         if (render && time > lastTextureSwapTime + 1) {
             lastTextureSwapTime = time;
-            RenderUtil.swapTextures(SeaToSeaMod.modDLL, render, "Textures/Creature/DeepStalker", null);
+            RenderUtil.swapTextures(SeaToSeaMod.ModDLL, render, "Textures/Creature/DeepStalker", null);
         }
 
         if (time < targetCooldown) {
@@ -160,7 +160,7 @@ class DeepStalkerTag : MonoBehaviour {
             currentForcedTarget = null;
             collectorComponent.DropShinyTarget();
         } else {
-            bool has = this.currentlyHasPlatinum();
+            var has = currentlyHasPlatinum();
             if (has) {
                 playerHuntComponent.lastTarget.SetTarget(null);
                 currentForcedTarget = null;
@@ -170,7 +170,7 @@ class DeepStalkerTag : MonoBehaviour {
             }
 
             if (currentForcedTarget && currentForcedTarget == Player.main.gameObject &&
-                UnityEngine.Random.Range(0F, 1F) <= 0.12F) {
+                Random.Range(0F, 1F) <= 0.12F) {
                 if (has || time - lastPlayerBiteTime < 5 || Inventory.main.GetPickupCount(
                         CustomMaterials.getItem(CustomMaterials.Materials.PLATINUM).Info.TechType
                     ) == 0) {
@@ -181,57 +181,57 @@ class DeepStalkerTag : MonoBehaviour {
             }
 
             if (currentForcedTarget && time - platinumGrabTime <= 12) {
-                this.triggerPtAggro(currentForcedTarget, false);
+                triggerPtAggro(currentForcedTarget, false);
             } else if (!has && !currentForcedTarget && time - lastAreaCheck >= 1 &&
-                       !this.GetComponent<WaterParkCreature>()) {
+                       !GetComponent<WaterParkCreature>()) {
                 lastAreaCheck = time;
                 if (!treaderTarget || !treaderTarget.gameObject.activeInHierarchy || Vector3.Distance(
                         treaderTarget.transform.position,
                         transform.position
                     ) >= 120)
-                    this.bindToTreader(WorldUtil.getClosest<SeaTreader>(gameObject));
-                List<GameObject> loosePlatinum = new List<GameObject>();
-                List<CollectShiny> stalkersWithPlatinum = new List<CollectShiny>();
+                    bindToTreader(WorldUtil.getClosest<SeaTreader>(gameObject));
+                List<GameObject> loosePlatinum = [];
+                List<CollectShiny> stalkersWithPlatinum = [];
                 WorldUtil.getGameObjectsNear(
                     transform.position,
                     40,
-                    go => this.parseNearbyObject(go, loosePlatinum, stalkersWithPlatinum)
+                    go => parseNearbyObject(go, loosePlatinum, stalkersWithPlatinum)
                 );
-                bool flag = false;
+                var flag = false;
                 if (loosePlatinum.Count > 0) {
-                    collectorComponent.shinyTarget = loosePlatinum[UnityEngine.Random.Range(0, loosePlatinum.Count)];
+                    collectorComponent.shinyTarget = loosePlatinum[Random.Range(0, loosePlatinum.Count)];
                     flag = true;
                 } else {
-                    Player ep = Player.main;
-                    float dist = Vector3.Distance(ep.transform.position, transform.position);
+                    var ep = Player.main;
+                    var dist = Vector3.Distance(ep.transform.position, transform.position);
                     if (dist <= 30) {
-                        int amt = Inventory.main.GetPickupCount(
+                        var amt = Inventory.main.GetPickupCount(
                             CustomMaterials.getItem(CustomMaterials.Materials.PLATINUM).Info.TechType
                         );
                         //SNUtil.writeToChat("Counting platinum = "+amt);
-                        if (amt > 0 && UnityEngine.Random.Range(0F, 1F) <= Mathf.Min(amt * 0.06F, 0.67F)) {
-                            this.triggerPtAggro(ep.gameObject);
+                        if (amt > 0 && Random.Range(0F, 1F) <= Mathf.Min(amt * 0.06F, 0.67F)) {
+                            triggerPtAggro(ep.gameObject);
                             flag = true;
                         }
                     }
                 }
 
                 if (!flag && stalkersWithPlatinum.Count > 0) {
-                    CollectShiny c = stalkersWithPlatinum[UnityEngine.Random.Range(0, stalkersWithPlatinum.Count)];
+                    var c = stalkersWithPlatinum[Random.Range(0, stalkersWithPlatinum.Count)];
                     collectorComponent.shinyTarget = c.shinyTarget;
-                    this.triggerPtAggro(c.gameObject);
+                    triggerPtAggro(c.gameObject);
                 }
             }
         }
 
-        if (!this.GetComponent<WaterParkCreature>()) {
-            float distp = Vector3.Distance(transform.position, Player.main.transform.position);
+        if (!GetComponent<WaterParkCreature>()) {
+            var distp = Vector3.Distance(transform.position, Player.main.transform.position);
             if (distp >= 200) {
-                this.destroyCreature();
+                destroyCreature();
             } else if (treaderTarget) {
-                float dist = Vector3.Distance(transform.position, treaderTarget.transform.position);
+                var dist = Vector3.Distance(transform.position, treaderTarget.transform.position);
                 if (dist >= 150 && distp >= 30) {
-                    this.destroyCreature();
+                    destroyCreature();
                 } else if (dist >= 80) {
                     swimmer.SwimTo(treaderTarget.transform.position, 20);
                 }
@@ -240,18 +240,18 @@ class DeepStalkerTag : MonoBehaviour {
             if (time >= lastDespawnCheck + 2.5F && distp > 40) {
                 lastDespawnCheck = time;
                 if (countDeepStalkersNear(transform) > 5)
-                    this.destroyCreature();
+                    destroyCreature();
             }
         }
     }
 
     internal static int countDeepStalkersNear(Transform t) {
-        int amt = 0;
+        var amt = 0;
         WorldUtil.getGameObjectsNear(
             t.position,
             60,
             go => {
-                DeepStalkerTag c = go.GetComponent<DeepStalkerTag>();
+                var c = go.GetComponent<DeepStalkerTag>();
                 if (c && c.isAlive() && !c.GetComponent<WaterParkCreature>())
                     amt++;
             }
@@ -264,13 +264,13 @@ class DeepStalkerTag : MonoBehaviour {
         List<GameObject> loosePlatinum,
         List<CollectShiny> stalkersWithPlatinum
     ) {
-        PlatinumTag pt = go.GetComponent<PlatinumTag>();
+        var pt = go.GetComponent<PlatinumTag>();
         if (pt && pt.getTimeOnGround() >= 2.5F) {
             //collectorComponent.shinyTarget = go;
             loosePlatinum.Add(go);
         }
 
-        CollectShiny c = go.GetComponent<CollectShiny>();
+        var c = go.GetComponent<CollectShiny>();
         if (c && c.shinyTarget && c.targetPickedUp && c.shinyTarget.GetComponent<PlatinumTag>()) {
             //collectorComponent.shinyTarget = c.shinyTarget;
             //triggerPtAggro(go);
@@ -305,40 +305,40 @@ class DeepStalkerTag : MonoBehaviour {
         //SNUtil.writeToChat(this+" attacked "+target);
         if (target == Player.main.gameObject) {
             lastPlayerBiteTime = DayNightCycle.main.timePassedAsFloat;
-            Pickupable p = Inventory.main.container.RemoveItem(
+            var p = Inventory.main.container.RemoveItem(
                 CustomMaterials.getItem(CustomMaterials.Materials.PLATINUM).Info.TechType
             );
             if (p) {
-                float ch = Mathf.Clamp(SeaToSeaMod.config.getFloat(C2CConfig.ConfigEntries.PLATTHEFT), 0.25F, 1F);
-                if (SeaToSeaMod.config.getBoolean(C2CConfig.ConfigEntries.HARDMODE))
+                var ch = Mathf.Clamp(SeaToSeaMod.ModConfig.getFloat(C2CConfig.ConfigEntries.PLATTHEFT), 0.25F, 1F);
+                if (SeaToSeaMod.ModConfig.getBoolean(C2CConfig.ConfigEntries.HARDMODE))
                     ch *= 3;
-                if (UnityEngine.Random.Range(0F, 1F) < ch) {
+                if (Random.Range(0F, 1F) < ch) {
                     Inventory.main.InternalDropItem(p, false);
-                    this.grab(p.gameObject);
+                    grab(p.gameObject);
                 }
             }
         } else {
-            Stalker s = target.GetComponentInParent<Stalker>();
+            var s = target.GetComponentInParent<Stalker>();
             if (s) {
                 s.liveMixin.AddHealth(attackComponent.biteDamage);
-                CollectShiny c = s.GetComponent<CollectShiny>();
-                GameObject go = c.shinyTarget;
+                var c = s.GetComponent<CollectShiny>();
+                var go = c.shinyTarget;
                 if (go) {
                     c.DropShinyTarget();
-                    this.grab(go);
+                    grab(go);
                 }
             }
         }
     }
 
     public void OnShinyPickedUp(GameObject target) {
-        PlatinumTag pt = target.GetComponent<PlatinumTag>();
+        var pt = target.GetComponent<PlatinumTag>();
         if (pt)
             pt.pickup(this);
     }
 
     public void OnShinyDropped(GameObject target) {
-        PlatinumTag pt = target.GetComponent<PlatinumTag>();
+        var pt = target.GetComponent<PlatinumTag>();
         if (pt)
             pt.drop();
     }
@@ -350,7 +350,7 @@ class DeepStalkerTag : MonoBehaviour {
     }
 
     internal void tryStealFrom(Stalker s) {
-        this.triggerPtAggro(s.gameObject, true);
+        triggerPtAggro(s.gameObject, true);
     }
 
     internal void bindToTreader(SeaTreader s) {
@@ -359,9 +359,9 @@ class DeepStalkerTag : MonoBehaviour {
             s.gameObject.GetComponent<C2CTreader>().attachStalker(this);
     }
 
-    void OnDestroy() {
+    private void OnDestroy() {
         if (treaderTarget) {
-            C2CTreader c2c = treaderTarget.gameObject.GetComponent<C2CTreader>();
+            var c2c = treaderTarget.gameObject.GetComponent<C2CTreader>();
             if (c2c)
                 c2c.removeStalker(this);
         }
@@ -370,19 +370,19 @@ class DeepStalkerTag : MonoBehaviour {
             collectorComponent.DropShinyTarget();
     }
 
-    void OnDisable() {
-        this.OnDestroy();
+    private void OnDisable() {
+        OnDestroy();
     }
 
-    void OnKill() {
-        this.OnDestroy();
+    private void OnKill() {
+        OnDestroy();
     }
 
     internal void triggerPtAggro(GameObject target, bool isNew = true) {
-        float time = DayNightCycle.main.timePassedAsFloat;
+        var time = DayNightCycle.main.timePassedAsFloat;
         if (time < targetCooldown)
             return;
-        if (this.GetComponent<WaterParkCreature>())
+        if (GetComponent<WaterParkCreature>())
             return;
         if (isNew) {
             platinumGrabTime = time;

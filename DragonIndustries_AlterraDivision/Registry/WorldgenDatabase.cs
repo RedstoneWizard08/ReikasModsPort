@@ -13,26 +13,26 @@ public class WorldgenDatabase {
 
 	private readonly Assembly ownerMod;
 
-	private readonly List<PositionedPrefab> objects = new List<PositionedPrefab>();
-	private readonly List<WorldGenerator> generators = new List<WorldGenerator>();
+	private readonly List<PositionedPrefab> objects = [];
+	private readonly List<WorldGenerator> generators = [];
 
 	public WorldgenDatabase() {
 		ownerMod = SNUtil.tryGetModDLL();
 	}
 
 	public void load(Predicate<string> loadFile = null) {
-		string root = Path.GetDirectoryName(ownerMod.Location);
-		string folder = Path.Combine(root, "XML/WorldgenSets");
+		var root = Path.GetDirectoryName(ownerMod.Location);
+		var folder = Path.Combine(root, "XML/WorldgenSets");
 		objects.Clear();
 		if (Directory.Exists(folder)) {
-			IEnumerable<string> files = Directory.EnumerateFiles(folder, "*.*", SearchOption.AllDirectories).Where(this.isLoadableWorldgenXML);
+			var files = Directory.EnumerateFiles(folder, "*.*", SearchOption.AllDirectories).Where(isLoadableWorldgenXML);
 			SNUtil.log("Loading worldgen maps from folder '" + folder + "': " + string.Join(", ", files), ownerMod);
-			foreach (string file in files) {
+			foreach (var file in files) {
 				if (loadFile != null && !loadFile.Invoke(Path.GetFileNameWithoutExtension(file))) {
 					SNUtil.log("Skipping worldgen map file @ " + file, ownerMod);
 					continue;
 				}
-				this.loadXML(file);
+				loadXML(file);
 			}
 		}
 		else {
@@ -41,11 +41,11 @@ public class WorldgenDatabase {
 	}
 
 	private bool isLoadableWorldgenXML(string file) {
-		string ext = Path.GetExtension(file);
+		var ext = Path.GetExtension(file);
 		if (ext == ".xml")
 			return true;
 		if (ext == ".gen") {
-			bool xml = File.Exists(file.Replace(".gen", ".xml"));
+			var xml = File.Exists(file.Replace(".gen", ".xml"));
 			if (xml)
 				SNUtil.log("Skipping packed worldgen XML " + file + " as an unpacked version is present", ownerMod);
 			return !xml;
@@ -58,9 +58,9 @@ public class WorldgenDatabase {
 		string xml;
 		if (file.EndsWith(".gen", StringComparison.InvariantCultureIgnoreCase)) {
 			byte[] arr;
-			using (FileStream inp = File.OpenRead(file)) {
-				using (GZipStream zip = new GZipStream(inp, CompressionMode.Decompress, true)) {
-					using (MemoryStream mem = new MemoryStream()) {
+			using (var inp = File.OpenRead(file)) {
+				using (var zip = new GZipStream(inp, CompressionMode.Decompress, true)) {
+					using (var mem = new MemoryStream()) {
 						zip.CopyTo(mem);
 						arr = mem.ToArray();
 					}
@@ -72,18 +72,18 @@ public class WorldgenDatabase {
 		else {
 			xml = File.ReadAllText(file);
 		}
-		XmlDocument doc = new XmlDocument();
+		var doc = new XmlDocument();
 		doc.LoadXml(xml);
-		int loaded = 0;
+		var loaded = 0;
 		foreach (XmlElement e in doc.DocumentElement.ChildNodes) {
 			try {
-				string count = e.GetAttribute("count");
-				string ch = e.GetAttribute("chance");
-				int amt = string.IsNullOrEmpty(count) ? 1 : int.Parse(count);
-				double chance = string.IsNullOrEmpty(ch) ? 1 : double.Parse(ch);
-				for (int i = 0; i < amt; i++) {
+				var count = e.GetAttribute("count");
+				var ch = e.GetAttribute("chance");
+				var amt = string.IsNullOrEmpty(count) ? 1 : int.Parse(count);
+				var chance = string.IsNullOrEmpty(ch) ? 1 : double.Parse(ch);
+				for (var i = 0; i < amt; i++) {
 					if (UnityEngine.Random.Range(0F, 1F) <= chance) {
-						ObjectTemplate ot = ObjectTemplate.construct(e);
+						var ot = ObjectTemplate.construct(e);
 						if (ot == null) {
 							throw new Exception("No worldgen loadable for '" + e.Name + "' " + e.format() + ": NULL");
 						}
@@ -139,8 +139,8 @@ public class WorldgenDatabase {
 	}
 
 	public int getCount<G>(Vector3? near = null, float dist = -1) where G : WorldGenerator {
-		int ret = 0;
-		foreach (WorldGenerator pfb in generators) {
+		var ret = 0;
+		foreach (var pfb in generators) {
 			if (pfb is G) {
 				if (dist < 0 || near == null || !near.HasValue || Vector3.Distance(near.Value, pfb.position) <= dist)
 					ret++;
@@ -150,8 +150,8 @@ public class WorldgenDatabase {
 	}
 
 	public List<PositionedPrefab> getPositions(string classID, Vector3? near = null, float dist = -1) {
-		List<PositionedPrefab> ret = new List<PositionedPrefab>();
-		foreach (PositionedPrefab pfb in objects) {
+		List<PositionedPrefab> ret = [];
+		foreach (var pfb in objects) {
 			if (pfb.prefabName == classID || classID == "*") {
 				if (dist < 0 || near == null || !near.HasValue || Vector3.Distance(near.Value, pfb.position) <= dist)
 					ret.Add(pfb);
@@ -164,7 +164,7 @@ public class WorldgenDatabase {
 	}
 
 	public PositionedPrefab getByID(string id) {
-		foreach (PositionedPrefab pfb in objects) {
+		foreach (var pfb in objects) {
 			if (pfb.getXMLID() == id) {
 				return pfb;
 			}

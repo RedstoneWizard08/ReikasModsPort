@@ -8,19 +8,19 @@ public class KeypadCodeSwappingSystem {
 
 	private static readonly string CAPTAIN_DOOR = "19feccc5-36a0-431c-ae97-16f87c21d5af";
 
-	public static readonly KeypadCodeSwappingSystem instance = new KeypadCodeSwappingSystem();
+	public static readonly KeypadCodeSwappingSystem instance = new();
 
-	private readonly Dictionary<string, CodeSwap> data = new Dictionary<string, CodeSwap>();
+	private readonly Dictionary<string, CodeSwap> data = new();
 
-	private readonly Vector3 door = new Vector3(978.9F, 11.2F, -68.6F);
+	private readonly Vector3 door = new(978.9F, 11.2F, -68.6F);
 
 	private readonly PDAManager.PDAPage captainCodeRedo;
 
 	private KeypadCodeSwappingSystem() {
-		this.addCodeSwap("48a5564b-e632-4666-9e7c-f377fbc4fd23", "Aurora_Office_PDA1", "1454"); //cargo bay
-		this.addCodeSwap("3265d800-9ae0-478c-973c-ddf5351977c0", "Aurora_Locker_PDA2", "1869"); //sweet offer
-		this.addCodeSwap(CAPTAIN_DOOR, /*"CaptainCode"*/null, "2679");
-		this.addCodeSwap("38135f4d-5f31-4438-abce-2c8bbbc5c77c", "Aurora_RingRoom_Code_PDA", "6483"); //lab
+		addCodeSwap("48a5564b-e632-4666-9e7c-f377fbc4fd23", "Aurora_Office_PDA1", "1454"); //cargo bay
+		addCodeSwap("3265d800-9ae0-478c-973c-ddf5351977c0", "Aurora_Locker_PDA2", "1869"); //sweet offer
+		addCodeSwap(CAPTAIN_DOOR, /*"CaptainCode"*/null, "2679");
+		addCodeSwap("38135f4d-5f31-4438-abce-2c8bbbc5c77c", "Aurora_RingRoom_Code_PDA", "6483"); //lab
 		captainCodeRedo = PDAManager.getPage("captaindoor");
 	}
 
@@ -36,9 +36,9 @@ public class KeypadCodeSwappingSystem {
 
 	internal void handleDoor(PrefabIdentifier pi) {
 		if (data.ContainsKey(pi.ClassId)) {
-			CodeSwap dd = data[pi.ClassId];
-			string code = dd.getRandomizedDoorCode();
-			foreach (KeypadDoorConsole pad in pi.GetComponentsInChildren<KeypadDoorConsole>())
+			var dd = data[pi.ClassId];
+			var code = dd.getRandomizedDoorCode();
+			foreach (var pad in pi.GetComponentsInChildren<KeypadDoorConsole>())
 				pad.accessCode = code;
 			SNUtil.log("Swapping code on " + pi.name + " @ " + pi.transform.position + ": " + dd.oldCode + " > " + code + " in " + dd.encyKey, SNUtil.diDLL);
 			/*
@@ -57,17 +57,17 @@ public class KeypadCodeSwappingSystem {
 	}
 
 	internal void patchEncyPages() {
-		foreach (CodeSwap c in data.Values) {
+		foreach (var c in data.Values) {
 			if (c.encyKey == null)
 				continue;
-			string key = "EncyDesc_"+c.encyKey;
-			string code = c.getRandomizedDoorCode();
+			var key = "EncyDesc_"+c.encyKey;
+			var code = c.getRandomizedDoorCode();
 			CustomLocaleKeyDatabase.registerKey(key, Language.main.Get(key).Replace(c.oldCode, code));
 			SNUtil.log("Swapping code in ency entry " + c.encyKey + ": " + c.oldCode + " > " + c, SNUtil.diDLL);
 		}
 	}
 
-	class CodeSwap {
+	private class CodeSwap {
 
 		public readonly string prefab;
 		public readonly string encyKey;
@@ -80,17 +80,17 @@ public class KeypadCodeSwappingSystem {
 		}
 
 		public override string ToString() {
-			return string.Format("[CodeSwap Prefab={0}, EncyKey={1}, OldCode={2}]", prefab, encyKey, oldCode);
+			return $"[CodeSwap Prefab={prefab}, EncyKey={encyKey}, OldCode={oldCode}]";
 		}
 
 		internal string getRandomizedDoorCode() {
 			if (prefab == CAPTAIN_DOOR)
 				return "0000"; //impossible to enter
-			UnityEngine.Random.InitState(SNUtil.getWorldSeedInt() ^ encyKey.GetHashCode());
-			UnityEngine.Random.Range(0, 1);
-			string ret = "";
+			Random.InitState(SNUtil.getWorldSeedInt() ^ encyKey.GetHashCode());
+			Random.Range(0, 1);
+			var ret = "";
 			while (ret.Length < 4)
-				ret += (char)UnityEngine.Random.Range('1', '9' + 1);
+				ret += (char)Random.Range('1', '9' + 1);
 			return ret;
 		}
 

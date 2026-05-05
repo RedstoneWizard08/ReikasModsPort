@@ -9,7 +9,7 @@ namespace ReikaKalseki.SeaToSea;
 public static class C2CUtil {
     //exclusion radius, target count, max range
     internal static readonly Dictionary<Vector3, Tuple<float, int, float>> mercurySpawners =
-        new Dictionary<Vector3, Tuple<float, int, float>>() {
+        new() {
             { new Vector3(908.7F, -235.1F, 615.7F), Tuple.Create(2F, 4, 32F) },
             { new Vector3(904.3F, -247F, 668.8F), Tuple.Create(1F, 3, 32F) },
             { new Vector3(915.1F, -246.8F, 651.2F), Tuple.Create(2F, 6, 32F) },
@@ -19,11 +19,11 @@ public static class C2CUtil {
             { new Vector3(1245, -308.2F, 555.8F), Tuple.Create(2F, 3, 32F) },
             { new Vector3(-1216, -299.1F, 510.3F), Tuple.Create(2F, 3, 32F) },
             { new Vector3(1278, -276.4F, 497.5F), Tuple.Create(2F, 3, 32F) },
-            { new Vector3(1228, -275.6F, 483.9F), Tuple.Create(2F, 3, 32F) }
+            { new Vector3(1228, -275.6F, 483.9F), Tuple.Create(2F, 3, 32F) },
         };
 
     internal static readonly Dictionary<Vector3, Tuple<float, int, float>> calciteSpawners =
-        new Dictionary<Vector3, Tuple<float, int, float>>() {
+        new() {
             { new Vector3(-993.1F, -630.4F, -618.2F), Tuple.Create(4F, 3, 24F) },
             { new Vector3(-983.3F, -623.9F, -561.1F), Tuple.Create(4F, 5, 32F) },
             { new Vector3(-666.8F, -688.0F, -42.14F), Tuple.Create(4F, 6, 48F) },
@@ -38,7 +38,7 @@ public static class C2CUtil {
     public static bool checkConditionsAndShowPDAAndFirstVoicelogIfNot(
         params Tuple<bool, string, PDAMessages.Messages>[] checks
     ) {
-        foreach (Tuple<bool, string, PDAMessages.Messages> check in checks) {
+        foreach (var check in checks) {
             if (!checkConditionAndShowPDAAndVoicelogIfNot(check.Item1, check.Item2, check.Item3))
                 return false;
         }
@@ -61,7 +61,7 @@ public static class C2CUtil {
     }
 
     public static bool playerCanHeal() {
-        Player ep = Player.main;
+        var ep = Player.main;
         return !EnvironmentalDamageSystem.instance.isPlayerRecoveringFromPressure() && (!ep.IsSwimming() ||
             ep.GetDepth() < EnvironmentalDamageSystem.depthDamageStart ||
             LiquidBreathingSystem.instance.hasLiquidBreathing());
@@ -104,30 +104,30 @@ public static bool hasNoGasMask() {
 }*/
 
     public static void generateLavaCastleAzurite() {
-        List<GameObject> azurite = new List<GameObject>();
-        string azur = CustomMaterials.getItem(CustomMaterials.Materials.VENT_CRYSTAL).ClassID;
-        foreach (PrefabIdentifier pi in UnityEngine.Object.FindObjectsOfType<PrefabIdentifier>()) {
+        List<GameObject> azurite = [];
+        var azur = CustomMaterials.getItem(CustomMaterials.Materials.VENT_CRYSTAL).ClassID;
+        foreach (var pi in UnityEngine.Object.FindObjectsOfType<PrefabIdentifier>()) {
             if (pi.ClassId == "407e40cf-69f2-4412-8ab6-45faac5c4ea2") {
-                for (int ang = 0; ang < 360; ang += 10) {
-                    float a = UnityEngine.Random.Range(ang - 5F, ang + 5F);
+                for (var ang = 0; ang < 360; ang += 10) {
+                    var a = UnityEngine.Random.Range(ang - 5F, ang + 5F);
                     float r = 16;
-                    Vector3 dt = new Vector3(
+                    var dt = new Vector3(
                         Mathf.Cos(a) * r,
                         -UnityEngine.Random.Range(0, UnityEngine.Random.Range(25, 40)),
                         Mathf.Sin(a) * r
                     );
-                    Vector3 vec = pi.transform.position + dt;
-                    Ray ray = new Ray(vec, -dt.setY(0));
+                    var vec = pi.transform.position + dt;
+                    var ray = new Ray(vec, -dt.setY(0));
                     if (UWE.Utils.RaycastIntoSharedBuffer(
                             ray,
                             24,
                             Voxeland.GetTerrainLayerMask(),
                             QueryTriggerInteraction.Ignore
                         ) > 0) {
-                        RaycastHit hit = UWE.Utils.sharedHitBuffer[0];
+                        var hit = UWE.Utils.sharedHitBuffer[0];
                         if (hit.transform != null) {
-                            bool flag = true;
-                            foreach (PrefabIdentifier pi2 in WorldUtil.getObjectsNearWithComponent<PrefabIdentifier>(
+                            var flag = true;
+                            foreach (var pi2 in WorldUtil.getObjectsNearWithComponent<PrefabIdentifier>(
                                          hit.point,
                                          9F
                                      )) {
@@ -139,7 +139,7 @@ public static bool hasNoGasMask() {
 
                             if (!flag)
                                 continue;
-                            GameObject go = ObjectUtil.createWorldObject(azur);
+                            var go = ObjectUtil.createWorldObject(azur);
                             go.transform.rotation = MathUtil.unitVecToRotation(hit.normal);
                             go.transform.Rotate(Vector3.up * UnityEngine.Random.Range(0F, 360F), Space.Self);
                             go.transform.position = hit.point;
@@ -150,14 +150,14 @@ public static bool hasNoGasMask() {
             }
         }
 
-        string path = BuildingHandler.instance.getDumpFile("lavacastle_vents");
-        XmlDocument doc = new XmlDocument();
-        XmlElement rootnode = doc.CreateElement("Root");
+        var path = BuildingHandler.instance.getDumpFile("lavacastle_vents");
+        var doc = new XmlDocument();
+        var rootnode = doc.CreateElement("Root");
         doc.AppendChild(rootnode);
 
-        foreach (GameObject go in azurite) {
-            PositionedPrefab pfb = new PositionedPrefab(go.GetComponent<PrefabIdentifier>());
-            XmlElement e = doc.CreateElement("customprefab");
+        foreach (var go in azurite) {
+            var pfb = new PositionedPrefab(go.GetComponent<PrefabIdentifier>());
+            var e = doc.CreateElement("customprefab");
             pfb.saveToXML(e);
             doc.DocumentElement.AppendChild(e);
         }
@@ -166,31 +166,31 @@ public static bool hasNoGasMask() {
     }
 
     public static void generateLRNestPlants() {
-        Vector3 p1 = new Vector3(-786, -762.6F, -321);
-        Vector3 p2 = new Vector3(-801, -764.9F, -280);
-        Vector3 p3 = new Vector3(-788, -751.6F, -321);
+        var p1 = new Vector3(-786, -762.6F, -321);
+        var p2 = new Vector3(-801, -764.9F, -280);
+        var p3 = new Vector3(-788, -751.6F, -321);
 
-        List<GameObject> plants = new List<GameObject>();
+        List<GameObject> plants = [];
 
         for (float f = 0; f <= 1; f += 0.05F) {
-            Vector3 vec = Vector3.Lerp(p1, p2, f);
-            for (int i = 0; i < 9; i++) {
-                Vector3 rot = UnityEngine.Random.rotationUniform.eulerAngles.normalized;
-                Ray ray = new Ray(vec, rot);
+            var vec = Vector3.Lerp(p1, p2, f);
+            for (var i = 0; i < 9; i++) {
+                var rot = UnityEngine.Random.rotationUniform.eulerAngles.normalized;
+                var ray = new Ray(vec, rot);
                 if (UWE.Utils.RaycastIntoSharedBuffer(
                         ray,
                         6,
                         Voxeland.GetTerrainLayerMask(),
                         QueryTriggerInteraction.Ignore
                     ) > 0) {
-                    RaycastHit hit = UWE.Utils.sharedHitBuffer[0];
+                    var hit = UWE.Utils.sharedHitBuffer[0];
                     if (hit.transform != null) {
-                        bool flag = true;
-                        foreach (PrefabIdentifier pi in WorldUtil.getObjectsNearWithComponent<PrefabIdentifier>(
+                        var flag = true;
+                        foreach (var pi in WorldUtil.getObjectsNearWithComponent<PrefabIdentifier>(
                                      hit.point,
                                      0.2F
                                  )) {
-                            if (pi.ClassId == SeaToSeaMod.lrNestGrass.Info.ClassID) {
+                            if (pi.ClassId == SeaToSeaMod.LrNestGrass.Info.ClassID) {
                                 flag = false;
                                 break;
                             }
@@ -198,7 +198,7 @@ public static bool hasNoGasMask() {
 
                         if (!flag)
                             continue;
-                        GameObject go = ObjectUtil.createWorldObject(SeaToSeaMod.lrNestGrass.Info.ClassID);
+                        var go = ObjectUtil.createWorldObject(SeaToSeaMod.LrNestGrass.Info.ClassID);
                         go.transform.rotation = MathUtil.unitVecToRotation(hit.normal);
                         go.transform.position = hit.point;
                         plants.Add(go);
@@ -207,24 +207,24 @@ public static bool hasNoGasMask() {
             }
         }
 
-        for (int i = 0; i < 9; i++) {
-            Vector3 rot = UnityEngine.Random.rotationUniform.eulerAngles.normalized;
-            Ray ray = new Ray(p3, rot);
+        for (var i = 0; i < 9; i++) {
+            var rot = UnityEngine.Random.rotationUniform.eulerAngles.normalized;
+            var ray = new Ray(p3, rot);
             if (UWE.Utils.RaycastIntoSharedBuffer(
                     ray,
                     18,
                     Voxeland.GetTerrainLayerMask(),
                     QueryTriggerInteraction.Ignore
                 ) > 0) {
-                RaycastHit hit = UWE.Utils.sharedHitBuffer[0];
+                var hit = UWE.Utils.sharedHitBuffer[0];
                 SNUtil.writeToChat(i + ": " + hit.transform);
                 if (hit.transform != null && hit.normal.y > -0.7F) {
-                    bool flag = true;
-                    foreach (PrefabIdentifier pi in WorldUtil.getObjectsNearWithComponent<PrefabIdentifier>(
+                    var flag = true;
+                    foreach (var pi in WorldUtil.getObjectsNearWithComponent<PrefabIdentifier>(
                                  hit.point,
                                  0.2F
                              )) {
-                        if (pi.ClassId == SeaToSeaMod.lrNestGrass.Info.ClassID) {
+                        if (pi.ClassId == SeaToSeaMod.LrNestGrass.Info.ClassID) {
                             flag = false;
                             break;
                         }
@@ -232,7 +232,7 @@ public static bool hasNoGasMask() {
 
                     if (!flag)
                         continue;
-                    GameObject go = ObjectUtil.createWorldObject(SeaToSeaMod.lrNestGrass.Info.ClassID);
+                    var go = ObjectUtil.createWorldObject(SeaToSeaMod.LrNestGrass.Info.ClassID);
                     go.transform.rotation = MathUtil.unitVecToRotation(hit.normal);
                     go.transform.position = hit.point;
                     plants.Add(go);
@@ -240,14 +240,14 @@ public static bool hasNoGasMask() {
             }
         }
 
-        string path = BuildingHandler.instance.getDumpFile("lr_nest2");
-        XmlDocument doc = new XmlDocument();
-        XmlElement rootnode = doc.CreateElement("Root");
+        var path = BuildingHandler.instance.getDumpFile("lr_nest2");
+        var doc = new XmlDocument();
+        var rootnode = doc.CreateElement("Root");
         doc.AppendChild(rootnode);
 
-        foreach (GameObject go in plants) {
-            PositionedPrefab pfb = new PositionedPrefab(go.GetComponent<PrefabIdentifier>());
-            XmlElement e = doc.CreateElement("customprefab");
+        foreach (var go in plants) {
+            var pfb = new PositionedPrefab(go.GetComponent<PrefabIdentifier>());
+            var e = doc.CreateElement("customprefab");
             pfb.saveToXML(e);
             doc.DocumentElement.AppendChild(e);
         }
@@ -256,19 +256,19 @@ public static bool hasNoGasMask() {
     }
 
     public static void resizeCyclopsStorage(SubRoot sub) { //vanilla is 3x6
-        int amt = sub && sub.upgradeConsole && sub.upgradeConsole.modules != null
+        var amt = sub && sub.upgradeConsole && sub.upgradeConsole.modules != null
             ? sub.upgradeConsole.modules.GetCount(C2CItems.cyclopsStorage.Info.TechType)
             : 0;
-        int slots = 18; //18 vanilla base
+        var slots = 18; //18 vanilla base
         // TODO
         // if (QModManager.API.QModServices.Main.ModPresent("MoreCyclopsUpgrades"))
         //     slots += 6 + (amt * 6) + (amt / 2 * 12); //https://i.imgur.com/JUr54tB.png
         // else
-        slots += (18 * amt) + (18 * (amt / 2)); //https://i.imgur.com/K5UaRHZ.png
+        slots += 18 * amt + 18 * (amt / 2); //https://i.imgur.com/K5UaRHZ.png
         //int w = Math.Min(3+amt, 6);
         //int h = 6+amt*2;
-        int w = 3;
-        int h = slots / w;
+        var w = 3;
+        var h = slots / w;
         while (w < 6 && h >= 9) {
             w++;
             while (slots % w != 0)
@@ -276,8 +276,8 @@ public static bool hasNoGasMask() {
             h = slots / w;
         }
 
-        foreach (CyclopsLocker cl in sub.GetComponentsInChildren<CyclopsLocker>()) {
-            StorageContainer sc = cl.GetComponent<StorageContainer>();
+        foreach (var cl in sub.GetComponentsInChildren<CyclopsLocker>()) {
+            var sc = cl.GetComponent<StorageContainer>();
             sc.Resize(w, h);
         }
     }
@@ -288,27 +288,27 @@ public static bool hasNoGasMask() {
         Player.main.SuffocationReset();
         IngameMenu.main.gameObject.SetActive(true);
         IngameMenu.main.ChangeSubscreen("QuitConfirmation");
-        UnityEngine.UI.Text txt = IngameMenu.main.currentScreen.getChildObject("Header")
+        var txt = IngameMenu.main.currentScreen.getChildObject("Header")
             .GetComponent<UnityEngine.UI.Text>();
         txt.text = "You died. Please reload your save.";
         txt.fontSize = 20;
         IngameMenu.main.currentScreen.getChildObject("ButtonNo").SetActive(false);
-        GameObject yes = IngameMenu.main.currentScreen.getChildObject("ButtonYes");
+        var yes = IngameMenu.main.currentScreen.getChildObject("ButtonYes");
         yes.GetComponentInChildren<UnityEngine.UI.Text>().text = "Main Menu";
         yes.transform.localPosition = new Vector3(0, yes.transform.localPosition.y, yes.transform.localPosition.z);
     }
 
     public static void swapRepulsionCannons() {
-        InventoryItem ii = Inventory.main.quickSlots.heldItem;
-        TechType tt = ii == null || !ii.item ? TechType.None : ii.item.GetTechType();
+        var ii = Inventory.main.quickSlots.heldItem;
+        var tt = ii == null || !ii.item ? TechType.None : ii.item.GetTechType();
         if (ii != null && (tt == TechType.PropulsionCannon || tt == TechType.RepulsionCannon)) {
-            TechType to = tt == TechType.PropulsionCannon ? TechType.RepulsionCannon : TechType.PropulsionCannon;
-            int selSlot = InventoryUtil.getActiveQuickslot();
+            var to = tt == TechType.PropulsionCannon ? TechType.RepulsionCannon : TechType.PropulsionCannon;
+            var selSlot = InventoryUtil.getActiveQuickslot();
             //TechType batt = TechType.None;
             float battCh = -1;
             Pickupable batt = null;
-            PlayerTool pt = ii.item.GetComponent<PlayerTool>();
-            EnergyMixin e = pt.energyMixin;
+            var pt = ii.item.GetComponent<PlayerTool>();
+            var e = pt.energyMixin;
             if (e) {
                 /*
                 IBattery ib = e.battery;
@@ -323,9 +323,9 @@ public static bool hasNoGasMask() {
 
             Inventory.main.container.forceRemoveItem(ii);
             InventoryUtil.addItem(to);
-            InventoryItem put = Inventory.main.container.getItem(to);
+            var put = Inventory.main.container.getItem(to);
             if (put != null) {
-                PlayerTool pt2 = put.item.GetComponent<PlayerTool>();
+                var pt2 = put.item.GetComponent<PlayerTool>();
                 if (batt /* != TechType.None*/) {
                     //pt2.energyMixin.gameObject.EnsureComponent<DelayedBatterySwapCallback>().init(batt, battCh, e).Invoke("apply", 1.5F);
                     pt2.energyMixin.batterySlot.AddItem(batt);
@@ -352,8 +352,8 @@ public static bool hasNoGasMask() {
     }
 
     public static void cleanup() {
-        int ptc = 0;
-        foreach (PlatinumTag pt in UnityEngine.Object.FindObjectsOfType<PlatinumTag>()) {
+        var ptc = 0;
+        foreach (var pt in UnityEngine.Object.FindObjectsOfType<PlatinumTag>()) {
             pt.gameObject.destroy();
             ptc++;
         }

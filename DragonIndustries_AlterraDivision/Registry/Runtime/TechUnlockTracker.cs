@@ -5,20 +5,20 @@ namespace ReikaKalseki.DIAlterra;
 
 public class TechUnlockTracker : SerializedTracker<TechUnlockTracker.TechUnlock> {
 
-	public static readonly TechUnlockTracker instance = new TechUnlockTracker();
+	public static readonly TechUnlockTracker instance = new();
 
-	private readonly Dictionary<TechType, TechUnlock> unlocks = new Dictionary<TechType, TechUnlock>();
+	private readonly Dictionary<TechType, TechUnlock> unlocks = new();
 
 	private TechUnlockTracker() : base("Unlocks.dat", true, parseUnlock, parseLegacyUnlock) {
 
 	}
 
 	public void onUnlock(TechType tt) {
-		this.add(new TechUnlock(tt, DayNightCycle.main.timePassedAsFloat));
+		add(new TechUnlock(tt, DayNightCycle.main.timePassedAsFloat));
 	}
 
 	public void onScan(PDAScanner.EntryData scan) {
-		this.add(new TechUnlock(scan.key, DayNightCycle.main.timePassedAsFloat, true));
+		add(new TechUnlock(scan.key, DayNightCycle.main.timePassedAsFloat, true));
 	}
 
 	public TechUnlock getUnlock(TechType tt) {
@@ -30,8 +30,8 @@ public class TechUnlockTracker : SerializedTracker<TechUnlockTracker.TechUnlock>
 	}
 
 	private static TechUnlock parseLegacyUnlock(string s) {
-		string[] parts = s.Split(',');
-		TechType tt = SNUtil.getTechType(parts[0]);
+		var parts = s.Split(',');
+		var tt = SNUtil.getTechType(parts[0]);
 		return new TechUnlock(tt, float.Parse(parts[1]), bool.Parse(parts[2]));
 	}
 
@@ -61,7 +61,7 @@ public class TechUnlockTracker : SerializedTracker<TechUnlockTracker.TechUnlock>
 		}
 
 		public override string ToString() {
-			return string.Format("[TechUnlock Tech={0}, IsScan={1}, Time={2}]", tech, isScan, eventTime);
+			return $"[TechUnlock Tech={tech}, IsScan={isScan}, Time={eventTime}]";
 		}
 
 

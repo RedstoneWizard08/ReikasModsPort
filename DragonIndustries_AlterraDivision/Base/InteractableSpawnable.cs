@@ -13,7 +13,7 @@ public abstract class InteractableSpawnable : CustomPrefab {
 
     public float scanTime = 1;
 
-    public Action<PDAScanner.EntryData> scanEntryModifier = null;
+    public Action<PDAScanner.EntryData> scanEntryModifier;
 
     public readonly Assembly ownerMod;
 
@@ -47,10 +47,9 @@ public abstract class InteractableSpawnable : CustomPrefab {
         scanCount = count;
         fragmentUnlock = unlock;
         KnownTechHandler.SetAnalysisTechEntry(Info.TechType, new List<TechType>() { fragmentUnlock });
-        Action<PDAScanner.EntryData> old = scanEntryModifier;
+        var old = scanEntryModifier;
         scanEntryModifier = e => {
-            if (old != null)
-                old.Invoke(e);
+            old?.Invoke(e);
             e.isFragment = true;
             e.blueprint = fragmentUnlock;
             e.totalFragments = scanCount;

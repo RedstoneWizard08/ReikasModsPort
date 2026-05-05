@@ -14,15 +14,15 @@ public sealed class ObjectDeleter : CustomPrefab {
     }
 
     public GameObject GetGameObject() {
-        GameObject world = new GameObject();
+        var world = new GameObject();
         world.EnsureComponent<ObjectDeleterTag>();
         world.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.Medium;
         return world;
     }
 
-    class ObjectDeleterTag : MonoBehaviour {
-        void Start() {
-            foreach (PrefabIdentifier go in WorldUtil.getObjectsNearWithComponent<PrefabIdentifier>(
+    private class ObjectDeleterTag : MonoBehaviour {
+        private void Start() {
+            foreach (var go in WorldUtil.getObjectsNearWithComponent<PrefabIdentifier>(
                          transform.position,
                          transform.localScale.x
                      )) {

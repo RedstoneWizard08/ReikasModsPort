@@ -21,13 +21,13 @@ using UnityEngine; //Needed for most Unity Enginer manipulations: Vectors, GameO
 
 namespace ReikaKalseki.Reefbalance;
 
-static class RBPatches {
+internal static class RBPatches {
     [HarmonyPatch(typeof(Eatable))]
     [HarmonyPatch("GetFoodValue")]
     public static class DecayRateAndTimePatch {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try { /*
             int sub = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Sub);
             InsnList inject = new InsnList();
@@ -90,9 +90,9 @@ static class RBPatches {
     [HarmonyPatch(typeof(SeamothStorageContainer))]
     [HarmonyPatch("Init")]
     public static class SeamothStorageBoost {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try { /*
             int sub = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Sub);
             InsnList inject = new InsnList();
@@ -124,9 +124,9 @@ static class RBPatches {
     [HarmonyPatch(typeof(Exosuit))]
     [HarmonyPatch("UpdateStorageSize")]
     public static class PrawnStorageBoost {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList();
+            InsnList codes = [];
             try { /*
             int sub = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Sub);
             InsnList inject = new InsnList();
@@ -157,11 +157,11 @@ static class RBPatches {
     [HarmonyPatch(typeof(Drillable))]
     [HarmonyPatch("OnDrill")]
     public static class PrawnDrillSpeedHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Ldc_R4, 5F);
+                var idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Ldc_R4, 5F);
                 codes[idx] = InstructionHandlers.createMethodCall(
                     "ReikaKalseki.Reefbalance.ReefbalanceMod",
                     "getDrillingSpeed",
@@ -189,11 +189,11 @@ static class RBPatches {
     [HarmonyPatch(typeof(ConstructableBase))]
     [HarmonyPatch("SetState")]
     public static class BuildingDestroyCollidingCheck {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getInstruction(
+                var idx = InstructionHandlers.getInstruction(
                     codes,
                     0,
                     0,
@@ -225,11 +225,11 @@ static class RBPatches {
     [HarmonyPatch(typeof(DataboxSpawner))]
     [HarmonyPatch("Start")]
     public static class DataboxDuplicateRemovalHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getInstruction(
+                var idx = InstructionHandlers.getInstruction(
                     codes,
                     0,
                     0,

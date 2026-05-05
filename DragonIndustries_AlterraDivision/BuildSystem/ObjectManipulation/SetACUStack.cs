@@ -19,11 +19,11 @@ internal class SetACUStack : ManipulationBase {
 	private bool glassTop;
 
 	public override void applyToObject(GameObject go) {
-		GameObject floor = go.getChildObject("BaseWaterParkFloorBottom");
-		GameObject middleBottom = go.getChildObject("BaseWaterParkFloorMiddle");
-		GameObject middleTop = go.getChildObject("BaseWaterParkCeilingMiddle");
-		GameObject ceiling = go.getChildObject("BaseWaterParkCeilingTop");
-		GameObject gt = go.getChildObject("BaseWaterParkCeilingGlass");
+		var floor = go.getChildObject("BaseWaterParkFloorBottom");
+		var middleBottom = go.getChildObject("BaseWaterParkFloorMiddle");
+		var middleTop = go.getChildObject("BaseWaterParkCeilingMiddle");
+		var ceiling = go.getChildObject("BaseWaterParkCeilingTop");
+		var gt = go.getChildObject("BaseWaterParkCeilingGlass");
 		floor.SetActive(isBottomOfStack);
 		middleBottom.SetActive(!isBottomOfStack);
 		ceiling.SetActive(isTopOfStack);
@@ -32,7 +32,7 @@ internal class SetACUStack : ManipulationBase {
 	}
 
 	public override void applyToObject(PlacedObject go) {
-		this.applyToObject(go.obj);
+		applyToObject(go.obj);
 	}
 
 	public override void loadFromXML(XmlElement e) {

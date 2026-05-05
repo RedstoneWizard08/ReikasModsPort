@@ -8,8 +8,8 @@ public static class PDAMessages {
 
 	public static void addAll() {
 		foreach (Messages m in Enum.GetValues(typeof(Messages))) {
-			Message attr = getAttr(m);
-			XMLLocale.LocaleEntry e = SeaToSeaMod.miscLocale.getEntry(attr.key);
+			var attr = getAttr(m);
+			var e = SeaToSeaMod.MiscLocale.getEntry(attr.key);
 			PDAMessagePrompts.instance.addPDAMessage(e);
 		}
 	}
@@ -44,7 +44,7 @@ public static class PDAMessages {
 	}
 
 	public static Message getAttr(Messages key) {
-		FieldInfo info = typeof(Messages).GetField(Enum.GetName(typeof(Messages), key));
+		var info = typeof(Messages).GetField(Enum.GetName(typeof(Messages), key));
 		return (Message)Attribute.GetCustomAttribute(info, typeof(Message));
 	}
 

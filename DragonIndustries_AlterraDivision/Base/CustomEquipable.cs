@@ -9,7 +9,7 @@ using UnityEngine;
 namespace ReikaKalseki.DIAlterra;
 
 public abstract class CustomEquipable : CustomPrefab, DIPrefab<CustomEquipable, StringPrefabContainer> {
-    private readonly List<PlannedIngredient> recipe = new List<PlannedIngredient>();
+    private readonly List<PlannedIngredient> recipe = [];
     public readonly string id;
 
     private readonly Assembly ownerMod;
@@ -25,7 +25,7 @@ public abstract class CustomEquipable : CustomPrefab, DIPrefab<CustomEquipable, 
     protected CustomEquipable(XMLLocale.LocaleEntry e, string template) : this(e.key, e.name, e.desc, template) {
         if (!string.IsNullOrEmpty(e.pda)) {
             page = PDAManager.createPage("ency_" + Info.ClassID, Info.PrefabFileName, e.pda, "Tech/Equipment");
-            string header = e.getString("header");
+            var header = e.getString("header");
             if (header != null)
                 page.setHeaderImage(TextureManager.getTexture(SNUtil.tryGetModDLL(), "Textures/PDA/" + header));
             page.register();
@@ -55,6 +55,7 @@ public abstract class CustomEquipable : CustomPrefab, DIPrefab<CustomEquipable, 
 
                 craft.FabricatorType = FabricatorType;
                 craft.StepsToFabricatorTab = StepsToFabricatorTab;
+                craft.CraftingTime = CraftingTime;
 
                 this.SetPdaGroupCategory(GroupForPDA, CategoryForPDA);
 
@@ -72,15 +73,15 @@ public abstract class CustomEquipable : CustomPrefab, DIPrefab<CustomEquipable, 
     }*/
 
     public CustomEquipable addIngredient(ItemDef item, int amt) {
-        return this.addIngredient(item.getTechType(), amt);
+        return addIngredient(item.getTechType(), amt);
     }
 
     public CustomEquipable addIngredient(CustomPrefab item, int amt) {
-        return this.addIngredient(new ModPrefabTechReference(item), amt);
+        return addIngredient(new ModPrefabTechReference(item), amt);
     }
 
     public CustomEquipable addIngredient(TechType item, int amt) {
-        return this.addIngredient(new TechTypeContainer(item), amt);
+        return addIngredient(new TechTypeContainer(item), amt);
     }
 
     public CustomEquipable addIngredient(TechTypeReference item, int amt) {
@@ -88,54 +89,32 @@ public abstract class CustomEquipable : CustomPrefab, DIPrefab<CustomEquipable, 
         return this;
     }
 
-    public virtual EquipmentType EquipmentType {
-        get { return EquipmentType.None; }
-    }
+    public virtual EquipmentType EquipmentType => EquipmentType.None;
 
-    public virtual TechType RequiredForUnlock {
-        get { return dependency == TechType.Unobtanium ? TechType.None : dependency; }
-    }
+    public virtual TechType RequiredForUnlock => dependency == TechType.Unobtanium ? TechType.None : dependency;
 
-    public virtual bool UnlockedAtStart {
-        get {
-            return dependency != TechType.Unobtanium && RequiredForUnlock == TechType.None &&
-                   (GetGadget<ScanningGadget>() == null || GetGadget<ScanningGadget>().CompoundTechsForUnlock == null);
-        }
-    }
+    public virtual bool UnlockedAtStart =>
+        dependency != TechType.Unobtanium && RequiredForUnlock == TechType.None &&
+        (GetGadget<ScanningGadget>() == null || GetGadget<ScanningGadget>().CompoundTechsForUnlock == null);
 
     public void preventNaturalUnlock() {
         dependency = TechType.Unobtanium;
     }
 
-    public virtual QuickSlotType QuickSlotType {
-        get { return QuickSlotType.Passive; }
-    }
+    public virtual QuickSlotType QuickSlotType => QuickSlotType.Passive;
 
-    public virtual CraftTree.Type FabricatorType {
-        get { return CraftTree.Type.Fabricator; }
-    }
+    public virtual CraftTree.Type FabricatorType => CraftTree.Type.Fabricator;
 
-    public virtual string[] StepsToFabricatorTab {
-        get {
-            return
-                new string[]
-                    { "Personal", "Equipment" }; //return new string[]{"DISeamoth"};//new string[]{"SeamothModules"};
-        }
-    }
+    public virtual float CraftingTime => 0f;
 
-    public virtual TechGroup GroupForPDA {
-        get { return TechGroup.Personal; }
-    }
+    public virtual string[] StepsToFabricatorTab =>
+        ["Personal", "Equipment"]; //return new string[]{"DISeamoth"};//new string[]{"SeamothModules"};
 
-    public virtual TechCategory CategoryForPDA {
-        get { return isArmor ? TechCategory.Equipment : TechCategory.Tools; }
-    }
+    public virtual TechGroup GroupForPDA => TechGroup.Personal;
 
-    public virtual Vector2int SizeInInventory {
-        get {
-            return new Vector2int(1, 1);
-        }
-    }
+    public virtual TechCategory CategoryForPDA => isArmor ? TechCategory.Equipment : TechCategory.Tools;
+
+    public virtual Vector2int SizeInInventory => new(1, 1);
 
     protected virtual Sprite GetItemSprite() {
         return TextureManager.getSprite(ownerMod, "Textures/Items/" + ObjectUtil.formatFileName(this));
@@ -163,18 +142,18 @@ public abstract class CustomEquipable : CustomPrefab, DIPrefab<CustomEquipable, 
     }
 
     public Sprite getIcon() {
-        return this.GetItemSprite();
+        return GetItemSprite();
     }
 
     protected RecipeData GetBlueprintRecipe() {
         return new RecipeData {
             Ingredients = RecipeUtil.buildRecipeList(recipe),
             craftAmount = 1,
-            LinkedItems = this.getAuxCrafted()
+            LinkedItems = getAuxCrafted(),
         };
     }
 
     public virtual List<TechType> getAuxCrafted() {
-        return new List<TechType>();
+        return [];
     }
 }

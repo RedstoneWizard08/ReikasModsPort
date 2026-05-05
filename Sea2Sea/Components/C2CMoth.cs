@@ -11,7 +11,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal class C2CMoth : MonoBehaviour {
     private static readonly SoundManager.SoundData startPurgingSound = SoundManager.registerSound(
-        SeaToSeaMod.modDLL,
+        SeaToSeaMod.ModDLL,
         "startheatsink",
         "Sounds/startheatsink2.ogg",
         SoundManager.soundMode3D,
@@ -19,7 +19,7 @@ internal class C2CMoth : MonoBehaviour {
     );
 
     private static readonly SoundManager.SoundData meltingSound = SoundManager.registerSound(
-        SeaToSeaMod.modDLL,
+        SeaToSeaMod.ModDLL,
         "seamothmelt",
         "Sounds/seamothmelt2.ogg",
         SoundManager.soundMode3D,
@@ -27,7 +27,7 @@ internal class C2CMoth : MonoBehaviour {
     );
 
     private static readonly SoundManager.SoundData boostSound = SoundManager.registerSound(
-        SeaToSeaMod.modDLL,
+        SeaToSeaMod.ModDLL,
         "seamothboost",
         "Sounds/seamothboost.ogg",
         SoundManager.soundMode3D,
@@ -35,7 +35,7 @@ internal class C2CMoth : MonoBehaviour {
     );
 
     private static readonly SoundManager.SoundData purgeEnergySound = SoundManager.registerSound(
-        SeaToSeaMod.modDLL,
+        SeaToSeaMod.ModDLL,
         "seamothsounddump",
         "Sounds/stealthsounddump2.ogg",
         SoundManager.soundMode3D,
@@ -43,7 +43,7 @@ internal class C2CMoth : MonoBehaviour {
     );
     //private static readonly SoundManager.SoundData ejectionPrepareSound = SoundManager.registerSound(SeaToSeaMod.modDLL, "heatsinkEjectPrepare", "Sounds/heatsinkejectprepare.ogg", SoundManager.soundMode3D, s => {SoundManager.setup3D(s, 120);}, SoundSystem.masterBus);
 
-    private static readonly Vector3 sweepArchCave = new Vector3(1570, -338, 1075);
+    private static readonly Vector3 sweepArchCave = new(1570, -338, 1075);
 
     internal static bool useSeamothVehicleTemperature = true;
 
@@ -57,10 +57,10 @@ internal class C2CMoth : MonoBehaviour {
     public static float getOverrideTemperature(float temp) {
         if (!useSeamothVehicleTemperature)
             return temp;
-        Player ep = Player.main;
+        var ep = Player.main;
         if (!ep)
             return temp;
-        Vehicle v = ep.GetVehicle();
+        var v = ep.GetVehicle();
         return !v ? temp : getOverrideTemperature(v, temp);
     }
 
@@ -68,7 +68,7 @@ internal class C2CMoth : MonoBehaviour {
         if (!useSeamothVehicleTemperature)
             return temp;
         if (v is SeaMoth) {
-            C2CMoth cm = v.GetComponent<C2CMoth>();
+            var cm = v.GetComponent<C2CMoth>();
             if (cm)
                 return cm.vehicleTemperature;
         }
@@ -89,13 +89,11 @@ internal class C2CMoth : MonoBehaviour {
 
     public float vehicleTemperature { get; private set; }
 
-    private float holdTempLowTime = 0;
+    private float holdTempLowTime;
 
     private float temperatureAtPurge = -1;
 
-    public bool isPurgingHeat {
-        get { return temperatureAtPurge >= 0; }
-    }
+    public bool isPurgingHeat => temperatureAtPurge >= 0;
 
     private float lastMeltSound = -1;
     //private float lastPreEjectSound = -1;
@@ -112,40 +110,38 @@ internal class C2CMoth : MonoBehaviour {
 
     public float voidStealthStoredEnergy { get; private set; }
 
-    public bool hasVoidStealth = false;
+    public bool hasVoidStealth;
 
     //private Renderer deepStalkerStorageDamage;
 
     private static uGUI_SeamothHUD seamothHUD;
     private SeamothWithStealthHUD stealthEnabledSeamothHUDElement;
 
-    public float soundStorageScalar {
-        get { return Mathf.Clamp01(voidStealthStoredEnergy / MAX_VOIDSTEALTH_ENERGY); }
-    } //0-1
+    public float soundStorageScalar => Mathf.Clamp01(voidStealthStoredEnergy / MAX_VOIDSTEALTH_ENERGY); //0-1
 
     public C2CMoth() {
         vehicleTemperature = 25;
     }
 
-    void Start() {
+    private void Start() {
         useSeamothVehicleTemperature = false;
         vehicleTemperature = WaterTemperatureSimulation.main.GetTemperature(transform.position);
         useSeamothVehicleTemperature = true;
 
-        this.Invoke("validateDepthModules", 0.5F);
+        Invoke(nameof(validateDepthModules), 0.5F);
     }
 
-    void validateDepthModules() {
+    private void validateDepthModules() {
         if (!seamoth || seamoth.modules == null) {
-            this.Invoke("validateDepthModules", 0.5F);
+            Invoke(nameof(validateDepthModules), 0.5F);
             return;
         }
 
-        if (!C2CProgression.isSeamothDepth1UnlockedLegitimately()) {
-            foreach (int idx in seamoth.slotIndexes.Values) {
-                InventoryItem ii = seamoth.GetSlotItem(idx);
+        if (!C2CProgression.IsSeamothDepth1UnlockedLegitimately()) {
+            foreach (var idx in seamoth.slotIndexes.Values) {
+                var ii = seamoth.GetSlotItem(idx);
                 if (ii != null && ii.item) {
-                    TechType tt = ii.item.GetTechType();
+                    var tt = ii.item.GetTechType();
                     if (tt == TechType.VehicleHullModule1 || tt == TechType.VehicleHullModule2 ||
                         tt == TechType.VehicleHullModule3 || tt == C2CItems.depth1300.Info.TechType) {
                         ItemUnlockLegitimacySystem.instance.destroyModule(seamoth.modules, ii, seamoth.slotIDs[idx]);
@@ -160,17 +156,17 @@ internal class C2CMoth : MonoBehaviour {
         }
     }
 
-    void Update() {
+    private void Update() {
         if (C2CHooks.skipSeamothTick)
             return;
         if (!stealthEnabledSeamothHUDElement) {
-            seamothHUD = UnityEngine.Object.FindObjectOfType<uGUI_SeamothHUD>();
+            seamothHUD = FindObjectOfType<uGUI_SeamothHUD>();
             if (seamothHUD) {
                 stealthEnabledSeamothHUDElement = seamothHUD.gameObject.EnsureComponent<SeamothWithStealthHUD>();
                 if (!stealthEnabledSeamothHUDElement.root) {
-                    GameObject hudRoot = seamothHUD.root.transform.parent.gameObject;
-                    uGUI_ExosuitHUD exo = seamothHUD.GetComponent<uGUI_ExosuitHUD>();
-                    GameObject go = exo.root.gameObject.clone().setName("SeamothStealthHUD");
+                    var hudRoot = seamothHUD.root.transform.parent.gameObject;
+                    var exo = seamothHUD.GetComponent<uGUI_ExosuitHUD>();
+                    var go = exo.root.gameObject.clone().setName("SeamothStealthHUD");
                     go.SetActive(true);
                     go.transform.SetParent(exo.root.transform.parent);
                     go.transform.localPosition = exo.root.transform.localPosition;
@@ -180,12 +176,12 @@ internal class C2CMoth : MonoBehaviour {
                     stealthEnabledSeamothHUDElement.root = go;
                 }
 
-                Image bcg = stealthEnabledSeamothHUDElement.root.getChildObject("Background").GetComponent<Image>();
-                Texture2D tex = TextureManager.getTexture(SeaToSeaMod.modDLL, "Textures/SeamothStealthHUD");
+                var bcg = stealthEnabledSeamothHUDElement.root.getChildObject("Background").GetComponent<Image>();
+                var tex = TextureManager.getTexture(SeaToSeaMod.ModDLL, "Textures/SeamothStealthHUD");
                 bcg.sprite = TextureManager.createSprite(tex);
-                Image bar = stealthEnabledSeamothHUDElement.root.getChildObject("ThrustBar").GetComponent<Image>();
-                Material mat = bar.material;
-                tex = TextureManager.getTexture(SeaToSeaMod.modDLL, "Textures/SeamothStealthEnergyBar");
+                var bar = stealthEnabledSeamothHUDElement.root.getChildObject("ThrustBar").GetComponent<Image>();
+                var mat = bar.material;
+                tex = TextureManager.getTexture(SeaToSeaMod.ModDLL, "Textures/SeamothStealthEnergyBar");
                 bar.sprite = TextureManager.createSprite(tex);
                 bar.material = mat;
                 mat.mainTexture = tex;
@@ -194,10 +190,10 @@ internal class C2CMoth : MonoBehaviour {
             }
         }
 
-        float time = DayNightCycle.main.timePassedAsFloat;
-        float dT = time - lastTickTime;
+        var time = DayNightCycle.main.timePassedAsFloat;
+        var dT = time - lastTickTime;
         if (dT >= TICK_RATE) {
-            this.tick(time, Mathf.Min(1, dT));
+            tick(time, Mathf.Min(1, dT));
             lastTickTime = time;
         }
     }
@@ -206,7 +202,7 @@ internal class C2CMoth : MonoBehaviour {
         temperatureAtPurge = vehicleTemperature;
         SNUtil.log(
             "Starting heat purge (" + temperatureAtPurge + ") @ " + DayNightCycle.main.timePassedAsFloat,
-            SeaToSeaMod.modDLL
+            SeaToSeaMod.ModDLL
         );
         //Invoke("fireHeatsink", 1.5F);
         heatsinkSoundEvent = SoundManager.playSoundAt(startPurgingSound, transform.position, false, -1, 0.67F);
@@ -215,13 +211,13 @@ internal class C2CMoth : MonoBehaviour {
     internal void fireHeatsink(float time) {
         SNUtil.log(
             "Heat purge complete @ " + time + " (" + holdTempLowTime + "/" + HOLD_LOW_TIME + "), firing heatsink",
-            SeaToSeaMod.modDLL
+            SeaToSeaMod.ModDLL
         );
-        GameObject go = ObjectUtil.createWorldObject(SeaToSeaMod.ejectedHeatSink.Info.ClassID);
-        go.transform.position = seamoth.transform.position + (seamoth.transform.forward * 4);
+        var go = ObjectUtil.createWorldObject(SeaToSeaMod.EjectedHeatSink.Info.ClassID);
+        go.transform.position = seamoth.transform.position + seamoth.transform.forward * 4;
         go.GetComponent<Rigidbody>().AddForce(seamoth.transform.forward * 20, ForceMode.VelocityChange);
         body.AddForce(-seamoth.transform.forward * 5, ForceMode.VelocityChange);
-        go.GetComponent<HeatSinkTag>().onFired(Mathf.Clamp01((temperatureAtPurge / 250F * 0.25F) + 0.75F));
+        go.GetComponent<HeatSinkTag>().onFired(Mathf.Clamp01(temperatureAtPurge / 250F * 0.25F + 0.75F));
     }
 
     internal void dumpSoundEnergy() {
@@ -247,13 +243,13 @@ internal class C2CMoth : MonoBehaviour {
             }
         }
         */
-        float r = 150 * Mathf.Clamp(soundStorageScalar, 0.33F, 0.67F); //so minimum 50m <= 33% and max 100m >= 67%
+        var r = 150 * Mathf.Clamp(soundStorageScalar, 0.33F, 0.67F); //so minimum 50m <= 33% and max 100m >= 67%
         /*
         foreach (AggressiveToPilotingVehicle a in WorldUtil.getObjectsNearWithComponent<AggressiveToPilotingVehicle>(transform.position, r)) {
             if (a.lastTarget && a.lastTarget.target && a.lastTarget.target == gameObject)
                 a.lastTarget.SetTarget(null);
         }*/
-        foreach (AttackLastTarget a in WorldUtil.getObjectsNearWithComponent<AttackLastTarget>(transform.position, r)) {
+        foreach (var a in WorldUtil.getObjectsNearWithComponent<AttackLastTarget>(transform.position, r)) {
             a.clearAttackTarget();
         }
 
@@ -280,33 +276,33 @@ internal class C2CMoth : MonoBehaviour {
 
     internal void tick(float time, float tickTime) {
         if (!seamoth)
-            seamoth = this.GetComponent<SeaMoth>();
+            seamoth = GetComponent<SeaMoth>();
         if (!body)
-            body = this.GetComponent<Rigidbody>();
+            body = GetComponent<Rigidbody>();
         if (!ecocean)
-            ecocean = this.GetComponent<ECMoth>();
+            ecocean = GetComponent<ECMoth>();
         if (!engineSounds) {
-            engineSounds = this.GetComponentInChildren<EngineRpmSFXManager>().gameObject
+            engineSounds = GetComponentInChildren<EngineRpmSFXManager>().gameObject
                 .GetComponent<FMOD_CustomLoopingEmitter>();
         }
 
         if (!speedModifier)
             speedModifier = seamoth.addSpeedModifier();
         if (!temperatureDamage) {
-            temperatureDamage = this.GetComponent<TemperatureDamage>();
+            temperatureDamage = GetComponent<TemperatureDamage>();
             baseDamageAmount = temperatureDamage.baseDamagePerSecond;
         }
 
         if (!tethers)
-            tethers = this.GetComponent<SeamothTetherController>();
+            tethers = GetComponent<SeamothTetherController>();
         if (!damageFX)
             damageFX = gameObject.GetComponent<VFXVehicleDamages>();
 
-        bool hard = SeaToSeaMod.config.getBoolean(C2CConfig.ConfigEntries.HARDMODE);
+        var hard = SeaToSeaMod.ModConfig.getBoolean(C2CConfig.ConfigEntries.HARDMODE);
 
-        float health = seamoth.liveMixin.GetHealthFraction();
+        var health = seamoth.liveMixin.GetHealthFraction();
 
-        float minSpeedBonus = seamoth.isVehicleUpgradeSelected(C2CItems.speedModule.Info.TechType) ? 0.25F : 0;
+        var minSpeedBonus = seamoth.isVehicleUpgradeSelected(C2CItems.speedModule.Info.TechType) ? 0.25F : 0;
         if (speedBonus > minSpeedBonus)
             speedBonus *= 0.933F;
         else
@@ -319,12 +315,12 @@ internal class C2CMoth : MonoBehaviour {
         //SNUtil.writeToChat(speedBonus.ToString("0.000"));
 
         if (heatsinkSoundEvent != null && heatsinkSoundEvent.Value.hasHandle()) {
-            ATTRIBUTES_3D attr = transform.position.To3DAttributes();
+            var attr = transform.position.To3DAttributes();
             heatsinkSoundEvent.Value.set3DAttributes(ref attr.position, ref attr.velocity);
         }
 
         if (boostSoundEvent != null && boostSoundEvent.Value.hasHandle()) {
-            ATTRIBUTES_3D attr = transform.position.To3DAttributes();
+            var attr = transform.position.To3DAttributes();
             boostSoundEvent.Value.set3DAttributes(ref attr.position, ref attr.velocity);
         }
 
@@ -343,8 +339,8 @@ internal class C2CMoth : MonoBehaviour {
         }
 
         if (speedBonus > 0.5F) { //during boost only
-            float jitter = ((speedBonus + 1) * (speedBonus + 1)) - 1; //0.25 -> 0.56, 3 -> 8
-            Vector3 add = jitterTorque * tickTime * jitter * 25000;
+            var jitter = (speedBonus + 1) * (speedBonus + 1) - 1; //0.25 -> 0.56, 3 -> 8
+            var add = jitterTorque * tickTime * jitter * 25000;
             body.AddTorque(add, ForceMode.Force);
             //SNUtil.writeToChat("Adding jitter: "+add);
         }
@@ -356,21 +352,21 @@ internal class C2CMoth : MonoBehaviour {
             jitterTorque += (jitterTorqueTarget - jitterTorque) * Mathf.Min(1, tickTime * 9);
         }
 
-        bool kooshCave = false;
-        bool geyser = time - ecocean.lastGeyserTime <= 0.5F;
+        var kooshCave = false;
+        var geyser = time - ecocean.lastGeyserTime <= 0.5F;
 
         if (health < 0.5F) {
             //float force = 1+(Mathf.Pow((0.5F-health)*2, 1.5F)*9);
             body.AddForce(Vector3.down * tickTime * 50, ForceMode.Acceleration);
         }
 
-        if (VanillaBiomes.KOOSH.isInBiome(transform.position)) {
-            string biome = WaterBiomeManager.main.GetBiome(transform.position, false);
+        if (VanillaBiomes.Koosh.IsInBiome(transform.position)) {
+            var biome = WaterBiomeManager.main.GetBiome(transform.position, false);
             if (biome != null && biome.ToLowerInvariant().Contains("cave") &&
                 Vector3.Distance(transform.position, sweepArchCave) >= 40) {
                 kooshCave = true;
-                Vector3 vel = body.velocity;
-                Vector3 vec = Vector3.zero;
+                var vel = body.velocity;
+                var vec = Vector3.zero;
                 vec = vel.magnitude < 0.2
                     ? UnityEngine.Random.onUnitSphere * 0.6F
                     : MathUtil.rotateVectorAroundAxis(
@@ -392,7 +388,7 @@ internal class C2CMoth : MonoBehaviour {
                 vehicleTemperature = 5;
                 holdTempLowTime += tickTime;
                 if (holdTempLowTime >= HOLD_LOW_TIME) {
-                    this.fireHeatsink(time);
+                    fireHeatsink(time);
                     temperatureAtPurge = -1;
                 }
             } else {
@@ -406,7 +402,7 @@ internal class C2CMoth : MonoBehaviour {
         } else {
             holdTempLowTime = 0;
             useSeamothVehicleTemperature = false;
-            float Tamb = temperatureDamage.GetTemperature(); // this will call WaterTempSim, after the lava checks in DI
+            var Tamb = temperatureDamage.GetTemperature(); // this will call WaterTempSim, after the lava checks in DI
             if (seamoth.docked || seamoth.IsInsideAquarium() ||
                 EnvironmentalDamageSystem.instance.isInPrecursor(gameObject))
                 Tamb = 25;
@@ -417,11 +413,11 @@ internal class C2CMoth : MonoBehaviour {
             //else if (heatColumn) not necessary, handled in ECHooks getTemp
             //	Tamb = 72;
             useSeamothVehicleTemperature = true;
-            float dT = Tamb - vehicleTemperature;
-            float excess = Mathf.Clamp01((vehicleTemperature - 400) / 400F);
-            float f0 = dT > 0 ? 4F : 25F - (15 * excess);
-            float f1 = dT > 0 ? 5F : 1F + (1.5F * excess);
-            float speed = seamoth.useRigidbody.velocity.magnitude;
+            var dT = Tamb - vehicleTemperature;
+            var excess = Mathf.Clamp01((vehicleTemperature - 400) / 400F);
+            var f0 = dT > 0 ? 4F : 25F - 15 * excess;
+            var f1 = dT > 0 ? 5F : 1F + 1.5F * excess;
+            var speed = seamoth.useRigidbody.velocity.magnitude;
 
             if (geyser) //whee, forced convection
                 speed *= 18;
@@ -429,10 +425,10 @@ internal class C2CMoth : MonoBehaviour {
                 speed *= 4;
 
             if (speed >= 2) {
-                f0 /= 1 + ((speed - 2) / 8F);
+                f0 /= 1 + (speed - 2) / 8F;
             }
 
-            float qDot = tickTime * Math.Sign(dT) * Mathf.Min(Math.Abs(dT), Mathf.Max(f1, Math.Abs(dT) / f0));
+            var qDot = tickTime * Math.Sign(dT) * Mathf.Min(Math.Abs(dT), Mathf.Max(f1, Math.Abs(dT) / f0));
             if (qDot > 0) {
                 if (Tamb < 300)
                     qDot *= hard ? 0.33F : 0.25F;
@@ -448,8 +444,8 @@ internal class C2CMoth : MonoBehaviour {
                 );
         }
 
-        float factor = 1 + (Mathf.Max(0, vehicleTemperature - 250) / 25F);
-        float f2 = Mathf.Min(hard ? 36 : 32, Mathf.Pow(factor, 2.5F));
+        var factor = 1 + Mathf.Max(0, vehicleTemperature - 250) / 25F;
+        var f2 = Mathf.Min(hard ? 36 : 32, Mathf.Pow(factor, 2.5F));
         temperatureDamage.baseDamagePerSecond = baseDamageAmount * f2;
         //SNUtil.writeToChat(vehicleTemperature+" > "+factor.ToString("00.0000")+" > "+f2.ToString("00.0000")+" > "+temperatureDamage.baseDamagePerSecond.ToString("0000.00"));
         if (vehicleTemperature >= 90 && seamoth.GetPilotingMode()) {
@@ -460,7 +456,7 @@ internal class C2CMoth : MonoBehaviour {
                     Player.main.transform.position,
                     false,
                     -1,
-                    0.125F + (Mathf.Clamp01((vehicleTemperature - 90) / 100F) * 0.125F)
+                    0.125F + Mathf.Clamp01((vehicleTemperature - 90) / 100F) * 0.125F
                 );
                 lastMeltSound = time;
             }
@@ -469,22 +465,22 @@ internal class C2CMoth : MonoBehaviour {
 
     public void recalculateModules() {
         if (!seamoth) {
-            this.Invoke("recalculateModules", 0.5F);
+            Invoke(nameof(recalculateModules), 0.5F);
             return;
         }
 
         hasVoidStealth = seamoth.vehicleHasUpgrade(C2CItems.voidStealth.Info.TechType);
         if (!hasVoidStealth)
             voidStealthStoredEnergy = 0;
-        this.validateDepthModules();
+        validateDepthModules();
     }
 
-    class SeamothWithStealthHUD : uGUI_ExosuitHUD {
+    private class SeamothWithStealthHUD : uGUI_ExosuitHUD {
         internal void init(uGUI_ExosuitHUD from) {
             this.copyObject(from);
         }
 
-        void Start() {
+        private void Start() {
             textHealth = root.getChildObject("Health").GetComponent<TextMeshProUGUI>();
             textPower = root.getChildObject("Power").GetComponent<TextMeshProUGUI>();
             textTemperature = root.getChildObject("Temperature/TemperatureValue").GetComponent<TextMeshProUGUI>();
@@ -493,8 +489,8 @@ internal class C2CMoth : MonoBehaviour {
         }
 
         private new void Update() {
-            bool flag1 = false;
-            bool flag2 = false;
+            var flag1 = false;
+            var flag2 = false;
             SeaMoth sm = null;
             if (Player.main) {
                 sm = Player.main.GetVehicle() as SeaMoth;
@@ -507,35 +503,35 @@ internal class C2CMoth : MonoBehaviour {
                 seamothHUD.root.SetActive(flag1 && !flag2);
             if (!flag2)
                 return;
-            sm.GetHUDValues(out float health, out float power);
-            C2CMoth cm = sm.GetComponent<C2CMoth>();
-            float thrust = cm.soundStorageScalar;
-            float temperature = cm.vehicleTemperature;
-            int num4 = Mathf.CeilToInt(health * 100f);
-            if (this.lastHealth != num4) {
-                this.lastHealth = num4;
-                this.textHealth.text = IntStringCache.GetStringForInt(this.lastHealth);
+            sm.GetHUDValues(out var health, out var power);
+            var cm = sm.GetComponent<C2CMoth>();
+            var thrust = cm.soundStorageScalar;
+            var temperature = cm.vehicleTemperature;
+            var num4 = Mathf.CeilToInt(health * 100f);
+            if (lastHealth != num4) {
+                lastHealth = num4;
+                textHealth.text = IntStringCache.GetStringForInt(lastHealth);
             }
 
-            int num5 = Mathf.CeilToInt(power * 100f);
-            if (this.lastPower != num5) {
-                this.lastPower = num5;
-                this.textPower.text = IntStringCache.GetStringForInt(this.lastPower);
+            var num5 = Mathf.CeilToInt(power * 100f);
+            if (lastPower != num5) {
+                lastPower = num5;
+                textPower.text = IntStringCache.GetStringForInt(lastPower);
             }
 
-            if (this.lastThrust != thrust) {
-                this.lastThrust = thrust;
-                this.imageThrust.material.SetFloat(ShaderPropertyID._Amount, this.lastThrust);
+            if (lastThrust != thrust) {
+                lastThrust = thrust;
+                imageThrust.material.SetFloat(ShaderPropertyID._Amount, lastThrust);
             }
 
-            this.temperatureSmoothValue = ((this.temperatureSmoothValue < -10000f)
+            temperatureSmoothValue = temperatureSmoothValue < -10000f
                 ? temperature
-                : Mathf.SmoothDamp(this.temperatureSmoothValue, temperature, ref this.temperatureVelocity, 1f));
-            int num6 = Mathf.CeilToInt(this.temperatureSmoothValue);
-            if (this.lastTemperature != num6) {
-                this.lastTemperature = num6;
-                this.textTemperature.text = IntStringCache.GetStringForInt(this.lastTemperature);
-                this.textTemperatureSuffix.text = Language.main.GetFormat("ThermometerFormat");
+                : Mathf.SmoothDamp(temperatureSmoothValue, temperature, ref temperatureVelocity, 1f);
+            var num6 = Mathf.CeilToInt(temperatureSmoothValue);
+            if (lastTemperature != num6) {
+                lastTemperature = num6;
+                textTemperature.text = IntStringCache.GetStringForInt(lastTemperature);
+                textTemperatureSuffix.text = Language.main.GetFormat("ThermometerFormat");
             }
         }
     }

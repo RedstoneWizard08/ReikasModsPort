@@ -7,33 +7,23 @@ namespace ReikaKalseki.SeaToSea;
 public sealed class SealedGloves : CustomEquipable {
     [SetsRequiredMembers]
     public SealedGloves() : base(
-        SeaToSeaMod.itemLocale.getEntry("SealedGloves"),
+        SeaToSeaMod.ItemLocale.getEntry("SealedGloves"),
         "WorldEntities/Tools/ReinforcedGloves"
     ) {
         isArmor = true;
-        this.preventNaturalUnlock();
+        preventNaturalUnlock();
     }
 
-    public override Vector2int SizeInInventory {
-        get { return new Vector2int(2, 2); }
-    }
+    public override Vector2int SizeInInventory => new(2, 2);
 
-    public override CraftTree.Type FabricatorType {
-        get { return CraftTree.Type.None; }
-    }
+    public override CraftTree.Type FabricatorType => CraftTree.Type.None;
 
-    public override TechGroup GroupForPDA {
-        get { return TechGroup.Uncategorized; }
-    }
+    public override TechGroup GroupForPDA => TechGroup.Uncategorized;
 
-    public override TechCategory CategoryForPDA {
-        get { return TechCategory.Misc; }
-    }
+    public override TechCategory CategoryForPDA => TechCategory.Misc;
 
     public override void prepareGameObject(GameObject go, Renderer[] r) {
     }
 
-    public override sealed EquipmentType EquipmentType {
-        get { return EquipmentType.Gloves; }
-    }
+    public override sealed EquipmentType EquipmentType => EquipmentType.Gloves;
 }

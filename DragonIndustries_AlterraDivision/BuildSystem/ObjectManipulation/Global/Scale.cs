@@ -18,8 +18,8 @@ internal class Scale : GlobalManipulation {
 	private Vector3 max = Vector3.one;
 
 	internal override void applyToGlobalObject(GameObject go) {
-		Vector3 sc = MathUtil.getRandomVectorBetween(min, max);
-		Vector3 vec = go.transform.position;
+		var sc = MathUtil.getRandomVectorBetween(min, max);
+		var vec = go.transform.position;
 		vec.x *= sc.x;
 		vec.y *= sc.y;
 		vec.z *= sc.z;
@@ -27,17 +27,17 @@ internal class Scale : GlobalManipulation {
 	}
 
 	internal override void applyToGlobalObject(PlacedObject go) {
-		this.applyToObject(go.obj);
+		applyToObject(go.obj);
 		go.setPosition(go.obj.transform.position);
 	}
 
 	internal override void applyToSpecificObject(PlacedObject go) {
-		this.applyToSpecificObject(go.obj);
+		applyToSpecificObject(go.obj);
 		go.scale = go.obj.transform.localScale;
 	}
 
 	internal override void applyToSpecificObject(GameObject go) {
-		Vector3 rot = MathUtil.getRandomVectorBetween(min, max);
+		var rot = MathUtil.getRandomVectorBetween(min, max);
 		go.transform.localScale = rot;
 	}
 

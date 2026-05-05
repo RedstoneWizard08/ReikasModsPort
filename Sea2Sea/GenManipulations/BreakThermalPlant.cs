@@ -27,8 +27,8 @@ internal class BreakThermalPlant : ManipulationBase {
 		go.removeComponent<ThermalPlant>();
 		if (deleteHead)
 			go.removeChildObject("model/root/head");
-		GameObject text = go.getChildObject("UI/Canvas/Text");
-		Text t = text.GetComponent<Text>();
+		var text = go.getChildObject("UI/Canvas/Text");
+		var t = text.GetComponent<Text>();
 		if (!string.IsNullOrEmpty(textOverride))
 			t.text = textOverride;
 		if (textColor != null && textColor.HasValue)
@@ -46,7 +46,7 @@ internal class BreakThermalPlant : ManipulationBase {
 	}
 
 	public override void applyToObject(PlacedObject go) {
-		this.applyToObject(go.obj);
+		applyToObject(go.obj);
 	}
 
 	public override void loadFromXML(XmlElement e) {

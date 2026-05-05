@@ -7,21 +7,21 @@ namespace ReikaKalseki.SeaToSea;
 public class VoidWreck : WreckHandler, Ecocean.VoidBubbleReaction {
     private float lastTickTime = -1;
 
-    void Start() {
-        DICustomPrefab def = (DICustomPrefab)SeaToSeaMod.worldgen.getByID("d28a3bf7-880f-4a4f-a8a5-c706da344a7b");
+    private void Start() {
+        var def = (DICustomPrefab)SeaToSeaMod.WorldGen.getByID("d28a3bf7-880f-4a4f-a8a5-c706da344a7b");
         //SNUtil.log("Restoring void wreck from def:\n"+def.xmlString);
-        WreckDoorSwaps doors = def.getManipulations<WreckDoorSwaps>()[0];
+        var doors = def.getManipulations<WreckDoorSwaps>()[0];
         doors.applyToObject(gameObject);
     }
 
-    void Update() {
-        float time = DayNightCycle.main.timePassedAsFloat;
+    private void Update() {
+        var time = DayNightCycle.main.timePassedAsFloat;
         if (time - lastTickTime < 0.2F)
             return;
         if (WreckDoorSwaps.areWreckDoorSwapsPending(gameObject))
             return;
         lastTickTime = time;
-        GameObject go = gameObject.getChildObject("ExplorableWreck2_clean(Clone)/explorable_wreckage_03");
+        var go = gameObject.getChildObject("ExplorableWreck2_clean(Clone)/explorable_wreckage_03");
         go.removeChildObject("exterior_01");
         go.removeChildObject("exterior_02");
         //go.removeChildObject("exterior_03");
@@ -29,7 +29,7 @@ public class VoidWreck : WreckHandler, Ecocean.VoidBubbleReaction {
         go.removeChildObject("hull_03");
         go.removeChildObject("room_04/room_04/exterior_04");
         foreach (Transform t in gameObject.getChildObject("Decoration").transform) {
-            string n = t.name.ToLowerInvariant();
+            var n = t.name.ToLowerInvariant();
             if (n.Contains("(placeholder)")) {
                 t.gameObject.destroy();
             } else if (n.Contains("starship_cargo")) {
@@ -45,7 +45,7 @@ public class VoidWreck : WreckHandler, Ecocean.VoidBubbleReaction {
         }
 
         foreach (Transform t in gameObject.getChildObject("Interactable").transform) {
-            string n = t.name.ToLowerInvariant();
+            var n = t.name.ToLowerInvariant();
             if (n.Contains("(placeholder)")) {
                 t.gameObject.destroy();
             } else if (n.Contains("starship_exploded_debris_29") && Vector3.Distance(
@@ -61,7 +61,7 @@ public class VoidWreck : WreckHandler, Ecocean.VoidBubbleReaction {
             }
         }
 
-        foreach (SupplyCrate sc in WorldUtil.getObjectsNearWithComponent<SupplyCrate>(transform.position, 100)) {
+        foreach (var sc in WorldUtil.getObjectsNearWithComponent<SupplyCrate>(transform.position, 100)) {
             sc.gameObject.destroy();
         }
     }
@@ -75,14 +75,14 @@ public class VoidWreck : WreckHandler, Ecocean.VoidBubbleReaction {
     }
 }
 
-class VoidWreckFallingPiece : MonoBehaviour {
+internal class VoidWreckFallingPiece : MonoBehaviour {
     private float age;
 
-    void Start() {
+    private void Start() {
         gameObject.applyGravity();
     }
 
-    void Update() {
+    private void Update() {
         age += Time.deltaTime;
         if (transform.position.y < -500)
             gameObject.destroy();

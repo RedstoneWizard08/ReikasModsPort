@@ -21,9 +21,9 @@ internal class VoidChunkPlants : RandomPlant {
 
 	public bool allowKelp = true;
 
-	private List<GameObject> gennedMushrooms = new List<GameObject>();
+	private List<GameObject> gennedMushrooms = [];
 
-	private static readonly Dictionary<VanillaFlora, VoidPlant> plantTypes = new Dictionary<VanillaFlora, VoidPlant>();
+	private static readonly Dictionary<VanillaFlora, VoidPlant> plantTypes = new();
 
 	static VoidChunkPlants() {
 		addPlantType(new VoidPlant(VanillaFlora.GABE_FEATHER, 100));
@@ -73,20 +73,20 @@ internal class VoidChunkPlants : RandomPlant {
 
 	public VoidChunkPlants(Vector3 vec) : base(vec) {
 		fuzz = new Vector3(1.2F, 0.05F, 1.2F);
-		count = UnityEngine.Random.Range(1, 4); //1-3
+		count = Random.Range(1, 4); //1-3
 		preferLit = true;
 
-		foreach (VoidPlant p in plantTypes.Values) {
-			double wt = p.getWeight(vec.y);
+		foreach (var p in plantTypes.Values) {
+			var wt = p.getWeight(vec.y);
 			if (wt > 0)
 				plants.addEntry(p.plant, wt);
 		}
 
-		mushrooms = UnityEngine.Random.Range(0, 7); //0-6
+		mushrooms = Random.Range(0, 7); //0-6
 	}
 
 	public override bool generate(List<GameObject> li) {
-		bool flag = base.generate(li);
+		var flag = base.generate(li);
 
 		li.AddRange(gennedMushrooms);
 
@@ -94,7 +94,7 @@ internal class VoidChunkPlants : RandomPlant {
 	}
 
 	protected override VanillaFlora selectPlant(VanillaFlora choice) {
-		while (!this.isPlantAllowed(choice))
+		while (!isPlantAllowed(choice))
 			choice = plants.getRandomEntry();
 		return choice;
 	}
@@ -102,25 +102,25 @@ internal class VoidChunkPlants : RandomPlant {
 	private bool isPlantAllowed(VanillaFlora vf) {
 		if (vf == VanillaFlora.BLOOD_KELP && !allowKelp)
 			return false;
-		VoidPlant vp = plantTypes[vf];
+		var vp = plantTypes[vf];
 		return -position.y >= vp.minDepth && -position.y <= vp.maxDepth;
 	}
 
 	protected override GameObject generatePlant(Vector3 vec, string type) {
 		//VoidSpike.LargeWorldLevelPrefab prefab = VoidSpike.getPrefab(type);
-		GameObject go = base.generatePlant(vec, type);
+		var go = base.generatePlant(vec, type);
 		if (!VanillaFlora.BLOOD_KELP.includes(type) && !VanillaFlora.AMOEBOID.includes(type) && !VanillaFlora.BRINE_LILY.includes(type)) {
-			for (int i = 0; i < mushrooms; i++) {
-				Vector3 vec2 = new Vector3(vec.x+UnityEngine.Random.Range(-1F, 1F), vec.y, vec.z+UnityEngine.Random.Range(-1F, 1F));
-				int tries = 0;
-				while ((ObjectUtil.objectCollidesPosition(go, vec2) || this.isColliding(vec2, gennedMushrooms)) && tries < 5) {
-					vec2 = new Vector3(vec.x + UnityEngine.Random.Range(-1F, 1F), vec.y, vec.z + UnityEngine.Random.Range(-1F, 1F));
+			for (var i = 0; i < mushrooms; i++) {
+				var vec2 = new Vector3(vec.x+Random.Range(-1F, 1F), vec.y, vec.z+Random.Range(-1F, 1F));
+				var tries = 0;
+				while ((ObjectUtil.objectCollidesPosition(go, vec2) || isColliding(vec2, gennedMushrooms)) && tries < 5) {
+					vec2 = new Vector3(vec.x + Random.Range(-1F, 1F), vec.y, vec.z + Random.Range(-1F, 1F));
 					tries++;
 				}
-				if (!ObjectUtil.objectCollidesPosition(go, vec2) && !this.isColliding(vec2, gennedMushrooms)) {
-					if (validPlantPosCheck != null && !validPlantPosCheck(vec2 + (Vector3.up * 0.2F), "mush"))
+				if (!ObjectUtil.objectCollidesPosition(go, vec2) && !isColliding(vec2, gennedMushrooms)) {
+					if (validPlantPosCheck != null && !validPlantPosCheck(vec2 + Vector3.up * 0.2F, "mush"))
 						continue;
-					GameObject go2 = base.generatePlant(vec2, VanillaFlora.DEEP_MUSHROOM.getRandomPrefab(true));
+					var go2 = base.generatePlant(vec2, VanillaFlora.DEEP_MUSHROOM.getRandomPrefab(true));
 					gennedMushrooms.Add(go2);
 				}
 			}
@@ -169,7 +169,7 @@ internal class VoidChunkPlants : RandomPlant {
 		}
 
 		internal double getWeight(double y) {
-			double depth = -y;
+			var depth = -y;
 			return depth < minDepth || depth > maxDepth
 				? 0
 				: depth <= minDepthWeightPoint

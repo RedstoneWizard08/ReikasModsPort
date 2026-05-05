@@ -6,14 +6,14 @@ namespace ReikaKalseki.DIAlterra;
 [Obsolete]
 public class SurvivalEventTracker : SerializedTracker<SurvivalEventTracker.SurvivalEvent> {
 
-	public static readonly SurvivalEventTracker instance = new SurvivalEventTracker();
+	public static readonly SurvivalEventTracker instance = new();
 
 	private SurvivalEventTracker() : base("SurvivalEvents.dat", true, parse, null) {
 
 	}
 
 	private static SurvivalEvent parse(XmlElement s) {
-		string type = s.getProperty("type");
+		var type = s.getProperty("type");
 		if (string.IsNullOrEmpty(type))
 			return null;
 		switch (type) {

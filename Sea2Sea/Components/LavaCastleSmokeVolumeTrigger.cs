@@ -5,27 +5,27 @@ using UnityEngine;
 namespace ReikaKalseki.SeaToSea;
 
 public class LavaCastleSmokeVolumeTrigger : MonoBehaviour {
-    private static float lastCollectTime = 0;
+    private static float lastCollectTime;
 
     private GameObject sparkleObject;
 
     private ParticleSystem[] particles;
 
-    private float animSpeed = UnityEngine.Random.Range(0.2F, 0.3F) * 1.25F;
+    private float animSpeed = Random.Range(0.2F, 0.3F) * 1.25F;
 
     private float age;
 
-    void OnTriggerStay(Collider other) {
-        float time = DayNightCycle.main.timePassedAsFloat;
-        if (time - lastCollectTime < 2.5F || UnityEngine.Random.Range(0F, 1F) > 0.3F)
+    private void OnTriggerStay(Collider other) {
+        var time = DayNightCycle.main.timePassedAsFloat;
+        if (time - lastCollectTime < 2.5F || Random.Range(0F, 1F) > 0.3F)
             return;
-        SeaMoth sm = other.gameObject.FindAncestor<SeaMoth>();
+        var sm = other.gameObject.FindAncestor<SeaMoth>();
         if (sm) {
             SeamothPlanktonScoop.checkAndTryScoop(
                 sm,
                 Time.deltaTime,
                 CraftingItems.getItem(CraftingItems.Items.LavaPlankton).Info.TechType,
-                out GameObject drop
+                out var drop
             );
             if (drop) {
                 lastCollectTime = time;
@@ -33,7 +33,7 @@ public class LavaCastleSmokeVolumeTrigger : MonoBehaviour {
         }
     }
 
-    void Update() {
+    private void Update() {
         age += Time.deltaTime;
 
         if (!sparkleObject) {
@@ -44,8 +44,8 @@ public class LavaCastleSmokeVolumeTrigger : MonoBehaviour {
         sparkleObject.layer = LayerID.Useable;
         gameObject.layer = LayerID.Useable;
 
-        foreach (ParticleSystem p in particles) {
-            ParticleSystem.MainModule main = p.main;
+        foreach (var p in particles) {
+            var main = p.main;
             main.simulationSpeed = animSpeed * (float)MathUtil.linterpolate(age, 0, 2, 100, 1, true);
         }
     }

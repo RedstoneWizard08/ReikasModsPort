@@ -18,7 +18,7 @@ public sealed class CompoundResource : CustomPrefab {
     }
 
     public GameObject GetGameObject() {
-        GameObject world = new GameObject();
+        var world = new GameObject();
         world.EnsureComponent<CompoundResourceTag>();
         world.EnsureComponent<PrefabIdentifier>().ClassId = Info.ClassID;
         world.EnsureComponent<TechTag>().type = Info.TechType;
@@ -26,8 +26,8 @@ public sealed class CompoundResource : CustomPrefab {
         return world;
     }
 
-    class CompoundResourceTag : MonoBehaviour {
-        void Start() {
+    private class CompoundResourceTag : MonoBehaviour {
+        private void Start() {
         }
     }
 }

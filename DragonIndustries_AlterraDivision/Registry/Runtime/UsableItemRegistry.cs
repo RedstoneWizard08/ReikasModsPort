@@ -6,9 +6,9 @@ namespace ReikaKalseki.DIAlterra;
 
 public class UsableItemRegistry {
 
-	public static readonly UsableItemRegistry instance = new UsableItemRegistry();
+	public static readonly UsableItemRegistry instance = new();
 
-	private readonly Dictionary<TechType, Func<Survival, GameObject, bool>> actions = new Dictionary<TechType, Func<Survival, GameObject, bool>>();
+	private readonly Dictionary<TechType, Func<Survival, GameObject, bool>> actions = new();
 
 	private float lastUse = -1;
 
@@ -17,15 +17,15 @@ public class UsableItemRegistry {
 		    Player.main.GetComponent<OxygenManager>().AddOxygen(15f);
 	        return true;
 		});*/
-		this.addUsableItem(TechType.FirstAidKit, (s, go) => {
+		addUsableItem(TechType.FirstAidKit, (s, go) => {
 			return Player.main.GetComponent<LiveMixin>().AddHealth(50f) > 0.1f;
 		});
-		this.addUsableItem(TechType.EnzymeCureBall, (s, go) => {
+		addUsableItem(TechType.EnzymeCureBall, (s, go) => {
 			Debug.LogWarningFormat(s, "Code should be unreachable for the time being.", Array.Empty<object>());
-			InfectedMixin component2 = global::Utils.GetLocalPlayer().gameObject.GetComponent<InfectedMixin>();
+			var component2 = Utils.GetLocalPlayer().gameObject.GetComponent<InfectedMixin>();
 			if (component2.IsInfected()) {
 				component2.RemoveInfection();
-				global::Utils.PlayFMODAsset(s.curedSound, s.transform, 20f);
+				Utils.PlayFMODAsset(s.curedSound, s.transform, 20f);
 				return true;
 			}
 			return false;
@@ -46,7 +46,7 @@ public class UsableItemRegistry {
 			return false;
 		}
 		lastUse = DayNightCycle.main.timePassedAsFloat;
-		bool ret = actions[tt].Invoke(s, go);
+		var ret = actions[tt].Invoke(s, go);
 		if (ret) {
 			ConsumableTracker.instance.onConsume(go, false);
 			Inventory.main.container.RemoveItem(go.GetComponent<Pickupable>(), true);

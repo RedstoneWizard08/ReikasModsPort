@@ -12,12 +12,12 @@ public sealed class UncraftingRecipeItem : CustomPrefab, DuplicateItemDelegate {
     public readonly CustomPrefab prefab;
     public readonly TechType basis;
 
-    public Sprite sprite = null;
+    public Sprite sprite;
     public TechCategory category = TechCategory.Misc;
     public TechGroup group = TechGroup.Uncategorized;
     public CraftTree.Type craftingType = CraftTree.Type.None;
     public float craftTime = 1F;
-    public string[] craftingMenuTree = new string[0];
+    public string[] craftingMenuTree = [];
     public Assembly ownerMod;
 
     [SetsRequiredMembers]
@@ -29,10 +29,10 @@ public sealed class UncraftingRecipeItem : CustomPrefab, DuplicateItemDelegate {
         craftingType = s.GetGadget<CraftingGadget>().FabricatorType;
         craftTime = s.GetGadget<CraftingGadget>().CraftingTime;
         craftingMenuTree = s.GetGadget<CraftingGadget>().StepsToFabricatorTab;
-        if (s is BasicCraftingItem)
-            sprite = ((BasicCraftingItem)s).sprite;
-        if (s is DIPrefab<PrefabReference>)
-            ownerMod = ((DIPrefab<PrefabReference>)s).getOwnerMod();
+        if (s is BasicCraftingItem item)
+            sprite = item.sprite;
+        if (s is DIPrefab<PrefabReference> diPrefab)
+            ownerMod = diPrefab.getOwnerMod();
         AddOnRegister(onPatched);
 
         if (!UnlockedAtStart) this.SetUnlock(RequiredForUnlock);
@@ -80,35 +80,19 @@ public sealed class UncraftingRecipeItem : CustomPrefab, DuplicateItemDelegate {
         DuplicateRecipeDelegate.addDelegate(this);
     }
 
-    public TechGroup GroupForPDA {
-        get { return group; }
-    }
+    public TechGroup GroupForPDA => group;
 
-    public TechCategory CategoryForPDA {
-        get { return category; }
-    }
+    public TechCategory CategoryForPDA => category;
 
-    public TechType RequiredForUnlock {
-        get { return basis; }
-    }
+    public TechType RequiredForUnlock => basis;
 
-    public bool UnlockedAtStart {
-        get {
-            return false; //unlock == TechType.None;
-        }
-    }
+    public bool UnlockedAtStart => false; //unlock == TechType.None;
 
-    public CraftTree.Type FabricatorType {
-        get { return craftingType; }
-    }
+    public CraftTree.Type FabricatorType => craftingType;
 
-    public float CraftingTime {
-        get { return craftTime; }
-    }
+    public float CraftingTime => craftTime;
 
-    public string[] StepsToFabricatorTab {
-        get { return craftingMenuTree; }
-    }
+    public string[] StepsToFabricatorTab => craftingMenuTree;
 
     public GameObject GetGameObject() {
         return ObjectUtil.createWorldObject(CraftData.GetClassIdForTechType(basis), true, false);

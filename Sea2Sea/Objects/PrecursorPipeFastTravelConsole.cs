@@ -1,15 +1,15 @@
-﻿using ReikaKalseki.DIAlterra;
+﻿using System.Diagnostics.CodeAnalysis;
+using ReikaKalseki.DIAlterra;
 
 namespace ReikaKalseki.SeaToSea;
 
 public class PrecursorPipeFastTravelConsole : PrecursorStoryConsole {
+    [SetsRequiredMembers]
+    internal PrecursorPipeFastTravelConsole(XMLLocale.LocaleEntry e) : base(e) {
+        setPopup(TechType.PrecursorSurfacePipe);
+    }
 
-	internal PrecursorPipeFastTravelConsole(XMLLocale.LocaleEntry e) : base(e) {
-		setPopup(TechType.PrecursorSurfacePipe);
-	}
-
-	public override bool isUsable(StoryConsoleTag tag) {
-		return true;
-	}
-
+    public override bool isUsable(StoryConsoleTag tag) {
+        return true;
+    }
 }

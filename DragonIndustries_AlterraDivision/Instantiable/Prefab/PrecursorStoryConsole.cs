@@ -14,8 +14,7 @@ public class PrecursorStoryConsole : CustomPrefab {
 
     public SNUtil.PopupData popup;
 
-    internal static readonly Dictionary<string, PrecursorStoryConsole> prefabTable =
-        new Dictionary<string, PrecursorStoryConsole>();
+    internal static readonly Dictionary<string, PrecursorStoryConsole> prefabTable = new();
 
     [SetsRequiredMembers]
     public PrecursorStoryConsole(XMLLocale.LocaleEntry e, string goal = null) : base(e.key, e.name, e.desc) {
@@ -46,17 +45,17 @@ public class PrecursorStoryConsole : CustomPrefab {
     }
 
     public GameObject GetGameObject() {
-        GameObject world = ObjectUtil.createWorldObject("81cf2223-455d-4400-bac3-a5bcd02b3638");
+        var world = ObjectUtil.createWorldObject("81cf2223-455d-4400-bac3-a5bcd02b3638");
         world.EnsureComponent<TechTag>().type = Info.TechType;
         world.EnsureComponent<PrefabIdentifier>().ClassId = Info.ClassID;
-        StoryHandTarget sh = world.EnsureComponent<StoryHandTarget>();
+        var sh = world.EnsureComponent<StoryHandTarget>();
         sh.goal = storyGoal;
         sh.primaryTooltip = locale.getString("tooltip");
         sh.secondaryTooltip = locale.getString("tooltipSecondary");
         sh.informGameObject = world;
         sh.isValidHandTarget = false;
         world.EnsureComponent<StoryConsoleTag>();
-        foreach (Renderer r in world.GetComponent<PrecursorComputerTerminal>().fx.GetComponentsInChildren<Renderer>()) {
+        foreach (var r in world.GetComponent<PrecursorComputerTerminal>().fx.GetComponentsInChildren<Renderer>()) {
             //r.materials[0].SetColor("_Color", new Color(0.8F, 0.25F, 1F));
             r.materials[0].SetColor("_Color", new Color(0.3F, 0.9F, 1F));
         }
@@ -65,7 +64,7 @@ public class PrecursorStoryConsole : CustomPrefab {
     }
 
     public void register(Vector3 position, float yaw = 0) {
-        this.Register();
+        Register();
         GenUtil.registerWorldgen(new PositionedPrefab(Info.ClassID, position, Quaternion.Euler(0, yaw, 0)));
     }
 
@@ -80,7 +79,7 @@ public class StoryConsoleTag : MonoBehaviour {
 
     protected PrecursorStoryConsole prefab;
 
-    void Update() {
+    private void Update() {
         if (!target)
             target = gameObject.GetComponent<StoryHandTarget>();
         if (!terminal)
@@ -89,7 +88,7 @@ public class StoryConsoleTag : MonoBehaviour {
             prefab = PrecursorStoryConsole.prefabTable[GetComponent<PrefabIdentifier>().ClassId];
 
         if (target) {
-            bool unlock = StoryGoalManager.main.IsGoalComplete(prefab.storyGoal.key);
+            var unlock = StoryGoalManager.main.IsGoalComplete(prefab.storyGoal.key);
             target.isValidHandTarget = !unlock && prefab != null && prefab.isUsable(this);
             target.enabled = target.isValidHandTarget;
             terminal.enabled = target.enabled;
@@ -99,7 +98,7 @@ public class StoryConsoleTag : MonoBehaviour {
         }
     }
 
-    void OnStoryHandTarget() {
+    private void OnStoryHandTarget() {
         if (prefab != null && prefab.popup != null)
             SNUtil.triggerUnlockPopup(prefab.popup);
     }

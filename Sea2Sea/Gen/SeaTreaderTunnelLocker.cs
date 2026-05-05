@@ -7,7 +7,7 @@ namespace ReikaKalseki.SeaToSea;
 
 public class SeaTreaderTunnelLocker : WorldGenerator {
 
-	internal static readonly Dictionary<TechType, int> itemList = new Dictionary<TechType, int>();
+	internal static readonly Dictionary<TechType, int> itemList = new();
 
 	static SeaTreaderTunnelLocker() {
 		addItem(TechType.Titanium, 3);
@@ -36,15 +36,15 @@ public class SeaTreaderTunnelLocker : WorldGenerator {
 	}
 
 	public override bool generate(List<GameObject> li) {
-		foreach (KeyValuePair<TechType, int> kvp in SeaTreaderTunnelLocker.itemList) {
-			for (int i = 0; i < kvp.Value; i++) {
-				GameObject go = ObjectUtil.createWorldObject(kvp.Key);
+		foreach (var kvp in itemList) {
+			for (var i = 0; i < kvp.Value; i++) {
+				var go = ObjectUtil.createWorldObject(kvp.Key);
 				go.transform.position = MathUtil.getRandomVectorAround(position, 0.4F);
 				go.GetComponent<Rigidbody>().isKinematic = false;
-				go.transform.localRotation = UnityEngine.Random.rotationUniform;
+				go.transform.localRotation = Random.rotationUniform;
 				if (kvp.Key != TechType.FirstAidKit)
 					go.transform.localScale = Vector3.one * (kvp.Key == TechType.CuredSpadefish || kvp.Key == TechType.CookedBladderfish ? 0.67F : 0.25F);
-				SeaTreaderTunnelBaseItem prop = go.EnsureComponent<SeaTreaderTunnelBaseItem>();
+				var prop = go.EnsureComponent<SeaTreaderTunnelBaseItem>();
 				prop.Invoke("fixInPlace", 45);
 			}
 		}
@@ -61,26 +61,26 @@ public class SeaTreaderTunnelLocker : WorldGenerator {
 
 }
 
-class SeaTreaderTunnelBaseItem : MonoBehaviour {
+internal class SeaTreaderTunnelBaseItem : MonoBehaviour {
 
-	private static readonly Vector3 vent1 = new Vector3(-134.15F, -501, 940.29F);
-	private static readonly Vector3 vent2 = new Vector3(-125.20F, -503, 936.16F);
+	private static readonly Vector3 vent1 = new(-134.15F, -501, 940.29F);
+	private static readonly Vector3 vent2 = new(-125.20F, -503, 936.16F);
 
 	private Rigidbody body;
 
 	private float time;
 
-	void Update() {
+	private void Update() {
 		if (!body)
-			body = this.GetComponentInChildren<Rigidbody>();
+			body = GetComponentInChildren<Rigidbody>();
 		time += Time.deltaTime;
-		Vector3 pos = transform.position;
+		var pos = transform.position;
 
 		if (time > 4F && body.velocity.magnitude < 0.03)
-			this.fixInPlace();
+			fixInPlace();
 	}
 
-	void fixInPlace() {
+	private void fixInPlace() {
 		body.isKinematic = true;
 	}
 

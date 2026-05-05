@@ -17,13 +17,13 @@ internal sealed class SetInfected : ManipulationBase {
 	private bool infect;
 
 	public override void applyToObject(GameObject go) {
-		InfectedMixin inf = go.EnsureComponent<InfectedMixin>();
+		var inf = go.EnsureComponent<InfectedMixin>();
 		inf.enabled = true;
 		inf.infectedAmount = infect ? 0.8F : 0;
 	}
 
 	public override void applyToObject(PlacedObject go) {
-		this.applyToObject(go.obj);
+		applyToObject(go.obj);
 	}
 
 	public override void loadFromXML(XmlElement e) {

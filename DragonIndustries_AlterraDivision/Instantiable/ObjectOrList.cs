@@ -10,29 +10,21 @@ namespace ReikaKalseki.DIAlterra;
 public sealed class ObjectOrList<E> {
 
 	public readonly bool isCollection;
-	private readonly List<E> objects = new List<E>();
+	private readonly List<E> objects = [];
 
 	public ObjectOrList(params E[] obj) {
 		objects.AddRange(obj.AsEnumerable());
 		isCollection = objects.Count > 1;
 	}
 
-	public E value {
-		get {
-			return isCollection ? throw new NotImplementedException("Object is a collection!") : objects.Count == 0 ? default(E) : objects[0];
-		}
-	}
+	public E value => isCollection ? throw new NotImplementedException("Object is a collection!") : objects.Count == 0 ? default(E) : objects[0];
 
-	public IReadOnlyCollection<E> values {
-		get {
-			return isCollection ? (IReadOnlyCollection<E>)objects.AsReadOnly() : throw new NotImplementedException("Object is not a collection!");
-		}
-	}
+	public IReadOnlyCollection<E> values => isCollection ? (IReadOnlyCollection<E>)objects.AsReadOnly() : throw new NotImplementedException("Object is not a collection!");
 
 	public override string ToString() {
 		if (isCollection)
 			return objects.toDebugString();
-		E obj = value;
+		var obj = value;
 		return obj == null ? "null" : obj.ToString();
 	}
 

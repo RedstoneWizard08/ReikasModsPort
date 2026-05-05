@@ -7,17 +7,15 @@ using Nautilus.Handlers;
 namespace ReikaKalseki.DIAlterra;
 
 public static class RecipeUtil {
-    private static readonly Dictionary<TechType, RecipeNode> nodes = new Dictionary<TechType, RecipeNode>();
-    private static readonly Dictionary<TechType, TechGroup> techGroupData = new Dictionary<TechType, TechGroup>();
-    private static readonly Dictionary<TechType, TechCategory> techCatData = new Dictionary<TechType, TechCategory>();
+    private static readonly Dictionary<TechType, RecipeNode> nodes = new();
+    private static readonly Dictionary<TechType, TechGroup> techGroupData = new();
+    private static readonly Dictionary<TechType, TechCategory> techCatData = new();
 
-    private static readonly Dictionary<TechType, Dictionary<TechType, int>> originalRecipes =
-        new Dictionary<TechType, Dictionary<TechType, int>>();
+    private static readonly Dictionary<TechType, Dictionary<TechType, int>> originalRecipes = new();
 
-    internal static readonly Dictionary<TechType, ProgressionTrigger> techsToRemoveIf =
-        new Dictionary<TechType, ProgressionTrigger>();
+    internal static readonly Dictionary<TechType, ProgressionTrigger> techsToRemoveIf = new();
 
-    private static bool shouldLogChanges = false;
+    private static bool shouldLogChanges;
 
     public static void startLoggingRecipeChanges() {
         originalRecipes.Clear();
@@ -26,15 +24,15 @@ public static class RecipeUtil {
 
     public static void logChangedRecipes() {
         SNUtil.log("Collated recipe changes: ");
-        List<string> oldR = new List<string>();
-        List<string> newR = new List<string>();
-        foreach (KeyValuePair<TechType, Dictionary<TechType, int>> kvp in originalRecipes) {
-            RecipeData rec = getRecipe(kvp.Key);
+        List<string> oldR = [];
+        List<string> newR = [];
+        foreach (var kvp in originalRecipes) {
+            var rec = getRecipe(kvp.Key);
             SNUtil.log("Recipe for " + kvp.Key + " was changed. Previous recipe:");
 
             if (kvp.Value.Count > 0) {
-                string s = ("" + kvp.Key).ToUpper();
-                foreach (KeyValuePair<TechType, int> kvp2 in kvp.Value) {
+                var s = ("" + kvp.Key).ToUpper();
+                foreach (var kvp2 in kvp.Value) {
                     SNUtil.log(kvp2.Key + " x" + kvp2.Value);
                     s = s + ".addIngredient(" + (kvp2.Key + "").ToUpper() + ", " + kvp2.Value + ")";
                 }
@@ -47,8 +45,8 @@ public static class RecipeUtil {
                 SNUtil.log("Recipe was removed");
             } else {
                 SNUtil.log("New recipe:");
-                string s = ("" + kvp.Key).ToUpper();
-                foreach (Ingredient i in rec.Ingredients) {
+                var s = ("" + kvp.Key).ToUpper();
+                foreach (var i in rec.Ingredients) {
                     SNUtil.log(i.techType + " x" + i.amount);
                     s = s + ".addIngredient(" + (i.techType + "").ToUpper() + ", " + i.amount + ")";
                 }
@@ -58,7 +56,7 @@ public static class RecipeUtil {
             }
         }
 
-        List<string> lines = new List<string>();
+        List<string> lines = [];
         lines.AddRange(oldR);
         lines.Add("=============");
         lines.AddRange(newR);
@@ -73,8 +71,8 @@ public static class RecipeUtil {
     private static void cacheOriginalRecipe(TechType item, RecipeData rec) {
         if (originalRecipes.ContainsKey(item))
             return;
-        Dictionary<TechType, int> dict = new Dictionary<TechType, int>();
-        foreach (Ingredient i in rec.Ingredients) {
+        var dict = new Dictionary<TechType, int>();
+        foreach (var i in rec.Ingredients) {
             dict[i.techType] = i.amount;
         }
 
@@ -82,10 +80,10 @@ public static class RecipeUtil {
     }
 
     public static void addIngredient(TechType recipe, TechType add, int amt) {
-        RecipeData rec = getRecipe(recipe);
+        var rec = getRecipe(recipe);
         cacheOriginalRecipe(recipe, rec);
         SNUtil.log("Adding " + add + "x" + amt + " to recipe " + recipe);
-        foreach (Ingredient i in rec.Ingredients) {
+        foreach (var i in rec.Ingredients) {
             if (i.techType == add) {
                 i._amount += amt;
                 return;
@@ -97,7 +95,7 @@ public static class RecipeUtil {
 
     public static void addIngredient(RecipeData rec, TechType add, int amt) {
         SNUtil.log("Adding " + add + "x" + amt + " to recipe " + rec);
-        foreach (Ingredient i in rec.Ingredients) {
+        foreach (var i in rec.Ingredients) {
             if (i.techType == add) {
                 i._amount += amt;
                 return;
@@ -108,11 +106,11 @@ public static class RecipeUtil {
     }
 
     public static void ensureIngredient(TechType recipe, TechType item, int amt) {
-        RecipeData rec = getRecipe(recipe);
+        var rec = getRecipe(recipe);
         cacheOriginalRecipe(recipe, rec);
         SNUtil.log("Ensuring " + item + "x" + amt + " in recipe " + recipe);
-        int has = 0;
-        foreach (Ingredient i in rec.Ingredients) {
+        var has = 0;
+        foreach (var i in rec.Ingredients) {
             if (i.techType == item) {
                 has += i.amount;
             }
@@ -142,18 +140,20 @@ public static class RecipeUtil {
     /// Return true in the func to delete the ingredient.
     /// </remarks>
     public static void modifyIngredients(TechType recipe, Func<Ingredient, bool> a) {
-        RecipeData rec = getRecipe(recipe);
+        var rec = getRecipe(recipe);
         cacheOriginalRecipe(recipe, rec);
-        for (int idx = rec.Ingredients.Count - 1; idx >= 0; idx--) {
-            Ingredient i = rec.Ingredients[idx];
+        for (var idx = rec.Ingredients.Count - 1; idx >= 0; idx--) {
+            var i = rec.Ingredients[idx];
             if (a(i)) {
                 rec.Ingredients.RemoveAt(idx);
             }
         }
+
+        CraftDataHandler.SetRecipeData(recipe, rec);
     }
 
     public static void clearIngredients(TechType recipe) {
-        RecipeData rec = getRecipe(recipe);
+        var rec = getRecipe(recipe);
         cacheOriginalRecipe(recipe, rec);
         rec.Ingredients.Clear();
     }
@@ -166,15 +166,15 @@ public static class RecipeUtil {
         int amt = 1,
         CraftTree.Type fab = CraftTree.Type.Fabricator
     ) {
-        RecipeData rec = new RecipeData {
-            Ingredients = new List<Ingredient>(),
-            craftAmount = amt
+        var rec = new RecipeData {
+            Ingredients = [],
+            craftAmount = amt,
         };
         CraftDataHandler.SetRecipeData(item, rec);
         if (grp != TechGroup.Uncategorized)
             CraftDataHandler.AddToGroup(grp, cat, item);
         if (fab != CraftTree.Type.None)
-            CraftTreeHandler.AddCraftingNode(fab, item, path == null ? new string[0] : path);
+            CraftTreeHandler.AddCraftingNode(fab, item, path == null ? [] : path);
         return rec;
     }
 
@@ -183,7 +183,7 @@ public static class RecipeUtil {
     }
 
     public static RecipeData getRecipe(TechType item, bool errorIfNone = true) {
-        RecipeData rec = CraftDataHandler.GetRecipeData(item);
+        var rec = CraftDataHandler.GetRecipeData(item);
         if (rec == null && errorIfNone)
             throw new Exception("No such recipe '" + item + "'!");
         if (rec != null)
@@ -192,9 +192,9 @@ public static class RecipeUtil {
     }
 
     public static RecipeData removeRecipe(TechType item, bool removeCategories = false) {
-        RecipeData rec = CraftDataHandler.GetRecipeData(item);
+        var rec = CraftDataHandler.GetRecipeData(item);
         CraftDataHandler.RemoveRecipeData(item);
-        RecipeNode node = getRecipeNode(item);
+        var node = getRecipeNode(item);
         if (node == null)
             buildRecipeNodeCache(); //try rebuild first
         if (node == null)
@@ -221,7 +221,7 @@ public static class RecipeUtil {
     }
 
     public static void changeRecipePath(TechType item, CraftTree.Type cat, params string[] path) {
-        RecipeNode node = getRecipeNode(item);
+        var node = getRecipeNode(item);
         if (node == null)
             buildRecipeNodeCache(); //try rebuild first
         if (node == null)
@@ -293,12 +293,12 @@ public static class RecipeUtil {
 
     public static void dumpCraftTree(CraftTree.Type type) {
         SNUtil.log("Tree " + type + ":", SNUtil.diDLL);
-        CraftNode root = getRootNode(type);
+        var root = getRootNode(type);
         dumpCraftTreeFromNode(root);
     }
 
     public static void dumpCraftTreeFromNode(CraftNode root) {
-        dumpCraftTreeFromNode(root, new List<string>());
+        dumpCraftTreeFromNode(root, []);
     }
 
     private static void dumpCraftTreeFromNode(CraftNode root, List<string> prefix) {
@@ -307,14 +307,14 @@ public static class RecipeUtil {
             return;
         }
 
-        List<TreeNode> nodes = root.nodes;
-        for (int i = 0; i < nodes.Count; i++) {
-            TreeNode node = nodes[i];
+        var nodes = root.nodes;
+        for (var i = 0; i < nodes.Count; i++) {
+            var node = nodes[i];
             if (node == null) {
                 SNUtil.log(string.Join("/", prefix) + " -> null @ " + i, SNUtil.diDLL);
             } else {
                 try {
-                    string s = string.Join("/", prefix) + " -> Node #" + i + ": " + node.id;
+                    var s = string.Join("/", prefix) + " -> Node #" + i + ": " + node.id;
                     if (Language.main)
                         s += " (" + Language.main.Get("Ency_" + node.id) + ")";
                     SNUtil.log(s, SNUtil.diDLL);
@@ -329,7 +329,7 @@ public static class RecipeUtil {
     }
 
     public static void dumpPDATree() {
-        foreach (KeyValuePair<string, PDAEncyclopedia.Entry> kvp in PDAEncyclopedia.entries) {
+        foreach (var kvp in PDAEncyclopedia.entries) {
             SNUtil.log("PDA entry '" + kvp.Key + "': " + kvp.Value, SNUtil.diDLL);
         }
 
@@ -337,9 +337,9 @@ public static class RecipeUtil {
     }
 
     public static List<Ingredient> buildRecipeList(List<PlannedIngredient> li) {
-        List<Ingredient> ret = new List<Ingredient>();
-        foreach (PlannedIngredient p in li) {
-            TechType tt = p.item.getTechType();
+        List<Ingredient> ret = [];
+        foreach (var p in li) {
+            var tt = p.item.getTechType();
             if (tt == TechType.None)
                 throw new Exception("Failed building recipe - null item " + p.item);
             ret.Add(new Ingredient(tt, p.amount));
@@ -353,9 +353,9 @@ public static class RecipeUtil {
     }
 
     public static List<TechType> buildLinkedItems(List<PlannedIngredient> li) {
-        List<TechType> ret = new List<TechType>();
-        foreach (PlannedIngredient p in li) {
-            for (int i = 0; i < p.amount; i++)
+        List<TechType> ret = [];
+        foreach (var p in li) {
+            for (var i = 0; i < p.amount; i++)
                 ret.Add(p.item.getTechType());
         }
 
@@ -363,10 +363,11 @@ public static class RecipeUtil {
     }
 
     public static RecipeData copyRecipe(RecipeData from) {
-        RecipeData ret = new RecipeData();
-        ret.craftAmount = from.craftAmount;
+        var ret = new RecipeData {
+            craftAmount = from.craftAmount,
+        };
         ret.LinkedItems.AddRange(from.LinkedItems);
-        foreach (Ingredient i in from.Ingredients) {
+        foreach (var i in from.Ingredients) {
             ret.Ingredients.Add(new Ingredient(i.techType, i.amount));
         }
 
@@ -375,24 +376,24 @@ public static class RecipeUtil {
     }
 
     public static RecipeData createUncrafting(TechType item, TechType primary = TechType.None) {
-        RecipeData rec = getRecipe(item);
-        RecipeData ret = new RecipeData();
-        foreach (Ingredient ing in rec.Ingredients) {
+        var rec = getRecipe(item);
+        var ret = new RecipeData();
+        foreach (var ing in rec.Ingredients) {
             if (primary != TechType.None && primary == ing.techType) {
                 ret.craftAmount = ing.amount;
             } else {
-                for (int i = 0; i < ing.amount; i++)
+                for (var i = 0; i < ing.amount; i++)
                     ret.LinkedItems.Add(ing.techType);
             }
         }
 
         ret.Ingredients.Add(new Ingredient(item, rec.craftAmount));
-        CountMap<TechType> counts = new CountMap<TechType>();
-        foreach (TechType tt in rec.LinkedItems) {
+        var counts = new CountMap<TechType>();
+        foreach (var tt in rec.LinkedItems) {
             counts.add(tt);
         }
 
-        foreach (TechType tt in counts.getItems()) {
+        foreach (var tt in counts.getItems()) {
             rec.Ingredients.Add(new Ingredient(tt, counts.getCount(tt)));
         }
 
@@ -409,18 +410,18 @@ public static class RecipeUtil {
         return getTotalIngredientSlotCount(rec) + ":" +
                string.Join(
                    "+",
-                   rec.Ingredients.Select<Ingredient, string>(r => "[" + r.techType.AsString() + " x" + r.amount + "]")
+                   rec.Ingredients.Select(r => "[" + r.techType.AsString() + " x" + r.amount + "]")
                        .ToArray()
                ) + " = x" + rec.craftAmount + " & " + string.Join(
                    "+",
-                   rec.LinkedItems.Select<TechType, string>(tt => tt.AsString()).ToArray()
+                   rec.LinkedItems.Select(tt => tt.AsString()).ToArray()
                );
     }
 
     public static int getTotalIngredientSlotCount(RecipeData td) {
-        int ret = 0;
-        foreach (Ingredient i in td.Ingredients) {
-            Vector2int size = TechData.GetItemSize(i.techType);
+        var ret = 0;
+        foreach (var i in td.Ingredients) {
+            var size = TechData.GetItemSize(i.techType);
             ret += size.x * size.y;
         }
 
@@ -428,13 +429,13 @@ public static class RecipeUtil {
     }
 
     public static List<Ingredient> combineIngredients(IEnumerable<Ingredient> list, IEnumerable<Ingredient> add) {
-        CountMap<TechType> amt = new CountMap<TechType>();
-        foreach (Ingredient i in list)
+        var amt = new CountMap<TechType>();
+        foreach (var i in list)
             amt.add(i.techType, i.amount);
-        foreach (Ingredient i in add)
+        foreach (var i in add)
             amt.add(i.techType, i.amount);
-        List<Ingredient> ret = new List<Ingredient>();
-        foreach (TechType tt in amt.getItems()) {
+        List<Ingredient> ret = [];
+        foreach (var tt in amt.getItems()) {
             ret.Add(new Ingredient(tt, amt.getCount(tt)));
         }
 
@@ -442,9 +443,9 @@ public static class RecipeUtil {
     }
 
     public static Dictionary<TechType, int> getIngredientsDict(RecipeData td) {
-        Dictionary<TechType, int> ret = new Dictionary<TechType, int>();
-        foreach (Ingredient i in td.Ingredients) {
-            int has = ret.ContainsKey(i.techType) ? ret[i.techType] : 0;
+        var ret = new Dictionary<TechType, int>();
+        foreach (var i in td.Ingredients) {
+            var has = ret.ContainsKey(i.techType) ? ret[i.techType] : 0;
             ret[i.techType] = has + i.amount;
         }
 
@@ -453,9 +454,9 @@ public static class RecipeUtil {
 
     public static void getRecipeCategory(TechType tt, out TechGroup grp, out TechCategory cat) {
         if (techGroupData.Count == 0) {
-            foreach (KeyValuePair<TechGroup, Dictionary<TechCategory, List<TechType>>> kvp in CraftData.groups) {
-                foreach (KeyValuePair<TechCategory, List<TechType>> kvp2 in kvp.Value) {
-                    foreach (TechType tt2 in kvp2.Value) {
+            foreach (var kvp in CraftData.groups) {
+                foreach (var kvp2 in kvp.Value) {
+                    foreach (var tt2 in kvp2.Value) {
                         techGroupData[tt2] = kvp.Key;
                         techCatData[tt2] = kvp2.Key;
                     }

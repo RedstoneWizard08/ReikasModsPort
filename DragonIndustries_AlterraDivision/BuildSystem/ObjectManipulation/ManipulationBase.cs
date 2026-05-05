@@ -21,10 +21,10 @@ public abstract class ManipulationBase {
 	public abstract void saveToXML(XmlElement e);
 
 	public override string ToString() {
-		XmlDocument doc = new XmlDocument();
-		XmlElement e = doc.CreateElement(this.GetType().Name);
-		this.saveToXML(e);
-		return this.GetType() + " : " + e.format();
+		var doc = new XmlDocument();
+		var e = doc.CreateElement(GetType().Name);
+		saveToXML(e);
+		return GetType() + " : " + e.format();
 	}
 
 	public virtual bool needsReapplication() {

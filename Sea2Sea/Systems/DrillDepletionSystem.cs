@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
+using Nautilus.Assets;
 using ReikaKalseki.Auroresource;
 using ReikaKalseki.DIAlterra;
 using UnityEngine;
@@ -11,225 +13,287 @@ using UnityEngine.UI;
 namespace ReikaKalseki.SeaToSea;
 
 public class DrillDepletionSystem {
+    public static readonly DrillDepletionSystem Instance = new();
 
-	public static readonly DrillDepletionSystem instance = new DrillDepletionSystem();
+    private static readonly float DrillLife = 3600; //seconds
+    internal static readonly float Radius = 200; //300;
 
-	private static readonly float DRILL_LIFE = 3600; //seconds
-	internal static readonly float RADIUS = 200;//300;
+    internal DrillDepletionAoe AoeEntity;
 
-	internal DrillDepletionAOE aoeEntity;
+    private DrillDepletionSystem() {
+    }
 
-	private DrillDepletionSystem() {
+    internal void Register() {
+        AoeEntity = new DrillDepletionAoe();
+        AoeEntity.Register();
+        SaveSystem.addSaveHandler(
+            AoeEntity.ClassID,
+            new SaveSystem.ComponentFieldSaveHandler<DrillDepletionAoeTag>().addField("totalDrillTime")
+        );
+    }
 
-	}
+    private DrillDepletionAoeTag GetAoEForDrill(MonoBehaviour drill) {
+        var set = WorldUtil.getObjectsNearWithComponent<DrillDepletionAoeTag>(drill.transform.position, 5);
+        //SNUtil.writeToChat("Drill "+drill+" @ "+drill.transform.position+" fetching tag = "+tag.toDebugString());
+        float initialValue = 0;
+        if (set.Count > 1) {
+            foreach (var tag in set) {
+                initialValue += tag.TotalDrillTime;
+                tag.gameObject.destroy(false);
+            }
 
-	internal void register() {
-		aoeEntity = new DrillDepletionAOE();
-		aoeEntity.Patch();
-		SaveSystem.addSaveHandler(aoeEntity.ClassID, new SaveSystem.ComponentFieldSaveHandler<DrillDepletionAOETag>().addField("totalDrillTime"));
-	}
+            set.Clear();
+        }
 
-	private DrillDepletionAOETag getAoEForDrill(MonoBehaviour drill) {
-		HashSet<DrillDepletionAOETag> set = WorldUtil.getObjectsNearWithComponent<DrillDepletionAOETag>(drill.transform.position, 5);
-		//SNUtil.writeToChat("Drill "+drill+" @ "+drill.transform.position+" fetching tag = "+tag.toDebugString());
-		float initialValue = 0;
-		if (set.Count > 1) {
-			foreach (DrillDepletionAOETag tag in set) {
-				initialValue += tag.totalDrillTime;
-				tag.gameObject.destroy(false);
-			}
-			set.Clear();
-		}
-		if (set.Count == 0) {
-			GameObject go = ObjectUtil.createWorldObject(aoeEntity.ClassID);
-			go.transform.position = drill.transform.position;
-			DrillDepletionAOETag tag = go.GetComponent<DrillDepletionAOETag>();
-			tag.totalDrillTime = initialValue;
-			set.Add(tag);
-		}
-		return set.First();
-	}
+        if (set.Count == 0) {
+            var go = ObjectUtil.createWorldObject(AoeEntity.ClassID);
+            go.transform.position = drill.transform.position;
+            var tag = go.GetComponent<DrillDepletionAoeTag>();
+            tag.TotalDrillTime = initialValue;
+            set.Add(tag);
+        }
 
-	internal bool hasRemainingLife(MonoBehaviour drill) {
-		DrillableResourceArea aoe = this.getMotherlode(drill);
-		if (aoe != null) {
-			drill.gameObject.EnsureComponent<MotherlodeDrillTag>().deposit = aoe;
-			return true;
-		}
-		DrillDepletionAOETag tag = this.getAoEForDrill(drill);
-		return tag && tag.totalDrillTime <= DRILL_LIFE;
-	}
+        return set.First();
+    }
 
-	internal void deplete(MonoBehaviour drill) {
-		DrillableResourceArea aoe = this.getMotherlode(drill);
-		//SNUtil.writeToChat("motherlode = "+aoe);
-		if (aoe != null) {
-			drill.gameObject.EnsureComponent<MotherlodeDrillTag>().deposit = aoe;
-			return;
-		}
-		DrillDepletionAOETag tag = this.getAoEForDrill(drill);
-		if (tag)
-			tag.totalDrillTime += DayNightCycle.main.deltaTime; //this is the time step they use too
-	}
+    internal bool HasRemainingLife(MonoBehaviour drill) {
+        var aoe = GetMotherlode(drill);
+        if (aoe != null) {
+            drill.gameObject.EnsureComponent<MotherlodeDrillTag>().Deposit = aoe;
+            return true;
+        }
 
-	internal DrillableResourceArea getMotherlode(MonoBehaviour drill) {
-		foreach (DrillableResourceArea.DrillableResourceAreaTag d in WorldUtil.getObjectsNearWithComponent<DrillableResourceArea.DrillableResourceAreaTag>(drill.transform.position, DrillableResourceArea.getMaxRadius() + 10)) {
-			SphereCollider aoe = d.GetComponentInChildren<SphereCollider>();
-			Vector3 ctr = aoe.transform.position+aoe.center;
-			if (ctr.y < drill.transform.position.y && MathUtil.isPointInCylinder(ctr, drill.transform.position, aoe.radius - 10, (aoe.radius * 1.5F) + 10)) {
-				return DrillableResourceArea.getResourceNode(d.GetComponent<PrefabIdentifier>().ClassId);
-			}
-			else {
-				//SNUtil.writeToChat("motherlode too far away @ "+ctr+" for "+drill.transform.position+" R="+aoe.radius);
-			}
-		}
-		return null;
-	}
+        var tag = GetAoEForDrill(drill);
+        return tag && tag.TotalDrillTime <= DrillLife;
+    }
+
+    internal void Deplete(MonoBehaviour drill) {
+        var aoe = GetMotherlode(drill);
+        //SNUtil.writeToChat("motherlode = "+aoe);
+        if (aoe != null) {
+            drill.gameObject.EnsureComponent<MotherlodeDrillTag>().Deposit = aoe;
+            return;
+        }
+
+        var tag = GetAoEForDrill(drill);
+        if (tag)
+            tag.TotalDrillTime += DayNightCycle.main.deltaTime; //this is the time step they use too
+    }
+
+    internal DrillableResourceArea GetMotherlode(MonoBehaviour drill) {
+        foreach (var d in WorldUtil.getObjectsNearWithComponent<DrillableResourceArea.DrillableResourceAreaTag>(
+                     drill.transform.position,
+                     DrillableResourceArea.getMaxRadius() + 10
+                 )) {
+            var aoe = d.GetComponentInChildren<SphereCollider>();
+            var ctr = aoe.transform.position + aoe.center;
+            if (ctr.y < drill.transform.position.y && MathUtil.isPointInCylinder(
+                    ctr,
+                    drill.transform.position,
+                    aoe.radius - 10,
+                    aoe.radius * 1.5F + 10
+                )) {
+                return DrillableResourceArea.getResourceNode(d.GetComponent<PrefabIdentifier>().ClassId);
+            } else {
+                //SNUtil.writeToChat("motherlode too far away @ "+ctr+" for "+drill.transform.position+" R="+aoe.radius);
+            }
+        }
+
+        return null;
+    }
 }
 
-class MotherlodeDrillTag : MonoBehaviour {
+internal class MotherlodeDrillTag : MonoBehaviour {
+    private static readonly int MotherlodeOresPerDay = 60;
+    private static readonly int MotherlodeStorageCapacity = 1200;
 
-	private static readonly int MOTHERLODE_ORES_PER_DAY = 60;
-	private static readonly int MOTHERLODE_STORAGE_CAPACITY = 1200;
+    private static PropertyInfo _allowedOreField;
+    private static FieldInfo _oresPerDayField;
+    private static MethodInfo _oresPerDaySet;
 
-	private static PropertyInfo allowedOreField;
-	private static FieldInfo oresPerDayField;
-	private static MethodInfo oresPerDaySet;
+    private static Type _drillerDisplay;
 
-	private static Type drillerDisplay;
-	private static MethodInfo updateDisplay;
-	//private static MethodInfo refreshDisplayStorage;
-	private static FieldInfo filterGridField;
-	private static FieldInfo filterListField;
-	private static FieldInfo storageText;
+    private static MethodInfo _updateDisplay;
 
-	private static PropertyInfo controllerStorage;
+    //private static MethodInfo refreshDisplayStorage;
+    private static FieldInfo _filterGridField;
+    private static FieldInfo _filterListField;
+    private static FieldInfo _storageText;
 
-	private static FieldInfo storageCapacity;
+    private static PropertyInfo _controllerStorage;
 
-	private static MethodInfo showGridPage;
-	//private static FieldInfo currentGridPage;
-	private static FieldInfo gridGO;
+    private static FieldInfo _storageCapacity;
 
-	private static FieldInfo buttonItem;
-	private static FieldInfo buttonIcon;
+    private static MethodInfo _showGridPage;
 
-	internal DrillableResourceArea deposit;
+    //private static FieldInfo currentGridPage;
+    private static FieldInfo _gridGo;
 
-	private Component drillerDisplayComponent;
+    private static FieldInfo _buttonItem;
+    private static FieldInfo _buttonIcon;
 
-	private float lastOreTableAssignTime = -1;
+    internal DrillableResourceArea Deposit;
 
-	void Start() {
-		SNUtil.writeToChat("Drill at " + WorldUtil.getRegionalDescription(transform.position, true) + " is mining deposit: " + Language.main.Get(deposit.TechType.AsString()));
-	}
+    private Component _drillerDisplayComponent;
 
-	void Update() {
-		if (allowedOreField == null) {
-			Type t = FCSIntegrationSystem.instance.getFCSDrillOreManager();
-			allowedOreField = t.GetProperty("AllowedOres", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-			oresPerDayField = t.GetField("_oresPerDay", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-			oresPerDaySet = t.GetMethod("SetOresPerDay", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+    private float _lastOreTableAssignTime = -1;
 
-			drillerDisplay = t.Assembly.GetType("FCS_ProductionSolutions.Mods.DeepDriller.HeavyDuty.Mono.FCSDeepDrillerDisplay");
-			updateDisplay = drillerDisplay.GetMethod("UpdateDisplayValues", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-			//refreshDisplayStorage = drillerDisplay.GetMethod("RefreshStorageAmount", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-			filterGridField = drillerDisplay.GetField("_filterGrid", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-			filterListField = drillerDisplay.GetField("_trackedFilterState", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-			storageText = drillerDisplay.GetField("_itemCounter", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+    private void Start() {
+        SNUtil.writeToChat(
+            "Drill at " + WorldUtil.getRegionalDescription(transform.position, true) + " is mining deposit: " +
+            Language.main.Get(Deposit.TechType.AsString())
+        );
+    }
 
-			controllerStorage = FCSIntegrationSystem.instance.getFCSDrillController().GetProperty("DeepDrillerContainer", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-			storageCapacity = FCSIntegrationSystem.instance.getFCSDrillStorage().GetField("_storageSize", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+    private void Update() {
+        // TODO: FCS Compat
+        // if (_allowedOreField == null) {
+        //     var t = FCSIntegrationSystem.instance.getFCSDrillOreManager();
+        //     _allowedOreField = t.GetProperty(
+        //         "AllowedOres",
+        //         BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
+        //     );
+        //     _oresPerDayField = t.GetField(
+        //         "_oresPerDay",
+        //         BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
+        //     );
+        //     _oresPerDaySet = t.GetMethod(
+        //         "SetOresPerDay",
+        //         BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
+        //     );
+        //
+        //     _drillerDisplay = t.Assembly.GetType(
+        //         "FCS_ProductionSolutions.Mods.DeepDriller.HeavyDuty.Mono.FCSDeepDrillerDisplay"
+        //     );
+        //     _updateDisplay = _drillerDisplay.GetMethod(
+        //         "UpdateDisplayValues",
+        //         BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
+        //     );
+        //     //refreshDisplayStorage = drillerDisplay.GetMethod("RefreshStorageAmount", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+        //     _filterGridField = _drillerDisplay.GetField(
+        //         "_filterGrid",
+        //         BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
+        //     );
+        //     _filterListField = _drillerDisplay.GetField(
+        //         "_trackedFilterState",
+        //         BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
+        //     );
+        //     _storageText = _drillerDisplay.GetField(
+        //         "_itemCounter",
+        //         BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
+        //     );
+        //
+        //     _controllerStorage = FCSIntegrationSystem.instance.getFCSDrillController().GetProperty(
+        //         "DeepDrillerContainer",
+        //         BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
+        //     );
+        //     _storageCapacity = FCSIntegrationSystem.instance.getFCSDrillStorage().GetField(
+        //         "_storageSize",
+        //         BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
+        //     );
+        //
+        //     //currentGridPage = gridHelper.GetField("_currentPage", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+        //     _showGridPage = typeof(GridHelper).GetMethod(
+        //         "DrawPage",
+        //         BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
+        //         null,
+        //         CallingConventions.HasThis,
+        //         [],
+        //         null
+        //     );
+        //     _gridGo = typeof(GridHelper).GetField(
+        //         "_itemsGrid",
+        //         BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
+        //     );
+        //
+        //     _buttonItem = typeof(uGUI_FCSDisplayItem).GetField(
+        //         "_techType",
+        //         BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
+        //     );
+        //     _buttonIcon = typeof(uGUI_FCSDisplayItem).GetField(
+        //         "_icon",
+        //         BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
+        //     );
+        //
+        //     GridHelper grid = (GridHelper)_filterGridField.GetValue(_drillerDisplayComponent);
+        //     grid.OnLoadDisplay += (data) => RebuildDisplay();
+        // }
+        //
+        // var time = DayNightCycle.main.timePassedAsFloat;
+        // if (time - _lastOreTableAssignTime >= 1) {
+        //     _lastOreTableAssignTime = time;
+        //     var com = GetComponent(FCSIntegrationSystem.instance.getFCSDrillOreManager());
+        //     if (com) {
+        //         _allowedOreField.SetValue(com, Deposit.getAllAvailableResources());
+        //
+        //         //set ores per day count too; default is 25 but increase to 60 on a motherlode
+        //         var get = (int)_oresPerDayField.GetValue(com);
+        //         if (get != MotherlodeOresPerDay)
+        //             _oresPerDaySet.Invoke(com, [MotherlodeOresPerDay]);
+        //
+        //         RebuildDisplay();
+        //     }
+        //
+        //     var com2 = GetComponent(FCSIntegrationSystem.instance.getFCSDrillController());
+        //     if (com2) {
+        //         var storage = _controllerStorage.GetValue(com2);
+        //         _storageCapacity.SetValue(storage, MotherlodeStorageCapacity); //defaults to 300
+        //     }
+        // }
+        //
+        // GridHelper grid2 = (GridHelper)_filterGridField.GetValue(_drillerDisplayComponent);
+        // if (grid2 != null) {
+        //     var go = (GameObject)_gridGo.GetValue(grid2);
+        //     foreach (uGUI_FCSDisplayItem c in go.GetComponentsInChildren<uGUI_FCSDisplayItem>()) {
+        //         var tt = (TechType)_buttonItem.GetValue(c);
+        //         var ico = (uGUI_Icon)_buttonIcon.GetValue(c);
+        //         ico.sprite = SpriteManager.Get(C2CHooks.isFCSDrillMaterialAllowed(tt, true) ? tt : TechType.None);
+        //     }
+        //
+        //     var t = (Text)_storageText.GetValue(_drillerDisplayComponent);
+        //     t.text = t.text.Substring(0, t.text.LastIndexOf('/') + 1) + MotherlodeStorageCapacity;
+        //     _updateDisplay.Invoke(_drillerDisplayComponent, []);
+        // }
+    }
 
-			//currentGridPage = gridHelper.GetField("_currentPage", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-			showGridPage = typeof(GridHelper).GetMethod("DrawPage", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, CallingConventions.HasThis, new Type[0], null);
-			gridGO = typeof(GridHelper).GetField("_itemsGrid", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-
-			buttonItem = typeof(uGUI_FCSDisplayItem).GetField("_techType", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-			buttonIcon = typeof(uGUI_FCSDisplayItem).GetField("_icon", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-
-			GridHelper grid = (GridHelper)filterGridField.GetValue(drillerDisplayComponent);
-			grid.OnLoadDisplay += (data) => this.rebuildDisplay();
-		}
-
-		float time = DayNightCycle.main.timePassedAsFloat;
-		if (time - lastOreTableAssignTime >= 1) {
-			lastOreTableAssignTime = time;
-			Component com = this.GetComponent(FCSIntegrationSystem.instance.getFCSDrillOreManager());
-			if (com) {
-				allowedOreField.SetValue(com, deposit.getAllAvailableResources());
-
-				//set ores per day count too; default is 25 but increase to 60 on a motherlode
-				int get = (int)oresPerDayField.GetValue(com);
-				if (get != MOTHERLODE_ORES_PER_DAY)
-					oresPerDaySet.Invoke(com, new object[] { MOTHERLODE_ORES_PER_DAY });
-
-				this.rebuildDisplay();
-			}
-
-			Component com2 = this.GetComponent(FCSIntegrationSystem.instance.getFCSDrillController());
-			if (com2) {
-				object storage = controllerStorage.GetValue(com2);
-				storageCapacity.SetValue(storage, MOTHERLODE_STORAGE_CAPACITY); //defaults to 300
-			}
-		}
-
-		GridHelper grid2 = (GridHelper)filterGridField.GetValue(drillerDisplayComponent);
-		if (grid2 != null) {
-			GameObject go = (GameObject)gridGO.GetValue(grid2);
-			foreach (uGUI_FCSDisplayItem c in go.GetComponentsInChildren<uGUI_FCSDisplayItem>()) {
-				TechType tt = (TechType)buttonItem.GetValue(c);
-				uGUI_Icon ico = (uGUI_Icon)buttonIcon.GetValue(c);
-				ico.sprite = SpriteManager.Get(C2CHooks.isFCSDrillMaterialAllowed(tt, true) ? tt : TechType.None);
-			}
-
-			Text t = (Text)storageText.GetValue(drillerDisplayComponent);
-			t.text = t.text.Substring(0, t.text.LastIndexOf('/') + 1) + MOTHERLODE_STORAGE_CAPACITY;
-			updateDisplay.Invoke(drillerDisplayComponent, new object[0]);
-		}
-	}
-
-	private void rebuildDisplay() {
-		drillerDisplayComponent = this.GetComponent(drillerDisplay);
-		if (drillerDisplayComponent) {
-			IDictionary dict = (IDictionary)filterListField.GetValue(drillerDisplayComponent);
-			dict.Clear();
-
-			GridHelper grid = (GridHelper)filterGridField.GetValue(drillerDisplayComponent);
-			if (grid != null) {
-				GameObject go = (GameObject)gridGO.GetValue(grid);
-				go.removeChildObject("OreBTN");
-				showGridPage.Invoke(grid, new object[0]);
-			}
-		}
-	}
-
+    private void RebuildDisplay() {
+        // TODO: FCS Compat
+        // _drillerDisplayComponent = GetComponent(_drillerDisplay);
+        // if (_drillerDisplayComponent) {
+        //     var dict = (IDictionary)_filterListField.GetValue(_drillerDisplayComponent);
+        //     dict.Clear();
+        //
+        //     GridHelper grid = (GridHelper)_filterGridField.GetValue(_drillerDisplayComponent);
+        //     if (grid != null) {
+        //         var go = (GameObject)_gridGo.GetValue(grid);
+        //         go.removeChildObject("OreBTN");
+        //         _showGridPage.Invoke(grid, new object[0]);
+        //     }
+        // }
+    }
 }
 
-internal class DrillDepletionAOE : Spawnable {
+internal class DrillDepletionAoe : CustomPrefab {
+    [SetsRequiredMembers]
+    internal DrillDepletionAoe() : base("DrillDepletionAOE", "", "") {
+        SetGameObject(GetGameObject);
+    }
 
-	internal DrillDepletionAOE() : base("DrillDepletionAOE", "", "") {
-
-	}
-
-	public override GameObject GetGameObject() {
-		GameObject go = new GameObject("DrillDepletionAOE(Clone)");
-		go.EnsureComponent<PrefabIdentifier>().classId = ClassID;
-		go.EnsureComponent<TechTag>().type = TechType;
-		go.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.Global;
-		go.EnsureComponent<DrillDepletionAOETag>();
-		SphereCollider sc = go.EnsureComponent<SphereCollider>();
-		sc.isTrigger = true;
-		sc.radius = DrillDepletionSystem.RADIUS;
-		sc.center = Vector3.zero;
-		go.layer = LayerID.NotUseable;
-		return go;
-	}
-
+    public GameObject GetGameObject() {
+        var go = new GameObject("DrillDepletionAOE(Clone)");
+        go.EnsureComponent<PrefabIdentifier>().classId = Info.ClassID;
+        go.EnsureComponent<TechTag>().type = Info.TechType;
+        go.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.Global;
+        go.EnsureComponent<DrillDepletionAoeTag>();
+        var sc = go.EnsureComponent<SphereCollider>();
+        sc.isTrigger = true;
+        sc.radius = DrillDepletionSystem.Radius;
+        sc.center = Vector3.zero;
+        go.layer = LayerID.NotUseable;
+        return go;
+    }
 }
 
-class DrillDepletionAOETag : MonoBehaviour {
-
-	internal float totalDrillTime = 0;
-
+internal class DrillDepletionAoeTag : MonoBehaviour {
+    internal float TotalDrillTime;
 }

@@ -8,10 +8,10 @@ namespace ReikaKalseki.DIAlterra;
 
 public sealed class WeightedRandom<V> {
 
-	private readonly Dictionary<V, double> data = new Dictionary<V, double>();
-	private double maxWeight = 0;
+	private readonly Dictionary<V, double> data = new();
+	private double maxWeight;
 	private double weightSum;
-	private bool isDynamic = false;
+	private bool isDynamic;
 
 	public double addEntry(V obj, double weight) {
 		if (weight < 0)
@@ -24,12 +24,12 @@ public sealed class WeightedRandom<V> {
 	}
 
 	public double addDynamicEntry(DynamicWeight wt) {
-		return this.addEntry((V)wt, wt.getWeight());
+		return addEntry((V)wt, wt.getWeight());
 	}
 
 	public double remove(V val) {
 		if (data.ContainsKey(val)) {
-			double ret = data[val];
+			var ret = data[val];
 			data.Remove(val);
 			weightSum -= ret;
 			return ret;
@@ -38,10 +38,10 @@ public sealed class WeightedRandom<V> {
 	}
 
 	public V getRandomEntry() {
-		double d = UnityEngine.Random.Range(0, (float)this.getTotalWeight());
+		double d = UnityEngine.Random.Range(0, (float)getTotalWeight());
 		double p = 0;
-		foreach (V obj in data.Keys) {
-			p += this.getWeight(obj);
+		foreach (var obj in data.Keys) {
+			p += getWeight(obj);
 			if (d <= p) {
 				return obj;
 			}
@@ -50,11 +50,11 @@ public sealed class WeightedRandom<V> {
 	}
 
 	public V getRandomEntry(V fallback, double wt = 0) {
-		double sum = this.getTotalWeight()+wt;
+		var sum = getTotalWeight()+wt;
 		double d = UnityEngine.Random.Range(0, (float)sum);
 		double p = 0;
-		foreach (V obj in data.Keys) {
-			p += this.getWeight(obj);
+		foreach (var obj in data.Keys) {
+			p += getWeight(obj);
 			if (d <= p) {
 				return obj;
 			}
@@ -63,14 +63,14 @@ public sealed class WeightedRandom<V> {
 	}
 
 	public double getWeight(V obj) {
-		return obj is DynamicWeight ? ((DynamicWeight)obj).getWeight() : data.ContainsKey(obj) ? data[obj] : 0;
+		return obj is DynamicWeight weight ? weight.getWeight() : data.ContainsKey(obj) ? data[obj] : 0;
 	}
 
 	public double getMaxWeight() {
 		if (isDynamic) {
 			double max = 0;
-			foreach (V obj in data.Keys) {
-				double wt = this.getWeight(obj);
+			foreach (var obj in data.Keys) {
+				var wt = getWeight(obj);
 				max = Math.Max(max, wt);
 			}
 			return max;
@@ -81,8 +81,8 @@ public sealed class WeightedRandom<V> {
 	public double getTotalWeight() {
 		if (isDynamic) {
 			double sum = 0;
-			foreach (V obj in data.Keys) {
-				double wt = this.getWeight(obj);
+			foreach (var obj in data.Keys) {
+				var wt = getWeight(obj);
 				sum += wt;
 			}
 			return sum;
@@ -91,7 +91,7 @@ public sealed class WeightedRandom<V> {
 	}
 
 	public bool isEmpty() {
-		return this.size() == 0;
+		return size() == 0;
 	}
 
 	public int size() {
@@ -107,7 +107,7 @@ public sealed class WeightedRandom<V> {
 	}
 
 	public void setSeed(long seed) {
-		UnityEngine.Random.InitState((int)seed ^ ((int)(seed >> 32)));
+		UnityEngine.Random.InitState((int)seed ^ (int)(seed >> 32));
 	}
 
 	public void clear() {
@@ -121,7 +121,7 @@ public sealed class WeightedRandom<V> {
 	}
 
 	public double getProbability(V val) {
-		return this.getWeight(val) / this.getTotalWeight();
+		return getWeight(val) / getTotalWeight();
 	}
 
 }

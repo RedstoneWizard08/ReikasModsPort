@@ -19,7 +19,7 @@ internal sealed class RemoveGravity : ManipulationBase {
 	}
 
 	public override void applyToObject(PlacedObject go) {
-		this.applyToObject(go.obj);
+		applyToObject(go.obj);
 	}
 
 	public override void loadFromXML(XmlElement e) {

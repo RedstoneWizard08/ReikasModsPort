@@ -42,13 +42,13 @@ public static class InstructionHandlers {
 			case "ldc.i8":
 				return (long)ci.operand;
 			default:
-				return Int64.MaxValue;
+				return long.MaxValue;
 		}
 	}
 
 	public static void nullInstructions(InsnList li, int begin, int end) {
-		for (int i = begin; i <= end; i++) {
-			CodeInstruction insn = li[i];
+		for (var i = begin; i <= end; i++) {
+			var insn = li[i];
 			insn.opcode = OpCodes.Nop;
 			insn.operand = null;
 		}
@@ -67,15 +67,15 @@ public static class InstructionHandlers {
 	}
 
 	public static MethodInfo convertMethodOperand(string owner, string name, bool instance, params string[] args) {
-		Type[] types = new Type[args.Length];
-		for (int i = 0; i < args.Length; i++) {
+		var types = new Type[args.Length];
+		for (var i = 0; i < args.Length; i++) {
 			types[i] = AccessTools.TypeByName(args[i]);
 		}
 		return convertMethodOperand(owner, name, instance, types);
 	}
 
 	public static MethodInfo convertMethodOperand(string owner, string name, bool instance, params Type[] args) {
-		Type container = AccessTools.TypeByName(owner);
+		var container = AccessTools.TypeByName(owner);
 		if (container == null) {
 			throw new Exception("Could not find a type matching name '" + owner + "'!");
 		}
@@ -88,12 +88,12 @@ public static class InstructionHandlers {
 		}
 		//ret.IsStatic = !instance;
 		if (ret == null) {
-			string info = "Harmony version:"+typeof(AccessTools).fullClearName()+"\n";
+			var info = "Harmony version:"+typeof(AccessTools).fullClearName()+"\n";
 			info += "Methods:\n" + container.listMethods() + "\nComparison:\n";
-			foreach (MethodInfo mi in container.getMethods()) {
+			foreach (var mi in container.getMethods()) {
 				if (mi.Name == name) {
 					info += "Name Match: " + mi.Name;
-					ParameterInfo[] pp = mi.GetParameters();
+					var pp = mi.GetParameters();
 
 					if (pp.Length == args.Length)
 						info += "; Arg Len Match: " + pp.Length;
@@ -105,8 +105,8 @@ public static class InstructionHandlers {
 					}
 					else {
 						info += "; Arg mismatch:\n";
-						for (int i = 0; i < pp.Length; i++) {
-							Type pt = pp[i].ParameterType;
+						for (var i = 0; i < pp.Length; i++) {
+							var pt = pp[i].ParameterType;
 							info += i + ": " + args[i].fullClearName() + " vs " + pt.fullClearName() + " (" + (args[i] == pt) + ")\n";
 						}
 					}
@@ -120,17 +120,17 @@ public static class InstructionHandlers {
 	}
 
 	public static FieldInfo convertFieldOperand(string owner, string name) {
-		Type container = AccessTools.TypeByName(owner);
-		FieldInfo ret = AccessTools.Field(container, name);
+		var container = AccessTools.TypeByName(owner);
+		var ret = AccessTools.Field(container, name);
 		return ret == null ? throw new Exception("Could not find a method named '" + name + "' in type '" + owner + "'!") : ret;
 	}
 
 	public static int getInstruction(this InsnList li, int start, int index, OpCode opcode, params object[] args) {
-		int count = 0;
+		var count = 0;
 		if (index < 0) {
-			index = (-index) - 1;
-			for (int i = li.Count - 1; i >= 0; i--) {
-				CodeInstruction insn = li[i];
+			index = -index - 1;
+			for (var i = li.Count - 1; i >= 0; i--) {
+				var insn = li[i];
 				if (insn.opcode == opcode) {
 					if (match(insn, args)) {
 						if (count == index)
@@ -142,8 +142,8 @@ public static class InstructionHandlers {
 			}
 		}
 		else {
-			for (int i = start; i < li.Count; i++) {
-				CodeInstruction insn = li[i];
+			for (var i = start; i < li.Count; i++) {
+				var insn = li[i];
 				if (insn.opcode == opcode) {
 					if (match(insn, args)) {
 						if (count == index)
@@ -158,11 +158,11 @@ public static class InstructionHandlers {
 	}
 
 	public static int getMethodCallByName(this InsnList li, int start, int index, string owner, string name) {
-		int count = 0;
+		var count = 0;
 		if (index < 0) {
-			index = (-index) - 1;
-			for (int i = li.Count - 1; i >= 0; i--) {
-				CodeInstruction insn = li[i];
+			index = -index - 1;
+			for (var i = li.Count - 1; i >= 0; i--) {
+				var insn = li[i];
 				if (isMethodCall(insn, owner, name)) {
 					if (count == index)
 						return i;
@@ -172,8 +172,8 @@ public static class InstructionHandlers {
 			}
 		}
 		else {
-			for (int i = start; i < li.Count; i++) {
-				CodeInstruction insn = li[i];
+			for (var i = start; i < li.Count; i++) {
+				var insn = li[i];
 				if (isMethodCall(insn, owner, name)) {
 					if (count == index)
 						return i;
@@ -186,8 +186,8 @@ public static class InstructionHandlers {
 	}
 
 	public static int getFirstOpcode(InsnList li, int after, OpCode opcode) {
-		for (int i = after; i < li.Count; i++) {
-			CodeInstruction insn = li[i];
+		for (var i = after; i < li.Count; i++) {
+			var insn = li[i];
 			if (insn.opcode == opcode) {
 				return i;
 			}
@@ -198,8 +198,8 @@ public static class InstructionHandlers {
 	public static int getLastOpcodeBefore(this InsnList li, int before, OpCode opcode) {
 		if (before > li.Count)
 			before = li.Count;
-		for (int i = before - 1; i >= 0; i--) {
-			CodeInstruction insn = li[i];
+		for (var i = before - 1; i >= 0; i--) {
+			var insn = li[i];
 			if (insn.opcode == opcode) {
 				return i;
 			}
@@ -208,8 +208,8 @@ public static class InstructionHandlers {
 	}
 
 	public static int getLastInstructionBefore(this InsnList li, int before, OpCode opcode, params object[] args) {
-		for (int i = before - 1; i >= 0; i--) {
-			CodeInstruction insn = li[i];
+		for (var i = before - 1; i >= 0; i--) {
+			var insn = li[i];
 			if (insn.opcode == opcode) {
 				if (match(insn, args)) {
 					return i;
@@ -224,13 +224,13 @@ public static class InstructionHandlers {
 	}
 
 	public static bool matchOperands(object o1, object o2) {
-		return o1 == o2 || (o1 != null && o2 != null && (o1 is LocalBuilder && o2 is LocalBuilder ? ((LocalBuilder)o1).LocalIndex == ((LocalBuilder)o2).LocalIndex : o1.Equals(o2)));
+		return o1 == o2 || (o1 != null && o2 != null && (o1 is LocalBuilder builder && o2 is LocalBuilder localBuilder ? builder.LocalIndex == localBuilder.LocalIndex : o1.Equals(o2)));
 	}
 
 	public static bool isMethodCall(CodeInstruction insn, string owner, string name) {
 		if (insn.opcode != OpCodes.Call && insn.opcode != OpCodes.Callvirt && insn.opcode != OpCodes.Calli)
 			return false;
-		MethodInfo mi = (MethodInfo)insn.operand;
+		var mi = (MethodInfo)insn.operand;
 		//FileLog.Log("Comparing "+mi.Name+" in "+mi.DeclaringType.FullName+" to "+owner+" & "+name);
 		return mi.Name == name && mi.DeclaringType.FullName == owner;
 	}
@@ -238,15 +238,15 @@ public static class InstructionHandlers {
 	public static bool match(CodeInstruction insn, params object[] args) {
 		//FileLog.Log("Comparing "+insn.operand.GetType()+" "+insn.operand.ToString()+" against seek of "+String.Join(",", args.Select(p=>p.ToString()).ToArray()));
 		if (insn.opcode == OpCodes.Call || insn.opcode == OpCodes.Callvirt) { //string class, string name, bool instance, Type[] args
-			MethodInfo info = convertMethodOperand((string)args[0], (string)args[1], (bool)args[2], (Type[])args[3]);
-			return ((MethodInfo)insn.operand) == info;
+			var info = convertMethodOperand((string)args[0], (string)args[1], (bool)args[2], (Type[])args[3]);
+			return (MethodInfo)insn.operand == info;
 		}
 		else if (insn.opcode == OpCodes.Isinst || insn.opcode == OpCodes.Newobj) { //string class
-			return ((Type)insn.operand) == AccessTools.TypeByName((string)args[0]);
+			return (Type)insn.operand == AccessTools.TypeByName((string)args[0]);
 		}
 		else if (insn.opcode == OpCodes.Ldfld || insn.opcode == OpCodes.Stfld || insn.opcode == OpCodes.Ldsfld || insn.opcode == OpCodes.Stsfld) { //string class, string name
-			FieldInfo info = convertFieldOperand((string)args[0], (string)args[1]);
-			return ((FieldInfo)insn.operand) == info;
+			var info = convertFieldOperand((string)args[0], (string)args[1]);
+			return (FieldInfo)insn.operand == info;
 		}
 		else if (insn.opcode == OpCodes.Ldarg) { //int pos
 			return insn.operand == args[0];
@@ -264,7 +264,7 @@ public static class InstructionHandlers {
 			return insn.LoadsConstant(Convert.ToDouble(args[0]));
 		}
 		else if (insn.opcode == OpCodes.Ldloc_S || insn.opcode == OpCodes.Stloc_S) { //LocalBuilder contains a pos and type
-			LocalBuilder loc = (LocalBuilder)insn.operand;
+			var loc = (LocalBuilder)insn.operand;
 			return args[0] is int && loc.LocalIndex == (int)args[0]/* && loc.LocalType == args[1]*/;
 		}
 		else if (insn.opcode == OpCodes.Ldstr) { //string var
@@ -278,19 +278,17 @@ public static class InstructionHandlers {
 	}
 
 	private static string toOperandString(OpCode code, object operand) {
-		if (operand is MethodInfo) {
-			MethodInfo m = (MethodInfo)operand;
-			return m.DeclaringType + "." + m.Name + " (" + string.Join(", ", m.GetParameters().Select<ParameterInfo, string>(p => p.ParameterType.Name + " " + p.Name)) + ") [static=" + m.IsStatic + "]";
+		if (operand is MethodInfo info) {
+			return info.DeclaringType + "." + info.Name + " (" + string.Join(", ", info.GetParameters().Select(p => p.ParameterType.Name + " " + p.Name)) + ") [static=" + info.IsStatic + "]";
 		}
-		if (operand is FieldInfo) {
-			FieldInfo m = (FieldInfo)operand;
-			return m.DeclaringType + "." + m.Name + " [static=" + m.IsStatic + "]";
+		if (operand is FieldInfo fieldInfo) {
+			return fieldInfo.DeclaringType + "." + fieldInfo.Name + " [static=" + fieldInfo.IsStatic + "]";
 		}
-		return operand is LocalBuilder
-				? "localvar " + ((LocalBuilder)operand).LocalIndex
+		return operand is LocalBuilder builder
+				? "localvar " + builder.LocalIndex
 				: code == OpCodes.Ldarg_S || code == OpCodes.Ldarg
 					? "arg " + operand
-					: operand is Type ? "type " + ((Type)operand).Name : operand != null ? operand + " [" + operand.GetType() + "]" : "<null>";/*
+					: operand is Type type ? "type " + type.Name : operand != null ? operand + " [" + operand.GetType() + "]" : "<null>";/*
 				if (code == OpCodes.Ldloc_S || code == OpCodes.Stloc_S) {
 					return "localvar "+((LocalBuilder)operand).LocalIndex;
 				}*/
@@ -299,11 +297,11 @@ public static class InstructionHandlers {
 	public static Type getTypeBySimpleName(string name) {
 		if (string.IsNullOrEmpty(name))
 			throw new Exception("You cannot get a type of no name!");
-		foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies().Reverse()) {
-			string an = a.GetName().Name;
+		foreach (var a in AppDomain.CurrentDomain.GetAssemblies().Reverse()) {
+			var an = a.GetName().Name;
 			if (an.StartsWith("0Harmony") && an != "0Harmony") //skip all other harmony versions
 				continue;
-			Type tt = a.GetType(name);
+			var tt = a.GetType(name);
 			if (tt != null)
 				return tt;
 		}
@@ -326,11 +324,11 @@ public static class InstructionHandlers {
 
 	public static void runPatchesIn(Harmony h, Type parent) {
 		FileLog.logPath = Path.Combine(Path.GetDirectoryName(parent.Assembly.Location), "harmony-log.txt");
-		string ilDumpFolder = getILDumpFolder();
-		string msg = "Running harmony patches in " + parent.Assembly.GetName().Name + "::" + parent.Name;
+		var ilDumpFolder = getILDumpFolder();
+		var msg = "Running harmony patches in " + parent.Assembly.GetName().Name + "::" + parent.Name;
 		SNUtil.log(msg);
 		FileLog.Log(msg);
-		foreach (Type t in parent.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)) {
+		foreach (var t in parent.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)) {
 			FileLog.Log("Running harmony patches in " + t.Name);
 			h.PatchAll(t);
 		}
@@ -339,10 +337,12 @@ public static class InstructionHandlers {
 	public static void patchMethod(Harmony h, Type methodHolder, string name, Type patchHolder, string patchName) {
 		FileLog.logPath = Path.Combine(Path.GetDirectoryName(patchHolder.Assembly.Location), "harmony-log.txt");
 		FileLog.Log("Running harmony patch in " + patchHolder.FullName + "::" + patchName + " on " + methodHolder.FullName + "::" + name);
-		MethodInfo m = methodHolder.GetMethod(name, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
+		var m = methodHolder.GetMethod(name, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
 		if (m == null)
 			throw new Exception("Method " + name + " not found in " + methodHolder.AssemblyQualifiedName);
-		patchMethod(h, m, new HarmonyMethod(AccessTools.Method(patchHolder, patchName, new Type[] { typeof(IEnumerable<CodeInstruction>) })));
+		patchMethod(h, m, new HarmonyMethod(AccessTools.Method(patchHolder, patchName, [typeof(IEnumerable<CodeInstruction>),
+			]
+		)));
 	}
 
 	public static void patchMethod(HarmonySystem h, Type methodHolder, string name, Action<InsnList> patch) {
@@ -352,11 +352,13 @@ public static class InstructionHandlers {
 	public static void patchMethod(Harmony h, Type methodHolder, string name, Assembly patchHolder, Action<InsnList> patch) {
 		FileLog.logPath = Path.Combine(Path.GetDirectoryName(patchHolder.Location), "harmony-log.txt");
 		FileLog.Log("Running harmony patch from " + patchHolder.GetName().Name + " on " + methodHolder.FullName + "::" + name);
-		MethodInfo m = methodHolder.GetMethod(name, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
+		var m = methodHolder.GetMethod(name, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
 		if (m == null)
 			throw new Exception("Method " + name + " not found in " + methodHolder.FullName);
 		currentPatch = patch;
-		patchMethod(h, m, new HarmonyMethod(AccessTools.Method(MethodBase.GetCurrentMethod().DeclaringType, "patchHook", new Type[] { typeof(IEnumerable<CodeInstruction>) })));
+		patchMethod(h, m, new HarmonyMethod(AccessTools.Method(MethodBase.GetCurrentMethod().DeclaringType, "patchHook",
+			[typeof(IEnumerable<CodeInstruction>)]
+		)));
 		currentPatch = null;
 	}
 
@@ -364,13 +366,15 @@ public static class InstructionHandlers {
 		FileLog.logPath = Path.Combine(Path.GetDirectoryName(patchHolder.Location), "harmony-log.txt");
 		FileLog.Log("Running harmony patch from " + patchHolder.GetName().Name + " on " + m.DeclaringType.FullName + "::" + m.Name);
 		currentPatch = patch;
-		patchMethod(h, m, new HarmonyMethod(AccessTools.Method(MethodBase.GetCurrentMethod().DeclaringType, "patchHook", new Type[] { typeof(IEnumerable<CodeInstruction>) })));
+		patchMethod(h, m, new HarmonyMethod(AccessTools.Method(MethodBase.GetCurrentMethod().DeclaringType, "patchHook",
+			[typeof(IEnumerable<CodeInstruction>)]
+		)));
 		currentPatch = null;
 	}
 
 	private static Action<InsnList> currentPatch;
 	private static IEnumerable<CodeInstruction> patchHook(IEnumerable<CodeInstruction> instructions) {
-		InsnList codes = new InsnList(instructions);
+		var codes = new InsnList(instructions);
 		currentPatch.Invoke(codes);
 		//FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
 		return codes.AsEnumerable();
@@ -394,7 +398,7 @@ public static class InstructionHandlers {
 	}
 
 	public static void dumpMethodIL(IEnumerable<CodeInstruction> li, string id) {
-		string file = Path.Combine(getILDumpFolder(), id+".txt");
+		var file = Path.Combine(getILDumpFolder(), id+".txt");
 		Directory.CreateDirectory(Path.GetDirectoryName(file));
 		File.WriteAllText(file, li.ToList().clearString());
 	}
@@ -421,11 +425,11 @@ public static class InstructionHandlers {
 
 	public static void logPatchStart(MethodBase patch, IEnumerable<CodeInstruction> orig) {
 		if (dumpIL) {
-			Attribute[] attrs = System.Attribute.GetCustomAttributes(patch.DeclaringType);
+			var attrs = Attribute.GetCustomAttributes(patch.DeclaringType);
 			try {
 				Type t = null;
 				string name = null;
-				foreach (Attribute a in attrs) {
+				foreach (var a in attrs) {
 					if (a is HarmonyPatch ha) {
 						if (ha.info.declaringType != null)
 							t = ha.info.declaringType;
@@ -437,7 +441,7 @@ public static class InstructionHandlers {
 					throw new Exception("No target type");
 				if (string.IsNullOrEmpty(name))
 					throw new Exception("No target name");
-				string id = t.Name+"--"+name;
+				var id = t.Name+"--"+name;
 				dumpMethodIL(orig, id);
 			}
 			catch (Exception e) {
@@ -480,7 +484,7 @@ public static class InstructionHandlers {
 	}
 
 	public static string clearString(this List<CodeInstruction> li) {
-		return "\n" + String.Join("\n", li.Select(p => p.clearString()).ToArray());
+		return "\n" + string.Join("\n", li.Select(p => p.clearString()).ToArray());
 	}
 
 	public static string clearString(this List<CodeInstruction> li, int idx) {
@@ -513,7 +517,7 @@ public class InsnList : List<CodeInstruction> {
 	}
 
 	public InsnList field(string owner, string name, bool inst, bool put) {
-		OpCode code = OpCodes.Ldc_I4;
+		var code = OpCodes.Ldc_I4;
 		if (inst)
 			code = put ? OpCodes.Stfld : OpCodes.Ldfld;
 		else
@@ -526,7 +530,7 @@ public class InsnList : List<CodeInstruction> {
 	}
 
 	public InsnList ldc(int val) {
-		OpCode code = OpCodes.Ldc_I4;
+		var code = OpCodes.Ldc_I4;
 		switch (val) {
 			case -1:
 				code = OpCodes.Ldc_I4_M1;
@@ -584,14 +588,14 @@ public class InsnList : List<CodeInstruction> {
 	}
 
 	public int patchEveryReturnPre(IEnumerable<CodeInstruction> insert) {
-		int times = patchEveryReturnPre((li, idx) => li.InsertRange(idx, insert));
+		var times = patchEveryReturnPre((li, idx) => li.InsertRange(idx, insert));
 		//FileLog.Log("Injected "+times+" times, codes are now: " + InstructionHandlers.toString(codes));
 		return times;
 	}
 
 	public int patchEveryReturnPre(Action<InsnList, int> injectHook) {
-		int times = 0;
-		for (int i = Count - 1; i >= 0; i--) {
+		var times = 0;
+		for (var i = Count - 1; i >= 0; i--) {
 			if (this[i].opcode == OpCodes.Ret) {
 				//FileLog.Log("Injected @ "+i+", codes are now: "+InstructionHandlers.toString(codes));
 				injectHook(this, i);
@@ -602,23 +606,23 @@ public class InsnList : List<CodeInstruction> {
 	}
 
 	public InsnList patchInitialHook(params CodeInstruction[] insert) {
-		InsnList li = new InsnList();
-		foreach (CodeInstruction c in insert) {
+		InsnList li = [];
+		foreach (var c in insert) {
 			li.Add(c);
 		}
 		return patchInitialHook(li);
 	}
 
 	public InsnList patchInitialHook(InsnList insert) {
-		for (int i = insert.Count - 1; i >= 0; i--) {
+		for (var i = insert.Count - 1; i >= 0; i--) {
 			Insert(0, insert[i]);
 		}
 		return this;
 	}
 
 	public InsnList extract(int from, int to) {
-		InsnList li = new InsnList();
-		for (int i = from; i <= to; i++) {
+		InsnList li = [];
+		for (var i = from; i <= to; i++) {
 			li.Add(this[i]);
 		}
 		RemoveRange(from, to - from + 1);
@@ -642,8 +646,8 @@ public class InsnList : List<CodeInstruction> {
 	}
 
 	private void replaceConstantWithMethodCall(double val, Func<CodeInstruction, bool> f, InsnList put) {
-		for (int i = Count - 1; i >= 0; i--) {
-			CodeInstruction c = this[i];
+		for (var i = Count - 1; i >= 0; i--) {
+			var c = this[i];
 			if (f(c)) {
 				RemoveAt(i);
 				InsertRange(i, put);

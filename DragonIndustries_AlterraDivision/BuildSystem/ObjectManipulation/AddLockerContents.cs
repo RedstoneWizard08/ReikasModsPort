@@ -15,21 +15,21 @@ namespace ReikaKalseki.DIAlterra;
 
 public sealed class AddLockerContents : ManipulationBase {
 
-	private readonly List<Item> items = new List<Item>();
+	private readonly List<Item> items = [];
 
 	public override void applyToObject(PlacedObject go) {
-		this.applyToObject(go.obj);
+		applyToObject(go.obj);
 	}
 
 	public override void applyToObject(GameObject go) {
 		//SBUtil.log("adding items to "+go.transform.position+" from trace "+System.Environment.StackTrace);
-		StorageContainer con = go.GetComponentInChildren<StorageContainer>();
+		var con = go.GetComponentInChildren<StorageContainer>();
 		con.ResetContainer();
-		foreach (Item s in items) {
+		foreach (var s in items) {
 			//SBUtil.writeToChat("Added "+s);
-			int amt = UnityEngine.Random.Range(s.amountMin, 1+s.amountMax);
-			for (int i = 0; i < amt; i++) {
-				GameObject item = ObjectUtil.createWorldObject(s.prefab);
+			var amt = UnityEngine.Random.Range(s.amountMin, 1+s.amountMax);
+			for (var i = 0; i < amt; i++) {
+				var item = ObjectUtil.createWorldObject(s.prefab);
 				item.SetActive(false);
 				item.refillItem();
 				con.container.AddItem(item.GetComponent<Pickupable>());
@@ -42,8 +42,8 @@ public sealed class AddLockerContents : ManipulationBase {
 		items.Clear();
 		foreach (XmlElement e2 in e.ChildNodes) {
 			Item i = null;
-			string type = e2.getProperty("type");
-			string n = e2.getProperty("name");
+			var type = e2.getProperty("type");
+			var n = e2.getProperty("name");
 			switch (type) {
 				case "prefab":
 					i = new Item(n);
@@ -62,7 +62,7 @@ public sealed class AddLockerContents : ManipulationBase {
 				i.amountMax = e2.getInt("max", 1);
 			}
 			else if (e2.hasProperty("amount")) {
-				int amt = e2.getInt("amount", 1);
+				var amt = e2.getInt("amount", 1);
 				i.amountMin = amt;
 				i.amountMax = amt;
 			}
@@ -71,8 +71,8 @@ public sealed class AddLockerContents : ManipulationBase {
 	}
 
 	public override void saveToXML(XmlElement e) {
-		foreach (Item s in items) {
-			XmlElement e2 = e.OwnerDocument.CreateElement("item");
+		foreach (var s in items) {
+			var e2 = e.OwnerDocument.CreateElement("item");
 			e2.addProperty("type", "prefab");
 			e2.addProperty("name", s.prefab);
 			e2.addProperty("min", s.amountMin);

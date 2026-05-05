@@ -1,26 +1,28 @@
-﻿using UnityEngine;
+﻿using ReikaKalseki.DIAlterra;
+using UnityEngine;
 
 namespace ReikaKalseki.Ecocean;
 
 internal class ECEmperor : MonoBehaviour {
+    private void Start() {
+        InvokeRepeating(nameof(applyPassivity), 0, 0.5F);
+    }
 
-	void Start() {
-		this.InvokeRepeating("applyPassivity", 0, 0.5F);
-	}
+    private void OnDisable() {
+        CancelInvoke(nameof(applyPassivity));
+    }
 
-	void OnDisable() {
-		this.CancelInvoke("applyPassivity");
-	}
+    private void OnDestroy() {
+        OnDisable();
+    }
 
-	void OnDestroy() {
-		this.OnDisable();
-	}
-
-	void applyPassivity() {
-		foreach (AggressiveWhenSeeTarget a in WorldUtil.getObjectsNearWithComponent<AggressiveWhenSeeTarget>(transform.position, 100)) {
-			a.creature.Aggression.Add(-1);
-			a.lastTarget.target = null;
-		}
-	}
-
+    private void applyPassivity() {
+        foreach (AggressiveWhenSeeTarget a in WorldUtil.getObjectsNearWithComponent<AggressiveWhenSeeTarget>(
+                     transform.position,
+                     100
+                 )) {
+            a.creature.Aggression.Add(-1);
+            a.lastTarget.target = null;
+        }
+    }
 }

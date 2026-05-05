@@ -13,13 +13,13 @@ public sealed class DuplicateRecipeDelegateWithRecipe : CustomPrefab, DuplicateI
     public readonly TechType basis;
     private readonly RecipeData recipe;
 
-    public Sprite sprite = null;
+    public Sprite sprite;
     public TechType unlock = TechType.None;
     public TechCategory category = TechCategory.Misc;
     public TechGroup group = TechGroup.Uncategorized;
     public CraftTree.Type craftingType = CraftTree.Type.None;
     public float craftTime = 0.1F;
-    public string[] craftingMenuTree = new string[0];
+    public string[] craftingMenuTree = [];
     public Assembly ownerMod;
     public bool allowUnlockPopups = false;
 
@@ -38,10 +38,10 @@ public sealed class DuplicateRecipeDelegateWithRecipe : CustomPrefab, DuplicateI
         craftTime = s.GetGadget<CraftingGadget>().CraftingTime;
         craftingMenuTree = s.GetGadget<CraftingGadget>().StepsToFabricatorTab;
         suffixName = " (x" + r.craftAmount + ")";
-        if (s is BasicCraftingItem)
-            sprite = ((BasicCraftingItem)s).sprite;
-        if (s is DIPrefab<PrefabReference>)
-            ownerMod = ((DIPrefab<PrefabReference>)s).getOwnerMod();
+        if (s is BasicCraftingItem item)
+            sprite = item.sprite;
+        if (s is DIPrefab<PrefabReference> diPrefab)
+            ownerMod = diPrefab.getOwnerMod();
         // FriendlyName += suffixName;
         AddOnRegister(onPatched);
 
@@ -97,43 +97,27 @@ public sealed class DuplicateRecipeDelegateWithRecipe : CustomPrefab, DuplicateI
     }
 
     public void setRecipe(int amt = 1) {
-        for (int i = 0; i < amt; i++)
+        for (var i = 0; i < amt; i++)
             recipe.LinkedItems.Add(basis);
         recipe.craftAmount = 0;
         suffixName = amt > 1 ? " (x" + amt + ")" : "";
     }
 
-    public TechGroup GroupForPDA {
-        get { return group; }
-    }
+    public TechGroup GroupForPDA => group;
 
-    public TechCategory CategoryForPDA {
-        get { return category; }
-    }
+    public TechCategory CategoryForPDA => category;
 
-    public TechType RequiredForUnlock {
-        get { return unlock; }
-    }
+    public TechType RequiredForUnlock => unlock;
 
-    public bool UnlockedAtStart {
-        get { return unlock == TechType.None; }
-    }
+    public bool UnlockedAtStart => unlock == TechType.None;
 
-    public Vector2int SizeInInventory {
-        get { return TechData.GetItemSize(basis); }
-    }
+    public Vector2int SizeInInventory => TechData.GetItemSize(basis);
 
-    public CraftTree.Type FabricatorType {
-        get { return craftingType; }
-    }
+    public CraftTree.Type FabricatorType => craftingType;
 
-    public float CraftingTime {
-        get { return craftTime; }
-    }
+    public float CraftingTime => craftTime;
 
-    public string[] StepsToFabricatorTab {
-        get { return craftingMenuTree; }
-    }
+    public string[] StepsToFabricatorTab => craftingMenuTree;
 
     public GameObject GetGameObject() {
         return ObjectUtil.createWorldObject(CraftData.GetClassIdForTechType(basis), true, false);

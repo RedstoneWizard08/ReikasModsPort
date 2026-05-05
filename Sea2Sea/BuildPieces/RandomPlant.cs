@@ -16,9 +16,9 @@ namespace ReikaKalseki.SeaToSea;
 
 internal class RandomPlant : PieceBase {
 
-	protected readonly WeightedRandom<VanillaFlora> plants = new WeightedRandom<VanillaFlora>();
+	protected readonly WeightedRandom<VanillaFlora> plants = new();
 
-	public bool preferLit = false;
+	public bool preferLit;
 	public int count = 1;
 	public Vector3 fuzz = Vector3.zero;
 
@@ -30,16 +30,16 @@ internal class RandomPlant : PieceBase {
 
 	public override bool generate(List<GameObject> li) {
 		//SBUtil.log("Attempting "+count+" plants in "+fuzz+" of "+position+".");
-		for (int i = 0; i < count; i++) {
-			Vector3 vec = MathUtil.getRandomVectorAround(position, fuzz);
-			VanillaFlora vf = this.selectPlant(plants.getRandomEntry());
+		for (var i = 0; i < count; i++) {
+			var vec = MathUtil.getRandomVectorAround(position, fuzz);
+			var vf = selectPlant(plants.getRandomEntry());
 			//SBUtil.log("Attempted plant "+vf.getName()+" @ "+vec);
-			if (validPlantPosCheck != null && !validPlantPosCheck(vec + (Vector3.up * 0.2F), vf.getName())) {
+			if (validPlantPosCheck != null && !validPlantPosCheck(vec + Vector3.up * 0.2F, vf.getName())) {
 				//SBUtil.log("Intersect caused fail");
 				continue;
 			}
-			string type = vf.getRandomPrefab(preferLit);
-			GameObject go = this.generatePlant(vec, type);
+			var type = vf.getRandomPrefab(preferLit);
+			var go = generatePlant(vec, type);
 			//SBUtil.log("success "+go+" = "+vf.getName()+" @ "+vec);
 			li.Add(go);
 		}
@@ -55,28 +55,28 @@ internal class RandomPlant : PieceBase {
 	}
 
 	protected virtual GameObject generatePlant(Vector3 vec, string type) {
-		GameObject go = spawner(type);
+		var go = spawner(type);
 		go.transform.position = vec;
 		go.transform.rotation = Quaternion.AngleAxis(UnityEngine.Random.Range(0, 360F), Vector3.up);
 		return go;
 	}
 
 	public override void loadFromXML(XmlElement e) {
-		foreach (XmlElement e2 in e.getDirectElementsByTagName("plant")) {
-			string name = e2.getProperty("name");
-			string wt = e2.getProperty("weight");
+		foreach (var e2 in e.getDirectElementsByTagName("plant")) {
+			var name = e2.getProperty("name");
+			var wt = e2.getProperty("weight");
 			plants.addEntry(VanillaFlora.getByName(name), double.Parse(wt));
 		}
 		preferLit = e.getBoolean("lit");
 		count = e.getInt("count", 1);
-		Vector3? f = e.getVector("fuzz", true);
+		var f = e.getVector("fuzz", true);
 		if (f != null && f.HasValue)
 			fuzz = f.Value;
 	}
 
 	public override void saveToXML(XmlElement e) {
-		foreach (VanillaFlora f in plants.getValues()) {
-			XmlElement e2 = e.OwnerDocument.CreateElement("plant");
+		foreach (var f in plants.getValues()) {
+			var e2 = e.OwnerDocument.CreateElement("plant");
 			e2.addProperty("name", f.getName());
 			e2.addProperty("weight", plants.getWeight(f));
 			e.AppendChild(e2);

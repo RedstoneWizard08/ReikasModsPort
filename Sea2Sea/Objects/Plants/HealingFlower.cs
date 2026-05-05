@@ -7,7 +7,7 @@ namespace ReikaKalseki.SeaToSea;
 public class HealingFlower : BasicCustomPlant {
     [SetsRequiredMembers]
     public HealingFlower() : base(
-        SeaToSeaMod.itemLocale.getEntry("HEALING_FLOWER"),
+        SeaToSeaMod.ItemLocale.getEntry("HEALING_FLOWER"),
         new FloraPrefabFetch(VanillaFlora.VOXEL),
         "6f932b93-65e8-4c89-a63b-d105203ab84c",
         "Leaves"
@@ -16,9 +16,7 @@ public class HealingFlower : BasicCustomPlant {
         finalCutBonus = 1;
     }
 
-    public override Vector2int SizeInInventory {
-        get { return new Vector2int(1, 1); }
-    }
+    public override Vector2int SizeInInventory => new(1, 1);
 
     public override void prepareGameObject(GameObject go, Renderer[] r) {
         base.prepareGameObject(go, r);
@@ -42,10 +40,10 @@ public class HealingFlower : BasicCustomPlant {
     }*/
 }
 
-class HealingFlowerTag : MonoBehaviour {
+internal class HealingFlowerTag : MonoBehaviour {
     private bool isGrown;
 
-    void Start() {
+    private void Start() {
         isGrown = gameObject.GetComponent<GrownPlant>() != null;
         //if (gameObject.transform.position.y > -10)
         //	gameObject.destroy(false);
@@ -53,30 +51,30 @@ class HealingFlowerTag : MonoBehaviour {
             gameObject.SetActive(true);
             //gameObject.transform.localScale = Vector3.one*UnityEngine.Random.Range(0.8F, 1.2F);
         } else {
-            gameObject.transform.localScale = Vector3.one * UnityEngine.Random.Range(1.33F, 1.67F);
+            gameObject.transform.localScale = Vector3.one * Random.Range(1.33F, 1.67F);
         }
     }
 
-    void Update() {
+    private void Update() {
     }
 }
 
-class HealingFlowerColliderTag : MonoBehaviour {
+internal class HealingFlowerColliderTag : MonoBehaviour {
     private bool isGrown;
     private LiveMixin live;
 
-    void Start() {
+    private void Start() {
         isGrown = gameObject.FindAncestor<GrownPlant>() != null;
         live = gameObject.FindAncestor<LiveMixin>();
     }
 
-    void Update() {
+    private void Update() {
         ObjectUtil.cleanUpOriginObjects(this);
     }
 
-    void OnTriggerStay(Collider other) {
+    private void OnTriggerStay(Collider other) {
         if (!other.isTrigger && other.isPlayer()) {
-            float dt = Time.deltaTime;
+            var dt = Time.deltaTime;
             if (other.gameObject.FindAncestor<LiveMixin>().AddHealth((isGrown ? 0.2F : 0.5F) * dt) > 0.00001F) {
                 if (isGrown && live != null)
                     live.TakeDamage(0.67F * dt, transform.position);

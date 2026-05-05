@@ -10,42 +10,42 @@ namespace ReikaKalseki.DIAlterra;
 
 public class Config<E> {
 	private readonly string filename;
-	private readonly Dictionary<string, float> data = new Dictionary<string, float>();
-	private readonly Dictionary<string, string> dataString = new Dictionary<string, string>();
-	private readonly Dictionary<E, ConfigEntry> entryCache = new Dictionary<E, ConfigEntry>();
+	private readonly Dictionary<string, float> data = new();
+	private readonly Dictionary<string, string> dataString = new();
+	private readonly Dictionary<E, ConfigEntry> entryCache = new();
 
 	private readonly Assembly owner;
 
-	private bool loaded = false;
+	private bool loaded;
 
-	private readonly Dictionary<string, Func<float, float>> overrides = new Dictionary<string, Func<float, float>>();
-	private readonly Dictionary<string, Func<string, string>> overridesString = new Dictionary<string, Func<string, string>>();
+	private readonly Dictionary<string, Func<float, float>> overrides = new();
+	private readonly Dictionary<string, Func<string, string>> overridesString = new();
 
 	public Config(Assembly owner) {
 		this.owner = owner;
 		filename = /*Environment.UserName+"_"+*/owner.GetName().Name + "_Config.xml";
-		this.populateDefaults();
+		populateDefaults();
 	}
 
 	public void attachOverride(E key, bool val) {
-		this.attachOverride(key, val ? 1 : 0);
+		attachOverride(key, val ? 1 : 0);
 	}
 
 	public void attachOverride(E key, float val) {
-		this.attachOverride(key, f => val);
+		attachOverride(key, f => val);
 	}
 
 	public void attachOverride(E key, Func<bool, bool> val) {
-		this.attachOverride(key, f => val(f > 0.001) ? 1 : 0);
+		attachOverride(key, f => val(f > 0.001) ? 1 : 0);
 	}
 
 	public void attachOverride(E key, Func<float, float> val) {
-		string k = this.getKey(key);
+		var k = getKey(key);
 		overrides[k] = val;
 	}
 
 	public void attachOverride(E key, Func<string, string> val) {
-		string k = this.getKey(key);
+		var k = getKey(key);
 		overridesString[k] = val;
 	}
 	/*
@@ -60,8 +60,8 @@ public class Config<E> {
 	*/
 	private void populateDefaults() {
 		foreach (E key in Enum.GetValues(typeof(E))) {
-			string name = Enum.GetName(typeof(E), key);
-			ConfigEntry e = this.getEntry(key);
+			var name = Enum.GetName(typeof(E), key);
+			var e = getEntry(key);
 			e.enumIndex = name;
 			data[name] = e.defaultValue;
 			//SNUtil.log("Initializing config entry "+name+" to "+e.formatValue(e.defaultValue)+" hash = "+RuntimeHelpers.GetHashCode(e), owner);
@@ -71,26 +71,26 @@ public class Config<E> {
 	public void load(bool force = false) {
 		if (loaded && !force)
 			return;
-		string folder = Path.Combine(Path.GetDirectoryName(owner.Location), "Config");
+		var folder = Path.Combine(Path.GetDirectoryName(owner.Location), "Config");
 		Directory.CreateDirectory(folder);
-		string path = Path.Combine(folder, filename);
+		var path = Path.Combine(folder, filename);
 		if (File.Exists(path)) {
 			SNUtil.log("Loading config file at " + path, owner);
 			try {
-				XmlDocument doc = new XmlDocument();
+				var doc = new XmlDocument();
 				doc.Load(path);
-				XmlElement root = (XmlElement)doc.GetElementsByTagName("Settings")[0];
-				HashSet<string> missing = new HashSet<string>(data.Keys);
+				var root = (XmlElement)doc.GetElementsByTagName("Settings")[0];
+				var missing = new HashSet<string>(data.Keys);
 				foreach (XmlNode e in root.ChildNodes) {
-					if (!(e is XmlElement))
+					if (!(e is XmlElement element))
 						continue;
-					string name = e.Name;
+					var name = element.Name;
 					try {
-						XmlElement val = (XmlElement)(e as XmlElement).GetElementsByTagName("value")[0];
-						E key = (E)Enum.Parse(typeof(E), name);
-						ConfigEntry entry = this.getEntry(key);
-						float raw = entry.parse(val.InnerText);
-						float get = raw;
+						var val = (XmlElement)element.GetElementsByTagName("value")[0];
+						var key = (E)Enum.Parse(typeof(E), name);
+						var entry = getEntry(key);
+						var raw = entry.parse(val.InnerText);
+						var get = raw;
 						if (!entry.validate(ref get)) {
 							SNUtil.log("Chosen " + name + " value (" + raw + ") was out of bounds, clamped to " + get, owner);
 						}
@@ -102,17 +102,17 @@ public class Config<E> {
 						SNUtil.log("Config entry " + name + " failed to load: " + ex.ToString(), owner);
 					}
 				}
-				string vals = string.Join(";", data.Select(x => x.Key + "=" + x.Value).ToArray());
+				var vals = string.Join(";", data.Select(x => x.Key + "=" + x.Value).ToArray());
 				SNUtil.log("Config successfully loaded: " + vals, owner);
 				if (missing.Count > 0) {
-					string keys = string.Join(";", missing.ToArray());
+					var keys = string.Join(";", missing.ToArray());
 					SNUtil.log("Note: " + missing.Count + " entries were missing from the config and so stayed the default values.", owner);
 					SNUtil.log("Missing keys: " + keys, owner);
 					//SNUtil.log("It is recommended that you regenerate your config by renaming your current config file, letting a new one generate," +
 					// "then copying your changes into the new one.", owner);
 					SNUtil.log("Your config will be regenerated (keeping your changes) to add them to the file.", owner);
 					File.Delete(path);
-					this.generateFile(path, e => this.getFloat(this.getEnum(e)));
+					generateFile(path, e => getFloat(getEnum(e)));
 				}
 			}
 			catch (Exception ex) {
@@ -121,7 +121,7 @@ public class Config<E> {
 		}
 		else {
 			SNUtil.log("Config file does not exist at " + path + "; generating.", owner);
-			this.generateFile(path, e => e.defaultValue);
+			generateFile(path, e => e.defaultValue);
 		}
 		//applyOverrides();
 		loaded = true;
@@ -129,12 +129,12 @@ public class Config<E> {
 
 	private void generateFile(string path, Func<ConfigEntry, float> valGetter) {
 		try {
-			XmlDocument doc = new XmlDocument();
-			XmlElement root = doc.CreateElement("Settings");
+			var doc = new XmlDocument();
+			var root = doc.CreateElement("Settings");
 			doc.AppendChild(root);
 			foreach (E key in Enum.GetValues(typeof(E))) {
 				try {
-					this.createNode(doc, root, key, valGetter);
+					createNode(doc, root, key, valGetter);
 				}
 				catch (Exception e) {
 					SNUtil.log("Could not generate XML node for " + key + ": " + e.ToString(), owner);
@@ -149,22 +149,22 @@ public class Config<E> {
 	}
 
 	private void createNode(XmlDocument doc, XmlElement root, E key, Func<ConfigEntry, float> valGetter) {
-		ConfigEntry e = this.getEntry(key);
-		XmlElement node = doc.CreateElement(Enum.GetName(typeof(E), key));
+		var e = getEntry(key);
+		var node = doc.CreateElement(Enum.GetName(typeof(E), key));
 
-		XmlComment com = doc.CreateComment(e.desc);
+		var com = doc.CreateComment(e.desc);
 
-		XmlElement val = doc.CreateElement("value");
-		float amt = valGetter(e);
+		var val = doc.CreateElement("value");
+		var amt = valGetter(e);
 		//SNUtil.log(valGetter+": Parsed value "+amt+" for "+key, owner);
 		val.InnerText = e.formatValue(amt);
 		node.AppendChild(val);
 
-		XmlElement def = doc.CreateElement("defaultValue");
+		var def = doc.CreateElement("defaultValue");
 		def.InnerText = e.formatValue(e.defaultValue);
 		node.AppendChild(def);
 		if (!float.IsNaN(e.vanillaValue)) {
-			XmlElement van = doc.CreateElement("vanillaValue");
+			var van = doc.CreateElement("vanillaValue");
 			van.InnerText = e.formatValue(e.vanillaValue);
 			node.AppendChild(van);
 		}
@@ -174,10 +174,10 @@ public class Config<E> {
 		//node.AppendChild(desc);
 
 		if (e.type != typeof(bool)) {
-			XmlElement min = doc.CreateElement("minimumValue");
+			var min = doc.CreateElement("minimumValue");
 			min.InnerText = e.formatValue(e.minValue);
 			node.AppendChild(min);
-			XmlElement max = doc.CreateElement("maximumValue");
+			var max = doc.CreateElement("maximumValue");
 			max.InnerText = e.formatValue(e.maxValue);
 			node.AppendChild(max);
 		}
@@ -186,35 +186,35 @@ public class Config<E> {
 	}
 
 	private float getValue(string key) {
-		float ret = data.ContainsKey(key) ? data[key] : 0;
+		var ret = data.ContainsKey(key) ? data[key] : 0;
 		if (overrides.ContainsKey(key))
 			ret = overrides[key](ret);
 		return ret;
 	}
 
 	private string getStringValue(string key) {
-		string ret = dataString.ContainsKey(key) ? dataString[key] : null;
+		var ret = dataString.ContainsKey(key) ? dataString[key] : null;
 		if (overridesString.ContainsKey(key))
 			ret = overridesString[key](ret);
 		return ret;
 	}
 
 	public bool getBoolean(E key) {
-		float ret = this.getFloat(key);
+		var ret = getFloat(key);
 		return ret > 0.001;
 	}
 
 	public int getInt(E key) {
-		float ret = this.getFloat(key);
+		var ret = getFloat(key);
 		return (int)Math.Floor(ret);
 	}
 
 	public float getFloat(E key) {
-		return this.getValue(this.getKey(key));
+		return getValue(getKey(key));
 	}
 
 	public string getString(E key) {
-		return this.getStringValue(this.getKey(key));
+		return getStringValue(getKey(key));
 	}
 
 	private string getKey(E key) {
@@ -235,7 +235,7 @@ public class Config<E> {
 	*/
 	public ConfigEntry getEntry(E key) {
 		if (!entryCache.ContainsKey(key)) {
-			entryCache[key] = this.lookupEntry(key);
+			entryCache[key] = lookupEntry(key);
 		}
 		return entryCache[key];
 	}

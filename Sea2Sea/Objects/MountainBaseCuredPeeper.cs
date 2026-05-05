@@ -16,12 +16,12 @@ public class MountainBaseCuredPeeper : PickedUpAsOtherItem {
     }
 }
 
-class MountainBaseCuredPeeperTag : MonoBehaviour {
+internal class MountainBaseCuredPeeperTag : MonoBehaviour {
     private Rigidbody body;
 
-    void Update() {
+    private void Update() {
         if (!body) {
-            body = this.GetComponent<Rigidbody>();
+            body = GetComponent<Rigidbody>();
         }
 
         body.isKinematic = true;

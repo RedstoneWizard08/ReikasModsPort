@@ -10,8 +10,8 @@ public class MushKooshLargeOreSpawner : WorldGenerator {
 	private Quaternion rotation;
 	private bool isKoosh;
 
-	private static readonly WeightedRandom<VanillaResources> kooshTable = new WeightedRandom<VanillaResources>();
-	private static readonly WeightedRandom<VanillaResources> mushroomTable = new WeightedRandom<VanillaResources>();
+	private static readonly WeightedRandom<VanillaResources> kooshTable = new();
+	private static readonly WeightedRandom<VanillaResources> mushroomTable = new();
 
 	static MushKooshLargeOreSpawner() {
 		kooshTable.addEntry(VanillaResources.LARGE_MERCURY, 20);
@@ -38,9 +38,9 @@ public class MushKooshLargeOreSpawner : WorldGenerator {
 	}
 
 	public override bool generate(List<GameObject> li) {
-		if (WorldUtil.getObjectsNearWithComponent<Drillable>(position, 6).Count == 0 && UnityEngine.Random.Range(0F, 1F) < (isKoosh ? 0.8F : 0.6F)) {
-			VanillaResources res = (isKoosh ? kooshTable : mushroomTable).getRandomEntry();
-			GameObject obj = spawner(res.prefab);
+		if (WorldUtil.getObjectsNearWithComponent<Drillable>(position, 6).Count == 0 && Random.Range(0F, 1F) < (isKoosh ? 0.8F : 0.6F)) {
+			var res = (isKoosh ? kooshTable : mushroomTable).getRandomEntry();
+			var obj = spawner(res.prefab);
 			obj.transform.position = position;
 			obj.transform.rotation = rotation;
 			li.Add(obj);

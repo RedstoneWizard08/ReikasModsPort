@@ -7,34 +7,34 @@ using UnityEngine;
 namespace ReikaKalseki.SeaToSea;
 
 internal class C2CModOptions : ModOptions {
-    private readonly Dictionary<string, Keybind> bindings = new Dictionary<string, Keybind>();
+    private readonly Dictionary<string, Keybind> _bindings = new();
 
-    public static readonly string PROPGUNSWAP = "PropGunSwap";
+    public const string PropGunSwap = "PropGunSwap";
 
-    public C2CModOptions() : base(SeaToSeaMod.MOD_KEY.from('.')) {
-        addBinding(PROPGUNSWAP, "(Pro/Re)pulsion Gun Swap", KeyCode.Backslash);
+    public C2CModOptions() : base(SeaToSeaMod.ModKey.from('.')) {
+        AddBinding(PropGunSwap, "(Pro/Re)pulsion Gun Swap", KeyCode.Backslash);
     }
 
-    private void addBinding(string id, string name, KeyCode def) {
+    private void AddBinding(string id, string name, KeyCode def) {
         var opt = ModChoiceOption<KeyCode>.Create(id, name, (KeyCode[])typeof(KeyCode).GetEnumValues(), def);
 
-        opt.OnChanged += (s, e) => { bindings[e.Id].selectedKey = e.Key; };
+        opt.OnChanged += (s, e) => { _bindings[e.Id].SelectedKey = e.Value; };
         AddItem(opt);
 
-        bindings[id] = new Keybind(id, def);
+        _bindings[id] = new Keybind(id, def);
     }
 
-    public KeyCode getBinding(string id) {
-        return bindings.ContainsKey(id) ? bindings[id].selectedKey : KeyCode.None;
+    public KeyCode GetBinding(string id) {
+        return _bindings.TryGetValue(id, out var binding) ? binding.SelectedKey : KeyCode.None;
     }
 
     private class Keybind {
-        public readonly string optionID;
-        public KeyCode selectedKey;
+        public readonly string OptionID;
+        public KeyCode SelectedKey;
 
         internal Keybind(string s, KeyCode def) {
-            optionID = s;
-            selectedKey = def;
+            OptionID = s;
+            SelectedKey = def;
         }
     }
 }

@@ -8,8 +8,8 @@ using UnityEngine;
 namespace ReikaKalseki.SeaToSea;
 
 public class CrashZoneSanctuarySpawner : CustomPrefab {
-    private static readonly WeightedRandom<SpawnedPlant> plants = new WeightedRandom<SpawnedPlant>();
-    private static HashSet<string> plantIDs = new HashSet<string>();
+    private static readonly WeightedRandom<SpawnedPlant> plants = new();
+    private static HashSet<string> plantIDs = [];
     //private static readonly WeightedRandom<SpawnedPrefab> resources = new WeightedRandom<SpawnedPrefab>();
 
     static CrashZoneSanctuarySpawner() {
@@ -47,31 +47,31 @@ public class CrashZoneSanctuarySpawner : CustomPrefab {
     }
 
     public GameObject GetGameObject() {
-        GameObject go = new GameObject();
+        var go = new GameObject();
         go.EnsureComponent<CrashZoneSanctuarySpawnerTag>();
         go.EnsureComponent<TechTag>().type = Info.TechType;
         go.EnsureComponent<PrefabIdentifier>().ClassId = Info.ClassID;
         return go;
     }
 
-    class CrashZoneSanctuarySpawnerTag : MonoBehaviour {
+    private class CrashZoneSanctuarySpawnerTag : MonoBehaviour {
         private float age;
 
-        void Update() {
+        private void Update() {
             if (Vector3.Distance(Player.main.transform.position, transform.position) < 100)
                 age += Time.deltaTime;
             if (age < 2)
                 return;
             SNUtil.log("Spawning sanctuary plants @ " + transform.position);
-            List<Vector3> ends = new List<Vector3>();
+            List<Vector3> ends = [];
             //List<RaycastHit> terrainHits = new List<RaycastHit>();
             UnityEngine.Random.InitState(SNUtil.getWorldSeedInt());
-            for (int i = 0; i < 60; i++) {
-                Vector3 pos = MathUtil.getRandomVectorAround(
+            for (var i = 0; i < 60; i++) {
+                var pos = MathUtil.getRandomVectorAround(
                     transform.position,
                     new Vector3(CrashZoneSanctuaryBiome.biomeRadius, 0, CrashZoneSanctuaryBiome.biomeRadius)
                 ).setY(-300);
-                RaycastHit? root = WorldUtil.getTerrainVectorAt(pos, 90);
+                var root = WorldUtil.getTerrainVectorAt(pos, 90);
                 if (!root.HasValue) {
                     i--;
                     //SNUtil.log("Skipped eye flame location: no terrain");
@@ -80,15 +80,15 @@ public class CrashZoneSanctuarySpawner : CustomPrefab {
 
                 pos = root.Value.point;
                 if (Vector3.Angle(root.Value.normal, Vector3.up) > 20 ||
-                    !CrashZoneSanctuaryBiome.instance.isInBiome(pos)) {
+                    !CrashZoneSanctuaryBiome.instance.IsInBiome(pos)) {
                     i--;
                     //SNUtil.log("Skipped eye flame location: "+Vector3.Angle(root.Value.normal, Vector3.up)+" & "+CrashZoneSanctuaryBiome.instance.isInBiome(pos));
                     continue;
                 }
 
                 //terrainHits.Add(root.Value);
-                bool close = false;
-                foreach (Vector3 has in ends) {
+                var close = false;
+                foreach (var has in ends) {
                     if (Vector3.Distance(has, pos) < 12) {
                         close = true;
                         break;
@@ -102,22 +102,22 @@ public class CrashZoneSanctuarySpawner : CustomPrefab {
                 }
 
                 ends.Add(pos);
-                foreach (PrefabIdentifier pi in WorldUtil.getObjectsNearWithComponent<PrefabIdentifier>(pos, 2.5F)) {
+                foreach (var pi in WorldUtil.getObjectsNearWithComponent<PrefabIdentifier>(pos, 2.5F)) {
                     pi.gameObject.destroy();
                 }
 
-                GameObject go = ObjectUtil.createWorldObject(C2CItems.sanctuaryPlant.ClassID);
+                var go = ObjectUtil.createWorldObject(C2CItems.sanctuaryPlant.ClassID);
                 go.transform.position = pos;
                 go.transform.rotation = MathUtil.unitVecToRotation(root.Value.normal);
                 go.transform.Rotate(new Vector3(0, UnityEngine.Random.Range(0F, 360F), 0), Space.Self);
-                SpawnedPlant pfb = CrashZoneSanctuarySpawner.plants.getRandomEntry();
-                int amt = (int)(UnityEngine.Random.Range(9, 19) * pfb.countScale * 1.25F);
-                List<RaycastHit> li = WorldUtil.getTerrainMountedPositionsAround(pos, 12F * pfb.radiusScale, amt);
+                var pfb = plants.getRandomEntry();
+                var amt = (int)(UnityEngine.Random.Range(9, 19) * pfb.countScale * 1.25F);
+                var li = WorldUtil.getTerrainMountedPositionsAround(pos, 12F * pfb.radiusScale, amt);
                 //SNUtil.log("Found sanctuary hits @ "+pos+" "+li.toDebugString());
-                List<Vector3> spawned = new List<Vector3>();
-                foreach (RaycastHit hit in li) {
+                List<Vector3> spawned = [];
+                foreach (var hit in li) {
                     close = false;
-                    foreach (Vector3 has in spawned) {
+                    foreach (var has in spawned) {
                         if (Vector3.Distance(has, hit.point) < pfb.minSeparation) {
                             close = true;
                             //SNUtil.log("too close to another point "+has+", cancelling "+hit.point);
@@ -160,14 +160,14 @@ public class CrashZoneSanctuarySpawner : CustomPrefab {
         }
     }
 
-    class SpawnedPlant {
+    private class SpawnedPlant {
         internal readonly VanillaFlora prefab;
         internal readonly float minSeparation;
         internal readonly float countScale;
 
-        internal float angleFactor = 0;
+        internal float angleFactor;
         internal float radiusScale = 1;
-        internal Action<GameObject> modify = null;
+        internal Action<GameObject> modify;
 
         internal SpawnedPlant(VanillaFlora pr, float r, float cs = 1) {
             prefab = pr;
@@ -191,14 +191,13 @@ public class CrashZoneSanctuarySpawner : CustomPrefab {
         }
 
         internal GameObject spawn(RaycastHit hit) {
-            GameObject go = ObjectUtil.lookupPrefab(prefab.getRandomPrefab(true)).clone();
+            var go = ObjectUtil.lookupPrefab(prefab.getRandomPrefab(true)).clone();
             go.transform.position = hit.point;
             go.transform.rotation = angleFactor > 0
-                ? MathUtil.unitVecToRotation((hit.normal * angleFactor) + ((1 - angleFactor) * Vector3.up))
+                ? MathUtil.unitVecToRotation(hit.normal * angleFactor + (1 - angleFactor) * Vector3.up)
                 : Quaternion.identity;
             go.transform.Rotate(new Vector3(0, UnityEngine.Random.Range(0F, 360F), 0), Space.Self);
-            if (modify != null)
-                modify.Invoke(go);
+            modify?.Invoke(go);
             return go;
         }
     }

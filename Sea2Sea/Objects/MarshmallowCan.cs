@@ -12,16 +12,16 @@ public class MarshmallowCan : CustomPrefab {
     }
 
     public GameObject GetGameObject() {
-        GameObject go = ObjectUtil.lookupPrefab(TechType.PlanterPot).GetResult()
+        var go = ObjectUtil.lookupPrefab(TechType.PlanterPot).GetResult()
             .getChildObject("model/Base_interior_Planter_Pot_01").clone();
         go.removeChildObject("pot_generic_plant_01");
         go.transform.localScale = new Vector3(0.2F, 0.2F, 0.5F);
-        GameObject lid = go.getChildObject("Base_exterior_Planter_Tray_ground");
+        var lid = go.getChildObject("Base_exterior_Planter_Tray_ground");
         lid.transform.localPosition = new Vector3(0, 0, 0.06F);
-        GameObject can = go.getChildObject("Base_interior_Planter_Pot_01 1");
-        RenderUtil.swapTextures(SeaToSeaMod.modDLL, lid.GetComponentInChildren<Renderer>(), "Textures/marshmallows");
-        Renderer cr = can.GetComponentInChildren<Renderer>();
-        RenderUtil.swapTextures(SeaToSeaMod.modDLL, cr, "Textures/marshmallowcan");
+        var can = go.getChildObject("Base_interior_Planter_Pot_01 1");
+        RenderUtil.swapTextures(SeaToSeaMod.ModDLL, lid.GetComponentInChildren<Renderer>(), "Textures/marshmallows");
+        var cr = can.GetComponentInChildren<Renderer>();
+        RenderUtil.swapTextures(SeaToSeaMod.ModDLL, cr, "Textures/marshmallowcan");
         RenderUtil.setGlossiness(cr, 6F, 0, 1);
         go.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.Near;
         go.EnsureComponent<PrefabIdentifier>().ClassId = Info.ClassID;

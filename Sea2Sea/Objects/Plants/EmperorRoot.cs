@@ -15,14 +15,14 @@ public class EmperorRoot : CustomPrefab {
     }
 
     public GameObject GetGameObject() {
-        GameObject go = ObjectUtil.createWorldObject(basePrefab);
-        foreach (Light l in go.GetComponentsInChildren<Light>())
+        var go = ObjectUtil.createWorldObject(basePrefab);
+        foreach (var l in go.GetComponentsInChildren<Light>())
             l.gameObject.destroy(false);
-        GameObject mdl = go.getChildObject("models");
+        var mdl = go.getChildObject("models");
         go.transform.localScale = Vector3.one * 0.3F;
-        foreach (Renderer r in mdl.GetComponentsInChildren<Renderer>()) {
+        foreach (var r in mdl.GetComponentsInChildren<Renderer>()) {
             RenderUtil.swapTextures(
-                SeaToSeaMod.modDLL,
+                SeaToSeaMod.ModDLL,
                 r,
                 "Textures/Plants/EmperorRoot/" + r.transform.parent.parent.gameObject.name
             );
@@ -34,9 +34,9 @@ public class EmperorRoot : CustomPrefab {
             RenderUtil.setEmissivity(r, 50);
         }
 
-        foreach (PickPrefab pick in go.GetComponentsInChildren<PickPrefab>()) {
+        foreach (var pick in go.GetComponentsInChildren<PickPrefab>()) {
             pick.pickTech = C2CItems.emperorRootOil.Info.TechType;
-            foreach (Renderer r in pick.GetComponentsInChildren<Renderer>()) {
+            foreach (var r in pick.GetComponentsInChildren<Renderer>()) {
                 EmperorRootOil.setupRendering(r, false);
             }
         }
@@ -47,24 +47,24 @@ public class EmperorRoot : CustomPrefab {
     }
 }
 
-class EmperorRootTag : MonoBehaviour {
+internal class EmperorRootTag : MonoBehaviour {
     private HarvestPoint[] oils; //they are made inactive, not deleted, when picked
 
     public static readonly float REGROW_TIME = 1800F; //30 min
 
-    void Update() {
+    private void Update() {
         transform.localScale = Vector3.one * 0.3F;
         if (oils == null) {
-            PickPrefab[] pp = this.GetComponentsInChildren<PickPrefab>(true);
+            var pp = GetComponentsInChildren<PickPrefab>(true);
             oils = new HarvestPoint[pp.Length];
-            for (int i = 0; i < pp.Length; i++) {
+            for (var i = 0; i < pp.Length; i++) {
                 oils[i] = new HarvestPoint(pp[i]);
             }
         }
 
-        float time = DayNightCycle.main.timePassedAsFloat;
-        foreach (HarvestPoint hp in oils) {
-            float dT = time - hp.lastHarvestTime;
+        var time = DayNightCycle.main.timePassedAsFloat;
+        foreach (var hp in oils) {
+            var dT = time - hp.lastHarvestTime;
             /*
             if (dT > 1) {
                 hp.pickable.gameObject.SetActive(true);
@@ -81,7 +81,7 @@ class EmperorRootTag : MonoBehaviour {
     }
 }
 
-class HarvestPoint {
+internal class HarvestPoint {
     internal readonly PickPrefab pickable;
     internal readonly ChildObjectIdentifier id;
     internal readonly Collider[] colliders;

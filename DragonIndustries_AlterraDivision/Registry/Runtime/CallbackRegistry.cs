@@ -6,9 +6,9 @@ namespace ReikaKalseki.DIAlterra;
 [Obsolete("This can be done with UnityEvent<StructThatHasArgsAndReturn>")]
 public class CallbackRegistry { //since setting a Func<> or similar in a prefab does not work since Instantiate cannot copy it, but it CAN copy a string reference key
 
-	public static readonly CallbackRegistry instance = new CallbackRegistry();
+	public static readonly CallbackRegistry instance = new();
 
-	private readonly Dictionary<string, Callback> calls = new Dictionary<string, Callback>();
+	private readonly Dictionary<string, Callback> calls = new();
 
 	private CallbackRegistry() {
 

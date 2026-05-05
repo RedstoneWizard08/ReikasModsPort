@@ -16,7 +16,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal class RemoveMachinesFromTreaderProp : ManipulationBase {
 
-	private static List<string> objects = new List<string>();
+	private static List<string> objects = [];
 
 	static RemoveMachinesFromTreaderProp() {
 		objects.Add("BaseCell/Coral");
@@ -29,13 +29,13 @@ internal class RemoveMachinesFromTreaderProp : ManipulationBase {
 	}
 
 	public override void applyToObject(GameObject go) {
-		foreach (string s in objects) {
+		foreach (var s in objects) {
 			go.removeChildObject(s);
 		}
 	}
 
 	public override void applyToObject(PlacedObject go) {
-		this.applyToObject(go.obj);
+		applyToObject(go.obj);
 	}
 
 	public override void loadFromXML(XmlElement e) {

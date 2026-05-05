@@ -9,7 +9,7 @@ public static class WorldgenLog {
 	//private readonly string saveSlot;
 	//private readonly string saveFile;
 
-	private static readonly List<string> queue = new List<string>();
+	private static readonly List<string> queue = [];
 
 	static WorldgenLog() {
 		//saveSlot = SNUtil.getCurrentSaveDir();
@@ -21,7 +21,7 @@ public static class WorldgenLog {
 	}
 
 	public static void log(GameObject go) {
-		log(go.name + " (" + ObjectUtil.tryGetObjectIdentifiers(go, out PrefabIdentifier classID, out TechType tt) + ") @ " + go.transform.position + " / " + go.transform.eulerAngles);
+		log(go.name + " (" + ObjectUtil.tryGetObjectIdentifiers(go, out var classID, out var tt) + ") @ " + go.transform.position + " / " + go.transform.eulerAngles);
 	}
 
 	public static void log(string s) {
@@ -30,7 +30,7 @@ public static class WorldgenLog {
 	}
 
 	private static void save() {
-		string file = Path.Combine(SNUtil.getCurrentSaveDir(), "Worldgen.log");
+		var file = Path.Combine(SNUtil.getCurrentSaveDir(), "Worldgen.log");
 		File.AppendAllText(file, string.Join("\n", queue));
 		queue.Clear();
 	}

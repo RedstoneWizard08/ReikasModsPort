@@ -14,7 +14,7 @@ public class BloodKelpBaseNuclearReactorMelter : CustomPrefab {
     }
 
     public GameObject GetGameObject() {
-        GameObject go = new GameObject();
+        var go = new GameObject();
         go.EnsureComponent<BloodKelpBaseNuclearReactorMelterTag>();
         go.EnsureComponent<TechTag>().type = Info.TechType;
         go.EnsureComponent<PrefabIdentifier>().ClassId = Info.ClassID;
@@ -22,13 +22,13 @@ public class BloodKelpBaseNuclearReactorMelter : CustomPrefab {
         return go;
     }
 
-    class BloodKelpBaseNuclearReactorMelterTag : MonoBehaviour {
-        private bool triggered = false;
+    private class BloodKelpBaseNuclearReactorMelterTag : MonoBehaviour {
+        private bool triggered;
 
-        void Update() {
+        private void Update() {
             if (triggered)
                 return;
-            BaseNuclearReactorGeometry go =
+            var go =
                 WorldUtil.getClosest<BaseNuclearReactorGeometry>(C2CHooks.bkelpBaseNuclearReactor);
             if (go && Vector3.Distance(go.transform.position, C2CHooks.bkelpBaseNuclearReactor) < 5F) {
                 /*
@@ -49,21 +49,21 @@ public class BloodKelpBaseNuclearReactorMelter : CustomPrefab {
         }
     }
 
-    class BloodKelpBaseNuclearReactorGlower : MonoBehaviour {
+    private class BloodKelpBaseNuclearReactorGlower : MonoBehaviour {
         private bool textured;
         private Text text;
 
-        private readonly List<ParticleSystem> bubbles = new List<ParticleSystem>();
+        private readonly List<ParticleSystem> bubbles = [];
 
         private void Update() {
             if (!textured) {
                 textured = true;
-                foreach (Renderer r in this.GetComponentsInChildren<Renderer>())
-                    RenderUtil.swapTextures(SeaToSeaMod.modDLL, r, "Textures/bkelpreactor");
+                foreach (var r in GetComponentsInChildren<Renderer>())
+                    RenderUtil.swapTextures(SeaToSeaMod.ModDLL, r, "Textures/bkelpreactor");
             }
 
             if (!text) {
-                GameObject child = gameObject.getChildObject("UI/Canvas/Text");
+                var child = gameObject.getChildObject("UI/Canvas/Text");
                 text = child.GetComponent<Text>();
             }
 
@@ -71,16 +71,16 @@ public class BloodKelpBaseNuclearReactorMelter : CustomPrefab {
                 "<color=#ff0000>OPERATOR ERROR\n\nMOLTEN CORE WARNING\nTEMP AT SPIKEVALUE \n999999999999999</color>";
 
             while (bubbles.Count < 11) {
-                GameObject go = ObjectUtil.createWorldObject("0dbd3431-62cc-4dd2-82d5-7d60c71a9edf");
+                var go = ObjectUtil.createWorldObject("0dbd3431-62cc-4dd2-82d5-7d60c71a9edf");
                 go.transform.SetParent(transform);
-                float y = UnityEngine.Random.Range(-0.2F, 1.2F);
-                float r = 0.8F;
+                var y = Random.Range(-0.2F, 1.2F);
+                var r = 0.8F;
                 if (y < 0.2)
                     r += y * 0.33F;
-                float ang = UnityEngine.Random.Range(0F, 360F) * Mathf.PI / 180F;
+                var ang = Random.Range(0F, 360F) * Mathf.PI / 180F;
                 go.transform.localPosition = new Vector3(r * Mathf.Cos(ang), -y, r * Mathf.Sin(ang));
                 go.transform.rotation = Quaternion.Euler(270, 0, 0); //not local - force to always be up
-                ParticleSystem ps = go.GetComponent<ParticleSystem>();
+                var ps = go.GetComponent<ParticleSystem>();
                 go.SetActive(true);
                 bubbles.Add(ps);
                 ps.Play();

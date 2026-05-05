@@ -5,7 +5,7 @@ namespace ReikaKalseki.DIAlterra;
 
 public static class VanillaSounds {
 
-	private static readonly Dictionary<string, string> data = new Dictionary<string, string>();
+	private static readonly Dictionary<string, string> data = new();
 	private static readonly Dictionary<string, string> inverse;
 
 	static VanillaSounds() {

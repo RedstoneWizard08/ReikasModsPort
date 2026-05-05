@@ -1,93 +1,96 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using Nautilus.Assets;
+using Nautilus.Assets.Gadgets;
+using Nautilus.Crafting;
+using Nautilus.Handlers;
 using ReikaKalseki.DIAlterra;
 using UnityEngine;
 
 namespace ReikaKalseki.AqueousEngineering;
 
-public class OutdoorPot : Buildable {
+public class OutdoorPot : CustomPrefab {
+    private readonly TechType pot;
+    private readonly string prefabBase;
 
-	private readonly TechType pot;
-	private readonly string prefabBase;
+    private static readonly List<OutdoorPot> pots = [];
 
-	private static readonly List<OutdoorPot> pots = new List<OutdoorPot>();
+    [SetsRequiredMembers]
+    internal OutdoorPot(TechType tt) : base(
+        generateName(tt),
+        "Outdoor " + tt.AsString(),
+        "A " + tt.AsString() + " for use outdoors."
+    ) {
+        pot = tt;
+        prefabBase = CraftData.GetClassIdForTechType(tt);
+        pots.Add(this);
 
-	internal OutdoorPot(TechType tt) : base(generateName(tt), "Outdoor " + tt.AsString(), "A " + tt.AsString() + " for use outdoors.") {
-		pot = tt;
-		prefabBase = CraftData.GetClassIdForTechType(tt);
-		pots.Add(this);
-	}
+        Info.WithIcon(GetItemSprite());
+        this.SetRecipe(GetBlueprintRecipe());
+        this.SetPdaGroupCategory(GroupForPDA, CategoryForPDA);
+        SetGameObject(GetGameObject);
+    }
 
-	private static string generateName(TechType tech) {
-		string en = Enum.GetName(typeof(TechType), tech);
-		return "outdoorpot_" + en.Substring(en.LastIndexOf('_') + 1);
-	}
+    private static string generateName(TechType tech) {
+        var en = Enum.GetName(typeof(TechType), tech);
+        return "outdoorpot_" + en.Substring(en.LastIndexOf('_') + 1);
+    }
 
-	public static void updateLocale() {
-		foreach (OutdoorPot d in pots) {
-			CustomLocaleKeyDatabase.registerKey(d.TechType.AsString(), "Outdoor " + Language.main.Get(d.pot));
-			CustomLocaleKeyDatabase.registerKey("Tooltip_" + d.TechType.AsString(), Language.main.Get("Tooltip_" + d.pot.AsString()) + " Designed for outdoor use.");
-			SNUtil.log("Relocalized " + d + " > " + Language.main.Get(d.TechType), AqueousEngineeringMod.modDLL);
-		}
-	}
+    public static void updateLocale() {
+        foreach (var d in pots) {
+            CustomLocaleKeyDatabase.registerKey(d.TechType.AsString(), "Outdoor " + Language.main.Get(d.pot));
+            CustomLocaleKeyDatabase.registerKey(
+                "Tooltip_" + d.TechType.AsString(),
+                Language.main.Get("Tooltip_" + d.pot.AsString()) + " Designed for outdoor use."
+            );
+            SNUtil.log("Relocalized " + d + " > " + Language.main.Get(d.TechType), AqueousEngineeringMod.modDLL);
+        }
+    }
 
-	public void register() {
-		this.Patch();
-		KnownTechHandler.Main.SetAnalysisTechEntry(pot, new List<TechType>() { TechType });
-	}
+    public void register() {
+        this.Register();
+        KnownTechHandler.SetAnalysisTechEntry(pot, new List<TechType>() { Info.TechType });
+    }
 
-	public override bool UnlockedAtStart {
-		get {
-			return false;
-		}
-	}
+    public bool UnlockedAtStart => false;
 
-	public override sealed TechGroup GroupForPDA {
-		get {
-			return TechGroup.ExteriorModules;
-		}
-	}
+    public TechGroup GroupForPDA => TechGroup.ExteriorModules;
 
-	public override sealed TechCategory CategoryForPDA {
-		get {
-			return TechCategory.ExteriorModule;
-		}
-	}
+    public TechCategory CategoryForPDA => TechCategory.ExteriorModule;
 
-	protected override sealed TechData GetBlueprintRecipe() {
-		return RecipeUtil.getRecipe(pot);/*new TechData
-		{
-			Ingredients = new List<Ingredient>{new Ingredient(TechType.Titanium, 2)},
-			craftAmount = 1
-		};*/
-	}
+    protected RecipeData GetBlueprintRecipe() {
+        return RecipeUtil.getRecipe(pot); /*new TechData
+        {
+            Ingredients = new List<Ingredient>{new Ingredient(TechType.Titanium, 2)},
+            craftAmount = 1
+        };*/
+    }
 
-	protected sealed override Atlas.Sprite GetItemSprite() {
-		return SpriteManager.Get(pot);//TextureManager.getSprite("Textures/Items/"+ObjectUtil.formatFileName(this));
-	}
+    protected Sprite GetItemSprite() {
+        return SpriteManager.Get(pot); //TextureManager.getSprite("Textures/Items/"+ObjectUtil.formatFileName(this));
+    }
 
-	public override GameObject GetGameObject() {
-		GameObject world = ObjectUtil.createWorldObject(prefabBase, true, false);
-		if (world != null) {
-			world.SetActive(false);
-			world.EnsureComponent<TechTag>().type = TechType;
-			world.EnsureComponent<PrefabIdentifier>().ClassId = ClassID;
-			Constructable c = world.EnsureComponent<Constructable>();
-			c.techType = TechType;
-			c.allowedInBase = false;
-			c.allowedInSub = false;
-			c.allowedOutside = true;
-			c.allowedOnGround = true;
-			Planter p = world.EnsureComponent<Planter>();
-			p.environment = Planter.PlantEnvironment.Dynamic;
-			p.isIndoor = false;
-			world.SetActive(true);
-			return world;
-		}
-		else {
-			SNUtil.writeToChat("Could not fetch template GO for " + this);
-			return null;
-		}
-	}
-
+    public GameObject GetGameObject() {
+        var world = ObjectUtil.createWorldObject(prefabBase, true, false);
+        if (world != null) {
+            world.SetActive(false);
+            world.EnsureComponent<TechTag>().type = Info.TechType;
+            world.EnsureComponent<PrefabIdentifier>().ClassId = Info.ClassID;
+            var c = world.EnsureComponent<Constructable>();
+            c.techType = Info.TechType;
+            c.allowedInBase = false;
+            c.allowedInSub = false;
+            c.allowedOutside = true;
+            c.allowedOnGround = true;
+            var p = world.EnsureComponent<Planter>();
+            p.environment = Planter.PlantEnvironment.Dynamic;
+            p.isIndoor = false;
+            world.SetActive(true);
+            return world;
+        } else {
+            SNUtil.writeToChat("Could not fetch template GO for " + this);
+            return null;
+        }
+    }
 }

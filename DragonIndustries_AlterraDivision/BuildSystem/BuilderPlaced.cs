@@ -20,11 +20,11 @@ internal class BuilderPlaced : MonoBehaviour {
 	//[SerializeReference]
 	internal PlacedObject placement;
 
-	void Start() {
+	private void Start() {
 		SNUtil.log("Initialized builderplaced of " + placement, SNUtil.diDLL);
 	}
 
-	void Update() {
+	private void Update() {
 
 	}
 

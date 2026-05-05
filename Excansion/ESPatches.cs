@@ -12,13 +12,13 @@ using ReikaKalseki.DIAlterra;
 
 namespace ReikaKalseki.Exscansion;
 
-static class ESPatches {
+internal static class ESPatches {
     [HarmonyPatch(typeof(MapRoomFunctionality), MethodType.Getter)]
     [HarmonyPatch(nameof(MapRoomFunctionality.mapScale))]
     public static class UpdateScannerHoloScale {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 RangePatchLib.replaceMaxRangeReference(codes);
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
@@ -36,18 +36,18 @@ static class ESPatches {
     [HarmonyPatch(typeof(MapRoomFunctionality))]
     [HarmonyPatch(nameof(MapRoomFunctionality.OnResourceDiscovered))]
     public static class UpdateScannerResourceDistanceCheck {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                InsnList li = new InsnList {
+                InsnList li = [
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.Exscansion.ESHooks",
                         "getScannerMaxRangeSq",
                         false,
                         new string[0]
-                    )
-                };
+                    ),
+                ];
                 codes.replaceConstantWithMethodCall(250000F, li);
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {
@@ -77,9 +77,9 @@ static class ESPatches {
             return typeof(MapRoomFunctionality);
         }
 
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 RangePatchLib.replaceMaxRangeReference(codes);
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
@@ -97,9 +97,9 @@ static class ESPatches {
     [HarmonyPatch(typeof(MapRoomFunctionality))]
     [HarmonyPatch(nameof(MapRoomFunctionality.GetScanRange))]
     public static class MainScannerRangePatch {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 RangePatchLib.replaceBaseRangeReference(codes);
                 RangePatchLib.replaceMaxRangeReference(codes);
@@ -138,64 +138,64 @@ static class ESPatches {
     //     }
     // }
 
-    static class RangePatchLib {
+    private static class RangePatchLib {
         internal static void replaceMaxRangeReference(InsnList codes) {
-            InsnList li = new InsnList {
+            InsnList li = [
                 InstructionHandlers.createMethodCall(
                     "ReikaKalseki.Exscansion.ESHooks",
                     "getScannerMaxRange",
                     false,
                     new string[0]
-                )
-            };
+                ),
+            ];
             codes.replaceConstantWithMethodCall(500F, li);
         }
 
         internal static void replaceBaseRangeReference(InsnList codes) {
-            InsnList li = new InsnList {
+            InsnList li = [
                 InstructionHandlers.createMethodCall(
                     "ReikaKalseki.Exscansion.ESHooks",
                     "getScannerBaseRange",
                     false,
                     new string[0]
-                )
-            };
+                ),
+            ];
             codes.replaceConstantWithMethodCall(300F, li);
         }
 
         internal static void replaceRangeBonusReference(InsnList codes) {
-            InsnList li = new InsnList {
+            InsnList li = [
                 InstructionHandlers.createMethodCall(
                     "ReikaKalseki.Exscansion.ESHooks",
                     "getRangeUpgradeValue",
                     false,
                     new string[0]
-                )
-            };
+                ),
+            ];
             codes.replaceConstantWithMethodCall(50F, li);
         }
 
         internal static void replaceBaseSpeedReference(InsnList codes) {
-            InsnList li = new InsnList {
+            InsnList li = [
                 InstructionHandlers.createMethodCall(
                     "ReikaKalseki.Exscansion.ESHooks",
                     "getScannerBaseSpeed",
                     false,
                     new string[0]
-                )
-            };
+                ),
+            ];
             codes.replaceConstantWithMethodCall(14F, li);
         }
 
         internal static void replaceSpeedBonusReference(InsnList codes) {
-            InsnList li = new InsnList {
+            InsnList li = [
                 InstructionHandlers.createMethodCall(
                     "ReikaKalseki.Exscansion.ESHooks",
                     "getSpeedUpgradeValue",
                     false,
                     new string[0]
-                )
-            };
+                ),
+            ];
             codes.replaceConstantWithMethodCall(3F, li);
         }
     }
@@ -203,14 +203,14 @@ static class ESPatches {
     [HarmonyPatch(typeof(ResourceTracker))]
     [HarmonyPatch(nameof(ResourceTracker.Register))]
     public static class ScannerFilteringHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try { /*
             codes.add(OpCodes.Ldarg_0);
             codes.invoke("ReikaKalseki.Exscansion.ESHooks", "registerResourceTracker", false, typeof(ResourceTracker));
             codes.add(OpCodes.Ret);*/
-                CodeInstruction br = codes[2];
+                var br = codes[2];
                 codes.patchInitialHook(
                     new CodeInstruction(OpCodes.Ldarg_0),
                     InstructionHandlers.createMethodCall(
@@ -236,9 +236,9 @@ static class ESPatches {
     [HarmonyPatch(typeof(ResourceTracker))]
     [HarmonyPatch(nameof(ResourceTracker.Start))]
     public static class ScannerFilteringHook2 {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try { /*
             codes.add(OpCodes.Ldarg_0);
             codes.invoke("ReikaKalseki.Exscansion.ESHooks", "registerResourceTracker", false, typeof(ResourceTracker));
@@ -294,11 +294,11 @@ static class ESPatches {
     [HarmonyPatch(typeof(uGUI_ResourceTracker))]
     [HarmonyPatch(nameof(uGUI_ResourceTracker.UpdateBlips))]
     public static class PingHUDGenerationHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getInstruction(
+                var idx = InstructionHandlers.getInstruction(
                     codes,
                     0,
                     1,

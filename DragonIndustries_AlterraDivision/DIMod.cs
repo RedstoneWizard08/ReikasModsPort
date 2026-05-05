@@ -14,7 +14,7 @@ namespace ReikaKalseki.DIAlterra;
 public class DIMod : BaseUnityPlugin {
     public const string MOD_KEY = "ReikaKalseki.DIAlterra";
 
-    public static readonly XMLLocale locale = new XMLLocale(SNUtil.diDLL, "XML/locale.xml");
+    public static readonly XMLLocale locale = new(SNUtil.diDLL, "XML/locale.xml");
     /*
     private static readonly List<SNMod> mods = new List<SNMod>();
 
@@ -24,9 +24,9 @@ public class DIMod : BaseUnityPlugin {
     */
     //public static readonly ModLogger logger = new ModLogger();
 
-    public static readonly Config<DIConfig.ConfigEntries> config = new Config<DIConfig.ConfigEntries>(SNUtil.diDLL);
+    public static readonly Config<DIConfig.ConfigEntries> config = new(SNUtil.diDLL);
 
-    internal static readonly Dictionary<TechType, CustomPrefab> machineList = new Dictionary<TechType, CustomPrefab>();
+    internal static readonly Dictionary<TechType, CustomPrefab> machineList = new();
 
     public static SignalManager.ModSignal areaOfInterestMarker { get; private set; }
     public static TemporaryFloatingLocker floatingLocker { get; private set; }
@@ -42,7 +42,7 @@ public class DIMod : BaseUnityPlugin {
         SNUtil.log("Start DI Main Init", SNUtil.diDLL);
         config.load();
 
-        HarmonySystem harmony = new HarmonySystem(MOD_KEY, SNUtil.diDLL, typeof(DIPatches));
+        var harmony = new HarmonySystem(MOD_KEY, SNUtil.diDLL, typeof(DIPatches));
         harmony.apply();
 
         ModVersionCheck.getFromGitVsInstall("Dragon Industries", SNUtil.diDLL, "DragonIndustries_AlterraDivision")
@@ -69,7 +69,7 @@ public class DIMod : BaseUnityPlugin {
 
         KnownTech.onAdd += (tt, vb) => TechUnlockTracker.instance.onUnlock(tt);
 
-        CustomEgg spineEel = createEgg(
+        var spineEel = createEgg(
             TechType.SpineEel,
             TechType.BoneShark,
             1,
@@ -81,8 +81,8 @@ public class DIMod : BaseUnityPlugin {
             BiomeType.BonesField_Ground,
             BiomeType.LostRiverJunction_Ground
         ).modifyGO(e => {
-                List<Renderer> li = new List<Renderer>();
-                foreach (Renderer r in e.GetComponentsInChildren<Renderer>()) {
+                List<Renderer> li = [];
+                foreach (var r in e.GetComponentsInChildren<Renderer>()) {
                     RenderUtil.makeTransparent(r);
                     RenderUtil.setGlossiness(r.material, 10, 6, 0.5F);
                     r.material.SetColor("_SpecColor", new Color(1, 1, 0.8F, 1));
@@ -93,9 +93,9 @@ public class DIMod : BaseUnityPlugin {
                     li.Add(r);
                 }
 
-                foreach (Renderer r in li) {
-                    for (int i = 0; i < 3; i++) {
-                        GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere).setName("EggGlow_" + i);
+                foreach (var r in li) {
+                    for (var i = 0; i < 3; i++) {
+                        var sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere).setName("EggGlow_" + i);
                         sphere.transform.localScale = Vector3.one * 0.1F;
                         sphere.transform.SetParent(r.transform.parent);
                         sphere.transform.localPosition =
@@ -103,7 +103,7 @@ public class DIMod : BaseUnityPlugin {
                         sphere.transform.localRotation = Quaternion.identity;
                         sphere.removeComponent<Collider>();
                         // ECCHelpers.ApplySNShaders(sphere, new UBERMaterialProperties(0, 0, 5));
-                        Renderer r2 = sphere.GetComponentInChildren<Renderer>();
+                        var r2 = sphere.GetComponentInChildren<Renderer>();
                         r2.material.SetColor("_GlowColor", new Color(1, 0.75F, 0.33F, 1));
                         RenderUtil.setEmissivity(r2, 0.8F);
                         RenderUtil.setGlossiness(r2, 4, 0, 0);
@@ -190,7 +190,7 @@ public class DIMod : BaseUnityPlugin {
             TextureManager.getSprite(SNUtil.diDLL, "Textures/ScannerSprites/Reaper")
         );
 
-        XMLLocale.LocaleEntry le = locale.getEntry("AreaOfInterest");
+        var le = locale.getEntry("AreaOfInterest");
         SNUtil.allowDIDLL = true;
         areaOfInterestMarker = SignalManager.createSignal("AreaOfInterest", le.desc, le.desc, "", "");
         areaOfInterestMarker.register(
@@ -206,13 +206,13 @@ public class DIMod : BaseUnityPlugin {
 
         //dispatchLoadPhase("loadModInteract");
         //dispatchLoadPhase("loadFinal");
-        BiomeBase.initializeBiomeHoles();
+        BiomeBase.InitializeBiomeHoles();
 
         ModVersionCheck.fetchRemoteVersions();
     }
 
     private static void killSelf() {
-        Vehicle v = Player.main.GetVehicle();
+        var v = Player.main.GetVehicle();
         if (v)
             v.GetComponent<LiveMixin>().TakeDamage(99999);
         if (Player.main.currentSub && Player.main.currentSub.isCyclops)
@@ -238,7 +238,7 @@ public class DIMod : BaseUnityPlugin {
             e.eggProperties.daysToGrow = daysToGrow;
         };
         SNUtil.allowDIDLL = true;
-        CustomEgg egg = CustomEgg.createAndRegisterEgg(
+        var egg = CustomEgg.createAndRegisterEgg(
             creature,
             basis,
             scale,
@@ -279,25 +279,25 @@ public class DIMod : BaseUnityPlugin {
         BuildingHandler.instance.addCommand<float>("bdsc", BuildingHandler.instance.setScale);
         BuildingHandler.instance.addCommand<float, float, float>("bdscxyz", BuildingHandler.instance.setScaleXYZ);
         ConsoleCommandsHandler.RegisterConsoleCommand<Action<string, bool>>("sound", SoundManager.playSound);
-        ConsoleCommandsHandler.RegisterConsoleCommand<Action>("dumpBiomeTex", DIHooks.dumpWaterscapeTextures);
-        ConsoleCommandsHandler.RegisterConsoleCommand<Action>("biomeAt", printBiomeData);
-        ConsoleCommandsHandler.RegisterConsoleCommand<Action>("killSelf", killSelf);
-        ConsoleCommandsHandler.RegisterConsoleCommand<Action>("clear000", clear000);
-        ConsoleCommandsHandler.RegisterConsoleCommand<Action<string>>("clearLoose", clearUnparentedItem);
-        ConsoleCommandsHandler.RegisterConsoleCommand<Action<string, float>>("particle", spawnParticle);
+        ConsoleCommandsHandler.RegisterConsoleCommand("dumpBiomeTex", DIHooks.DumpWaterscapeTextures);
+        ConsoleCommandsHandler.RegisterConsoleCommand("biomeAt", printBiomeData);
+        ConsoleCommandsHandler.RegisterConsoleCommand("killSelf", killSelf);
+        ConsoleCommandsHandler.RegisterConsoleCommand("clear000", clear000);
+        ConsoleCommandsHandler.RegisterConsoleCommand("clearLoose", clearUnparentedItem);
+        ConsoleCommandsHandler.RegisterConsoleCommand("particle", spawnParticle);
         //ConsoleCommandsHandler.RegisterConsoleCommand<Action>("hideVersions", DIHooks.hideVersions);
         //ConsoleCommandsHandler.RegisterConsoleCommand<Action>("autoUpdate", DIHooks.autoUpdate);
         //ConsoleCommandsHandler.RegisterConsoleCommand<Action<string, string, string>>("exec", DebugExec.run);
-        ConsoleCommandsHandler.RegisterConsoleCommand<Action<string>>("vehicleToMe", bringVehicleToPlayer);
-        ConsoleCommandsHandler.RegisterConsoleCommand<Action<string>>("savePhysProps", PhysicsSettlingProp.export);
-        ConsoleCommandsHandler.RegisterConsoleCommand<Action<string>>("dumpPrefabs", dumpPrefabsOfType);
-        ConsoleCommandsHandler.RegisterConsoleCommand<Action<float, string>>("deleteNear", deletePrefabNear);
-        ConsoleCommandsHandler.RegisterConsoleCommand<Action<bool>>("fullbright", setFullbright);
+        ConsoleCommandsHandler.RegisterConsoleCommand("vehicleToMe", bringVehicleToPlayer);
+        ConsoleCommandsHandler.RegisterConsoleCommand("savePhysProps", PhysicsSettlingProp.export);
+        ConsoleCommandsHandler.RegisterConsoleCommand("dumpPrefabs", dumpPrefabsOfType);
+        ConsoleCommandsHandler.RegisterConsoleCommand("deleteNear", deletePrefabNear);
+        ConsoleCommandsHandler.RegisterConsoleCommand("fullbright", setFullbright);
     }
 
     public static void setFullbright(bool on) {
         if (on) {
-            Light l = Player.main.gameObject.addLight();
+            var l = Player.main.gameObject.addLight();
             l.intensity = 0.5F;
             l.range = 2500F;
             l.color = Color.white;
@@ -308,28 +308,28 @@ public class DIMod : BaseUnityPlugin {
             Player.main.gameObject.removeComponent<PlayerMovementSpeedModifier>();
         }
 
-        foreach (WaterscapeVolume waterscapeVolume in UnityEngine.Object.FindObjectsOfType<WaterscapeVolume>()) {
+        foreach (var waterscapeVolume in FindObjectsOfType<WaterscapeVolume>()) {
             waterscapeVolume.enabled = !on;
         }
     }
 
     private static void dumpPrefabsOfType(string id) {
-        List<PositionedPrefab> li = new List<PositionedPrefab>();
-        foreach (PrefabIdentifier pi in UnityEngine.Object.FindObjectsOfType<PrefabIdentifier>()) {
+        List<PositionedPrefab> li = [];
+        foreach (var pi in FindObjectsOfType<PrefabIdentifier>()) {
             if (pi && pi.ClassId == id) {
                 li.Add(new PositionedPrefab(pi));
             }
         }
 
-        string file = BuildingHandler.instance.dumpPrefabs(id, li);
+        var file = BuildingHandler.instance.dumpPrefabs(id, li);
         SNUtil.writeToChat("Exported " + li.Count + " prefabs of id '" + id + "' to " + file);
     }
 
     private static void deletePrefabNear(float r, string id) {
-        Vector3 pos = Player.main.transform.position;
-        int pis = 0;
-        int found = 0;
-        foreach (PrefabIdentifier pi in WorldUtil.getObjectsNearWithComponent<PrefabIdentifier>(pos, r)) {
+        var pos = Player.main.transform.position;
+        var pis = 0;
+        var found = 0;
+        foreach (var pi in WorldUtil.getObjectsNearWithComponent<PrefabIdentifier>(pos, r)) {
             pis++;
             if (SNUtil.match(pi, id)) {
                 pi.gameObject.destroy(false);
@@ -356,11 +356,11 @@ public class DIMod : BaseUnityPlugin {
         }
 
         if (v) {
-            Vector3 pos = Camera.main.transform.position + (Camera.main.transform.forward * 10);
-            if (v is Vehicle) {
-                ((Vehicle)v).TeleportVehicle(pos, v.transform.rotation);
-            } else if (v is SubRoot && ((SubRoot)v).isCyclops) {
-                v.transform.position = pos;
+            var pos = Camera.main.transform.position + Camera.main.transform.forward * 10;
+            if (v is Vehicle vehicle) {
+                vehicle.TeleportVehicle(pos, vehicle.transform.rotation);
+            } else if (v is SubRoot root && root.isCyclops) {
+                root.transform.position = pos;
             }
         }
     }
@@ -369,12 +369,12 @@ public class DIMod : BaseUnityPlugin {
         SNUtil.writeToChat(
             "Current native biome: " + WaterBiomeManager.main.GetBiome(Player.main.transform.position, false)
         );
-        SNUtil.writeToChat("Localized DI name: " + BiomeBase.getBiome(Player.main.transform.position).displayName);
+        SNUtil.writeToChat("Localized DI name: " + BiomeBase.GetBiome(Player.main.transform.position).DisplayName);
     }
 
     private static void spawnParticle(string pfb, float dur) {
         WorldUtil.spawnParticlesAt(
-            Camera.main.transform.position + (Camera.main.transform.forward.normalized * 10),
+            Camera.main.transform.position + Camera.main.transform.forward.normalized * 10,
             pfb,
             dur,
             true
@@ -382,9 +382,9 @@ public class DIMod : BaseUnityPlugin {
     }
 
     private static void clear000() {
-        foreach (GameObject go in WorldUtil.getObjectsNear(Vector3.zero, 0.2F)) {
+        foreach (var go in WorldUtil.getObjectsNear(Vector3.zero, 0.2F)) {
             if (go && go.activeInHierarchy && go.transform.position.magnitude < 0.02F) {
-                PrefabIdentifier pi = go.FindAncestor<PrefabIdentifier>();
+                var pi = go.FindAncestor<PrefabIdentifier>();
                 if (pi && !pi.GetComponentInChildren<Vehicle>() && !pi.GetComponentInChildren<Player>() &&
                     !pi.GetComponentInChildren<SubRoot>())
                     pi.gameObject.destroy(false);
@@ -393,8 +393,8 @@ public class DIMod : BaseUnityPlugin {
     }
 
     private static void clearUnparentedItem(string id) {
-        int found = 0;
-        foreach (PrefabIdentifier pi in UnityEngine.Object.FindObjectsOfType<PrefabIdentifier>()) {
+        var found = 0;
+        foreach (var pi in FindObjectsOfType<PrefabIdentifier>()) {
             if (pi.ClassId == id && !pi.gameObject.FindAncestor<StorageContainer>()) {
                 pi.gameObject.destroy(false);
                 found++;
@@ -405,8 +405,8 @@ public class DIMod : BaseUnityPlugin {
     }
 
     public static void restartGame() {
-        PlatformServices svc = PlatformUtils.main.services;
-        if (svc is PlatformServicesSteam)
-            ((PlatformServicesSteam)svc).RestartInSteam();
+        var svc = PlatformUtils.main.services;
+        if (svc is PlatformServicesSteam steam)
+            steam.RestartInSteam();
     }
 }

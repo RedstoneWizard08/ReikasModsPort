@@ -10,13 +10,13 @@ using UnityEngine; //Needed for most Unity Enginer manipulations: Vectors, GameO
 
 namespace ReikaKalseki.DIAlterra;
 
-static class DIPatches {
+internal static class DIPatches {
     [HarmonyPatch(typeof(DayNightCycle))]
     [HarmonyPatch("Update")]
     public static class UpdateLoopHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchInitialHook(
                     new CodeInstruction(OpCodes.Ldarg_0),
@@ -43,9 +43,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(SNCameraRoot))]
     [HarmonyPatch("SonarPing")]
     public static class SonarHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchInitialHook(
                     new CodeInstruction(OpCodes.Ldarg_0),
@@ -72,11 +72,11 @@ static class DIPatches {
     [HarmonyPatch(typeof(SeaMoth))]
     [HarmonyPatch("OnUpgradeModuleUse")]
     public static class SeamothSonarHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getInstruction(
+                var idx = InstructionHandlers.getInstruction(
                     codes,
                     0,
                     0,
@@ -112,11 +112,11 @@ static class DIPatches {
     [HarmonyPatch(typeof(CyclopsSonarButton))]
     [HarmonyPatch("SonarPing")]
     public static class CyclopsSonarHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getInstruction(
+                var idx = InstructionHandlers.getInstruction(
                     codes,
                     0,
                     0,
@@ -152,9 +152,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(StoryGoalCustomEventHandler))]
     [HarmonyPatch("NotifyGoalComplete")]
     public static class StoryHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchInitialHook(
                     new CodeInstruction(OpCodes.Ldarg_1),
@@ -180,9 +180,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(SeaMoth))]
     [HarmonyPatch("OnUpgradeModuleChange")]
     public static class SeamothModuleHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchEveryReturnPre(injectSMModuleHook);
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
@@ -220,11 +220,11 @@ static class DIPatches {
     [HarmonyPatch(typeof(SeaMoth))]
     [HarmonyPatch("OnUpgradeModuleUse")]
     public static class SeamothDefenceHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getInstruction(
+                var idx = InstructionHandlers.getInstruction(
                     codes,
                     0,
                     0,
@@ -258,9 +258,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(SubRoot))]
     [HarmonyPatch("UpdateSubModules")]
     public static class CyclopsModuleHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchEveryReturnPre(injectModuleHook);
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
@@ -292,9 +292,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(Exosuit))]
     [HarmonyPatch("OnUpgradeModuleChange")]
     public static class PrawnModuleHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchEveryReturnPre(injectModuleHook);
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
@@ -332,9 +332,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(SeaMoth))]
     [HarmonyPatch("OnUpgradeModuleUse")]
     public static class SeamothModuleUseHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchInitialHook(injectModuleHook());
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
@@ -350,7 +350,7 @@ static class DIPatches {
         }
 
         private static CodeInstruction[] injectModuleHook() {
-            InsnList codes = new InsnList();
+            InsnList codes = [];
             codes.add(OpCodes.Ldarg_0);
             codes.add(OpCodes.Ldarg_1);
             codes.add(OpCodes.Ldarg_2);
@@ -369,9 +369,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(SinkingGroundChunk))]
     [HarmonyPatch("Start")]
     public static class TreaderChunkHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchInitialHook(
                     new CodeInstruction(OpCodes.Ldarg_0),
@@ -397,9 +397,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(Crash))]
     [HarmonyPatch("Detonate")]
     public static class CrashfishExplodeHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchInitialHook(
                     new CodeInstruction(OpCodes.Ldarg_0),
@@ -425,9 +425,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(CellManager))]
     [HarmonyPatch("RegisterEntity", typeof(LargeWorldEntity))]
     public static class EntityRegisterBypass {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchInitialHook(
                     new CodeInstruction(OpCodes.Ldarg_0),
@@ -455,9 +455,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(Player))]
     [HarmonyPatch("Update")]
     public static class PlayerTick {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 PatchLib.injectTickHook(codes, "tickPlayer", typeof(Player));
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
@@ -475,9 +475,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(SeaMoth))]
     [HarmonyPatch("Update")]
     public static class SeaMothTick {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 PatchLib.injectTickHook(codes, "tickSeamoth", typeof(SeaMoth));
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
@@ -495,9 +495,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(Exosuit))]
     [HarmonyPatch("Update")]
     public static class ExosuitTick {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 PatchLib.injectTickHook(codes, "tickPrawn", typeof(Exosuit));
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
@@ -515,9 +515,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(SubRoot))]
     [HarmonyPatch("Update")]
     public static class SubTick {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 PatchLib.injectTickHook(codes, "tickSub", typeof(SubRoot));
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
@@ -534,9 +534,9 @@ static class DIPatches {
 
     [HarmonyPatch(typeof(WaterTemperatureSimulation), "GetTemperature", new Type[] { typeof(Vector3) })]
     public static class WaterTempOverride {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchEveryReturnPre(injectHook);
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
@@ -570,11 +570,11 @@ static class DIPatches {
     [HarmonyPatch(typeof(Pickupable))]
     [HarmonyPatch("Pickup")]
     public static class OnPlayerPickup {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getInstruction(
+                var idx = InstructionHandlers.getInstruction(
                     codes,
                     0,
                     0,
@@ -609,11 +609,11 @@ static class DIPatches {
     [HarmonyPatch(typeof(ExosuitClawArm))]
     [HarmonyPatch("OnPickup")]
     public static class OnPrawnPickup {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getInstruction(
+                var idx = InstructionHandlers.getInstruction(
                     codes,
                     0,
                     0,
@@ -632,7 +632,7 @@ static class DIPatches {
                             "onPrawnItemPickedUp",
                             false,
                             typeof(Pickupable)
-                        )
+                        ),
                     }
                 );
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
@@ -650,9 +650,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(Player))]
     [HarmonyPatch("CanBreathe")]
     public static class PlayerBreathabilityHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchEveryReturnPre(injectCallback);
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
@@ -685,11 +685,11 @@ static class DIPatches {
     [HarmonyPatch(typeof(DamageSystem))]
     [HarmonyPatch("CalculateDamage")]
     public static class DamageCalcHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Ret);
+                var idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Ret);
                 codes.Insert(
                     idx,
                     InstructionHandlers.createMethodCall(
@@ -721,9 +721,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(SkyApplier))]
     [HarmonyPatch("Awake")]
     public static class SkyApplierSpawnHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchInitialHook(
                     new CodeInstruction(OpCodes.Ldarg_0),
@@ -749,9 +749,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(VehicleDockingBay))]
     [HarmonyPatch("Start")]
     public static class VehicleDockingBaySpawnHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchInitialHook(
                     new CodeInstruction(OpCodes.Ldarg_0),
@@ -777,9 +777,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(GrowingPlant))]
     [HarmonyPatch("SpawnGrownModel")]
     public static class PlantFinishedGrowingHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchEveryReturnPre(injectCallback);
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
@@ -813,11 +813,11 @@ static class DIPatches {
     [HarmonyPatch(typeof(Plantable))]
     [HarmonyPatch("Spawn")]
     public static class PlantSpawnsGrowingHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Stloc_0) + 1;
+                var idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Stloc_0) + 1;
                 codes.Insert(
                     idx,
                     InstructionHandlers.createMethodCall(
@@ -861,9 +861,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(Survival))]
     [HarmonyPatch("Use")]
     public static class ItemUseReimplementation {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList();
+            InsnList codes = [];
             try {
                 codes.add(OpCodes.Ldarg_0);
                 codes.add(OpCodes.Ldarg_1);
@@ -884,9 +884,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(CraftData))]
     [HarmonyPatch("IsInvUseable")]
     public static class ItemUsabilityHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList();
+            InsnList codes = [];
             try {
                 codes.add(OpCodes.Ldarg_0);
                 codes.invoke("ReikaKalseki.DIAlterra.DIHooks", "isItemUsable", false, typeof(TechType));
@@ -906,11 +906,11 @@ static class DIPatches {
     [HarmonyPatch(typeof(Inventory))]
     [HarmonyPatch("InternalDropItem")]
     public static class ItemDroppabilityHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getInstruction(
+                var idx = InstructionHandlers.getInstruction(
                     codes,
                     0,
                     0,
@@ -942,9 +942,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(PDAScanner))]
     [HarmonyPatch("Unlock")]
     public static class ScanHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchInitialHook(
                     new CodeInstruction(OpCodes.Ldarg_0),
@@ -970,9 +970,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(Sealed))]
     [HarmonyPatch("Weld")]
     public static class SealedOverhaul {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList();
+            InsnList codes = [];
             try {
                 codes.add(OpCodes.Ldarg_0);
                 codes.add(OpCodes.Ldarg_1);
@@ -999,9 +999,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(BulkheadDoor))]
     [HarmonyPatch("OnHandHover")]
     public static class BulkheadLaserCutterNotice {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList();
+            InsnList codes = [];
             try { /*
             int idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Callvirt, "HandReticle", "SetInteractText", true, new Type[]{typeof(string)});
             codes.Insert(idx, new CodeInstruction(OpCodes.Ldarg_0));
@@ -1025,9 +1025,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(BulkheadDoor))]
     [HarmonyPatch("OnHandClick")]
     public static class BulkheadDoorClickIntercept {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList();
+            InsnList codes = [];
             try {
                 codes.add(OpCodes.Ldarg_0);
                 codes.invoke("ReikaKalseki.DIAlterra.DIHooks", "onBulkheadClick", false, typeof(BulkheadDoor));
@@ -1048,9 +1048,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(SeaMoth))]
     [HarmonyPatch("OnHoverTorpedoStorage")]
     public static class SeamothTorpedoHoverHooks {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList();
+            InsnList codes = [];
             try {
                 codes.add(OpCodes.Ldarg_0);
                 codes.add(OpCodes.Ldarg_1);
@@ -1077,9 +1077,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(SeaMoth))]
     [HarmonyPatch("OpenTorpedoStorage")]
     public static class SeamothTorpedoClickHooks {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList();
+            InsnList codes = [];
             try {
                 codes.add(OpCodes.Ldarg_0);
                 codes.add(OpCodes.Ldarg_1);
@@ -1106,9 +1106,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(Vehicle))]
     [HarmonyPatch("GetStorageInSlot")]
     public static class SeamothStorageAccessHooks {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList();
+            InsnList codes = [];
             try {
                 codes.add(OpCodes.Ldarg_0);
                 codes.add(OpCodes.Ldarg_1);
@@ -1137,9 +1137,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(TemperatureDamage))]
     [HarmonyPatch("GetTemperature")]
     public static class TemperatureDamageGetOverride {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList();
+            InsnList codes = [];
             try {
                 codes.add(OpCodes.Ldarg_0);
                 codes.invoke(
@@ -1164,9 +1164,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(UseableDiveHatch))]
     [HarmonyPatch("IsInside")]
     public static class HatchInsideHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList();
+            InsnList codes = [];
             try {
                 codes.add(OpCodes.Ldarg_0);
                 codes.invoke("ReikaKalseki.DIAlterra.DIHooks", "isInsideForHatch", false, typeof(UseableDiveHatch));
@@ -1185,9 +1185,9 @@ static class DIPatches {
 
     [HarmonyPatch(typeof(LargeWorld), "GetBiome", new Type[] { typeof(Vector3) })]
     public static class BiomeFetchHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchEveryReturnPre(injectHook);
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
@@ -1219,9 +1219,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(Constructable))]
     [HarmonyPatch("NotifyConstructedChanged")]
     public static class ConstructionHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchInitialHook(
                     new CodeInstruction(OpCodes.Ldarg_0),
@@ -1248,11 +1248,11 @@ static class DIPatches {
     [HarmonyPatch(typeof(Knife))]
     [HarmonyPatch("OnToolUseAnim")]
     public static class KnifeHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getInstruction(
+                var idx = InstructionHandlers.getInstruction(
                     codes,
                     0,
                     0,
@@ -1287,9 +1287,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(Knife))]
     [HarmonyPatch("IsValidTarget")]
     public static class KnifeabilityHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList();
+            InsnList codes = [];
             try {
                 codes.add(OpCodes.Ldarg_0);
                 codes.invoke("ReikaKalseki.DIAlterra.DIHooks", "isObjectKnifeable", false, typeof(LiveMixin));
@@ -1331,11 +1331,11 @@ static class DIPatches {
     [HarmonyPatch(typeof(WaterParkCreature))]
     [HarmonyPatch("Born")]
     public static class WaterParkFix {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getInstruction(
+                var idx = InstructionHandlers.getInstruction(
                     codes,
                     0,
                     0,
@@ -1370,9 +1370,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(TooltipFactory))]
     [HarmonyPatch("ItemCommons")]
     public static class CustomTooltipHooks {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchEveryReturnPre(
                     new CodeInstruction(OpCodes.Ldarg_0),
@@ -1387,7 +1387,7 @@ static class DIPatches {
                         typeof(GameObject)
                     )
                 );
-                int idx = codes.Count - 1;
+                var idx = codes.Count - 1;
                 codes[idx].MoveLabelsTo(codes[idx - 4]);
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
@@ -1405,13 +1405,13 @@ static class DIPatches {
     [HarmonyPatch(typeof(EMPBlast))]
     [HarmonyPatch("OnTouch")]
     public static class EMPBlastHooks {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                for (int i = codes.Count - 1; i >= 0; i--) {
+                for (var i = codes.Count - 1; i >= 0; i--) {
                     if (codes[i].opcode == OpCodes.Callvirt) {
-                        MethodInfo mi = (MethodInfo)codes[i].operand;
+                        var mi = (MethodInfo)codes[i].operand;
                         if (mi.Name == "DisableElectronicsForTime") {
                             PatchLib.injectEMPHook(codes, i);
                         }
@@ -1466,11 +1466,11 @@ static class DIPatches {
     [HarmonyPatch(typeof(Builder))]
     [HarmonyPatch("Update")]
     public static class ConstructableBuildabilityHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getInstruction(
+                var idx = InstructionHandlers.getInstruction(
                     codes,
                     0,
                     0,
@@ -1560,9 +1560,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(WaterBiomeManager))]
     [HarmonyPatch("GetExtinctionTextureValue")]
     public static class ExtinctionTextureHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchEveryReturnPre(
                     new CodeInstruction(OpCodes.Ldarg_1),
@@ -1589,9 +1589,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(WaterBiomeManager))]
     [HarmonyPatch("GetScatteringTextureValue")]
     public static class ScatterTextureHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchEveryReturnPre(
                     new CodeInstruction(OpCodes.Ldarg_1),
@@ -1618,9 +1618,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(WaterBiomeManager))]
     [HarmonyPatch("GetEmissiveTextureValue")]
     public static class EmissiveTextureHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchEveryReturnPre(
                     new CodeInstruction(OpCodes.Ldarg_1),
@@ -1672,9 +1672,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(SolarPanel))]
     [HarmonyPatch("Update")]
     public static class SolarPanelPowerRedirect {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList();
+            InsnList codes = [];
             try { /* BZ code
             int idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Callvirt, "PowerRelay", "ModifyPower", true, new Type[]{typeof(float), typeof(float).MakeByRefType()});
             codes[idx].operand = InstructionHandlers.convertMethodOperand("ReikaKalseki.DIAlterra.DIHooks", "addPowerToSeabaseDelegate", false, typeof(IPowerInterface), typeof(float), typeof(float).MakeByRefType(), typeof(MonoBehaviour));
@@ -1704,9 +1704,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(ThermalPlant))]
     [HarmonyPatch("AddPower")]
     public static class ThermalPlantPowerRedirect {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 PatchLib.redirectPowerHook(codes);
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
@@ -1725,9 +1725,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(BaseBioReactor))]
     [HarmonyPatch("Update")]
     public static class BioreactorPowerRedirect {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 PatchLib.redirectPowerHook(codes);
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
@@ -1746,9 +1746,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(BaseNuclearReactor))]
     [HarmonyPatch("Update")]
     public static class NucReactorPowerRedirect {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             if (codes.Count == 1 && codes[0].opcode == OpCodes.Ret) {
                 FileLog.Log("Skipping patch " + MethodBase.GetCurrentMethod().DeclaringType + ", Update() was cleared");
                 return codes;
@@ -1772,9 +1772,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(PowerRelay))]
     [HarmonyPatch("AddInboundPower")]
     public static class SeabasePowerReferenceHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchEveryReturnPre(
                     new CodeInstruction(OpCodes.Ldarg_0),
@@ -1803,9 +1803,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(StoryHandTarget))]
     [HarmonyPatch("OnHandClick")]
     public static class StoryHandIntercept {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList();
+            InsnList codes = [];
             try {
                 codes.add(OpCodes.Ldarg_0);
                 codes.invoke("ReikaKalseki.DIAlterra.DIHooks", "clickStoryHandTarget", false, typeof(StoryHandTarget));
@@ -1826,11 +1826,11 @@ static class DIPatches {
     [HarmonyPatch(typeof(Player))]
     [HarmonyPatch("SetRadiationAmount")]
     public static class RadiationAmountIntercept {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getFirstOpcode(codes, 0, OpCodes.Stfld);
+                var idx = InstructionHandlers.getFirstOpcode(codes, 0, OpCodes.Stfld);
                 codes.Insert(
                     idx,
                     InstructionHandlers.createMethodCall(
@@ -1858,11 +1858,11 @@ static class DIPatches {
     [HarmonyPatch(typeof(Knife))]
     [HarmonyPatch("OnToolUseAnim")]
     public static class KnifeHarvestingHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getInstruction(
+                var idx = InstructionHandlers.getInstruction(
                     codes,
                     0,
                     0,
@@ -2001,9 +2001,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(ReaperLeviathan))]
     [HarmonyPatch("GrabVehicle")]
     public static class ReaperGrabHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchInitialHook(
                     new CodeInstruction(OpCodes.Ldarg_0),
@@ -2031,9 +2031,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(SubRoot))]
     [HarmonyPatch("OnTakeDamage")]
     public static class CyclopsDamageHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchInitialHook(
                     new CodeInstruction(OpCodes.Ldarg_0),
@@ -2061,9 +2061,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(VehicleDockingBay))]
     [HarmonyPatch("OnTriggerEnter")]
     public static class MoonpoolGrabDetection {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList();
+            InsnList codes = [];
             try {
                 codes.add(OpCodes.Ldarg_0);
                 codes.add(OpCodes.Ldarg_1);
@@ -2090,9 +2090,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(AcidicBrineDamageTrigger))]
     [HarmonyPatch("OnTriggerEnter")]
     public static class BrineTouchDetection {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList();
+            InsnList codes = [];
             try {
                 codes.add(OpCodes.Ldarg_0);
                 codes.add(OpCodes.Ldarg_1);
@@ -2119,9 +2119,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(PrecursorDoorMotorModeSetter))]
     [HarmonyPatch("OnTriggerEnter")]
     public static class AirlockTouchDetection {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList();
+            InsnList codes = [];
             try {
                 codes.add(OpCodes.Ldarg_0);
                 codes.add(OpCodes.Ldarg_1);
@@ -2148,13 +2148,13 @@ static class DIPatches {
     [HarmonyPatch(typeof(FMOD_CustomEmitter))]
     [HarmonyPatch("OnPlay")]
     public static class SoundHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
                 //int idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Callvirt, "FMOD_CustomEmitter", "OnPlay", true, new Type[0]);
-                CodeInstruction ci = InstructionHandlers.createMethodCall(
+                var ci = InstructionHandlers.createMethodCall(
                     "ReikaKalseki.DIAlterra.DIHooks",
                     "onFModEmitterPlay",
                     false,
@@ -2176,9 +2176,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(PropulsionCannon))]
     [HarmonyPatch("ValidateObject")]
     public static class PropulsabilityHookMass {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 PatchLib.patchPropulsability(
                     codes,
@@ -2200,9 +2200,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(PropulsionCannon))]
     [HarmonyPatch("ValidateNewObject")]
     public static class PropulsabilityHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 PatchLib.patchPropulsability(
                     codes,
@@ -2232,11 +2232,11 @@ static class DIPatches {
     [HarmonyPatch(typeof(PropulsionCannon))]
     [HarmonyPatch("TraceForGrabTarget")]
     public static class PropulsionGrabPositionFix {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getInstruction(
+                var idx = InstructionHandlers.getInstruction(
                     codes,
                     0,
                     0,
@@ -2246,7 +2246,7 @@ static class DIPatches {
                     false,
                     new Type[] {
                         typeof(Vector3), typeof(float), typeof(Vector3), typeof(float), typeof(int),
-                        typeof(QueryTriggerInteraction)
+                        typeof(QueryTriggerInteraction),
                     }
                 );
                 codes[idx - 1] = new CodeInstruction(OpCodes.Ldc_I4_1);
@@ -2265,11 +2265,11 @@ static class DIPatches {
     [HarmonyPatch(typeof(PropulsionCannon))]
     [HarmonyPatch("GetObjectPosition")]
     public static class PropulsionGrabPositionFix2 {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getInstruction(
+                var idx = InstructionHandlers.getInstruction(
                     codes,
                     0,
                     0,
@@ -2325,9 +2325,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(RepulsionCannon))]
     [HarmonyPatch("OnToolUseAnim")]
     public static class RepulsabilityHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 PatchLib.patchPropulsability(
                     codes,
@@ -2356,11 +2356,11 @@ static class DIPatches {
     [HarmonyPatch(typeof(Vehicle))]
     [HarmonyPatch("EnterVehicle")]
     public static class VehicleEnterHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                CodeInstruction ci = InstructionHandlers.createMethodCall(
+                var ci = InstructionHandlers.createMethodCall(
                     "ReikaKalseki.DIAlterra.DIHooks",
                     "onVehicleEnter",
                     false,
@@ -2383,9 +2383,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(uGUI_DepthCompass))]
     [HarmonyPatch("UpdateDepth")]
     public static class OverrideDepthCompass {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try { /*
             for (int i = codes.Count-1; i >= 0; i--) {
                 if (codes[i].opcode == OpCodes.Call) {
@@ -2395,7 +2395,7 @@ static class DIPatches {
                     }
                 }
             }*/
-                int idx = InstructionHandlers.getInstruction(
+                var idx = InstructionHandlers.getInstruction(
                     codes,
                     0,
                     0,
@@ -2437,9 +2437,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(Survival))]
     [HarmonyPatch("OnRespawn")]
     public static class RespawnHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchInitialHook(
                     new InsnList() {
@@ -2450,7 +2450,7 @@ static class DIPatches {
                             false,
                             typeof(Survival),
                             typeof(Player)
-                        )
+                        ),
                     }
                 );
                 codes.patchEveryReturnPre(
@@ -2462,7 +2462,7 @@ static class DIPatches {
                             false,
                             typeof(Survival),
                             typeof(Player)
-                        )
+                        ),
                     }
                 );
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
@@ -2481,9 +2481,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(Inventory))]
     [HarmonyPatch("LoseItems")]
     public static class ItemLossHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchInitialHook(
                     InstructionHandlers.createMethodCall(
@@ -2496,7 +2496,7 @@ static class DIPatches {
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
 
                 //this is a bugfix, they stop at second last item for some reason
-                int idx = InstructionHandlers.getFirstOpcode(codes, 0, OpCodes.Sub);
+                var idx = InstructionHandlers.getFirstOpcode(codes, 0, OpCodes.Sub);
                 codes.RemoveAt(idx);
                 codes.RemoveAt(idx - 1);
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
@@ -2559,9 +2559,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(Drillable))]
     [HarmonyPatch("OnDrill")]
     public static class DrillableCallHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchInitialHook(
                     new CodeInstruction(OpCodes.Ldarg_0),
@@ -2591,9 +2591,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(uGUI_MainMenu))]
     [HarmonyPatch("Awake")]
     public static class MainMenuLoadHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchInitialHook(
                     InstructionHandlers.createMethodCall(
@@ -2618,9 +2618,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(MapRoomFunctionality))]
     [HarmonyPatch("UpdateBlips")]
     public static class MapRoomUpdateHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchInitialHook(
                     new InsnList() {
@@ -2630,7 +2630,7 @@ static class DIPatches {
                             "onMapRoomTick",
                             false,
                             typeof(MapRoomFunctionality)
-                        )
+                        ),
                     }
                 );
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
@@ -2648,9 +2648,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(StorageContainer))]
     [HarmonyPatch("OnHandHover")]
     public static class StorageContainerMouseoverHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchEveryReturnPre(
                     new InsnList() {
@@ -2661,7 +2661,7 @@ static class DIPatches {
                             false,
                             typeof(StorageContainer),
                             typeof(GUIHand)
-                        )
+                        ),
                     }
                 );
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
@@ -2679,11 +2679,11 @@ static class DIPatches {
     [HarmonyPatch(typeof(Vehicle))]
     [HarmonyPatch("ConsumeEnergy", typeof(TechType))]
     public static class ModuleFireCostHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getInstruction(
+                var idx = InstructionHandlers.getInstruction(
                     codes,
                     0,
                     0,
@@ -2704,7 +2704,7 @@ static class DIPatches {
                             typeof(float),
                             typeof(Vehicle),
                             typeof(TechType)
-                        )
+                        ),
                     }
                 );
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
@@ -2722,11 +2722,11 @@ static class DIPatches {
     [HarmonyPatch(typeof(PDAScanner))]
     [HarmonyPatch("Scan")]
     public static class SelfScanHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getInstruction(
+                var idx = InstructionHandlers.getInstruction(
                     codes,
                     0,
                     0,
@@ -2760,11 +2760,11 @@ static class DIPatches {
     [HarmonyPatch(typeof(uGUI_MapRoomScanner))]
     [HarmonyPatch("RebuildResourceList")]
     public static class ScannerTypeFilteringHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                CodeInstruction call = InstructionHandlers.createMethodCall(
+                var call = InstructionHandlers.createMethodCall(
                     "ReikaKalseki.DIAlterra.DIHooks",
                     "filterScannerRoomResourceList",
                     false,
@@ -2786,11 +2786,11 @@ static class DIPatches {
     [HarmonyPatch(typeof(WorldForcesManager))]
     [HarmonyPatch("FixedUpdate")]
     public static class CleanupWorldForcesManager {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getInstruction(
+                var idx = InstructionHandlers.getInstruction(
                     codes,
                     0,
                     0,
@@ -2821,11 +2821,11 @@ static class DIPatches {
     [HarmonyPatch(typeof(SkyApplierUpdater))]
     [HarmonyPatch("Update")]
     public static class CleanupSkyApplierUpdater {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getInstruction(
+                var idx = InstructionHandlers.getInstruction(
                     codes,
                     0,
                     0,
@@ -2856,13 +2856,13 @@ static class DIPatches {
     [HarmonyPatch(typeof(ToggleLights))]
     [HarmonyPatch("CheckLightToggle")]
     public static class LightToggleRework {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 //int idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Callvirt, "Player", "GetRightHandDown", true, new Type[0]);
                 //codes[idx] = InstructionHandlers.createMethodCall("ReikaKalseki.DIAlterra.DIHooks", "isRightHandDownForLightToggle", false, typeof(Player));
-                int idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Ldc_R4, 0.25F);
+                var idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Ldc_R4, 0.25F);
                 codes[idx].operand = -1F;
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {
@@ -2879,11 +2879,11 @@ static class DIPatches {
     [HarmonyPatch(typeof(StasisSphere))]
     [HarmonyPatch("LateUpdate")]
     public static class StasisRifleHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getInstruction(
+                var idx = InstructionHandlers.getInstruction(
                     codes,
                     0,
                     0,
@@ -2935,11 +2935,11 @@ static class DIPatches {
     [HarmonyPatch(typeof(StasisSphere))]
     [HarmonyPatch("UnfreezeAll")]
     public static class StasisRifleHook2 {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getInstruction(
+                var idx = InstructionHandlers.getInstruction(
                     codes,
                     0,
                     0,
@@ -2973,11 +2973,11 @@ static class DIPatches {
     [HarmonyPatch("Scan")]
     [HarmonyPriority(Priority.Last)]
     public static class RedundantScanHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getInstruction(
+                var idx = InstructionHandlers.getInstruction(
                     codes,
                     0,
                     0,
@@ -2987,7 +2987,7 @@ static class DIPatches {
                     true,
                     new Type[] { typeof(TechType), typeof(int), typeof(bool), typeof(bool) }
                 );
-                int idx0 = InstructionHandlers.getLastOpcodeBefore(codes, idx - 1, OpCodes.Call);
+                var idx0 = InstructionHandlers.getLastOpcodeBefore(codes, idx - 1, OpCodes.Call);
                 codes.RemoveRange(idx0 + 1, idx - idx0);
                 codes.Insert(
                     idx0 + 1,
@@ -3103,9 +3103,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(CraftData))]
     [HarmonyPatch("GetEquipmentType")]
     public static class EquipmentTypeHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchEveryReturnPre(
                     new CodeInstruction(OpCodes.Ldarg_0),
@@ -3133,11 +3133,11 @@ static class DIPatches {
     [HarmonyPatch(typeof(Inventory))]
     [HarmonyPatch("ExecuteItemAction")]
     public static class EatInterception {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getInstruction(
+                var idx = InstructionHandlers.getInstruction(
                     codes,
                     0,
                     0,
@@ -3169,9 +3169,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(UnderwaterMotor))]
     [HarmonyPatch("UpdateMove")]
     public static class AffectSwimSpeed {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try { /*
             int idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Callvirt, "Inventory", "GetHeldTool", true, new Type[0]);
             while (codes[idx].opcode != OpCodes.Ldloc_1)
@@ -3180,7 +3180,7 @@ static class DIPatches {
             codes.Insert(idx, InstructionHandlers.createMethodCall("ReikaKalseki.SeaToSea.C2CHooks", "getSwimSpeed", false, typeof(float)));
             codes.Insert(idx, new CodeInstruction(OpCodes.Ldloc_0));
             */
-                int idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Stloc_S, 9);
+                var idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Stloc_S, 9);
                 codes.Insert(
                     idx,
                     InstructionHandlers.createMethodCall(
@@ -3206,11 +3206,11 @@ static class DIPatches {
     [HarmonyPatch(typeof(GroundMotor))]
     [HarmonyPatch("ApplyInputVelocityChange")]
     public static class AffectWalkSpeed {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getLastInstructionBefore(codes, codes.Count, OpCodes.Ldloc_S, 11);
+                var idx = InstructionHandlers.getLastInstructionBefore(codes, codes.Count, OpCodes.Ldloc_S, 11);
                 codes.Insert(
                     idx + 1,
                     InstructionHandlers.createMethodCall(
@@ -3236,9 +3236,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(Vehicle))]
     [HarmonyPatch("OnKill")]
     public static class VehicleDeathHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchInitialHook(
                     new InsnList() {
@@ -3248,7 +3248,7 @@ static class DIPatches {
                             "onVehicleDestroyed",
                             false,
                             typeof(Vehicle)
-                        )
+                        ),
                     }
                 );
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
@@ -3266,11 +3266,11 @@ static class DIPatches {
     [HarmonyPatch(typeof(Bed))]
     [HarmonyPatch("EnterInUseMode")]
     public static class SleepHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getLastOpcodeBefore(codes, codes.Count, OpCodes.Ret);
+                var idx = InstructionHandlers.getLastOpcodeBefore(codes, codes.Count, OpCodes.Ret);
                 codes.InsertRange(
                     idx,
                     new InsnList {
@@ -3280,7 +3280,7 @@ static class DIPatches {
                             "onSleep",
                             false,
                             typeof(Bed)
-                        )
+                        ),
                     }
                 );
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
@@ -3298,9 +3298,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(Survival))]
     [HarmonyPatch("UpdateStats")]
     public static class AffectFoodWaterRate {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchInitialHook(
                     new CodeInstruction(OpCodes.Ldarg_1),
@@ -3327,9 +3327,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(BaseRoot))]
     [HarmonyPatch("Start")]
     public static class BaseLoadHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchInitialHook(
                     new CodeInstruction(OpCodes.Ldarg_0),
@@ -3355,9 +3355,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(StorageContainer))]
     [HarmonyPatch("Open", typeof(Transform))]
     public static class InvOpenHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchInitialHook(
                     new CodeInstruction(OpCodes.Ldarg_0),
@@ -3383,9 +3383,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(StorageContainer))]
     [HarmonyPatch("OnClosePDA")]
     public static class InvCloseHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchInitialHook(
                     new CodeInstruction(OpCodes.Ldarg_0),
@@ -3411,9 +3411,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(GameInput))]
     [HarmonyPatch("GetMoveDirection")]
     public static class InputDirectionOverrideHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchEveryReturnPre(
                     InstructionHandlers.createMethodCall(
@@ -3438,11 +3438,11 @@ static class DIPatches {
     [HarmonyPatch(typeof(SeamothTorpedo))]
     [HarmonyPatch("Explode")]
     public static class TorpedoExplodeHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getFirstOpcode(codes, 0, OpCodes.Callvirt);
+                var idx = InstructionHandlers.getFirstOpcode(codes, 0, OpCodes.Callvirt);
                 codes.InsertRange(
                     idx + 1,
                     new InsnList {
@@ -3452,7 +3452,7 @@ static class DIPatches {
                             "onTorpedoExploded",
                             false,
                             new Type[] { typeof(Transform), typeof(SeamothTorpedo) }
-                        )
+                        ),
                     }
                 );
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
@@ -3470,11 +3470,11 @@ static class DIPatches {
     [HarmonyPatch(typeof(Vehicle))]
     [HarmonyPatch("TorpedoShot")]
     public static class TorpedoFireHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getInstruction(
+                var idx = InstructionHandlers.getInstruction(
                     codes,
                     0,
                     0,
@@ -3490,7 +3490,7 @@ static class DIPatches {
                     false,
                     new Type[] {
                         typeof(Bullet), typeof(Vector3), typeof(Quaternion), typeof(float), typeof(float),
-                        typeof(Vehicle)
+                        typeof(Vehicle),
                     }
                 );
                 codes.Insert(idx, new CodeInstruction(OpCodes.Ldarg_0));
@@ -3509,9 +3509,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(Gravsphere))]
     [HarmonyPatch("IsValidTarget")]
     public static class GravTrapGrabbabilityHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList();
+            InsnList codes = [];
             try {
                 codes.add(OpCodes.Ldarg_0);
                 codes.add(OpCodes.Ldarg_1);
@@ -3579,9 +3579,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(Constructor))]
     [HarmonyPatch("OnConstructionDone")]
     public static class VehicleBayCompletionHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchInitialHook(
                     new CodeInstruction(OpCodes.Ldarg_0),
@@ -3608,9 +3608,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(Creature))]
     [HarmonyPatch("GetCanSeeObject")]
     public static class VisibilityToCreatureHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList();
+            InsnList codes = [];
             try {
                 codes.add(OpCodes.Ldarg_0);
                 codes.add(OpCodes.Ldarg_1);
@@ -3636,9 +3636,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(AggressiveToPilotingVehicle))]
     [HarmonyPatch("UpdateAggression")]
     public static class VehicleVisibilityToCreatureHook1 {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList();
+            InsnList codes = [];
             try {
                 codes.add(OpCodes.Ldarg_0);
                 codes.invoke(
@@ -3663,9 +3663,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(Base))]
     [HarmonyPatch("RebuildGeometry")]
     public static class BaseRebuildHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchEveryReturnPre(
                     new CodeInstruction(OpCodes.Ldarg_0),
@@ -3691,9 +3691,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(BaseHullStrength))]
     [HarmonyPatch("OnPostRebuildGeometry")]
     public static class BaseComputeStrengthHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList();
+            InsnList codes = [];
             try {
                 codes.add(OpCodes.Ldarg_0);
                 codes.invoke(
@@ -3718,11 +3718,11 @@ static class DIPatches {
     [HarmonyPatch(typeof(uGUI_ItemsContainer))]
     [HarmonyPatch("OnAddItem")]
     public static class ItemBackgroundHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getInstruction(
+                var idx = InstructionHandlers.getInstruction(
                     codes,
                     0,
                     0,
@@ -3754,9 +3754,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(WaterParkCreature))]
     [HarmonyPatch("GetParameters")]
     public static class GetWPCP {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList();
+            InsnList codes = [];
             try {
                 codes.add(OpCodes.Ldarg_0);
                 codes.invoke("ReikaKalseki.DIAlterra.DIHooks", "GetWPCP", false, new Type[] { typeof(TechType) });
@@ -3802,9 +3802,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(FiltrationMachine))]
     [HarmonyPatch("Spawn")]
     public static class OnWaterFilterSpawn {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchInitialHook(
                     new CodeInstruction(OpCodes.Ldarg_0),
@@ -3832,9 +3832,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(Builder))]
     [HarmonyPatch("GetSurfaceType")]
     public static class DebugGetSurfaceType {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchEveryReturnPre(
                     new CodeInstruction(OpCodes.Ldarg_0),
@@ -3860,9 +3860,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(UniqueIdentifier))]
     [HarmonyPatch("Register")]
     public static class CleanupIdentifierRegister {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList();
+            InsnList codes = [];
             try {
                 codes.add(OpCodes.Ldarg_0);
                 codes.invoke("ReikaKalseki.DIAlterra.DIHooks", "registerUID", false, typeof(UniqueIdentifier));
@@ -3882,11 +3882,11 @@ static class DIPatches {
     [HarmonyPatch(typeof(InventoryConsoleCommands))]
     [HarmonyPatch("OnConsoleCommand_item")]
     public static class ItemSpawnHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getInstruction(
+                var idx = InstructionHandlers.getInstruction(
                     codes,
                     0,
                     0,
@@ -3918,18 +3918,18 @@ static class DIPatches {
     [HarmonyPatch(typeof(ExosuitClawArm))]
     [HarmonyPatch("TryUse")]
     public static class PrawnGrabDelayRemoval {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                for (int i = codes.Count - 1; i >= 0; i--) {
-                    CodeInstruction ci = codes[i];
+                for (var i = codes.Count - 1; i >= 0; i--) {
+                    var ci = codes[i];
                     if (ci.opcode == OpCodes.Ldstr && (string)ci.operand == "use_tool") {
                         codes.InsertRange(
                             i + 2,
                             new InsnList {
                                 new CodeInstruction(OpCodes.Ldarg_0),
-                                InstructionHandlers.createMethodCall("ExosuitClawArm", "OnPickup", true, new Type[0])
+                                InstructionHandlers.createMethodCall("ExosuitClawArm", "OnPickup", true, new Type[0]),
                             }
                         );
                     }
@@ -3950,9 +3950,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(DevConsole))]
     [HarmonyPatch("Submit")]
     public static class OnCommandUse {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchInitialHook(
                     new CodeInstruction(OpCodes.Ldarg_0),
@@ -3979,20 +3979,20 @@ static class DIPatches {
     [HarmonyPatch(typeof(GrowingPlant))]
     [HarmonyPatch("Update")]
     public static class TickGrowingPlant {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getMethodCallByName(codes, 0, 0, "GrowingPlant", "GetProgress");
-                InsnList inject = new InsnList {
+                var idx = InstructionHandlers.getMethodCallByName(codes, 0, 0, "GrowingPlant", "GetProgress");
+                InsnList inject = [
                     new CodeInstruction(OpCodes.Ldarg_0),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
                         "getGrowingPlantProgressInTick",
                         false,
                         new Type[] { typeof(float), typeof(GrowingPlant) }
-                    )
-                };
+                    ),
+                ];
                 codes.InsertRange(idx + 1, inject);
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {
@@ -4009,9 +4009,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(CuteFishHandTarget))]
     [HarmonyPatch("PrepareCinematicMode")]
     public static class CuddlefishPlayHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchInitialHook(
                     new CodeInstruction(OpCodes.Ldarg_0),
@@ -4042,9 +4042,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(Rocket))]
     [HarmonyPatch("AdvanceRocketStage")]
     public static class RocketStageCompletionHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchEveryReturnPre(
                     new CodeInstruction(OpCodes.Ldarg_0),
@@ -4071,9 +4071,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(CrashedShipExploder))]
     [HarmonyPatch("Start")]
     public static class AuroraSpawnHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchInitialHook(
                     new CodeInstruction(OpCodes.Ldarg_0),
@@ -4125,11 +4125,11 @@ static class DIPatches {
     [HarmonyPatch(typeof(Crafter))]
     [HarmonyPatch("Craft")]
     public static class FabSpeedHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getInstruction(
+                var idx = InstructionHandlers.getInstruction(
                     codes,
                     0,
                     0,
@@ -4150,7 +4150,7 @@ static class DIPatches {
                             typeof(float),
                             typeof(Crafter),
                             typeof(TechType)
-                        )
+                        ),
                     }
                 );
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
@@ -4189,9 +4189,9 @@ static class DIPatches {
     [HarmonyPatch(typeof(Targeting))]
     [HarmonyPatch("Skip")]
     public static class ControllableTargetingBypass {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
                 codes.patchEveryReturnPre(injectHook);
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
@@ -4223,22 +4223,22 @@ static class DIPatches {
     [HarmonyPatch(typeof(Constructable))]
     [HarmonyPatch("Deconstruct")]
     public static class DeconstructionRefundHook {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = codes.getInstruction(0, 0, OpCodes.Stloc_3);
+                var idx = codes.getInstruction(0, 0, OpCodes.Stloc_3);
                 codes.InsertRange(
                     idx,
                     new List<CodeInstruction> {
-                        new CodeInstruction(OpCodes.Ldarg_0),
+                        new(OpCodes.Ldarg_0),
                         InstructionHandlers.createMethodCall(
                             "ReikaKalseki.DIAlterra.DIHooks",
                             "onRefundConstructableIngredient",
                             false,
                             typeof(Pickupable),
                             typeof(Constructable)
-                        )
+                        ),
                     }
                 );
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
@@ -4253,9 +4253,9 @@ static class DIPatches {
         }
     }
 
-    static class PatchLib {
+    private static class PatchLib {
         internal static void addEquipmentAllowedHook(InsnList codes, params CodeInstruction[] getItem) {
-            int idx = InstructionHandlers.getInstruction(
+            var idx = InstructionHandlers.getInstruction(
                 codes,
                 0,
                 0,
@@ -4279,9 +4279,7 @@ static class DIPatches {
         }
 
         internal static void patchPropulsability(InsnList codes, int idx, bool mass, CodeInstruction go = null) {
-            InsnList add = new InsnList {
-                go == null ? new CodeInstruction(OpCodes.Ldarg_1) : go
-            };
+            InsnList add = [go == null ? new CodeInstruction(OpCodes.Ldarg_1) : go];
             add.add(OpCodes.Ldarg_0);
             add.add(mass ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0);
             add.invoke(
@@ -4302,8 +4300,8 @@ static class DIPatches {
                 useSelfContainer,
                 true,
                 useSelfContainer
-                    ? new Type[] { typeof(TechType), typeof(InventoryItem), typeof(IItemsContainer) }
-                    : new Type[] { typeof(TechType), typeof(InventoryItem) }
+                    ? [typeof(TechType), typeof(InventoryItem), typeof(IItemsContainer)]
+                    : [typeof(TechType), typeof(InventoryItem)]
             );
         }
 
@@ -4313,11 +4311,11 @@ static class DIPatches {
             bool ldArg1 = true,
             params Type[] args
         ) {
-            for (int i = codes.Count - 1; i >= 0; i--) {
+            for (var i = codes.Count - 1; i >= 0; i--) {
                 if (codes[i].opcode == OpCodes.Call) {
-                    MethodInfo m = (MethodInfo)codes[i].operand;
+                    var m = (MethodInfo)codes[i].operand;
                     if (m != null && m.DeclaringType.Name == "CraftData" && m.Name == "GetItemSize") {
-                        MethodInfo call = InstructionHandlers.convertMethodOperand(
+                        var call = InstructionHandlers.convertMethodOperand(
                             "ReikaKalseki.DIAlterra.DIHooks",
                             "getItemDisplaySize",
                             false,
@@ -4339,7 +4337,7 @@ static class DIPatches {
         }
 
         internal static void redirectPowerHook(InsnList codes) {
-            int idx = InstructionHandlers.getInstruction(
+            var idx = InstructionHandlers.getInstruction(
                 codes,
                 0,
                 0,
@@ -4362,7 +4360,7 @@ static class DIPatches {
         }
 
         internal static void injectEMPHook(InsnList codes, int idx) {
-            CodeInstruction arg = codes[idx - 3]; //-1 is getfield time, -2 is loadarg0 to get that field
+            var arg = codes[idx - 3]; //-1 is getfield time, -2 is loadarg0 to get that field
             idx -= 4;
             codes.Insert(
                 idx + 1,

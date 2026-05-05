@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using ReikaKalseki.DIAlterra;
 using UnityEngine;
@@ -9,23 +10,24 @@ public class PostCoveDome : InteractableSpawnable {
 
 	public static readonly float HOT_THRESHOLD = -1070F;
 
+	[SetsRequiredMembers]
 	public PostCoveDome(XMLLocale.LocaleEntry e) : base(e) {
 		scanTime = 10;
-		OnFinishedPatching += () => {
-			SaveSystem.addSaveHandler(ClassID, new SaveSystem.ComponentFieldSaveHandler<PostCoveDomeTag>().addField("scanned"));
-		};
+		AddOnRegister(() => {
+			SaveSystem.addSaveHandler(Info.ClassID, new SaveSystem.ComponentFieldSaveHandler<PostCoveDomeTag>().addField("scanned"));
+		});
 	}
 
 	public override GameObject GetGameObject() {
-		GameObject go = ObjectUtil.createWorldObject(VanillaCreatures.GIANT_FLOATER.prefab);
-		foreach (Light l in go.GetComponentsInChildren<Light>())
+		var go = ObjectUtil.createWorldObject(VanillaCreatures.GIANT_FLOATER.prefab);
+		foreach (var l in go.GetComponentsInChildren<Light>())
 			l.gameObject.destroy(false);
 		go.EnsureComponent<PostCoveDomeTag>();
 		return go;
 	}
 
 	public void postRegister() {
-		countGen<PostCoveDomeGenerator>(SeaToSeaMod.worldgen);
+		countGen<PostCoveDomeGenerator>(SeaToSeaMod.WorldGen);
 		setFragment(CraftingItems.getItem(CraftingItems.Items.ObsidianGlass).TechType, fragmentCount);
 		registerEncyPage();
 	}
@@ -49,7 +51,7 @@ public class PostCoveDome : InteractableSpawnable {
 
 public class PostCoveDomeTag : MonoBehaviour {
 
-	private bool scanned = false;
+	private bool scanned;
 	private float scannedFade = 0;
 
 	private Renderer[] renderers;
@@ -59,32 +61,32 @@ public class PostCoveDomeTag : MonoBehaviour {
 
 	private Light light;
 
-	void Start() {
+	private void Start() {
 		gameObject.removeComponent<Floater>();
-		this.GetComponentInChildren<Animator>().speed = 0.04F;
-		renderers = this.GetComponentsInChildren<Renderer>();
-		foreach (Renderer r in renderers)
+		GetComponentInChildren<Animator>().speed = 0.04F;
+		renderers = GetComponentsInChildren<Renderer>();
+		foreach (var r in renderers)
 			r.materials[1].color = Color.clear;
 		transform.localScale = Vector3.one * 0.1F;
 
-		light = this.GetComponentInChildren<Light>();
+		light = GetComponentInChildren<Light>();
 		if (!light)
 			light = gameObject.addLight();
 		light.range = 32;
 		light.intensity = 1.5F;
 		light.transform.localPosition = Vector3.up * 3;
 		light.shadows = LightShadows.Soft;
-		this.Invoke("spawnOffspring", 30);
+		Invoke(nameof(spawnOffspring), 30);
 	}
 
-	void Update() {
-		bool hot = transform.position.y < PostCoveDome.HOT_THRESHOLD;//VanillaBiomes.ILZ.isInBiome(transform.position) || WaterTemperatureSimulation.main.GetTemperature(transform.position) >= 90;
-		bool retexture = isHot != hot;
+	private void Update() {
+		var hot = transform.position.y < PostCoveDome.HOT_THRESHOLD;//VanillaBiomes.ILZ.isInBiome(transform.position) || WaterTemperatureSimulation.main.GetTemperature(transform.position) >= 90;
+		var retexture = isHot != hot;
 		isHot = hot;
 		if (retexture || !computedTexture) {
-			string tex = "Textures/Plants/PostCoveTree/"+(isHot ? "Hot" : "Cold");
-			foreach (Renderer r in renderers) {
-				RenderUtil.swapTextures(SeaToSeaMod.modDLL, r, tex, new Dictionary<int, string> { { 1, "Inner" }, { 0, "Shell" } });
+			var tex = "Textures/Plants/PostCoveTree/"+(isHot ? "Hot" : "Cold");
+			foreach (var r in renderers) {
+				RenderUtil.swapTextures(SeaToSeaMod.ModDLL, r, tex, new Dictionary<int, string> { { 1, "Inner" }, { 0, "Shell" } });
 				PostCoveDome.setupRenderGloss(r);
 			}
 			computedTexture = true;
@@ -92,7 +94,7 @@ public class PostCoveDomeTag : MonoBehaviour {
 		}
 	}
 
-	void OnScanned() {
+	private void OnScanned() {
 		scanned = true;
 		SNUtil.addBlueprintNotification(CraftingItems.getItem(CraftingItems.Items.ObsidianGlass).TechType);
 	}
@@ -100,15 +102,15 @@ public class PostCoveDomeTag : MonoBehaviour {
 	public static int maximumDomeChildren = 16;
 	public static bool fastReproduction = false;
 
-	void spawnOffspring() {
-		IEnumerable<Vector3> li = WorldUtil.getObjectsNearWithComponent<PostCoveDomeGenerator.ResourceDomeTag>(transform.position, 24).Select(tag => tag.transform.position);
+	private void spawnOffspring() {
+		var li = WorldUtil.getObjectsNearWithComponent<PostCoveDomeGenerator.ResourceDomeTag>(transform.position, 24).Select(tag => tag.transform.position);
 		if (li.Count() < maximumDomeChildren) {
-			GameObject go = PostCoveDomeGenerator.placeRandomResourceDome(gameObject, li, id => ObjectUtil.createWorldObject(id));
+			var go = PostCoveDomeGenerator.placeRandomResourceDome(gameObject, li, id => ObjectUtil.createWorldObject(id));
 			if (go) {
 				go.GetComponent<PostCoveDomeGenerator.ResourceDomeTag>().growFade = 1;
 			}
 		}
-		this.Invoke("spawnOffspring", fastReproduction ? 1 : UnityEngine.Random.Range(30F, 120F));
+		Invoke(nameof(spawnOffspring), fastReproduction ? 1 : Random.Range(30F, 120F));
 	}
 
 }

@@ -11,7 +11,7 @@ public static class ESHooks {
 
     private static readonly Dictionary<string, TechType> scannerInjections;
 
-    private static readonly HashSet<TechType> leviathans = new HashSet<TechType>() {
+    private static readonly HashSet<TechType> leviathans = [
         TechType.ReaperLeviathan,
         TechType.SeaDragon,
         TechType.GhostLeviathanJuvenile,
@@ -19,17 +19,17 @@ public static class ESHooks {
         TechType.SeaTreader,
         TechType.SeaEmperorLeviathan,
         TechType.Reefback,
-    };
+    ];
 
-    internal static readonly Color DEFAULT_PING_COLOR = new Color(1, 186 / 255F, 0, 1);
+    internal static readonly Color DEFAULT_PING_COLOR = new(1, 186 / 255F, 0, 1);
 
-    internal static readonly Dictionary<TechType, Color> pingColors = new Dictionary<TechType, Color>();
+    internal static readonly Dictionary<TechType, Color> pingColors = new();
 
     static ESHooks() {
         SNUtil.log("Initializing ESHooks");
-        DIHooks.onSkyApplierSpawnEvent += onSkyApplierSpawn;
-        DIHooks.onWorldLoadedEvent += onWorldLoaded;
-        DIHooks.scannerRoomTechTypeListingEvent +=
+        DIHooks.OnSkyApplierSpawnEvent += onSkyApplierSpawn;
+        DIHooks.OnWorldLoadedEvent += onWorldLoaded;
+        DIHooks.ScannerRoomTechTypeListingEvent +=
             (gui) => gui.availableTechTypes.RemoveWhere(item => !playerCanScanFor(item));
 
         scannerInjections = new Dictionary<string, TechType> {
@@ -70,7 +70,7 @@ public static class ESHooks {
             scannerInjections["50716be9-fb9c-4da4-9f3f-8916cbdbfdaf"] =
                 ExscansionMod.alienBase.markerType; //crag arch
 
-            foreach (string s in ObjectUtil.getVents())
+            foreach (var s in ObjectUtil.getVents())
                 scannerInjections[s] = ExscansionMod.alienBase.markerType;
 
             //scannerInjections[""] = ExscansionMod.alienBase.markerType; //
@@ -79,7 +79,7 @@ public static class ESHooks {
         }
 
         if (ExscansionMod.config.getBoolean(ESConfig.ConfigEntries.FOSSILS)) {
-            foreach (string s in ObjectUtil.getFossils())
+            foreach (var s in ObjectUtil.getFossils())
                 scannerInjections[s] = ExscansionMod.fossils.markerType;
         }
     }
@@ -93,15 +93,15 @@ public static class ESHooks {
     }
 
     public static void onSkyApplierSpawn(SkyApplier pk) {
-        GameObject go = pk.gameObject;
+        var go = pk.gameObject;
         if (go.name.StartsWith("Seamoth", StringComparison.InvariantCultureIgnoreCase) && go.name.EndsWith(
                 "Arm(Clone)",
                 StringComparison.InvariantCultureIgnoreCase
             ))
             return;
-        PrefabIdentifier pi = go.GetComponentInParent<PrefabIdentifier>();
+        var pi = go.GetComponentInParent<PrefabIdentifier>();
         if (pi && scannerInjections.ContainsKey(pi.ClassId)) {
-            TechType tt = scannerInjections[pi.ClassId];
+            var tt = scannerInjections[pi.ClassId];
             if (tt == TechType.TimeCapsule && !ExscansionMod.config.getBoolean(ESConfig.ConfigEntries.TIMECAPSULE))
                 return;
             if (tt == ExscansionMod.alienBase.Info.TechType &&
@@ -121,7 +121,7 @@ public static class ESHooks {
             ObjectUtil.makeMapRoomScannable(go, ExscansionMod.alienBase.markerType);
         }*/
 
-        Drillable dr = pk.GetComponent<Drillable>();
+        var dr = pk.GetComponent<Drillable>();
         if (dr && dr.resources.Length == 1 && PDAScanner.GetEntryData(dr.resources[0].techType) != null &&
             !pk.GetComponent<TechTag>()) {
             go.EnsureComponent<TechTag>().type = dr.resources[0].techType;
@@ -141,7 +141,7 @@ public static class ESHooks {
     }
 
     public static float getScannerMaxRangeSq() {
-        float r = getScannerMaxRange();
+        var r = getScannerMaxRange();
         return r * r;
     }
 
@@ -233,16 +233,16 @@ public static class ESHooks {
     }
     */
     public static bool isObjectVisibleToScannerRoom(ResourceTracker rt) {
-        bool allow = true;
+        var allow = true;
         if (rt.gameObject.GetComponentInChildren<Drillable>() &&
             !(KnownTech.knownTech.Contains(TechType.ExosuitDrillArmModule) &&
               KnownTech.knownTech.Contains(TechType.Exosuit)))
             allow = false;
-        BlueprintHandTarget bpt = rt.gameObject.FindAncestor<BlueprintHandTarget>();
+        var bpt = rt.gameObject.FindAncestor<BlueprintHandTarget>();
         if (bpt && bpt.used)
             allow = false;
         if (scannabilityEvent != null) {
-            ResourceScanCheck rs = new ResourceScanCheck(rt, allow);
+            var rs = new ResourceScanCheck(rt, allow);
             scannabilityEvent.Invoke(rs);
             allow = rs.isDetectable;
         }
@@ -276,10 +276,10 @@ public static class ESHooks {
         blip.techType = type;
         if (!ExscansionMod.config.getBoolean(ESConfig.ConfigEntries.PINGCOLOR))
             return;
-        CanvasRenderer render = blip.gameObject.GetComponent<CanvasRenderer>();
-        Image img = blip.gameObject.GetComponent<Image>();
+        var render = blip.gameObject.GetComponent<CanvasRenderer>();
+        var img = blip.gameObject.GetComponent<Image>();
         img.sprite = img.sprite.setTexture(TextureManager.getTexture(ExscansionMod.modDLL, "Textures/blip"));
-        Color c = DEFAULT_PING_COLOR;
+        var c = DEFAULT_PING_COLOR;
         if (pingColors.ContainsKey(type))
             c = pingColors[type];
         img.material.SetColor("_Color", c);

@@ -7,139 +7,142 @@ using UnityEngine;
 namespace ReikaKalseki.DIAlterra;
 
 public abstract class BiomeBase : IComparable<BiomeBase> {
+    private static readonly List<string> Variants = [
+        "",
+        "_cave",
+        "_cave_dark",
+        "_cave_light",
+        "_cave_trans",
+        "_CaveEntrance",
+        "_Caves",
+        "_Geyser",
+        "_ThermalVent",
+        "_Skeleton",
+        "_Water",
+    ];
 
-	private static readonly List<string> variants = new List<string>(){
-		"",
-		"_cave",
-		"_cave_dark",
-		"_cave_light",
-		"_cave_trans",
-		"_CaveEntrance",
-		"_Caves",
-		"_Geyser",
-		"_ThermalVent",
-		"_Skeleton",
-		"_Water",
-	};
+    private static readonly Dictionary<string, BiomeBase> BiomeMap = new();
+    private static readonly List<BiomeBase> BiomeList = [];
+    private static readonly List<CustomBiome> CustomBiomes = [];
 
-	private static readonly Dictionary<string, BiomeBase> biomeMap = new Dictionary<string, BiomeBase>();
-	private static readonly List<BiomeBase> biomeList = new List<BiomeBase>();
-	private static readonly List<CustomBiome> customBiomes = new List<CustomBiome>();
+    public static readonly UnknownBiome Unrecognized = new();
 
-	public static readonly UnknownBiome UNRECOGNIZED = new UnknownBiome();
+    public readonly string DisplayName;
+    public readonly string MainID;
+    public readonly float SceneryValue;
+    private readonly HashSet<string> _internalNames = [];
 
-	public readonly string displayName;
-	public readonly string mainID;
-	public readonly float sceneryValue;
-	private readonly HashSet<string> internalNames = new HashSet<string>();
+    internal static readonly Dictionary<Vector3, BiomeBase> BiomeHoles = new();
 
-	internal static readonly Dictionary<Vector3, BiomeBase> biomeHoles = new Dictionary<Vector3, BiomeBase>();
+    internal static void InitializeBiomeHoles() {
+        BiomeHoles[new Vector3(1042.7F, -500F, 919.11F)] = VanillaBiomes.Mountains;
+    }
 
-	internal static void initializeBiomeHoles() {
-		biomeHoles[new Vector3(1042.7F, -500F, 919.11F)] = VanillaBiomes.MOUNTAINS;
-	}
+    public static IEnumerable<BiomeBase> GetAllBiomes() {
+        return new ReadOnlyCollection<BiomeBase>(BiomeList);
+    }
 
-	public static IEnumerable<BiomeBase> getAllBiomes() {
-		return new ReadOnlyCollection<BiomeBase>(biomeList);
-	}
+    public static IEnumerable<CustomBiome> GetCustomBiomes() {
+        return new ReadOnlyCollection<CustomBiome>(CustomBiomes);
+    }
 
-	public static IEnumerable<CustomBiome> getCustomBiomes() {
-		return new ReadOnlyCollection<CustomBiome>(customBiomes);
-	}
+    protected BiomeBase(string d, float deco, params string[] ids) {
+        SceneryValue = deco;
+        DisplayName = d;
+        MainID = ids.Length == 0 ? null : ids[0];
+        foreach (var id in ids)
+            RegisterID(this, id);
+        BiomeList.Add(this);
+        if (this is CustomBiome)
+            CustomBiomes.Add((CustomBiome)this);
+        SNUtil.log(
+            "Registered biome " + DisplayName + " with ids " + string.Join(", ", ids),
+            SNUtil.tryGetModDLL(true)
+        );
+    }
 
-	protected BiomeBase(string d, float deco, params string[] ids) {
-		sceneryValue = deco;
-		displayName = d;
-		mainID = ids.Length == 0 ? null : ids[0];
-		foreach (string id in ids)
-			registerID(this, id);
-		biomeList.Add(this);
-		if (this is CustomBiome)
-			customBiomes.Add((CustomBiome)this);
-		SNUtil.log("Registered biome " + displayName + " with ids " + string.Join(", ", ids), SNUtil.tryGetModDLL(true));
-	}
+    public static bool IsUnrecognized(BiomeBase bb) {
+        return bb == Unrecognized;
+    }
 
-	public static bool isUnrecognized(BiomeBase bb) {
-		return bb == UNRECOGNIZED;
-	}
+    private static void RegisterID(BiomeBase b, string id) {
+        foreach (var key in Variants.Select(s => (id + s).ToLowerInvariant())) {
+            BiomeMap[key] = b;
+            b._internalNames.Add(key);
+        }
+    }
 
-	private static void registerID(BiomeBase b, string id) {
-		foreach (string s in variants) {
-			string key = (id+s).ToLowerInvariant();
-			biomeMap[key] = b;
-			b.internalNames.Add(key);
-		}
-	}
+    public bool ContainsID(string id) {
+        return id == null ? this == VanillaBiomes.Void : _internalNames.Contains(id.ToLowerInvariant());
+    }
 
-	public bool containsID(string id) {
-		return id == null ? this == VanillaBiomes.VOID : internalNames.Contains(id.ToLowerInvariant());
-	}
+    public IEnumerable<string> GetIDs() {
+        return new ReadOnlyCollection<string>(_internalNames.ToList());
+    }
 
-	public IEnumerable<string> getIDs() {
-		return new ReadOnlyCollection<string>(internalNames.ToList());
-	}
+    public override string ToString() {
+        return GetType().Name + " " + DisplayName + ": [" + string.Join(", ", _internalNames) + "]";
+    }
 
-	public override string ToString() {
-		return this.GetType().Name + " " + displayName + ": [" + string.Join(", ", internalNames) + "]";
-	}
+    public static BiomeBase GetBiome(Vector3 pos) {
+        //if (logBiomeFetch)
+        //	SNUtil.writeToChat("Getting biome at "+pos);
+        var biome = DIHooks.GetBiomeAt(WaterBiomeManager.main.GetBiome(pos, false), pos); //will fire the event
+        //if (logBiomeFetch)
+        //	SNUtil.writeToChat("WBM found "+biome);
+        if (string.IsNullOrEmpty(biome)) {
+            foreach (var kvp in BiomeHoles.Where(kvp => Vector3.Distance(kvp.Key, pos) <= 125)) {
+                //if (logBiomeFetch)
+                //	SNUtil.writeToChat("Matched to hole "+kvp.Key+", "+kvp.Value);
+                return kvp.Value;
+            }
+        }
 
-	public static BiomeBase getBiome(Vector3 pos) {
-		//if (logBiomeFetch)
-		//	SNUtil.writeToChat("Getting biome at "+pos);
-		string biome = DIHooks.getBiomeAt(WaterBiomeManager.main.GetBiome(pos, false), pos); //will fire the event
-		//if (logBiomeFetch)
-		//	SNUtil.writeToChat("WBM found "+biome);
-		if (string.IsNullOrEmpty(biome)) {
-			foreach (KeyValuePair<Vector3, BiomeBase> kvp in biomeHoles) {
-				if (Vector3.Distance(kvp.Key, pos) <= 125) {
-					//if (logBiomeFetch)
-					//	SNUtil.writeToChat("Matched to hole "+kvp.Key+", "+kvp.Value);
-					return kvp.Value;
-				}
-			}
-		}
-		BiomeBase ret = string.IsNullOrEmpty(biome) ? VanillaBiomes.VOID : getBiome(biome);
-		//if (logBiomeFetch)
-		//	SNUtil.writeToChat("Lookup to "+ret.displayName);
-		return ret;
-	}
+        var ret = string.IsNullOrEmpty(biome) ? VanillaBiomes.Void : GetBiome(biome);
+        //if (logBiomeFetch)
+        //	SNUtil.writeToChat("Lookup to "+ret.displayName);
+        return ret;
+    }
 
-	public static BiomeBase getBiome(string id) {
-		id = id.ToLowerInvariant();
-		return biomeMap.ContainsKey(id) ? biomeMap[id] : UNRECOGNIZED;
-	}
+    public static BiomeBase GetBiome(string id) {
+        id = id.ToLowerInvariant();
+        return BiomeMap.TryGetValue(id, out var value) ? value : Unrecognized;
+    }
 
-	public abstract bool isCaveBiome();
-	public abstract bool isVoidBiome();
-	public abstract bool existsInSeveralPlaces();
+    public abstract bool IsCaveBiome();
+    public abstract bool IsVoidBiome();
+    public abstract bool ExistsInSeveralPlaces();
 
-	public abstract bool isInBiome(Vector3 pos);
+    public abstract bool IsInBiome(Vector3 pos);
 
-	public int CompareTo(BiomeBase ro) {
-		return this is VanillaBiomes && ro is VanillaBiomes ? VanillaBiomes.compare((VanillaBiomes)this, (VanillaBiomes)ro) : this is VanillaBiomes ? -1 : ro is VanillaBiomes ? 1 : String.Compare(displayName, ro.displayName, StringComparison.InvariantCultureIgnoreCase);
-	}
+    public int CompareTo(BiomeBase ro) {
+        return this is VanillaBiomes && ro is VanillaBiomes biomes
+            ? VanillaBiomes.Compare((VanillaBiomes)this, biomes)
+            : this is VanillaBiomes
+                ? -1
+                : ro is VanillaBiomes
+                    ? 1
+                    : string.Compare(DisplayName, ro.DisplayName, StringComparison.InvariantCultureIgnoreCase);
+    }
 }
 
 public class UnknownBiome : BiomeBase {
+    internal UnknownBiome() : base("[UNRECOGNIZED BIOME]", 0) {
+    }
 
-	internal UnknownBiome() : base("[UNRECOGNIZED BIOME]", 0) {
+    public override bool IsCaveBiome() {
+        return false;
+    }
 
-	}
+    public override bool ExistsInSeveralPlaces() {
+        return false;
+    }
 
-	public override bool isCaveBiome() {
-		return false;
-	}
+    public override bool IsVoidBiome() {
+        return false;
+    }
 
-	public override bool existsInSeveralPlaces() {
-		return false;
-	}
-
-	public override bool isVoidBiome() {
-		return false;
-	}
-
-	public override bool isInBiome(Vector3 pos) {
-		return false;
-	}
-
+    public override bool IsInBiome(Vector3 pos) {
+        return false;
+    }
 }

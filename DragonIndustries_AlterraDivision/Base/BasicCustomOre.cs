@@ -10,7 +10,7 @@ public class BasicCustomOre : CustomPrefab, DIPrefab<VanillaResources> {
     public readonly bool isLargeResource;
 
     public string collectSound = null;
-    public Vector2int inventorySize = new Vector2int(1, 1);
+    public Vector2int inventorySize = new(1, 1);
 
     public float glowIntensity { get; set; }
     public VanillaResources baseTemplate { get; set; }
@@ -77,10 +77,8 @@ public class BasicCustomOre : CustomPrefab, DIPrefab<VanillaResources> {
     }
 
     public Sprite getIcon() {
-        return this.GetItemSprite();
+        return GetItemSprite();
     }
 
-    public Vector2int SizeInInventory {
-        get { return inventorySize; }
-    }
+    public Vector2int SizeInInventory => inventorySize;
 }

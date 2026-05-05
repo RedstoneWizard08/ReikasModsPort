@@ -19,10 +19,9 @@ public static class AEPatches {
 	[HarmonyPatch(typeof(WaterPark))]
 	[HarmonyPatch("Update")]
 	public static class ACUHook {
-
-		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+		private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
 			InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-			InsnList codes = new InsnList(instructions);
+			var codes = new InsnList(instructions);
 			try {
 				codes.patchInitialHook(new CodeInstruction(OpCodes.Ldarg_0), InstructionHandlers.createMethodCall("ReikaKalseki.AqueousEngineering.AEHooks", "tickACU", false, typeof(WaterPark)));
 				InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
@@ -40,10 +39,9 @@ public static class AEPatches {
 	[HarmonyPatch(typeof(WaterPark))]
 	[HarmonyPatch("TryBreed")]
 	public static class ACUBreedHook {
-
-		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+		private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
 			InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-			InsnList codes = new InsnList();
+			InsnList codes = [];
 			try {
 				codes.add(OpCodes.Ldarg_0);
 				codes.add(OpCodes.Ldarg_1);
@@ -64,10 +62,9 @@ public static class AEPatches {
 	[HarmonyPatch(typeof(WaterPark))]
 	[HarmonyPatch("CanDropItemInside")]
 	public static class WaterParkItemDroppabilityHook {
-
-		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+		private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
 			InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-			InsnList codes = new InsnList();
+			InsnList codes = [];
 			try {
 				codes.add(OpCodes.Ldarg_0);
 				codes.invoke("ReikaKalseki.AqueousEngineering.AEHooks", "canAddItemToACU", false, typeof(Pickupable));
@@ -87,10 +84,9 @@ public static class AEPatches {
 	[HarmonyPatch(typeof(VoxelandGrassBuilder))]
 	[HarmonyPatch("CreateUnityMeshes")]
 	public static class TerrainGrassHook {
-
-		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+		private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
 			InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-			InsnList codes = new InsnList(instructions);
+			var codes = new InsnList(instructions);
 			try {
 				codes.patchEveryReturnPre(new CodeInstruction(OpCodes.Ldarg_1), InstructionHandlers.createMethodCall("ReikaKalseki.AqueousEngineering.AEHooks", "onChunkGenGrass", false, typeof(IVoxelandChunk2)));
 				InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
@@ -108,15 +104,14 @@ public static class AEPatches {
 	[HarmonyPatch(typeof(uGUI_CameraDrone))]
 	[HarmonyPatch("LateUpdate")]
 	public static class CameraFuzzHook {
-
-		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+		private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
 			InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-			InsnList codes = new InsnList(instructions);
+			var codes = new InsnList(instructions);
 			try {
-				for (int i = 0; i < codes.Count; i++) {
-					CodeInstruction ci = codes[i];
+				for (var i = 0; i < codes.Count; i++) {
+					var ci = codes[i];
 					if (ci.opcode == OpCodes.Callvirt) {
-						MethodInfo mi = (MethodInfo)ci.operand;
+						var mi = (MethodInfo)ci.operand;
 						if (mi.Name == "GetScreenDistance") {
 							ci.operand = InstructionHandlers.convertMethodOperand("ReikaKalseki.AqueousEngineering.AEHooks", "getCameraDistanceForRenderFX", false, typeof(MapRoomCamera), typeof(MapRoomScreen));
 						}
@@ -158,10 +153,9 @@ public static class AEPatches {
 	[HarmonyPatch(typeof(BaseBioReactor))]
 	[HarmonyPatch("Update")]
 	public static class BioReactorPowerHook {
-
-		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+		private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
 			InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-			InsnList codes = new InsnList(instructions);
+			var codes = new InsnList(instructions);
 			try {
 				PatchLib.addPowerGenHook("BaseBioReactor", codes);
 				InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
@@ -179,15 +173,14 @@ public static class AEPatches {
 	[HarmonyPatch(typeof(FiltrationMachine))]
 	[HarmonyPatch("UpdateFiltering")]
 	public static class WaterFilterPowerCostHook {
-
-		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+		private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
 			InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-			InsnList codes = new InsnList(instructions);
+			var codes = new InsnList(instructions);
 			try {
-				for (int i = codes.Count - 1; i >= 0; i--) {
+				for (var i = codes.Count - 1; i >= 0; i--) {
 					if (codes[i].LoadsConstant(0.85F)) {
 						codes.InsertRange(i + 1, new InsnList{
-							new CodeInstruction(OpCodes.Ldarg_0), InstructionHandlers.createMethodCall("ReikaKalseki.AqueousEngineering.AEHooks", "getWaterFilterPowerCost", false, typeof(float), typeof(FiltrationMachine))
+							new CodeInstruction(OpCodes.Ldarg_0), InstructionHandlers.createMethodCall("ReikaKalseki.AqueousEngineering.AEHooks", "getWaterFilterPowerCost", false, typeof(float), typeof(FiltrationMachine)),
 						});
 					}
 				}
@@ -206,15 +199,14 @@ public static class AEPatches {
 	[HarmonyPatch(typeof(Charger))]
 	[HarmonyPatch("Update")]
 	public static class ChargerSpeedHook {
-
-		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+		private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
 			InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-			InsnList codes = new InsnList(instructions);
+			var codes = new InsnList(instructions);
 			try {
-				for (int i = codes.Count - 1; i >= 0; i--) {
+				for (var i = codes.Count - 1; i >= 0; i--) {
 					if (InstructionHandlers.matchOperands(codes[i].operand, InstructionHandlers.convertFieldOperand("Charger", "chargeSpeed"))) {
 						codes.InsertRange(i + 1, new InsnList{
-							new CodeInstruction(OpCodes.Ldarg_0), InstructionHandlers.createMethodCall("ReikaKalseki.AqueousEngineering.AEHooks", "getChargerSpeed", false, typeof(float), typeof(Charger))
+							new CodeInstruction(OpCodes.Ldarg_0), InstructionHandlers.createMethodCall("ReikaKalseki.AqueousEngineering.AEHooks", "getChargerSpeed", false, typeof(float), typeof(Charger)),
 						});
 					}
 				}
@@ -233,10 +225,9 @@ public static class AEPatches {
 	[HarmonyPatch(typeof(PlaceTool))]
 	[HarmonyPatch("OnPlace")]
 	public static class PlaceableDecoHook {
-
-		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+		private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
 			InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-			InsnList codes = new InsnList(instructions);
+			var codes = new InsnList(instructions);
 			try {
 				codes.patchInitialHook(new CodeInstruction(OpCodes.Ldarg_0), InstructionHandlers.createMethodCall("ReikaKalseki.AqueousEngineering.AEHooks", "onPlacedItem", false, typeof(PlaceTool)));
 				InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
@@ -254,10 +245,9 @@ public static class AEPatches {
 	[HarmonyPatch(typeof(BaseNuclearReactor))]
 	[HarmonyPatch("Start")]
 	public static class NuclearReactorHook {
-
-		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+		private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
 			InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-			InsnList codes = new InsnList(instructions);
+			var codes = new InsnList(instructions);
 			try {
 				codes.patchInitialHook(new CodeInstruction(OpCodes.Ldarg_0), InstructionHandlers.createMethodCall("ReikaKalseki.AqueousEngineering.AEHooks", "onNuclearReactorSpawn", false, typeof(BaseNuclearReactor)));
 				InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
@@ -276,10 +266,9 @@ public static class AEPatches {
 	[HarmonyPatch(typeof(BaseNuclearReactor))]
 	[HarmonyPatch("Update")]
 	public static class NuclearReactorOverride {
-
-		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+		private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
 			InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-			InsnList codes = new InsnList();
+			InsnList codes = [];
 			try {
 				codes.add(OpCodes.Ret);
 				InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
@@ -298,10 +287,9 @@ public static class AEPatches {
 	[HarmonyPatch(typeof(uGUI_EquipmentSlot))]
 	[HarmonyPatch("SetActive")]
 	public static class ReactorSlotHook {
-
-		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+		private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
 			InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-			InsnList codes = new InsnList(instructions);
+			var codes = new InsnList(instructions);
 			try {
 				codes.patchInitialHook(new CodeInstruction(OpCodes.Ldarg_0), new CodeInstruction(OpCodes.Ldarg_1), InstructionHandlers.createMethodCall("ReikaKalseki.AqueousEngineering.AEHooks", "onEquipmentSlotActivated", false, typeof(uGUI_EquipmentSlot), typeof(bool)));
 				InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
@@ -317,10 +305,10 @@ public static class AEPatches {
 		}
 	}
 
-	static class PatchLib {
+	private static class PatchLib {
 
 		internal static void addPowerGenHook(string caller, InsnList codes) {
-			int idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Call, caller, "ProducePower", true, new Type[]{typeof(float)});
+			var idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Call, caller, "ProducePower", true, new Type[]{typeof(float)});
 			codes.InsertRange(idx + 1, new InsnList { new CodeInstruction(OpCodes.Ldarg_0), InstructionHandlers.createMethodCall("ReikaKalseki.AqueousEngineering.AEHooks", "getReactorGeneration", false, typeof(float), typeof(MonoBehaviour)) });
 		}
 

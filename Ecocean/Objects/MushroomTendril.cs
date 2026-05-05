@@ -1,20 +1,23 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using Nautilus.Assets;
+using ReikaKalseki.DIAlterra;
 using UnityEngine;
 
 namespace ReikaKalseki.Ecocean;
 
-public class MushroomTendril : Spawnable {
+public class MushroomTendril : CustomPrefab {
 
-	public static readonly Color color1 = new Color(0.4F, 1.0F, 1.5F, 1F);
-	public static readonly Color color2 = new Color(1.8F, 1.1F, 0.5F, 1F);
+	public static readonly Color color1 = new(0.4F, 1.0F, 1.5F, 1F);
+	public static readonly Color color2 = new(1.8F, 1.1F, 0.5F, 1F);
 
-	private static readonly Dictionary<string, float> radii = new Dictionary<string, float>(){
+	private static readonly Dictionary<string, float> radii = new(){
 		{"e0d415d9-1bc6-4c8b-b3c0-69f5e5fa6b08", 1},
 		{"79527fc2-7037-41c0-9e3d-e003f3cd0b06", 0.5F},
 		{"775b6835-bd08-40d2-b80e-ab0ddc539c45", 0.5F},
 	};
 
-	internal static readonly Dictionary<string, Color> colors = new Dictionary<string, Color>();
+	internal static readonly Dictionary<string, Color> colors = new();
 
 	public static float getPrefabRadius(string id) {
 		return radii.ContainsKey(id) ? radii[id] : 0.75F;
@@ -22,24 +25,27 @@ public class MushroomTendril : Spawnable {
 
 	public readonly Color glowColor;
 
+	[SetsRequiredMembers]
 	public MushroomTendril(XMLLocale.LocaleEntry e, Color c) : base(e.key + "_" + c.ToString(), e.name, e.desc) {
 		glowColor = c;
 
-		OnFinishedPatching += () => { colors[ClassID] = c; };
+		AddOnRegister(() => {
+			colors[Info.ClassID] = c;
+		});
 	}
 
-	public override GameObject GetGameObject() {
-		GameObject world = new GameObject("MushroomTendril");
+	public GameObject GetGameObject() {
+		var world = new GameObject("MushroomTendril");
 		world.EnsureComponent<MushroomTendrilTag>();
-		BoxCollider bc = world.EnsureComponent<BoxCollider>();
+		var bc = world.EnsureComponent<BoxCollider>();
 		bc.isTrigger = true;
-		world.EnsureComponent<PrefabIdentifier>().ClassId = ClassID;
-		world.EnsureComponent<TechTag>().type = TechType;
+		world.EnsureComponent<PrefabIdentifier>().ClassId = Info.ClassID;
+		world.EnsureComponent<TechTag>().type = Info.TechType;
 		world.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.Far;
 		return world;
 	}
 
-	class MushroomTendrilTag : MonoBehaviour {
+	private class MushroomTendrilTag : MonoBehaviour {
 
 		private Animator[] animators;
 		private Renderer[] renders;
@@ -47,27 +53,27 @@ public class MushroomTendril : Spawnable {
 
 		private Color renderColor;
 
-		private bool init = false;
+		private bool init;
 
-		void Update() {
+		private void Update() {
 			ObjectUtil.cleanUpOriginObjects(this);
 
 			if (!collider)
-				collider = this.GetComponentInChildren<BoxCollider>();
+				collider = GetComponentInChildren<BoxCollider>();
 
 			if (animators == null)
-				animators = this.GetComponentsInChildren<Animator>();
+				animators = GetComponentsInChildren<Animator>();
 
 			if (animators.Length < 4) {
-				for (int i = animators.Length; i < 4; i++) {
+				for (var i = animators.Length; i < 4; i++) {
 					GameObject go = ObjectUtil.lookupPrefab(VanillaFlora.STINGERS.getRandomPrefab(false)).GetComponentInChildren<Animator>().gameObject.clone();
 					go.transform.SetParent(transform);
 				}
-				animators = this.GetComponentsInChildren<Animator>();
+				animators = GetComponentsInChildren<Animator>();
 			}
 			if (!init && animators.Length == 4) {
-				int i = 0;
-				foreach (Animator a in animators) {
+				var i = 0;
+				foreach (var a in animators) {
 					a.speed = 0.3F;
 					a.transform.localRotation = Quaternion.Euler(0, 11.25F * i, 0);
 					a.transform.localScale = Vector3.one;
@@ -75,10 +81,10 @@ public class MushroomTendril : Spawnable {
 					i++;
 				}
 
-				renders = this.GetComponentsInChildren<Renderer>();
+				renders = GetComponentsInChildren<Renderer>();
 
-				renderColor = MushroomTendril.colors[this.GetComponent<PrefabIdentifier>().ClassId];
-				foreach (Renderer r in renders) {
+				renderColor = colors[GetComponent<PrefabIdentifier>().ClassId];
+				foreach (var r in renders) {
 					RenderUtil.swapTextures(EcoceanMod.modDLL, r, "Textures/MushroomStrand", new Dictionary<int, string>() { { 1, "" } });
 					r.materials[0].EnableKeyword("FX_BURST"); //make opaque part invisible
 					r.materials[1].SetColor("_GlowColor", renderColor);
@@ -96,8 +102,8 @@ public class MushroomTendril : Spawnable {
 				return;
 
 			if (renders != null) {
-				foreach (Renderer r in renders) {
-					float f = 5F+((6F-(2F*DayNightCycle.main.GetLightScalar()))*Mathf.Sin((gameObject.GetInstanceID()*1.28F)+(DayNightCycle.main.timePassedAsFloat*0.267F)));
+				foreach (var r in renders) {
+					var f = 5F+(6F-2F*DayNightCycle.main.GetLightScalar())*Mathf.Sin(gameObject.GetInstanceID()*1.28F+DayNightCycle.main.timePassedAsFloat*0.267F);
 					if (f < 0)
 						f = 0;
 					RenderUtil.setEmissivity(r.materials[1], f, f * 0.1F);
@@ -105,9 +111,9 @@ public class MushroomTendril : Spawnable {
 			}
 		}
 
-		void OnTriggerStay(Collider other) {
+		private void OnTriggerStay(Collider other) {
 			if (!other.isTrigger && other.isPlayer()) {
-				FoodEffectSystem.VisualDistortionEffect e = Player.main.gameObject.EnsureComponent<FoodEffectSystem.VisualDistortionEffect>();
+				var e = Player.main.gameObject.EnsureComponent<FoodEffectSystem.VisualDistortionEffect>();
 				e.intensity = 2;
 				e.timeRemaining = 10;
 				e.effectColor = renderColor.toVectorA().exponent(4F);

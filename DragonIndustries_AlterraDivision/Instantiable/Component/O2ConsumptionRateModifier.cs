@@ -9,7 +9,7 @@ public class O2ConsumptionRateModifier : SelfRemovingComponent {
 
 	[Obsolete("Effect is unimplemented")]
 	public static void add(float f, float duration) {
-		O2ConsumptionRateModifier m = Player.main.gameObject.AddComponent<O2ConsumptionRateModifier>();
+		var m = Player.main.gameObject.AddComponent<O2ConsumptionRateModifier>();
 		m.consumptionFactor = f;
 		m.elapseWhen = DayNightCycle.main.timePassedAsFloat + duration;
 	}

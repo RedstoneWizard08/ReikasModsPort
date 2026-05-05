@@ -17,7 +17,7 @@ internal class Offset : GlobalManipulation {
 	private Vector3 translate = Vector3.zero;
 
 	internal override void applyToGlobalObject(GameObject go) {
-		go.transform.position = go.transform.position + translate;
+		go.transform.position += translate;
 	}
 
 	internal override void applyToGlobalObject(PlacedObject go) {
@@ -25,11 +25,11 @@ internal class Offset : GlobalManipulation {
 	}
 
 	internal override void applyToSpecificObject(PlacedObject go) {
-		this.applyToObject(go);
+		applyToObject(go);
 	}
 
 	internal override void applyToSpecificObject(GameObject go) {
-		this.applyToObject(go);
+		applyToObject(go);
 	}
 
 	public override void loadFromXML(XmlElement e) {

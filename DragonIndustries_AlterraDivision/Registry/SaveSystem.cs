@@ -10,11 +10,10 @@ using UnityEngine;
 namespace ReikaKalseki.DIAlterra;
 
 public static class SaveSystem {
-    private static readonly Dictionary<string, SaveHandler> handlers = new Dictionary<string, SaveHandler>();
-    private static readonly Dictionary<string, XmlElement> saveData = new Dictionary<string, XmlElement>();
+    private static readonly Dictionary<string, SaveHandler> handlers = new();
+    private static readonly Dictionary<string, XmlElement> saveData = new();
 
-    private static readonly Dictionary<string, PlayerSaveHook> playerSaveHandlers =
-        new Dictionary<string, PlayerSaveHook>();
+    private static readonly Dictionary<string, PlayerSaveHook> playerSaveHandlers = new();
 
     private static readonly string oldSaveDir;
     private static readonly string saveFileName = "ModData.dat";
@@ -65,14 +64,14 @@ public static class SaveSystem {
     }
 
     public static void handleSave() {
-        string path = Path.Combine(SNUtil.getCurrentSaveDir(), saveFileName);
-        XmlDocument doc = new XmlDocument();
-        XmlElement rootnode = doc.CreateElement("Root");
+        var path = Path.Combine(SNUtil.getCurrentSaveDir(), saveFileName);
+        var doc = new XmlDocument();
+        var rootnode = doc.CreateElement("Root");
         doc.AppendChild(rootnode);
-        foreach (PrefabIdentifier pi in UnityEngine.Object.FindObjectsOfType<PrefabIdentifier>()) {
+        foreach (var pi in UnityEngine.Object.FindObjectsOfType<PrefabIdentifier>()) {
             if (!pi)
                 continue;
-            SaveHandler sh = getHandler(pi, false);
+            var sh = getHandler(pi, false);
             if (sh != null) {
                 try {
                     if (debugSave)
@@ -89,15 +88,15 @@ public static class SaveSystem {
             }
         }
 
-        XmlElement e = doc.CreateElement("player");
-        foreach (PlayerSaveHook t in playerSaveHandlers.Values) {
+        var e = doc.CreateElement("player");
+        foreach (var t in playerSaveHandlers.Values) {
             if (t.saveAction == null) {
                 SNUtil.log("Could not run save handler " + t + " on player: no save hook", SNUtil.diDLL);
                 continue;
             }
 
             try {
-                XmlElement e2 = doc.CreateElement(t.id);
+                var e2 = doc.CreateElement(t.id);
                 t.saveAction.Invoke(Player.main, e2);
                 e.AppendChild(e2);
             } catch (Exception ex) {
@@ -107,9 +106,9 @@ public static class SaveSystem {
 
         doc.DocumentElement.AppendChild(e);
         e = doc.CreateElement("components");
-        foreach (CustomSerializedComponent cs in Player.main.GetComponents<CustomSerializedComponent>()) {
-            Type t = cs.GetType();
-            XmlElement e2 = doc.CreateElement(t.Namespace + "." + t.Name);
+        foreach (var cs in Player.main.GetComponents<CustomSerializedComponent>()) {
+            var t = cs.GetType();
+            var e2 = doc.CreateElement(t.Namespace + "." + t.Name);
             cs.saveToXML(e2);
             e.AppendChild(e2);
         }
@@ -121,12 +120,12 @@ public static class SaveSystem {
     }
 
     public static void handleLoad() {
-        string dir = SNUtil.getCurrentSaveDir();
-        string path = Path.Combine(dir, saveFileName);
+        var dir = SNUtil.getCurrentSaveDir();
+        var path = Path.Combine(dir, saveFileName);
         if (!File.Exists(path))
             path = Path.Combine(dir, saveFileName.Replace(".dat", ".xml"));
         if (File.Exists(path)) {
-            XmlDocument doc = new XmlDocument();
+            var doc = new XmlDocument();
             doc.Load(path);
             saveData.Clear();
             foreach (XmlElement e in doc.DocumentElement.ChildNodes) {
@@ -143,14 +142,14 @@ public static class SaveSystem {
         loaded = true;
         SNUtil.log("Applying saved object entries", SNUtil.diDLL);
         if (saveData.ContainsKey("player")) {
-            XmlElement e = saveData["player"];
+            var e = saveData["player"];
             foreach (XmlElement e2 in e.ChildNodes) {
                 if (!playerSaveHandlers.ContainsKey(e2.Name)) {
                     SNUtil.log("Skipping player save tag '" + e2.Name + "'; no mapping to a handler", SNUtil.diDLL);
                     continue;
                 }
 
-                PlayerSaveHook t = playerSaveHandlers[e2.Name];
+                var t = playerSaveHandlers[e2.Name];
                 if (t.loadAction == null) {
                     SNUtil.log("Could not run load handler " + t + " on player: no load hook", SNUtil.diDLL);
                     continue;
@@ -166,10 +165,10 @@ public static class SaveSystem {
         }
 
         if (saveData.ContainsKey("components")) {
-            XmlElement e = saveData["components"];
+            var e = saveData["components"];
             foreach (XmlElement e2 in e.ChildNodes) {
                 try {
-                    Type t = InstructionHandlers.getTypeBySimpleName(e2.Name);
+                    var t = InstructionHandlers.getTypeBySimpleName(e2.Name);
                     if (t == null) {
                         SNUtil.log(
                             "Could not reinstantiate custom serialized component: no type found for '" + e2.Name + "'",
@@ -178,7 +177,7 @@ public static class SaveSystem {
                         continue;
                     }
 
-                    CustomSerializedComponent cs = (CustomSerializedComponent)Player.main.gameObject.AddComponent(t);
+                    var cs = (CustomSerializedComponent)Player.main.gameObject.AddComponent(t);
                     cs.readFromXML(e2);
                     SNUtil.log("Deserialized new " + t + " onto player", SNUtil.diDLL);
                 } catch (Exception ex) {
@@ -187,8 +186,8 @@ public static class SaveSystem {
             }
         }
 
-        foreach (PrefabIdentifier pi in UnityEngine.Object.FindObjectsOfType<PrefabIdentifier>()) {
-            SaveHandler sh = getHandler(pi, true);
+        foreach (var pi in UnityEngine.Object.FindObjectsOfType<PrefabIdentifier>()) {
+            var sh = getHandler(pi, true);
             if (sh != null) {
                 SNUtil.log("Found " + sh + " load handler for " + pi.ClassId + " [" + pi.id + "]", SNUtil.diDLL);
                 try {
@@ -206,7 +205,7 @@ public static class SaveSystem {
             //SNUtil.log("Attempting to load "+pi+" ["+pi.id+"]", SNUtil.diDLL);
             if (needSaveData && handlers.ContainsKey(pi.ClassId) && !saveData.ContainsKey(pi.Id))
                 SNUtil.log("Object " + pi + " [" + pi.id + "] had no data to load!", SNUtil.diDLL);
-            if (handlers.TryGetValue(pi.ClassId, out SaveHandler ret) &&
+            if (handlers.TryGetValue(pi.ClassId, out var ret) &&
                 (!needSaveData || saveData.TryGetValue(pi.Id, out elem))) {
                 if (elem != null)
                     ret.data = elem;
@@ -225,27 +224,27 @@ public static class SaveSystem {
     }
 
     public static void saveToXML(XmlElement e, string s, object val) {
-        if (val is string)
-            e.addProperty(s, (string)val);
-        else if (val is int)
-            e.addProperty(s, (int)val);
-        else if (val is bool)
-            e.addProperty(s, (bool)val);
-        if (val is float)
-            e.addProperty(s, (float)val);
-        if (val is double)
-            e.addProperty(s, (double)val);
-        else if (val is Vector3)
-            e.addProperty(s, (Vector3)val);
-        else if (val is Quaternion)
-            e.addProperty(s, (Quaternion)val);
-        else if (val is Color)
-            e.addProperty(s, (Color)val);
+        if (val is string val1)
+            e.addProperty(s, val1);
+        else if (val is int i)
+            e.addProperty(s, i);
+        else if (val is bool b)
+            e.addProperty(s, b);
+        if (val is float f)
+            e.addProperty(s, f);
+        if (val is double d)
+            e.addProperty(s, d);
+        else if (val is Vector3 vector3)
+            e.addProperty(s, vector3);
+        else if (val is Quaternion quaternion)
+            e.addProperty(s, quaternion);
+        else if (val is Color color)
+            e.addProperty(s, color);
     }
 
     public static void setField(XmlElement e, string s, MemberInfo f, object inst) {
         object put = null;
-        Type t = f is FieldInfo ? ((FieldInfo)f).FieldType : ((PropertyInfo)f).PropertyType;
+        var t = f is FieldInfo info ? info.FieldType : ((PropertyInfo)f).PropertyType;
 
         if (t == typeof(string))
             put = e.getProperty(s, true);
@@ -276,8 +275,8 @@ public static class SaveSystem {
 
         public FieldHook(MemberInfo f, Func<O> inst) : base(
             buildID(f),
-            (ep, e) => SaveSystem.saveToXML(e, "value", getValue(f, inst.Invoke())),
-            (ep, e) => SaveSystem.setField(e, "value", f, inst.Invoke())
+            (ep, e) => saveToXML(e, "value", getValue(f, inst.Invoke())),
+            (ep, e) => setField(e, "value", f, inst.Invoke())
         ) {
             field = f;
             instanceGetter = inst;
@@ -305,7 +304,7 @@ public static class SaveSystem {
     }
 
     public sealed class ComponentFieldSaveHandler<C> : SaveHandler where C : MonoBehaviour {
-        private readonly List<string> fields = new List<string>();
+        private readonly List<string> fields = [];
 
         public ComponentFieldSaveHandler() {
         }
@@ -323,33 +322,33 @@ public static class SaveSystem {
         }
 
         public ComponentFieldSaveHandler<C> addAllFields() {
-            foreach (FieldInfo fi in typeof(C).GetFields(
+            foreach (var fi in typeof(C).GetFields(
                          BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public
                      )) {
-                this.addField(fi.Name);
+                addField(fi.Name);
             }
 
             return this;
         }
 
         public override void save(PrefabIdentifier pi) {
-            C com = pi.GetComponentInChildren<C>();
+            var com = pi.GetComponentInChildren<C>();
             if (!com)
                 return;
-            foreach (string s in fields) {
-                MemberInfo m = this.getField(s);
-                object val = m is FieldInfo fi ? fi.GetValue(com) : ((PropertyInfo)m).GetValue(com);
-                SaveSystem.saveToXML(data, s, val);
+            foreach (var s in fields) {
+                var m = getField(s);
+                var val = m is FieldInfo fi ? fi.GetValue(com) : ((PropertyInfo)m).GetValue(com);
+                saveToXML(data, s, val);
             }
         }
 
         public override void load(PrefabIdentifier pi) {
-            C com = pi.GetComponentInChildren<C>();
+            var com = pi.GetComponentInChildren<C>();
             if (!com)
                 return;
-            foreach (string s in fields) {
-                MemberInfo fi = this.getField(s);
-                SaveSystem.setField(data, s, fi, com);
+            foreach (var s in fields) {
+                var fi = getField(s);
+                setField(data, s, fi, com);
             }
         }
 
@@ -366,7 +365,7 @@ public static class SaveSystem {
         }
 
         public override string ToString() {
-            return string.Format("[ComponentFieldSaveHandler Fields={0}]", fields.toDebugString());
+            return $"[ComponentFieldSaveHandler Fields={fields.toDebugString()}]";
         }
     }
 }

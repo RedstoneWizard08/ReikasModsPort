@@ -13,14 +13,14 @@ public class AoERadiationZone : MonoBehaviour {
 
 	private GameObject trigger;
 
-	void Start() {
+	private void Start() {
 		trigger = gameObject.getChildObject(TRIGGER_NAME);
 		if (!trigger) {
 			trigger = new GameObject(TRIGGER_NAME);
 			trigger.transform.SetParent(transform);
 			Utils.ZeroTransform(trigger.transform);
 			trigger.EnsureComponent<AoERadiationZoneTrigger>().owner = this;
-			SphereCollider sc = trigger.EnsureComponent<SphereCollider>();
+			var sc = trigger.EnsureComponent<SphereCollider>();
 			sc.radius = radius;
 			sc.isTrigger = true;
 		}
@@ -41,23 +41,23 @@ public class AoERadiationZone : MonoBehaviour {
 
 }
 
-class AoERadiationZoneTrigger : MonoBehaviour {
+internal class AoERadiationZoneTrigger : MonoBehaviour {
 
 	internal AoERadiationZone owner;
 
-	void Start() {
+	private void Start() {
 		if (!owner)
 			owner = gameObject.FindAncestor<AoERadiationZone>();
 	}
 
 	private void OnTriggerEnter(Collider other) {
-		AoERadiationTracker tracker = other.gameObject.FindAncestor<AoERadiationTracker>();
+		var tracker = other.gameObject.FindAncestor<AoERadiationTracker>();
 		if (tracker)
 			tracker.active.Add(owner);
 	}
 
 	private void OnTriggerExit(Collider other) {
-		AoERadiationTracker tracker = other.gameObject.FindAncestor<AoERadiationTracker>();
+		var tracker = other.gameObject.FindAncestor<AoERadiationTracker>();
 		if (tracker)
 			tracker.active.Remove(owner);
 	}
@@ -66,11 +66,11 @@ class AoERadiationZoneTrigger : MonoBehaviour {
 
 public class AoERadiationTracker : MonoBehaviour {
 
-	public readonly HashSet<AoERadiationZone> active = new HashSet<AoERadiationZone>();
+	public readonly HashSet<AoERadiationZone> active = [];
 
 	public float getRadiationIntensity() {
 		float r = 0;
-		foreach (AoERadiationZone aoe in active) {
+		foreach (var aoe in active) {
 			r = Mathf.Max(r, aoe.getScaledIntensity(Vector3.Distance(transform.position, aoe.transform.position)));
 		}
 		//if (r > 0)

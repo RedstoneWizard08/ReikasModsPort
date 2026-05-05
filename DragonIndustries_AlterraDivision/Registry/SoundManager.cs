@@ -12,7 +12,7 @@ using UnityEngine;
 namespace ReikaKalseki.DIAlterra;
 
 public static class SoundManager {
-    private static readonly Dictionary<string, SoundData> sounds = new Dictionary<string, SoundData>();
+    private static readonly Dictionary<string, SoundData> sounds = new();
 
     public static readonly MODE
         soundMode3D = MODE.DEFAULT | MODE._3D | MODE.ACCURATETIME | MODE._3D_LINEARSQUAREROLLOFF;
@@ -44,24 +44,21 @@ public static class SoundManager {
             throw new Exception("You must specify a mod to load the sound for!");
         if (sounds.ContainsKey(id))
             throw new Exception("Sound ID '" + id + "' is already taken!");
-        string[] args = path.Split('/');
-        List<string> li = new List<string> {
-            Path.GetDirectoryName(a.Location)
-        };
-        foreach (string s in args) {
+        var args = path.Split('/');
+        List<string> li = [Path.GetDirectoryName(a.Location)];
+        foreach (var s in args) {
             li.Add(s);
         }
 
         path = Path.Combine(li.ToArray());
         if (!File.Exists(path))
             SNUtil.log("Failed to find sound at '" + path + "'!", a);
-        string bb = busPath != null ? busPath : "bus:/master";
+        var bb = busPath != null ? busPath : "bus:/master";
         SNUtil.log("Registered custom sound '" + id + "' @ " + path + " on bus " + busPath);
-        Sound snd = AudioUtils.CreateSound(path, m);
-        if (processing != null)
-            processing(snd);
+        var snd = AudioUtils.CreateSound(path, m);
+        processing?.Invoke(snd);
         CustomSoundHandler.RegisterCustomSound(id, snd, bb);
-        FMODAsset ass = buildSound(id, id, false);
+        var ass = buildSound(id, id, false);
         sounds[id] = new SoundData(id, ass, snd, getLength(snd), bb);
         return sounds[id];
     }
@@ -71,7 +68,7 @@ public static class SoundManager {
     }
 
     private static float getLength(Sound s) {
-        s.getLength(out uint len, TIMEUNIT.MS);
+        s.getLength(out var len, TIMEUNIT.MS);
         return len / 1000F;
     }
 
@@ -104,11 +101,11 @@ public static class SoundManager {
                 .PlayQueued(snd); //PDASounds.queue.PlayQueued(path, "subtitle");//PDASounds.queue.PlayQueued(ass);
         } else {
             if (distanceFalloff > 0) {
-                float dist = Vector3.Distance(position, Player.main.transform.position);
+                var dist = Vector3.Distance(position, Player.main.transform.position);
                 if (dist >= distanceFalloff)
                     return;
                 else
-                    vol *= 1 - (dist / distanceFalloff);
+                    vol *= 1 - dist / distanceFalloff;
             }
 
             FMODUWE.PlayOneShot(snd, position, vol);
@@ -135,27 +132,27 @@ public static class SoundManager {
         }
 
         if (distanceFalloff > 0) {
-            float dist = Vector3.Distance(position, Player.main.transform.position);
+            var dist = Vector3.Distance(position, Player.main.transform.position);
             if (dist >= distanceFalloff)
                 return null;
             else
-                vol *= 1 - (dist / distanceFalloff);
+                vol *= 1 - dist / distanceFalloff;
         }
 
         if (vol <= 0)
             return null;
         //SBUtil.writeToChat("playing sound "+snd.id);
-        if (!CustomSoundHandler.TryGetCustomSound(snd.id, out Sound s))
+        if (!CustomSoundHandler.TryGetCustomSound(snd.id, out var s))
             return null;
-        AudioUtils.TryPlaySound(s, snd.soundBus, out Channel ch); //FMODUWE.PlayOneShot(snd, position, vol);
-        ATTRIBUTES_3D attr = position.To3DAttributes();
+        AudioUtils.TryPlaySound(s, snd.soundBus, out var ch); //FMODUWE.PlayOneShot(snd, position, vol);
+        var attr = position.To3DAttributes();
         ch.set3DAttributes(ref attr.position, ref attr.velocity);
         ch.setVolume(vol);
         return ch;
     }
 
     public static FMODAsset buildSound(string path, string id = null, bool addBrackets = true) {
-        FMODAsset ass = ScriptableObject.CreateInstance<FMODAsset>();
+        var ass = ScriptableObject.CreateInstance<FMODAsset>();
         ass.path = path;
         ass.id = id;
         if (ass.id == null)

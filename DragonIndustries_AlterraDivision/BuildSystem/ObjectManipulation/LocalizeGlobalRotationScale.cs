@@ -19,7 +19,7 @@ internal class LocalizeGlobalRotationScale : ManipulationBase {
 	}
 
 	public override void applyToObject(PlacedObject go) {
-		this.applyToObject(go.obj);
+		applyToObject(go.obj);
 		go.setRotation(go.obj.transform.rotation);
 		go.scale = go.obj.transform.localScale;
 	}

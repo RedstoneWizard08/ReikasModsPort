@@ -19,252 +19,253 @@ using Math = System.Math;
 
 namespace ReikaKalseki.DIAlterra;
 
+// ReSharper disable once InconsistentNaming
 public static class DIHooks {
-    internal static readonly float NEAR_LAVA_RADIUS = 16;
+    internal static readonly float NearLavaRadius = 16;
 
-    private static float worldLoadTime = -1;
+    private static float _worldLoadTime = -1;
 
-    public static event Action<DayNightCycle> onDayNightTickEvent;
-    public static event Action onWorldLoadedEvent;
-    public static event Action<Player> onPlayerTickEvent;
-    public static event Action<SeaMoth> onSeamothTickEvent;
-    public static event Action<Exosuit> onPrawnTickEvent;
-    public static event Action<SubRoot> onCyclopsTickEvent;
-    public static event Action<BaseRoot> onBaseTickEvent;
-    public static event Action<DamageToDeal> onDamageEvent;
-    public static event Action<ItemPickup> onItemPickedUpEvent;
-    public static event Action<CellManager, LargeWorldEntity> onEntityRegisterEvent;
-    public static event Action<SkyApplier> onSkyApplierSpawnEvent;
-    public static event Action<Constructable, bool> onConstructedEvent;
-    public static event Action<BaseRoot> onBaseLoadedEvent;
-    public static event Action<StorageContainer> inventoryOpenedEvent;
-    public static event Action<StorageContainer> inventoryClosedEvent;
-    public static event Action<BiomeCheck> getBiomeEvent;
-    public static event Action<WaterTemperatureCalculation> getTemperatureEvent;
-    public static event Action<GameObject> onKnifedEvent;
-    public static event Action<KnifeAttempt> knifeAttemptEvent;
-    public static event Action<GravTrapGrabAttempt> gravTrapAttemptEvent;
-    public static event Action<SeaMoth, int, TechType, bool> onSeamothModulesChangedEvent;
-    public static event Action<SubRoot> onCyclopsModulesChangedEvent;
-    public static event Action<Exosuit, int, TechType, bool> onPrawnModulesChangedEvent;
-    public static event Action<SeaMoth, TechType, int> onSeamothModuleUsedEvent;
-    public static event Action<SNCameraRoot> onSonarUsedEvent;
-    public static event Action<SeaMoth> onSeamothSonarUsedEvent;
-    public static event Action<SubRoot> onCyclopsSonarUsedEvent;
-    public static event Action<GameObject> onEggHatchedEvent;
-    public static event Action<EMPBlast, GameObject> onEMPHitEvent;
-    public static event Action<EMPBlast, Collider> onEMPTouchEvent;
+    public static event Action<DayNightCycle> OnDayNightTickEvent;
+    public static event Action OnWorldLoadedEvent;
+    public static event Action<Player> OnPlayerTickEvent;
+    public static event Action<SeaMoth> OnSeamothTickEvent;
+    public static event Action<Exosuit> OnPrawnTickEvent;
+    public static event Action<SubRoot> OnCyclopsTickEvent;
+    public static event Action<BaseRoot> OnBaseTickEvent;
+    public static event Action<DamageToDeal> OnDamageEvent;
+    public static event Action<ItemPickup> OnItemPickedUpEvent;
+    public static event Action<CellManager, LargeWorldEntity> OnEntityRegisterEvent;
+    public static event Action<SkyApplier> OnSkyApplierSpawnEvent;
+    public static event Action<Constructable, bool> OnConstructedEvent;
+    public static event Action<BaseRoot> OnBaseLoadedEvent;
+    public static event Action<StorageContainer> InventoryOpenedEvent;
+    public static event Action<StorageContainer> InventoryClosedEvent;
+    public static event Action<BiomeCheck> GetBiomeEvent;
+    public static event Action<WaterTemperatureCalculation> GetTemperatureEvent;
+    public static event Action<GameObject> OnKnifedEvent;
+    public static event Action<KnifeAttempt> KnifeAttemptEvent;
+    public static event Action<GravTrapGrabAttempt> GravTrapAttemptEvent;
+    public static event Action<SeaMoth, int, TechType, bool> OnSeamothModulesChangedEvent;
+    public static event Action<SubRoot> OnCyclopsModulesChangedEvent;
+    public static event Action<Exosuit, int, TechType, bool> OnPrawnModulesChangedEvent;
+    public static event Action<SeaMoth, TechType, int> OnSeamothModuleUsedEvent;
+    public static event Action<SNCameraRoot> OnSonarUsedEvent;
+    public static event Action<SeaMoth> OnSeamothSonarUsedEvent;
+    public static event Action<SubRoot> OnCyclopsSonarUsedEvent;
+    public static event Action<GameObject> OnEggHatchedEvent;
+    public static event Action<EMPBlast, GameObject> OnEmpHitEvent;
+    public static event Action<EMPBlast, Collider> OnEmpTouchEvent;
 
-    public static event Action<StringBuilder, TechType, GameObject> itemTooltipEvent;
+    public static event Action<StringBuilder, TechType, GameObject> ItemTooltipEvent;
 
     //public static event Action<WaterFogValues> fogCalculateEvent;
-    public static event Action<BuildabilityCheck> constructabilityEvent;
+    public static event Action<BuildabilityCheck> ConstructabilityEvent;
 
-    public static event Action<BreathabilityCheck> breathabilityEvent;
+    public static event Action<BreathabilityCheck> BreathabilityEvent;
 
     //public static event Action<O2UseCheck> o2UseEvent;
-    public static event Action<StoryHandCheck> storyHandEvent;
-    public static event Action<RadiationCheck> radiationCheckEvent;
-    public static event Action<BulkheadLaserCutterHoverCheck> bulkheadLaserHoverEvent;
+    public static event Action<StoryHandCheck> StoryHandEvent;
+    public static event Action<RadiationCheck> RadiationCheckEvent;
+    public static event Action<BulkheadLaserCutterHoverCheck> BulkheadLaserHoverEvent;
 
-    public static event Action<KnifeHarvest> knifeHarvestEvent;
+    public static event Action<KnifeHarvest> KnifeHarvestEvent;
 
     //public static event Action<MusicSelectionCheck> musicBiomeChoiceEvent;
-    public static event Action<FruitPlantTag> onFruitPlantTickEvent;
-    public static event Action<ReaperLeviathan, Vehicle> reaperGrabVehicleEvent;
-    public static event Action<SubRoot, DamageInfo> cyclopsDamageEvent;
-    public static event Action<FMOD_CustomEmitter> onSoundPlayedEvent;
-    public static event Action<SolarEfficiencyCheck> solarEfficiencyEvent;
-    public static event Action<Vehicle, Player> vehicleEnterEvent;
-    public static event Action<DepthCompassCheck> depthCompassEvent;
-    public static event Action<Survival, Player, bool> respawnEvent;
-    public static event Action<PropulsibilityCheck> propulsibilityEvent;
-    public static event Action<Drillable, Vector3, Exosuit> drillableDrillTickEvent;
-    public static event Action<DroppabilityCheck> droppabilityEvent;
-    public static event Action<MapRoomFunctionality> scannerRoomTickEvent;
-    public static event Action itemsLostEvent;
-    public static event Action<Vehicle> onVehicleDestroyEvent;
-    public static event Action<StorageContainer, GUIHand> storageHoverEvent;
-    public static event Action<ModuleFireCostCheck> moduleFireCostEvent;
-    public static event Action<PDAScanner.EntryData> scanCompleteEvent;
-    public static event Action selfScanEvent;
-    public static event Action<uGUI_MapRoomScanner> scannerRoomTechTypeListingEvent;
-    public static event Action<StasisEffectCheck> onStasisRifleFreezeEvent;
-    public static event Action<StasisEffectCheck> onStasisRifleUnfreezeEvent;
+    public static event Action<FruitPlantTag> OnFruitPlantTickEvent;
+    public static event Action<ReaperLeviathan, Vehicle> ReaperGrabVehicleEvent;
+    public static event Action<SubRoot, DamageInfo> CyclopsDamageEvent;
+    public static event Action<FMOD_CustomEmitter> OnSoundPlayedEvent;
+    public static event Action<SolarEfficiencyCheck> SolarEfficiencyEvent;
+    public static event Action<Vehicle, Player> VehicleEnterEvent;
+    public static event Action<DepthCompassCheck> DepthCompassEvent;
+    public static event Action<Survival, Player, bool> RespawnEvent;
+    public static event Action<PropulsibilityCheck> PropulsibilityEvent;
+    public static event Action<Drillable, Vector3, Exosuit> DrillableDrillTickEvent;
+    public static event Action<DroppabilityCheck> DroppabilityEvent;
+    public static event Action<MapRoomFunctionality> ScannerRoomTickEvent;
+    public static event Action ItemsLostEvent;
+    public static event Action<Vehicle> OnVehicleDestroyEvent;
+    public static event Action<StorageContainer, GUIHand> StorageHoverEvent;
+    public static event Action<ModuleFireCostCheck> ModuleFireCostEvent;
+    public static event Action<PDAScanner.EntryData> ScanCompleteEvent;
+    public static event Action SelfScanEvent;
+    public static event Action<uGUI_MapRoomScanner> ScannerRoomTechTypeListingEvent;
+    public static event Action<StasisEffectCheck> OnStasisRifleFreezeEvent;
+    public static event Action<StasisEffectCheck> OnStasisRifleUnfreezeEvent;
 
-    public static event Action<RedundantScanEvent> onRedundantScanEvent;
+    public static event Action<RedundantScanEvent> OnRedundantScanEvent;
 
     // public static event Action<EquipmentCompatibilityCheck> equipmentCompatibilityCheckEvent;
-    public static event Action<EquipmentTypeCheck> equipmentTypeCheckEvent;
-    public static event Action<EatAttempt> tryEatEvent;
-    public static event Action<Survival, GameObject> onEatEvent;
-    public static event Action<SwimSpeedCalculation> getSwimSpeedEvent;
-    public static event Action<Bed> onSleepEvent;
-    public static event Action<FoodRateCalculation> getFoodRateEvent;
-    public static event Action<PlayerInput> getPlayerInputEvent;
-    public static event Action<Bullet, Vehicle> onTorpedoFireEvent;
-    public static event Action<SeamothTorpedo, Transform> onTorpedoExplodeEvent;
-    public static event Action<CreatureSeeObjectCheck> canCreatureSeeObjectEvent;
-    public static event Action<AggressiveToPilotingVehicleCheck> aggressiveToPilotingEvent;
-    public static event Action<Base> baseRebuildEvent;
-    public static event Action<BaseStrengthCalculation> baseStrengthComputeEvent;
-    public static event Action<WaterFilterSpawn> waterFilterSpawnEvent;
-    public static event Action<GrowingPlant, float> growingPlantTickEvent;
-    public static event Action<CuteFishHandTarget, Player, CuteFishHandTarget.CuteFishCinematic> onPlayWithCuddlefish;
-    public static event Action<Rocket, int, bool> onRocketStageCompletedEvent;
-    public static event Action<CrashedShipExploder> auroraSpawnEvent;
-    public static event Action<CraftTimeCalculation> craftTimeEvent;
-    public static event Action<SeaMoth> seamothDischargeEvent;
-    public static event Action<SinkingGroundChunk> spawnTreaderChunk;
-    public static event Action<Crash> crashfishExplodeEvent;
-    public static event Action<TargetabilityCheck> targetabilityEvent;
+    public static event Action<EquipmentTypeCheck> EquipmentTypeCheckEvent;
+    public static event Action<EatAttempt> TryEatEvent;
+    public static event Action<Survival, GameObject> OnEatEvent;
+    public static event Action<SwimSpeedCalculation> GetSwimSpeedEvent;
+    public static event Action<Bed> OnSleepEvent;
+    public static event Action<FoodRateCalculation> GetFoodRateEvent;
+    public static event Action<PlayerInput> GetPlayerInputEvent;
+    public static event Action<Bullet, Vehicle> OnTorpedoFireEvent;
+    public static event Action<SeamothTorpedo, Transform> OnTorpedoExplodeEvent;
+    public static event Action<CreatureSeeObjectCheck> CanCreatureSeeObjectEvent;
+    public static event Action<AggressiveToPilotingVehicleCheck> AggressiveToPilotingEvent;
+    public static event Action<Base> BaseRebuildEvent;
+    public static event Action<BaseStrengthCalculation> BaseStrengthComputeEvent;
+    public static event Action<WaterFilterSpawn> WaterFilterSpawnEvent;
+    public static event Action<GrowingPlant, float> GrowingPlantTickEvent;
+    public static event Action<CuteFishHandTarget, Player, CuteFishHandTarget.CuteFishCinematic> OnPlayWithCuddlefish;
+    public static event Action<Rocket, int, bool> OnRocketStageCompletedEvent;
+    public static event Action<CrashedShipExploder> AuroraSpawnEvent;
+    public static event Action<CraftTimeCalculation> CraftTimeEvent;
+    public static event Action<SeaMoth> SeamothDischargeEvent;
+    public static event Action<SinkingGroundChunk> SpawnTreaderChunk;
+    public static event Action<Crash> CrashfishExplodeEvent;
+    public static event Action<TargetabilityCheck> TargetabilityEvent;
 
-    private static BasicText updateNotice = new BasicText(TextAlignmentOptions.Center);
+    private static BasicText _updateNotice = new(TextAlignmentOptions.Center);
 
-    public static readonly HashSet<TechType> gravTrapTechSet = new HashSet<TechType>();
+    public static readonly HashSet<TechType> GravTrapTechSet = [];
 
-    private static bool hasLoadedAWorld = false;
-    private static bool outdatedMods = false;
+    private static bool _hasLoadedAWorld;
+    private static bool _outdatedMods;
 
-    private static bool isKnifeHarvesting = false;
-    private static CustomBiome currentCustomBiome;
+    private static bool _isKnifeHarvesting;
+    private static CustomBiome _currentCustomBiome;
 
-    public static bool skipWorldForces = false;
-    public static bool skipSkyApplier = false;
+    public static bool SkipWorldForces = false;
+    public static bool SkipSkyApplier = false;
 
-    private static bool skipZeroedDeserialization =
+    private static bool _skipZeroedDeserialization =
         DIMod.config.getBoolean(DIConfig.ConfigEntries.SKIPZEROEDIDOVERWRITE);
 
-    private static readonly List<Pickupable> collectedItemsToDestroy = new List<Pickupable>();
+    private static readonly List<Pickupable> CollectedItemsToDestroy = [];
 
-    private static GameObject teleportWithPlayer;
-    private static PropulsionCannon activePropulsionGun;
-    private static Vector3 relativeGrabPosition;
-    private static int selectedSlot;
+    private static GameObject _teleportWithPlayer;
+    private static PropulsionCannon _activePropulsionGun;
+    private static Vector3 _relativeGrabPosition;
+    private static int _selectedSlot;
 
     static DIHooks() {
         SNUtil.log("Initializing DIHooks");
 
-        PrecursorTeleporter.TeleportEventStart += startTeleport;
-        PrecursorTeleporter.TeleportEventEnd += stopTeleport;
+        PrecursorTeleporter.TeleportEventStart += StartTeleport;
+        PrecursorTeleporter.TeleportEventEnd += StopTeleport;
 
-        gravTrapTechSet.AddRange(Gravsphere.allowedTechTypes);
+        GravTrapTechSet.AddRange(Gravsphere.allowedTechTypes);
     }
 
     public class PlayerInput {
-        public readonly Vector3 originalInput;
-        public Vector3 selectedInput;
+        public readonly Vector3 OriginalInput;
+        public Vector3 SelectedInput;
 
         internal PlayerInput(Vector3 vec) {
-            originalInput = vec;
-            selectedInput = vec;
+            OriginalInput = vec;
+            SelectedInput = vec;
         }
     }
 
     public class DamageToDeal {
-        public readonly float originalAmount;
-        public readonly DamageType type;
-        public readonly GameObject target;
-        public readonly GameObject dealer;
+        public readonly float OriginalAmount;
+        public readonly DamageType Type;
+        public readonly GameObject Target;
+        public readonly GameObject Dealer;
 
-        private bool disallowFurtherChanges;
+        private bool _disallowFurtherChanges;
 
-        internal float amount;
+        internal float Amount;
 
         internal DamageToDeal(float amt, DamageType tt, GameObject tgt, GameObject dl) {
-            originalAmount = amt;
-            amount = originalAmount;
-            type = tt;
-            target = tgt;
-            dealer = dl;
-            disallowFurtherChanges = false;
+            OriginalAmount = amt;
+            Amount = OriginalAmount;
+            Type = tt;
+            Target = tgt;
+            Dealer = dl;
+            _disallowFurtherChanges = false;
         }
 
-        public void lockValue() {
-            disallowFurtherChanges = true;
+        public void LockValue() {
+            _disallowFurtherChanges = true;
         }
 
-        public void setValue(float amt) {
-            if (disallowFurtherChanges)
+        public void SetValue(float amt) {
+            if (_disallowFurtherChanges)
                 return;
-            amount = amt;
-            if (amount < 0)
-                amount = 0;
+            Amount = amt;
+            if (Amount < 0)
+                Amount = 0;
         }
 
-        public float getAmount() {
-            return amount;
+        public float GetAmount() {
+            return Amount;
         }
     }
 
     public class ItemPickup {
-        public readonly Pickupable item;
-        public readonly Exosuit prawn;
-        public readonly bool isKnife;
+        public readonly Pickupable Item;
+        public readonly Exosuit Prawn;
+        public readonly bool IsKnife;
 
-        public bool destroy = false;
+        public bool Destroy = false;
 
         internal ItemPickup(Pickupable pp, Exosuit exo, bool knife) {
-            item = pp;
-            prawn = exo;
-            isKnife = knife;
+            Item = pp;
+            Prawn = exo;
+            IsKnife = knife;
         }
     }
 
     public class KnifeHarvest {
-        public readonly GameObject hit;
-        public readonly TechType objectType;
-        public readonly bool isAlive;
-        public readonly bool wasAlive;
+        public readonly GameObject Hit;
+        public readonly TechType ObjectType;
+        public readonly bool IsAlive;
+        public readonly bool WasAlive;
 
-        public readonly HarvestType harvestType;
-        public readonly TechType defaultDrop;
+        public readonly HarvestType HarvestType;
+        public readonly TechType DefaultDrop;
 
-        public readonly Dictionary<TechType, int> drops = new Dictionary<TechType, int>();
+        public readonly Dictionary<TechType, int> Drops = new();
 
         internal KnifeHarvest(GameObject go, TechType tt, bool isa, bool was) {
-            hit = go;
-            objectType = tt;
-            isAlive = isa;
-            wasAlive = was;
-            harvestType = TechData.GetHarvestType(tt);
-            defaultDrop = TechData.GetHarvestOutput(tt);
+            Hit = go;
+            ObjectType = tt;
+            IsAlive = isa;
+            WasAlive = was;
+            HarvestType = TechData.GetHarvestType(tt);
+            DefaultDrop = TechData.GetHarvestOutput(tt);
 
-            if ((harvestType == HarvestType.DamageAlive && wasAlive) ||
-                (harvestType == HarvestType.DamageDead && !isAlive)) {
-                int num = 1;
-                if (harvestType == HarvestType.DamageAlive && !isAlive)
+            if ((HarvestType == HarvestType.DamageAlive && WasAlive) ||
+                (HarvestType == HarvestType.DamageDead && !IsAlive)) {
+                var num = 1;
+                if (HarvestType == HarvestType.DamageAlive && !IsAlive)
                     num += TechData.GetHarvestFinalCutBonus(tt);
 
-                if (defaultDrop != TechType.None)
-                    drops[defaultDrop] = num;
+                if (DefaultDrop != TechType.None)
+                    Drops[DefaultDrop] = num;
             }
         }
     }
 
     public class BiomeCheck {
-        public readonly string originalValue;
-        public readonly Vector3 position;
+        public readonly string OriginalValue;
+        public readonly Vector3 Position;
 
-        private bool disallowFurtherChanges;
+        private bool _disallowFurtherChanges;
 
-        internal string biome;
+        internal string Biome;
 
         internal BiomeCheck(string amt, Vector3 pos) {
-            originalValue = amt;
-            biome = originalValue;
-            position = pos;
-            disallowFurtherChanges = false;
+            OriginalValue = amt;
+            Biome = OriginalValue;
+            Position = pos;
+            _disallowFurtherChanges = false;
         }
 
-        public void lockValue() {
-            disallowFurtherChanges = true;
+        public void LockValue() {
+            _disallowFurtherChanges = true;
         }
 
-        public void setValue(string b) {
-            if (disallowFurtherChanges)
+        public void SetValue(string b) {
+            if (_disallowFurtherChanges)
                 return;
-            biome = b;
+            Biome = b;
         }
     }
     /*
@@ -297,174 +298,174 @@ public static class DIHooks {
     }*/
 
     public class WaterTemperatureCalculation {
-        public readonly float originalValue;
-        public readonly Vector3 position;
-        public readonly WaterTemperatureSimulation manager;
+        public readonly float OriginalValue;
+        public readonly Vector3 Position;
+        public readonly WaterTemperatureSimulation Manager;
 
-        private bool disallowFurtherChanges;
+        private bool _disallowFurtherChanges;
 
-        internal float temperature;
+        internal float Temperature;
 
         internal WaterTemperatureCalculation(float amt, WaterTemperatureSimulation sim, Vector3 pos) {
-            originalValue = amt;
-            temperature = originalValue;
-            position = pos;
-            manager = sim;
-            disallowFurtherChanges = false;
+            OriginalValue = amt;
+            Temperature = OriginalValue;
+            Position = pos;
+            Manager = sim;
+            _disallowFurtherChanges = false;
         }
 
-        public void lockValue() {
-            disallowFurtherChanges = true;
+        public void LockValue() {
+            _disallowFurtherChanges = true;
         }
 
-        public float getTemperature() {
-            return temperature;
+        public float GetTemperature() {
+            return Temperature;
         }
 
-        public void setValue(float amt) {
+        public void SetValue(float amt) {
             //SNUtil.writeToChat("Setting water temp to "+amt);
-            if (disallowFurtherChanges)
+            if (_disallowFurtherChanges)
                 return;
-            temperature = amt;
+            Temperature = amt;
         }
     }
 
     public class SwimSpeedCalculation {
-        public readonly float originalValue;
+        public readonly float OriginalValue;
 
-        private bool disallowFurtherChanges;
+        private bool _disallowFurtherChanges;
 
-        internal float speed;
+        internal float Speed;
 
         internal SwimSpeedCalculation(float amt) {
-            originalValue = amt;
-            speed = originalValue;
-            disallowFurtherChanges = false;
+            OriginalValue = amt;
+            Speed = OriginalValue;
+            _disallowFurtherChanges = false;
         }
 
-        public void lockValue() {
-            disallowFurtherChanges = true;
+        public void LockValue() {
+            _disallowFurtherChanges = true;
         }
 
-        public float getValue() {
-            return speed;
+        public float GetValue() {
+            return Speed;
         }
 
-        public void setValue(float amt) {
+        public void SetValue(float amt) {
             //SNUtil.writeToChat("Setting water temp to "+amt);
-            if (disallowFurtherChanges)
+            if (_disallowFurtherChanges)
                 return;
-            speed = amt;
+            Speed = amt;
         }
     }
 
     public class FoodRateCalculation {
-        public readonly float originalValue;
-        public float rate;
+        public readonly float OriginalValue;
+        public float Rate;
 
         internal FoodRateCalculation(float amt) {
-            originalValue = amt;
-            rate = originalValue;
+            OriginalValue = amt;
+            Rate = OriginalValue;
         }
     }
 
     public class WaterFogValues {
-        public readonly Color originalColor;
-        public readonly float originalDensity;
-        public readonly float originalSunValue;
+        public readonly Color OriginalColor;
+        public readonly float OriginalDensity;
+        public readonly float OriginalSunValue;
 
-        public Color color;
-        public float density;
-        public float sunValue;
+        public Color Color;
+        public float Density;
+        public float SunValue;
 
         internal WaterFogValues(Color c, float d, float s) {
-            originalColor = c;
-            originalDensity = d;
-            originalSunValue = s;
-            density = d;
-            color = c;
-            sunValue = s;
+            OriginalColor = c;
+            OriginalDensity = d;
+            OriginalSunValue = s;
+            Density = d;
+            Color = c;
+            SunValue = s;
         }
     }
 
     public class EatAttempt {
-        public readonly Survival survival;
-        public readonly GameObject food;
+        public readonly Survival Survival;
+        public readonly GameObject Food;
 
-        public bool allowEat = true;
+        public bool AllowEat = true;
 
         internal EatAttempt(Survival s, GameObject go) {
-            survival = s;
-            food = go;
+            Survival = s;
+            Food = go;
         }
     }
 
     public class KnifeAttempt {
-        public readonly LiveMixin target;
-        public readonly bool defaultValue;
+        public readonly LiveMixin Target;
+        public readonly bool DefaultValue;
 
-        public bool allowKnife = true;
+        public bool AllowKnife = true;
 
         internal KnifeAttempt(LiveMixin tgt, bool def) {
-            target = tgt;
-            defaultValue = def;
+            Target = tgt;
+            DefaultValue = def;
         }
     }
 
     public class GravTrapGrabAttempt {
-        public readonly Gravsphere gravtrap;
-        public readonly GameObject target;
-        public readonly bool defaultValue;
+        public readonly Gravsphere Gravtrap;
+        public readonly GameObject Target;
+        public readonly bool DefaultValue;
 
-        public bool allowGrab;
+        public bool AllowGrab;
 
         internal GravTrapGrabAttempt(Gravsphere s, GameObject tgt, bool def) {
-            gravtrap = s;
-            target = tgt;
-            defaultValue = def;
-            allowGrab = def;
+            Gravtrap = s;
+            Target = tgt;
+            DefaultValue = def;
+            AllowGrab = def;
         }
     }
 
     public class BuildabilityCheck {
-        public readonly bool originalValue;
-        public readonly Collider placeOn;
+        public readonly bool OriginalValue;
+        public readonly Collider PlaceOn;
 
-        public bool placeable;
-        public bool ignoreSpaceRequirements = false;
+        public bool Placeable;
+        public bool IgnoreSpaceRequirements = false;
 
         internal BuildabilityCheck(bool orig, Collider pos) {
-            originalValue = orig;
-            placeable = orig;
-            placeOn = pos;
+            OriginalValue = orig;
+            Placeable = orig;
+            PlaceOn = pos;
         }
     }
 
     public class BreathabilityCheck {
-        public readonly bool originalValue;
-        public readonly Player player;
+        public readonly bool OriginalValue;
+        public readonly Player Player;
 
-        public bool breathable;
+        public bool Breathable;
 
         internal BreathabilityCheck(bool orig, Player ep) {
-            originalValue = orig;
-            breathable = orig;
-            player = ep;
+            OriginalValue = orig;
+            Breathable = orig;
+            Player = ep;
         }
     }
 
     public class O2UseCheck {
-        public readonly float originalValue;
-        public readonly int depthClass;
-        public readonly Player player;
+        public readonly float OriginalValue;
+        public readonly int DepthClass;
+        public readonly Player Player;
 
-        public float value;
+        public float Value;
 
         internal O2UseCheck(float orig, Player ep, int depth) {
-            originalValue = orig;
-            value = orig;
-            player = ep;
-            depthClass = depth;
+            OriginalValue = orig;
+            Value = orig;
+            Player = ep;
+            DepthClass = depth;
         }
     }
     /*
@@ -490,263 +491,261 @@ public static class DIHooks {
     }*/
 
     public class EquipmentTypeCheck {
-        public readonly EquipmentType originalValue;
-        public readonly TechType item;
+        public readonly EquipmentType OriginalValue;
+        public readonly TechType Item;
 
-        public EquipmentType type;
+        public EquipmentType Type;
 
         internal EquipmentTypeCheck(TechType pp, EquipmentType orig) {
-            originalValue = orig;
-            type = orig;
-            item = pp;
+            OriginalValue = orig;
+            Type = orig;
+            Item = pp;
         }
     }
 
     public class StoryHandCheck {
-        public readonly Story.StoryGoal originalValue;
-        public readonly StoryHandTarget component;
+        public readonly StoryGoal OriginalValue;
+        public readonly StoryHandTarget Component;
 
-        public bool usable = true;
-        public Story.StoryGoal goal;
+        public bool Usable = true;
+        public StoryGoal Goal;
 
-        internal StoryHandCheck(Story.StoryGoal orig, StoryHandTarget tgt) {
-            originalValue = orig;
-            goal = orig;
-            component = tgt;
+        internal StoryHandCheck(StoryGoal orig, StoryHandTarget tgt) {
+            OriginalValue = orig;
+            Goal = orig;
+            Component = tgt;
         }
     }
 
     public class RadiationCheck {
-        public readonly Vector3 position;
-        public readonly float originalValue;
+        public readonly Vector3 Position;
+        public readonly float OriginalValue;
         //0-1
 
-        public float value;
+        public float Value;
 
         internal RadiationCheck(Vector3 pos, float orig) {
-            originalValue = orig;
-            value = orig;
-            position = pos;
+            OriginalValue = orig;
+            Value = orig;
+            Position = pos;
         }
     }
 
     public class PropulsibilityCheck {
-        public readonly GameObject obj;
-        public readonly float originalValue;
-        public readonly MonoBehaviour gunComponent;
-        public readonly bool isMass;
+        public readonly GameObject Obj;
+        public readonly float OriginalValue;
+        public readonly MonoBehaviour GunComponent;
+        public readonly bool IsMass;
 
-        public float value;
+        public float Value;
 
         internal PropulsibilityCheck(GameObject go, float orig, MonoBehaviour gun, bool mass) {
-            originalValue = orig;
-            value = orig;
-            obj = go;
-            isMass = mass;
-            gunComponent = gun;
+            OriginalValue = orig;
+            Value = orig;
+            Obj = go;
+            IsMass = mass;
+            GunComponent = gun;
         }
     }
 
     public class SolarEfficiencyCheck {
-        public readonly SolarPanel panel;
-        public readonly float originalValue;
+        public readonly SolarPanel Panel;
+        public readonly float OriginalValue;
 
-        public float value;
+        public float Value;
 
         internal SolarEfficiencyCheck(SolarPanel pos, float orig) {
-            originalValue = orig;
-            value = orig;
-            panel = pos;
+            OriginalValue = orig;
+            Value = orig;
+            Panel = pos;
         }
     }
 
     public class BulkheadLaserCutterHoverCheck {
-        public readonly Sealed obj;
+        public readonly Sealed Obj;
 
-        public string refusalLocaleKey = null;
+        public string RefusalLocaleKey = null;
 
         internal BulkheadLaserCutterHoverCheck(Sealed s) {
-            obj = s;
+            Obj = s;
         }
     }
 
     public class DepthCompassCheck {
-        public readonly int originalValue;
-        public readonly int originalCrushValue;
+        public readonly int OriginalValue;
+        public readonly int OriginalCrushValue;
 
-        public int value;
-        public int crushValue;
+        public int Value;
+        public int CrushValue;
 
         internal DepthCompassCheck(int orig, int crush) {
-            originalValue = orig;
-            value = orig;
+            OriginalValue = orig;
+            Value = orig;
 
-            originalCrushValue = crush;
-            crushValue = crush;
+            OriginalCrushValue = crush;
+            CrushValue = crush;
         }
     }
 
     public class DroppabilityCheck {
-        public readonly Pickupable item;
-        public readonly bool notify;
-        public readonly bool defaultAllow;
+        public readonly Pickupable Item;
+        public readonly bool Notify;
+        public readonly bool DefaultAllow;
 
-        public bool allow;
-        public string error = null;
+        public bool Allow;
+        public string Error = null;
 
         internal DroppabilityCheck(Pickupable pp, bool n, bool a) {
-            item = pp;
-            notify = n;
-            defaultAllow = a;
-            allow = defaultAllow;
+            Item = pp;
+            Notify = n;
+            DefaultAllow = a;
+            Allow = DefaultAllow;
         }
     }
 
     public class ModuleFireCostCheck {
-        public readonly TechType module;
-        public readonly Vehicle vehicle;
-        public readonly float originalValue;
+        public readonly TechType Module;
+        public readonly Vehicle Vehicle;
+        public readonly float OriginalValue;
 
-        public float value;
+        public float Value;
 
         internal ModuleFireCostCheck(Vehicle v, TechType item, float orig) {
-            originalValue = orig;
-            value = orig;
-            module = item;
-            vehicle = v;
+            OriginalValue = orig;
+            Value = orig;
+            Module = item;
+            Vehicle = v;
         }
     }
 
     public class StasisEffectCheck {
-        public readonly StasisSphere sphere;
-        public readonly Rigidbody body;
+        public readonly StasisSphere Sphere;
+        public readonly Rigidbody Body;
 
-        public bool applyKinematicChange = true;
-        public bool addToTargetList = true;
-        public bool sendMessage = true;
-        public bool doFX = true;
+        public bool ApplyKinematicChange = true;
+        public bool AddToTargetList = true;
+        public bool SendMessage = true;
+        public bool DoFX = true;
 
         internal StasisEffectCheck(StasisSphere s, Rigidbody b) {
-            sphere = s;
-            body = b;
+            Sphere = s;
+            Body = b;
         }
     }
 
     public class RedundantScanEvent {
-        public bool preventNormalDrop = false;
+        public bool PreventNormalDrop = false;
     }
 
     public class CreatureSeeObjectCheck {
-        public readonly Creature creature;
-        public readonly GameObject target;
-        public readonly bool defaultValue;
-        public readonly float atDistance;
+        public readonly Creature Creature;
+        public readonly GameObject Target;
+        public readonly bool DefaultValue;
+        public readonly float AtDistance;
 
-        public bool canSee;
+        public bool CanSee;
 
         internal CreatureSeeObjectCheck(Creature c, GameObject tgt, bool def, float dist) {
-            creature = c;
-            target = tgt;
-            defaultValue = def;
-            atDistance = dist;
-            canSee = def;
+            Creature = c;
+            Target = tgt;
+            DefaultValue = def;
+            AtDistance = dist;
+            CanSee = def;
         }
     }
 
     public class AggressiveToPilotingVehicleCheck {
-        public readonly AggressiveToPilotingVehicle ai;
-        public readonly Vehicle vehicle;
-        public readonly bool defaultVisiblity;
+        public readonly AggressiveToPilotingVehicle AI;
+        public readonly Vehicle Vehicle;
+        public readonly bool DefaultVisiblity;
 
-        public bool canTarget;
+        public bool CanTarget;
 
         internal AggressiveToPilotingVehicleCheck(AggressiveToPilotingVehicle ai, Vehicle v, bool def) {
-            this.ai = ai;
-            vehicle = v;
-            defaultVisiblity = def;
-            canTarget = def;
+            AI = ai;
+            Vehicle = v;
+            DefaultVisiblity = def;
+            CanTarget = def;
         }
     }
 
     public class WaterFilterSpawn {
-        public readonly FiltrationMachine filter;
-        public readonly Pickupable defaultItem;
+        public readonly FiltrationMachine Filter;
+        public readonly Pickupable DefaultItem;
 
-        public Pickupable item;
+        public Pickupable Item;
 
         internal WaterFilterSpawn(FiltrationMachine fm, Pickupable pp) {
-            filter = fm;
-            defaultItem = pp;
-            item = defaultItem;
+            Filter = fm;
+            DefaultItem = pp;
+            Item = DefaultItem;
         }
     }
 
     public class BaseStrengthCalculation {
-        public readonly BaseHullStrength component;
+        public readonly BaseHullStrength Component;
 
         private readonly Dictionary<Int3, float>
-            cellContributions = new Dictionary<Int3, float>(); //can use Base.GetCellObject to get the BaseCell
+            _cellContributions = new(); //can use Base.GetCellObject to get the BaseCell
 
-        private readonly Dictionary<GameObject, float> bonusStrength = new Dictionary<GameObject, float>();
-        public float dynamicStrength { get; private set; }
+        private readonly Dictionary<GameObject, float> _bonusStrength = new();
+        public float DynamicStrength { get; private set; }
 
-        public float initialStrength = 10;
+        public float InitialStrength = 10;
 
-        public float finalStrength {
-            get { return initialStrength + dynamicStrength; }
-        }
+        public float FinalStrength => InitialStrength + DynamicStrength;
 
         internal BaseStrengthCalculation(BaseHullStrength b) {
-            component = b;
+            Component = b;
         }
 
-        public void computeCellStrength(Int3 cell) {
-            float amt = component.baseComp.GetHullStrength(cell);
-            cellContributions[cell] = amt;
-            dynamicStrength += amt;
+        public void ComputeCellStrength(Int3 cell) {
+            var amt = Component.baseComp.GetHullStrength(cell);
+            _cellContributions[cell] = amt;
+            DynamicStrength += amt;
         }
 
-        public void addBonusStrength(GameObject c, float amt) {
-            bonusStrength[c] = amt;
-            dynamicStrength += amt;
+        public void AddBonusStrength(GameObject c, float amt) {
+            _bonusStrength[c] = amt;
+            DynamicStrength += amt;
         }
 
-        public float getStrength(Int3 cell) {
-            return cellContributions.ContainsKey(cell) ? cellContributions[cell] : 0;
+        public float GetStrength(Int3 cell) {
+            return _cellContributions.TryGetValue(cell, out var contribution) ? contribution : 0;
         }
     }
 
     public class CraftTimeCalculation {
-        public readonly float originalDuration;
-        public readonly Crafter crafter;
-        public readonly TechType recipe;
+        public readonly float OriginalDuration;
+        public readonly Crafter Crafter;
+        public readonly TechType Recipe;
 
-        public float craftingDuration;
+        public float CraftingDuration;
 
         internal CraftTimeCalculation(float amt, Crafter c, TechType tt) {
-            originalDuration = amt;
-            craftingDuration = originalDuration;
-            recipe = tt;
-            crafter = c;
+            OriginalDuration = amt;
+            CraftingDuration = OriginalDuration;
+            Recipe = tt;
+            Crafter = c;
         }
     }
 
     public class TargetabilityCheck {
-        public readonly bool originalValue;
-        public readonly Transform transform;
-        public readonly PrefabIdentifier prefab;
+        public readonly bool OriginalValue;
+        public readonly Transform Transform;
+        public readonly PrefabIdentifier Prefab;
 
-        public bool allowTargeting;
+        public bool AllowTargeting;
 
         internal TargetabilityCheck(bool orig, Transform obj, PrefabIdentifier pi) {
-            originalValue = orig;
-            transform = obj;
-            allowTargeting = orig;
-            prefab = pi;
+            OriginalValue = orig;
+            Transform = obj;
+            AllowTargeting = orig;
+            Prefab = pi;
         }
     }
 
-    public static void onTick(DayNightCycle cyc) {
+    public static void OnTick(DayNightCycle cyc) {
         if (BuildingHandler.instance.isEnabled) {
             if (GameInput.GetButtonDown(GameInput.Button.LeftHand)) {
                 BuildingHandler.instance.handleClick(Input.GetKeyDown(KeyCode.LeftControl));
@@ -767,22 +766,21 @@ public static class DIHooks {
 
         CustomBiome.tickMusic(cyc);
 
-        if (getWorldAge() > 0.25F) {
+        if (GetWorldAge() > 0.25F) {
             SaveSystem.populateLoad();
         }
 
-        if (onDayNightTickEvent != null)
-            onDayNightTickEvent.Invoke(cyc);
+        OnDayNightTickEvent?.Invoke(cyc);
     }
 
-    public static void onMainMenuLoaded() {
-        worldLoadTime = -1;
+    public static void OnMainMenuLoaded() {
+        _worldLoadTime = -1;
     }
 
-    public static void onWorldLoaded() {
-        bool warnRestart = hasLoadedAWorld;
-        hasLoadedAWorld = true;
-        worldLoadTime = Time.time;
+    public static void OnWorldLoaded() {
+        var warnRestart = _hasLoadedAWorld;
+        _hasLoadedAWorld = true;
+        _worldLoadTime = Time.time;
         SNUtil.log("Intercepted world load", SNUtil.diDLL);
         DuplicateRecipeDelegate.updateLocale();
         CustomEgg.updateLocale();
@@ -792,10 +790,10 @@ public static class DIHooks {
         StoryHandler.instance.onLoad();
         CustomLocaleKeyDatabase.onLoad();
 
-        foreach (CustomBiome cb in BiomeBase.getCustomBiomes())
+        foreach (var cb in BiomeBase.GetCustomBiomes())
             cb.onLoad();
 
-        foreach (KeyValuePair<TechType, ProgressionTrigger> kvp in RecipeUtil.techsToRemoveIf) {
+        foreach (var kvp in RecipeUtil.techsToRemoveIf) {
             if (!kvp.Value.isReady(Player.main))
                 KnownTech.Remove(kvp.Key);
         }
@@ -817,15 +815,15 @@ public static class DIHooks {
 
         //SaveSystem.populateLoad();
 
-        List<ModVersionCheck> vers = ModVersionCheck.getOutdatedVersions();
-        updateNotice.SetLocation(0, 250);
-        updateNotice.SetSize(24);
-        updateNotice.SetColor(Color.yellow);
-        List<string> li = new List<string>();
-        outdatedMods = vers.Count > 0;
-        if (outdatedMods) {
+        var vers = ModVersionCheck.getOutdatedVersions();
+        _updateNotice.SetLocation(0, 250);
+        _updateNotice.SetSize(24);
+        _updateNotice.SetColor(Color.yellow);
+        List<string> li = [];
+        _outdatedMods = vers.Count > 0;
+        if (_outdatedMods) {
             li.Add("Your versions of the following mods are out of date:");
-            foreach (ModVersionCheck mv in vers) {
+            foreach (var mv in vers) {
                 li.Add(
                     mv.modName + ": Current version " + mv.currentVersion + ", newest version " +
                     mv.remoteVersion.Invoke()
@@ -839,7 +837,7 @@ public static class DIHooks {
         vers = ModVersionCheck.getErroredVersions();
         if (vers.Count > 0) {
             li.Add("Several mods failed to fetch version information:");
-            foreach (ModVersionCheck mv in vers) {
+            foreach (var mv in vers) {
                 li.Add(
                     mv.modName + ": Installed version " + mv.currentVersion + ", remote version " +
                     mv.remoteVersion.Invoke()
@@ -863,20 +861,19 @@ public static class DIHooks {
                 "You have reloaded a save without exiting the game. This breaks mod loading and will damage your world. Restart your game when changing/reloading saves.\nExit the game now, and DO NOT SAVE before doing so."
             );
         if (li.Count > 0)
-            updateNotice.ShowMessage(string.Join("\n", li));
+            _updateNotice.ShowMessage(string.Join("\n", li));
         else
-            updateNotice.Hide();
+            _updateNotice.Hide();
 
-        if (onWorldLoadedEvent != null)
-            onWorldLoadedEvent.Invoke();
+        OnWorldLoadedEvent?.Invoke();
     }
 
-    public static void setWarningText(params string[] s) {
-        setWarningText(s.AsEnumerable());
+    public static void SetWarningText(params string[] s) {
+        SetWarningText(s.AsEnumerable());
     }
 
-    public static void setWarningText(IEnumerable<string> li) {
-        updateNotice.ShowMessage(string.Join("\n", li));
+    public static void SetWarningText(IEnumerable<string> li) {
+        _updateNotice.ShowMessage(string.Join("\n", li));
     }
     /*
     internal static void autoUpdate() { //TODO move to own class, and make msg prep and call its own method
@@ -919,175 +916,170 @@ public static class DIHooks {
         //https://github.com/ReikaKalseki/Reika_SubnauticaModsShared/releases/download/Downloads/Dragon_Industries_-_Alterra_Division.zip
     }*/
 
-    internal static void hideVersions() {
-        updateNotice.Hide();
+    internal static void HideVersions() {
+        _updateNotice.Hide();
     }
 
-    public static float getWorldAge() {
-        return worldLoadTime < 0 ? -1 : Time.time - worldLoadTime;
+    public static float GetWorldAge() {
+        return _worldLoadTime < 0 ? -1 : Time.time - _worldLoadTime;
     }
 
-    public static bool isWorldLoaded() {
-        return worldLoadTime > 0;
+    public static bool IsWorldLoaded() {
+        return _worldLoadTime > 0;
     }
 
-    public static bool hasWorldLoadStarted() {
-        return hasLoadedAWorld;
+    public static bool HasWorldLoadStarted() {
+        return _hasLoadedAWorld;
     }
 
-    public static void tickPlayer(Player ep) {
-        CustomBiome b = BiomeBase.getBiome(Camera.main.transform.position) as CustomBiome;
-        if (currentCustomBiome != b)
-            recomputeFog();
-        currentCustomBiome = b;
+    public static void TickPlayer(Player ep) {
+        if (Camera.main != null) {
+            var b = BiomeBase.GetBiome(Camera.main.transform.position) as CustomBiome;
+            if (_currentCustomBiome != b)
+                RecomputeFog();
+            _currentCustomBiome = b;
+        }
+
         if (Time.timeScale <= 0)
             return;
-        updateNotice.SetColor(Color.yellow);
+        _updateNotice.SetColor(Color.yellow);
 
         SpawnedItemTracker.instance.tick();
 
-        if (collectedItemsToDestroy.Count > 0) {
-            foreach (Pickupable pp in collectedItemsToDestroy) {
-                if (!pp)
-                    continue;
+        if (CollectedItemsToDestroy.Count > 0) {
+            foreach (var pp in CollectedItemsToDestroy.Where(pp => pp)) {
                 Inventory.main.container.RemoveItem(pp, true);
                 pp.gameObject.destroy(false);
             }
 
-            collectedItemsToDestroy.Clear();
+            CollectedItemsToDestroy.Clear();
         }
 
         StoryHandler.instance.tick(ep);
         ScreenFXManager.instance.tick();
 
-        if (onPlayerTickEvent != null) {
+        if (OnPlayerTickEvent != null) {
             try {
-                onPlayerTickEvent.Invoke(ep);
+                OnPlayerTickEvent.Invoke(ep);
             } catch (Exception ex) {
                 SNUtil.writeToChat("Threw exception running player tick hooks: " + ex);
             }
         }
     }
 
-    public static void tickSeamoth(SeaMoth sm) {
+    public static void TickSeamoth(SeaMoth sm) {
         if (Time.timeScale <= 0)
             return;
 
-        if (onSeamothTickEvent != null)
-            onSeamothTickEvent.Invoke(sm);
+        OnSeamothTickEvent?.Invoke(sm);
     }
 
-    public static void tickPrawn(Exosuit sm) {
+    public static void TickPrawn(Exosuit sm) {
         if (Time.timeScale <= 0)
             return;
 
-        if (onPrawnTickEvent != null)
-            onPrawnTickEvent.Invoke(sm);
+        OnPrawnTickEvent?.Invoke(sm);
     }
 
-    public static void tickSub(SubRoot sub) {
+    public static void TickSub(SubRoot sub) {
         if (Time.timeScale <= 0)
             return;
 
-        if (sub.isCyclops && onCyclopsTickEvent != null)
-            onCyclopsTickEvent.Invoke(sub);
-        else if (sub.isBase && onBaseTickEvent != null)
-            onBaseTickEvent.Invoke(sub as BaseRoot);
+        if (sub.isCyclops && OnCyclopsTickEvent != null)
+            OnCyclopsTickEvent.Invoke(sub);
+        else if (sub.isBase && OnBaseTickEvent != null)
+            OnBaseTickEvent.Invoke(sub as BaseRoot);
     }
 
-    public static float getWaterTemperature(float ret, WaterTemperatureSimulation sim, Vector3 pos) {
-        if (getTemperatureEvent != null) {
-            WaterTemperatureCalculation calc = new WaterTemperatureCalculation(ret, sim, pos);
-            getTemperatureEvent.Invoke(calc);
-            return calc.temperature;
+    public static float GetWaterTemperature(float ret, WaterTemperatureSimulation sim, Vector3 pos) {
+        if (GetTemperatureEvent != null) {
+            var calc = new WaterTemperatureCalculation(ret, sim, pos);
+            GetTemperatureEvent.Invoke(calc);
+            return calc.Temperature;
         } else {
             return ret;
         }
     }
 
-    public static int damageDebugLevel = 0;
+    public static int DamageDebugLevel = 0;
 
-    public static float recalculateDamage(float damage, DamageType type, GameObject target, GameObject dealer) {
+    public static float RecalculateDamage(float damage, DamageType type, GameObject target, GameObject dealer) {
         if (DIMod.config.getBoolean(DIConfig.ConfigEntries.INFITUBE) && target.isCoralTube())
             return Mathf.Min(damage, target.FindAncestor<LiveMixin>().health - 1);
         //if (target.isPlayer()) {
-        HealthModifier hm = target.GetComponent<HealthModifier>();
+        var hm = target.GetComponent<HealthModifier>();
         if (hm)
             damage *= hm.damageFactor;
         //}
-        PrefabIdentifier pi = target.GetComponent<PrefabIdentifier>();
+        var pi = target.GetComponent<PrefabIdentifier>();
         if (pi && pi.ClassId == CustomEgg.getEgg(TechType.SpineEel).Info.ClassID &&
             (type == DamageType.Acid || type == DamageType.Poison))
             return 0;
-        if (onDamageEvent != null) {
-            DamageToDeal deal = new DamageToDeal(damage, type, target, dealer);
-            onDamageEvent.Invoke(deal);
-            if (damageDebugLevel > 1 ||
-                (damageDebugLevel == 1 && !Mathf.Approximately(deal.originalAmount, deal.amount)))
+        if (OnDamageEvent != null) {
+            var deal = new DamageToDeal(damage, type, target, dealer);
+            OnDamageEvent.Invoke(deal);
+            if (DamageDebugLevel > 1 ||
+                (DamageDebugLevel == 1 && !Mathf.Approximately(deal.OriginalAmount, deal.Amount)))
                 SNUtil.writeToChat(
-                    "Adjusting damage type " + type + " yield from " + deal.originalAmount + " to " + deal.amount
+                    "Adjusting damage type " + type + " yield from " + deal.OriginalAmount + " to " + deal.Amount
                 );
-            return deal.amount;
+            return deal.Amount;
         } else {
-            if (damageDebugLevel > 2)
+            if (DamageDebugLevel > 2)
                 SNUtil.writeToChat("Applying unchanged damage amount " + damage);
             return damage;
         }
     }
 
-    public static string getBiomeAt(string orig, Vector3 pos) {
-        if (getBiomeEvent != null) {
-            BiomeCheck deal = new BiomeCheck(orig, pos);
-            getBiomeEvent.Invoke(deal);
-            return deal.biome;
+    public static string GetBiomeAt(string orig, Vector3 pos) {
+        if (GetBiomeEvent != null) {
+            var deal = new BiomeCheck(orig, pos);
+            GetBiomeEvent.Invoke(deal);
+            return deal.Biome;
         } else {
             return orig;
         }
     }
 
-    public static void doKnifeHarvest(Knife caller, GameObject target, bool isAlive, bool wasAlive) {
-        TechType tt = CraftData.GetTechType(target);
+    public static void DoKnifeHarvest(Knife caller, GameObject target, bool isAlive, bool wasAlive) {
+        var tt = CraftData.GetTechType(target);
         if (tt == TechType.Creepvine)
             GoalManager.main.OnCustomGoalEvent("Cut_Creepvine");
         if (tt == TechType.BigCoralTubes && DIMod.config.getBoolean(DIConfig.ConfigEntries.INFITUBE) &&
             target.FindAncestor<LiveMixin>().health <= 2)
             wasAlive = false;
-        KnifeHarvest harv = new KnifeHarvest(target, tt, isAlive, wasAlive);
-        if (knifeHarvestEvent != null) {
-            knifeHarvestEvent.Invoke(harv);
-        }
+        var harv = new KnifeHarvest(target, tt, isAlive, wasAlive);
+        KnifeHarvestEvent?.Invoke(harv);
 
-        isKnifeHarvesting = true;
-        foreach (KeyValuePair<TechType, int> kvp in harv.drops)
+        _isKnifeHarvesting = true;
+        foreach (var kvp in harv.Drops)
             CraftData.AddToInventory(kvp.Key, kvp.Value, false, false);
-        isKnifeHarvesting = false;
+        _isKnifeHarvesting = false;
     }
 
-    public static void fireKnifeHarvest(GameObject target, Dictionary<TechType, int> drops) {
-        KnifeHarvest harv = new KnifeHarvest(target, CraftData.GetTechType(target), false, false);
-        harv.drops.Clear();
-        drops.ForEach(kvp => harv.drops[kvp.Key] = kvp.Value);
-        if (knifeHarvestEvent != null) {
-            knifeHarvestEvent.Invoke(harv);
-        }
+    public static void FireKnifeHarvest(GameObject target, Dictionary<TechType, int> drops) {
+        var harv = new KnifeHarvest(target, CraftData.GetTechType(target), false, false);
+        harv.Drops.Clear();
+        drops.ForEach(kvp => harv.Drops[kvp.Key] = kvp.Value);
+        KnifeHarvestEvent?.Invoke(harv);
 
-        foreach (KeyValuePair<TechType, int> kvp in harv.drops)
+        foreach (var kvp in harv.Drops)
             CraftData.AddToInventory(kvp.Key, kvp.Value, false, false);
     }
 
-    public static void onPrawnItemPickedUp(Pickupable pp) {
+    public static void OnPrawnItemPickedUp(Pickupable pp) {
         if (pp)
-            onItemPickedUp(pp, Player.main.GetVehicle() as Exosuit);
+            OnItemPickedUp(pp, Player.main.GetVehicle() as Exosuit);
     }
 
-    public static void onItemPickedUp(Pickupable p) {
-        onItemPickedUp(p, null);
+    public static void OnItemPickedUp(Pickupable p) {
+        OnItemPickedUp(p, null);
     }
 
-    public static void onItemPickedUp(Pickupable p, Exosuit prawn) {
-        List<Pickupable> collected = new List<Pickupable>() { p };
-        TechType tt = p.GetTechType();
-        PickedUpAsOtherItem mapTo = PickedUpAsOtherItem.getPickedUpAsOther(tt);
+    public static void OnItemPickedUp(Pickupable p, Exosuit prawn) {
+        List<Pickupable> collected = [p];
+        var tt = p.GetTechType();
+        var mapTo = PickedUpAsOtherItem.getPickedUpAsOther(tt);
         //SNUtil.writeToChat("Pickup "+tt+" >> "+mapTo);
         if (mapTo != null) {
             if (prawn)
@@ -1096,12 +1088,12 @@ public static class DIHooks {
                 Inventory.main.container.DestroyItem(tt);
 
             p.gameObject.destroy(false); //not immediate because prawn is animation
-            TechType tt2 = mapTo.getTemplate();
-            int n = mapTo.getNumberCollectedAs();
+            var tt2 = mapTo.getTemplate();
+            var n = mapTo.getNumberCollectedAs();
             SNUtil.log("Converting pickup '" + p + "' to '" + tt2 + "' x" + n, SNUtil.diDLL);
             collected.Clear();
-            for (int i = 0; i < n; i++) {
-                GameObject go = ObjectUtil.createWorldObject(tt2, true, false);
+            for (var i = 0; i < n; i++) {
+                var go = ObjectUtil.createWorldObject(tt2, true, false);
                 p = go.GetComponent<Pickupable>();
                 if (prawn)
                     prawn.storageContainer.container.UnsafeAdd(new InventoryItem(p));
@@ -1115,13 +1107,13 @@ public static class DIHooks {
         }
 
         if (tt == TechType.None) {
-            TechTag tag = p.gameObject.GetComponent<TechTag>();
+            var tag = p.gameObject.GetComponent<TechTag>();
             if (tag)
                 tt = tag.type;
         }
 
         if (tt == TechType.None) {
-            PrefabIdentifier pi = p.gameObject.GetComponent<PrefabIdentifier>();
+            var pi = p.gameObject.GetComponent<PrefabIdentifier>();
             if (pi)
                 tt = CraftData.entClassTechTable[pi.ClassId];
         }
@@ -1138,16 +1130,16 @@ public static class DIHooks {
             }
         }
         */
-        GenUtil.CrateManagement cc = WorldUtil.getClosest<GenUtil.CrateManagement>(p.gameObject);
+        var cc = WorldUtil.getClosest<GenUtil.CrateManagement>(p.gameObject);
         if (cc && Vector3.Distance(p.transform.position, cc.transform.position) < 1.5F)
             cc.onPickup(p);
 
-        if (onItemPickedUpEvent != null) {
-            foreach (Pickupable pp in collected) {
-                ItemPickup ip = new ItemPickup(pp, prawn, isKnifeHarvesting);
-                onItemPickedUpEvent.Invoke(ip);
-                if (ip.destroy)
-                    collectedItemsToDestroy
+        if (OnItemPickedUpEvent != null) {
+            foreach (var pp in collected) {
+                var ip = new ItemPickup(pp, prawn, _isKnifeHarvesting);
+                OnItemPickedUpEvent.Invoke(ip);
+                if (ip.Destroy)
+                    CollectedItemsToDestroy
                         .Add(
                             pp
                         ); //need to delegate until later because this is called before it is actually added to the inv
@@ -1155,13 +1147,13 @@ public static class DIHooks {
         }
     }
 
-    public static bool canPlayerBreathe(bool orig, Player p) {
+    public static bool CanPlayerBreathe(bool orig, Player p) {
         if (p.GetComponent<TemporaryBreathPrevention>())
             return false;
-        if (breathabilityEvent != null) {
-            BreathabilityCheck deal = new BreathabilityCheck(orig, p);
-            breathabilityEvent.Invoke(deal);
-            return deal.breathable;
+        if (BreathabilityEvent != null) {
+            var deal = new BreathabilityCheck(orig, p);
+            BreathabilityEvent.Invoke(deal);
+            return deal.Breathable;
         }
 
         return orig;
@@ -1178,9 +1170,9 @@ public static class DIHooks {
         return EnvironmentalDamageSystem.instance.getPlayerO2Use(ep, breathingInterval, depthClass);
     }
 */
-    public static void onEntityRegister(CellManager cm, LargeWorldEntity lw) {
-        if (worldLoadTime < 0) {
-            onWorldLoaded();
+    public static void OnEntityRegister(CellManager cm, LargeWorldEntity lw) {
+        if (_worldLoadTime < 0) {
+            OnWorldLoaded();
         } /*
         if (lw.cellLevel != LargeWorldEntity.CellLevel.Global) {
             BatchCells batchCells;
@@ -1207,20 +1199,19 @@ public static class DIHooks {
             }
         }*/
 
-        if (onEntityRegisterEvent != null)
-            onEntityRegisterEvent.Invoke(cm, lw);
+        OnEntityRegisterEvent?.Invoke(cm, lw);
     }
 
-    public static void onPopup(uGUI_PopupNotification gui) { /*
+    public static void OnPopup(uGUI_PopupNotification gui) { /*
         System.Diagnostics.StackTrace t = new System.Diagnostics.StackTrace();
         t.ToString();*/
         //SNUtil.log("TRIGGER POPUP UNLOCK "+System.Environment.StackTrace, SNUtil.diDLL);
     }
 
-    public static void onFarmedPlantGrowingSpawn(Plantable p, GameObject plant) {
-        TechTag tt = p.gameObject.GetComponent<TechTag>();
+    public static void OnFarmedPlantGrowingSpawn(Plantable p, GameObject plant) {
+        var tt = p.gameObject.GetComponent<TechTag>();
         if (tt) {
-            BasicCustomPlant plantType = BasicCustomPlant.getPlant(tt.type);
+            var plantType = BasicCustomPlant.getPlant(tt.type);
             //SNUtil.writeToChat("Planted "+tt+" > "+plantType);
             if (plantType != null) {
                 //SNUtil.writeToChat(plant.GetComponentsInChildren<Renderer>(true).Length+" Renderers");
@@ -1231,10 +1222,10 @@ public static class DIHooks {
         }
     }
 
-    public static void onFarmedPlantGrowDone(GrowingPlant p, GameObject plant) {
-        TechTag tt = p.gameObject.GetComponent<TechTag>();
+    public static void OnFarmedPlantGrowDone(GrowingPlant p, GameObject plant) {
+        var tt = p.gameObject.GetComponent<TechTag>();
         if (tt) {
-            BasicCustomPlant plantType = BasicCustomPlant.getPlant(tt.type);
+            var plantType = BasicCustomPlant.getPlant(tt.type);
             //SNUtil.writeToChat("Grew "+tt+" > "+plantType);
             if (plantType != null) {
                 ObjectUtil.convertTemplateObject(plant, plantType);
@@ -1242,12 +1233,12 @@ public static class DIHooks {
         }
     }
 
-    public static void onDockingBaySpawn(VehicleDockingBay b) {
+    public static void OnDockingBaySpawn(VehicleDockingBay b) {
         b.gameObject.EnsureComponent<DockLock>();
     }
 
-    public static void onSkyApplierSpawn(SkyApplier pk) {
-        PrefabIdentifier pi = pk.GetComponent<PrefabIdentifier>(); /*
+    public static void OnSkyApplierSpawn(SkyApplier pk) {
+        var pi = pk.GetComponent<PrefabIdentifier>(); /*
         if (pi) {
             foreach (Collider c in pi.GetComponentsInChildren<Collider>())
                 c.gameObject.EnsureComponent<ColliderPrefabLink>().init(pi);
@@ -1256,33 +1247,36 @@ public static class DIHooks {
             pk.gameObject.EnsureComponent<AoERadiationTracker>();
         if (pk.GetComponent<Vehicle>()) {
             pk.gameObject.EnsureComponent<FixedBounds>()._bounds = new Bounds(Vector3.zero, Vector3.one * 5);
-            GameObject go = pk.gameObject.getChildObject("LavaWarningTrigger");
+            var go = pk.gameObject.getChildObject("LavaWarningTrigger");
             if (!go) {
-                go = new GameObject("LavaWarningTrigger");
-                go.transform.localPosition = Vector3.zero;
-                go.transform.localRotation = Quaternion.identity;
+                go = new GameObject("LavaWarningTrigger") {
+                    transform = {
+                        localPosition = Vector3.zero,
+                        localRotation = Quaternion.identity,
+                    },
+                };
                 go.transform.SetParent(pk.transform);
             }
 
-            SphereCollider sp = go.EnsureComponent<SphereCollider>();
+            var sp = go.EnsureComponent<SphereCollider>();
             sp.center = Vector3.zero;
-            sp.radius = NEAR_LAVA_RADIUS;
+            sp.radius = NearLavaRadius;
             sp.isTrigger = true;
             go.EnsureComponent<LavaWarningTriggerDetector>();
         }
 
-        FruitPlant fp = pk.GetComponent<FruitPlant>();
+        var fp = pk.GetComponent<FruitPlant>();
         if (fp) {
-            fp.gameObject.EnsureComponent<FruitPlantTag>().setPlant(fp);
+            fp.gameObject.EnsureComponent<FruitPlantTag>().SetPlant(fp);
         }
 
         if (pi && pi.ClassId == "bb16d2bf-bc85-4bfa-a90e-ddc7343b0ac2") {
             WreckDoorSwaps.setupRepairableDoor(pk.gameObject);
         }
 
-        if (onSkyApplierSpawnEvent != null) {
+        if (OnSkyApplierSpawnEvent != null) {
             try {
-                onSkyApplierSpawnEvent.Invoke(pk);
+                OnSkyApplierSpawnEvent.Invoke(pk);
             } catch (Exception ex) {
                 SNUtil.log(
                     "Threw error when processing SkyApplier spawn of " + pk.gameObject.GetFullHierarchyPath() + ": " +
@@ -1295,171 +1289,171 @@ public static class DIHooks {
     //private static bool needsLavaDump = true;
 
     public class FruitPlantTag : MonoBehaviour {
-        private FruitPlant plant;
-        private float baseGrowthTime;
+        private FruitPlant _plant;
+        private float _baseGrowthTime;
 
-        private float lastTickTime = -1;
+        private float _lastTickTime = -1;
 
-        internal void setPlant(FruitPlant fp) {
-            plant = fp;
-            baseGrowthTime = fp.fruitSpawnInterval;
+        internal void SetPlant(FruitPlant fp) {
+            _plant = fp;
+            _baseGrowthTime = fp.fruitSpawnInterval;
         }
 
-        public FruitPlant getPlant() {
-            return plant;
+        public FruitPlant GetPlant() {
+            return _plant;
         }
 
-        public float getBaseGrowthTime() {
-            return baseGrowthTime;
+        public float GetBaseGrowthTime() {
+            return _baseGrowthTime;
         }
 
-        void Update() {
-            if (onFruitPlantTickEvent != null) {
-                float time = DayNightCycle.main.timePassedAsFloat;
-                if (time - lastTickTime >= 0.5F) {
-                    lastTickTime = time;
-                    onFruitPlantTickEvent.Invoke(this);
+        private void Update() {
+            if (OnFruitPlantTickEvent != null) {
+                var time = DayNightCycle.main.timePassedAsFloat;
+                if (time - _lastTickTime >= 0.5F) {
+                    _lastTickTime = time;
+                    OnFruitPlantTickEvent.Invoke(this);
                 }
             }
         }
     }
 
     public class DockLock : MonoBehaviour {
-        private VehicleDockingBay bay;
+        private VehicleDockingBay _bay;
 
-        private float lastTime;
+        private float _lastTime;
 
         public void Update() {
-            if (!bay)
-                bay = this.GetComponent<VehicleDockingBay>();
+            if (!_bay)
+                _bay = GetComponent<VehicleDockingBay>();
 
-            if (bay.dockedVehicle && DayNightCycle.main.timePassedAsFloat - lastTime >= 0.5F &&
-                !bay.dockedVehicle.GetComponentInParent<SubRoot>()) {
-                bay.DockVehicle(bay.dockedVehicle, false);
+            if (_bay.dockedVehicle && DayNightCycle.main.timePassedAsFloat - _lastTime >= 0.5F &&
+                !_bay.dockedVehicle.GetComponentInParent<SubRoot>()) {
+                _bay.DockVehicle(_bay.dockedVehicle, false);
                 SNUtil.writeToChat(
-                    "Re-binding vehicle " + bay.dockedVehicle + " to docking bay " +
-                    bay.gameObject.GetFullHierarchyPath()
+                    "Re-binding vehicle " + _bay.dockedVehicle + " to docking bay " +
+                    _bay.gameObject.GetFullHierarchyPath()
                 );
-                lastTime = DayNightCycle.main.timePassedAsFloat;
+                _lastTime = DayNightCycle.main.timePassedAsFloat;
             }
         }
     }
 
     public class LavaWarningTriggerDetector : IgnoreTrigger {
-        private TemperatureDamage damage;
-        private Vehicle vehicle;
-        private Collider sphere;
+        private TemperatureDamage _damage;
+        private Vehicle _vehicle;
+        private Collider _sphere;
 
-        private float lastLavaTime = -1;
-        private float lastGeyserTime = -1;
+        private float _lastLavaTime = -1;
+        private float _lastGeyserTime = -1;
 
-        private float lastCheckTime = -1;
+        private float _lastCheckTime = -1;
 
-        private static readonly List<Vector3> spherePoints = new List<Vector3>();
-        private static readonly int RAYS_PER_TICK = 10;
-        private static int spherePointIndex = 0;
+        private static readonly List<Vector3> SpherePoints = [];
+        private static readonly int RaysPerTick = 10;
+        private static int _spherePointIndex;
 
-        private float ambientTemperatureMinusLava;
+        private float _ambientTemperatureMinusLava;
 
         static LavaWarningTriggerDetector() {
-            computePoints();
+            ComputePoints();
         }
 
-        private static void computePoints() {
-            float phi = Mathf.PI * (3F - Mathf.Sqrt(5F)); // golden angle in radians
-            for (int i = 0; i < 100; i++) {
-                float y = 1 - (i / (100 - 1F) * 2); // y goes from 1 to -1
-                float radius = Mathf.Sqrt(1 - (y * y)); // radius at y
+        private static void ComputePoints() {
+            var phi = Mathf.PI * (3F - Mathf.Sqrt(5F)); // golden angle in radians
+            for (var i = 0; i < 100; i++) {
+                var y = 1 - i / (100 - 1F) * 2; // y goes from 1 to -1
+                var radius = Mathf.Sqrt(1 - y * y); // radius at y
 
-                float theta = phi * i; // golden angle increment
+                var theta = phi * i; // golden angle increment
 
-                float x = Mathf.Cos(theta) * radius;
-                float z = Mathf.Sin(theta) * radius;
+                var x = Mathf.Cos(theta) * radius;
+                var z = Mathf.Sin(theta) * radius;
 
-                spherePoints.Add(new Vector3(x, y, z));
+                SpherePoints.Add(new Vector3(x, y, z));
             }
 
-            for (int i = 0; i < 150; i++) {
-                float ang = UnityEngine.Random.Range(0F, 360F);
-                float x = Mathf.Cos(Mathf.Deg2Rad * ang) * NEAR_LAVA_RADIUS;
-                float z = Mathf.Sin(Mathf.Deg2Rad * ang) * NEAR_LAVA_RADIUS;
-                spherePoints.Add(new Vector3(x, -UnityEngine.Random.Range(0F, 1F), z));
+            for (var i = 0; i < 150; i++) {
+                var ang = UnityEngine.Random.Range(0F, 360F);
+                var x = Mathf.Cos(Mathf.Deg2Rad * ang) * NearLavaRadius;
+                var z = Mathf.Sin(Mathf.Deg2Rad * ang) * NearLavaRadius;
+                SpherePoints.Add(new Vector3(x, -UnityEngine.Random.Range(0F, 1F), z));
             }
 
-            spherePoints.Shuffle();
+            SpherePoints.Shuffle();
         }
 
-        void Update() {
-            if (!damage)
-                damage = gameObject.FindAncestor<TemperatureDamage>();
-            if (!vehicle)
-                vehicle = gameObject.FindAncestor<Vehicle>();
-            if (!sphere)
-                sphere = gameObject.GetComponent<Collider>();
+        private void Update() {
+            if (!_damage)
+                _damage = gameObject.FindAncestor<TemperatureDamage>();
+            if (!_vehicle)
+                _vehicle = gameObject.FindAncestor<Vehicle>();
+            if (!_sphere)
+                _sphere = gameObject.GetComponent<Collider>();
             gameObject.transform.localPosition = Vector3.zero;
 
-            float time = DayNightCycle.main.timePassedAsFloat;
-            float dT = time - lastCheckTime;
+            var time = DayNightCycle.main.timePassedAsFloat;
+            var dT = time - _lastCheckTime;
             if (dT >= 0.5) {
-                lastCheckTime = time;
-                ambientTemperatureMinusLava = WaterTemperatureSimulation.main.GetTemperature(transform.position);
+                _lastCheckTime = time;
+                _ambientTemperatureMinusLava = WaterTemperatureSimulation.main.GetTemperature(transform.position);
             }
 
-            if (damage && ambientTemperatureMinusLava >= 90)
-                this.checkNearbyLava();
+            if (_damage && _ambientTemperatureMinusLava >= 90)
+                CheckNearbyLava();
         }
 
-        private void checkNearbyLava() {
-            for (int i = spherePointIndex; i < Math.Min(spherePointIndex + RAYS_PER_TICK, spherePoints.Count); i++) {
-                Vector3 vec = spherePoints[i];
-                RaycastHit[] hits = Physics.RaycastAll(
+        private void CheckNearbyLava() {
+            for (var i = _spherePointIndex; i < Math.Min(_spherePointIndex + RaysPerTick, SpherePoints.Count); i++) {
+                var vec = SpherePoints[i];
+                var hits = Physics.RaycastAll(
                     transform.position,
                     vec.normalized,
-                    NEAR_LAVA_RADIUS,
+                    NearLavaRadius,
                     Voxeland.GetTerrainLayerMask()
                 );
                 //SNUtil.writeToChat(vec+" > "+hits.Length);
-                foreach (RaycastHit hit in hits) {
-                    if (hit.transform && this.checkLava(hit.point, Vector3.zero)) {
-                        spherePointIndex = i;
+                foreach (var hit in hits) {
+                    if (hit.transform && CheckLava(hit.point, Vector3.zero)) {
+                        _spherePointIndex = i;
                         return;
                     }
                 }
             }
 
-            spherePointIndex += RAYS_PER_TICK;
-            if (spherePointIndex >= spherePoints.Count)
-                spherePointIndex = 0;
+            _spherePointIndex += RaysPerTick;
+            if (_spherePointIndex >= SpherePoints.Count)
+                _spherePointIndex = 0;
         }
 
         private void OnTriggerStay(Collider other) {
-            if (damage && ambientTemperatureMinusLava >= 90) {
-                this.checkLava(this.getCollisionPoint(other, out Vector3 norm), norm);
+            if (_damage && _ambientTemperatureMinusLava >= 90) {
+                CheckLava(GetCollisionPoint(other, out var norm), norm);
             }
         }
 
-        private Vector3 getCollisionPoint(Collider other, out Vector3 norm) {
-            Vector3 ctr = transform.position;
+        private Vector3 GetCollisionPoint(Collider other, out Vector3 norm) {
+            var ctr = transform.position;
             return Physics.ComputePenetration(
                 other,
                 other.transform.position,
                 other.transform.rotation,
-                sphere,
+                _sphere,
                 ctr,
                 Quaternion.identity,
                 out norm,
-                out float depth
+                out var depth
             )
-                ? ctr + (norm * (NEAR_LAVA_RADIUS - depth))
+                ? ctr + norm * (NearLavaRadius - depth)
                 : Vector3.zero;
         }
 
-        private bool checkLava(Vector3 pt, Vector3 norm) {
+        private bool CheckLava(Vector3 pt, Vector3 norm) {
             //SNUtil.log("Checking lava: "+pt+" @ "+lastLavaTime, SNUtil.diDLL);
             if (norm.magnitude < 0.01F)
                 norm = transform.position - pt;
-            if (damage.lavaDatabase.IsLava(pt, norm)) {
-                this.markLavaDetected();
+            if (_damage.lavaDatabase.IsLava(pt, norm)) {
+                MarkLavaDetected();
                 //SNUtil.writeToChat("Wide lava: "+pt+" @ "+lastLavaTime);
                 //SNUtil.log("Is lava", SNUtil.diDLL);
                 return true;
@@ -1468,19 +1462,19 @@ public static class DIHooks {
             return false;
         }
 
-        public void markLavaDetected() {
-            lastLavaTime = DayNightCycle.main.timePassedAsFloat;
+        public void MarkLavaDetected() {
+            _lastLavaTime = DayNightCycle.main.timePassedAsFloat;
         }
 
-        public void markGeyserDetected() {
-            lastGeyserTime = DayNightCycle.main.timePassedAsFloat;
+        public void MarkGeyserDetected() {
+            _lastGeyserTime = DayNightCycle.main.timePassedAsFloat;
         }
 
-        public bool isInGeyser() {
-            return Mathf.Abs(DayNightCycle.main.timePassedAsFloat - lastGeyserTime) <= 0.5F;
+        public bool IsInGeyser() {
+            return Mathf.Abs(DayNightCycle.main.timePassedAsFloat - _lastGeyserTime) <= 0.5F;
         }
 
-        public bool isInLava() { /*
+        public bool IsInLava() { /*
             if (needsLavaDump) {
                 dmg.lavaDatabase.LazyInitialize();
                 needsLavaDump = false;
@@ -1499,24 +1493,24 @@ public static class DIHooks {
                 string path = "E:/INet/SNlavadump.txt";
                 File.WriteAllLines(path, li);
             }*/
-            return Mathf.Abs(DayNightCycle.main.timePassedAsFloat - lastLavaTime) <= 2;
+            return Mathf.Abs(DayNightCycle.main.timePassedAsFloat - _lastLavaTime) <= 2;
         }
     }
 
-    public static void onStoryGoalCompleted(string key) {
+    public static void OnStoryGoalCompleted(string key) {
         StoryHandler.instance.NotifyGoalComplete(key);
     }
 
-    public static bool isItemUsable(TechType tt) {
+    public static bool IsItemUsable(TechType tt) {
         return tt == TechType.Bladderfish || UsableItemRegistry.instance.isUsable(tt);
     }
 
-    public static bool useItem(Survival s, GameObject useObj) {
-        bool flag = false;
+    public static bool UseItem(Survival s, GameObject useObj) {
+        var flag = false;
         if (useObj != null) {
-            TechType tt = CraftData.GetTechType(useObj);
+            var tt = CraftData.GetTechType(useObj);
             if (tt == TechType.None) {
-                Pickupable component = useObj.GetComponent<Pickupable>();
+                var component = useObj.GetComponent<Pickupable>();
                 if (component)
                     tt = component.GetTechType();
             }
@@ -1530,43 +1524,42 @@ public static class DIHooks {
         return flag;
     }
 
-    public static bool isItemDroppable(Pickupable pp, bool notify) {
-        bool flag = Inventory.CanDropItemHere(pp, notify);
+    public static bool IsItemDroppable(Pickupable pp, bool notify) {
+        var flag = Inventory.CanDropItemHere(pp, notify);
         if (pp) {
-            IrreplaceableItemRegistry.IrreplaceableItemData data =
+            var data =
                 IrreplaceableItemRegistry.instance.getEffects(pp.GetTechType());
             if (data != null)
                 return data.onAttemptToDrop.Invoke(pp, notify);
         }
 
-        if (pp && droppabilityEvent != null) {
-            DroppabilityCheck dropCheck = new DroppabilityCheck(pp, notify, flag);
-            droppabilityEvent.Invoke(dropCheck);
-            flag = dropCheck.allow;
-            if (notify && !flag && !string.IsNullOrEmpty(dropCheck.error)) {
-                ErrorMessage.AddError(dropCheck.error);
+        if (pp && DroppabilityEvent != null) {
+            var dropCheck = new DroppabilityCheck(pp, notify, flag);
+            DroppabilityEvent.Invoke(dropCheck);
+            flag = dropCheck.Allow;
+            if (notify && !flag && !string.IsNullOrEmpty(dropCheck.Error)) {
+                ErrorMessage.AddError(dropCheck.Error);
             }
         }
 
         return flag;
     }
 
-    public static void onScanComplete(PDAScanner.EntryData data) {
+    public static void OnScanComplete(PDAScanner.EntryData data) {
         if (data != null) {
             TechnologyUnlockSystem.instance.triggerDirectUnlock(data.key);
             TechUnlockTracker.instance.onScan(data);
-            if (scanCompleteEvent != null)
-                scanCompleteEvent.Invoke(data);
+            ScanCompleteEvent?.Invoke(data);
         }
     }
 
-    public static void tickLaserCutting(Sealed s, float amt) {
+    public static void TickLaserCutting(Sealed s, float amt) {
         if (s._sealed && s.maxOpenedAmount >= 0) {
             string key = null;
-            if (s.GetComponent<BulkheadDoor>() && bulkheadLaserHoverEvent != null) {
-                BulkheadLaserCutterHoverCheck ch = new BulkheadLaserCutterHoverCheck(s);
-                bulkheadLaserHoverEvent.Invoke(ch);
-                key = ch.refusalLocaleKey;
+            if (s.GetComponent<BulkheadDoor>() && BulkheadLaserHoverEvent != null) {
+                var ch = new BulkheadLaserCutterHoverCheck(s);
+                BulkheadLaserHoverEvent.Invoke(ch);
+                key = ch.RefusalLocaleKey;
             }
 
             if (string.IsNullOrEmpty(key)) {
@@ -1580,19 +1573,19 @@ public static class DIHooks {
         }
     }
 
-    public static void getBulkheadMouseoverText(BulkheadDoor bk) {
+    public static void GetBulkheadMouseoverText(BulkheadDoor bk) {
         if (bk.enabled) {
-            Sealed s = bk.GetComponent<Sealed>();
+            var s = bk.GetComponent<Sealed>();
             if (s && s.IsSealed()) {
                 if (s.maxOpenedAmount < 0) {
                     HandReticle.main.SetText(HandReticle.TextType.Use, "BulkheadInoperable", true);
                     HandReticle.main.SetIcon(HandReticle.IconType.None, 1f);
                 } else {
                     string key = null;
-                    if (bulkheadLaserHoverEvent != null) {
-                        BulkheadLaserCutterHoverCheck ch = new BulkheadLaserCutterHoverCheck(s);
-                        bulkheadLaserHoverEvent.Invoke(ch);
-                        key = ch.refusalLocaleKey;
+                    if (BulkheadLaserHoverEvent != null) {
+                        var ch = new BulkheadLaserCutterHoverCheck(s);
+                        BulkheadLaserHoverEvent.Invoke(ch);
+                        key = ch.RefusalLocaleKey;
                         HandReticle.main.SetIcon(HandReticle.IconType.HandDeny, 1f);
                     }
 
@@ -1616,10 +1609,10 @@ public static class DIHooks {
         }
     }
 
-    public static void onBulkheadClick(BulkheadDoor bk) {
-        Base componentInParent = bk.GetComponentInParent<Base>();
+    public static void OnBulkheadClick(BulkheadDoor bk) {
+        var componentInParent = bk.GetComponentInParent<Base>();
         //PreventDeconstruction prev = bk.GetComponentInParent<PreventDeconstruction>();
-        Sealed s = bk.GetComponent<Sealed>();
+        var s = bk.GetComponent<Sealed>();
         if (s != null && s.IsSealed()) {
         } else if (componentInParent != null && componentInParent.isGhost) {
             bk.SetState(!bk.opened);
@@ -1633,99 +1626,89 @@ public static class DIHooks {
         }
     }
 
-    public static bool isInsideForHatch(UseableDiveHatch hatch) {
-        SeabaseReconstruction.WorldgenBaseWaterparkHatch wb =
+    public static bool IsInsideForHatch(UseableDiveHatch hatch) {
+        var wb =
             hatch.gameObject.GetComponent<SeabaseReconstruction.WorldgenBaseWaterparkHatch>();
         return wb ? wb.isPlayerInside() : Player.main.IsInsideWalkable() && Player.main.currentWaterPark == null;
     }
 
-    public static void onConstructionComplete(Constructable c, bool finished) {
+    public static void OnConstructionComplete(Constructable c, bool finished) {
         if (finished) {
             TechnologyUnlockSystem.instance.triggerDirectUnlock(c.techType);
             FirstObtainmentSystem.instance.onPickup(c.techType);
         }
 
-        CustomMachineLogic lgc = c.GetComponent<CustomMachineLogic>();
+        var lgc = c.GetComponent<CustomMachineLogic>();
         if (lgc)
             lgc.onConstructedChanged(finished);
 
-        if (onConstructedEvent != null)
-            onConstructedEvent.Invoke(c, finished);
+        OnConstructedEvent?.Invoke(c, finished);
     }
 
-    public static void onVehicleBayFinish(Constructor c, GameObject go) {
-        TechType tt = CraftData.GetTechType(go);
+    public static void OnVehicleBayFinish(Constructor c, GameObject go) {
+        var tt = CraftData.GetTechType(go);
         if (tt != TechType.None)
             TechnologyUnlockSystem.instance.triggerDirectUnlock(tt);
     }
 
-    public static void onBaseLoaded(BaseRoot root) {
-        if (onBaseLoadedEvent != null)
-            onBaseLoadedEvent.Invoke(root);
+    public static void OnBaseLoaded(BaseRoot root) {
+        OnBaseLoadedEvent?.Invoke(root);
     }
 
-    public static void onInvOpened(StorageContainer sc) {
-        if (inventoryOpenedEvent != null)
-            inventoryOpenedEvent.Invoke(sc);
+    public static void OnInvOpened(StorageContainer sc) {
+        InventoryOpenedEvent?.Invoke(sc);
     }
 
-    public static void onInvClosed(StorageContainer sc) {
-        if (inventoryClosedEvent != null)
-            inventoryClosedEvent.Invoke(sc);
+    public static void OnInvClosed(StorageContainer sc) {
+        InventoryClosedEvent?.Invoke(sc);
     }
 
-    public static void onKnifed(GameObject go) {
-        if (go && onKnifedEvent != null)
-            onKnifedEvent.Invoke(go);
-        if (go && Inventory.main.GetHeld().GetTechType() == TechType.HeatBlade) { //allow thermoblade to cook dead fish
-            TechType tt = CraftData.GetTechType(go);
-            // TODO
-            // if (tt != TechType.None && CraftData.cookedCreatureList.ContainsKey(tt)) {
-            //     LiveMixin lv = go.GetComponent<LiveMixin>();
-            //     if (lv && !lv.IsAlive()) {
-            //         GameObject put = ObjectUtil.createWorldObject(CraftData.cookedCreatureList[tt]);
-            //         if (put) {
-            //             put.transform.position = go.transform.position;
-            //             put.transform.rotation = go.transform.rotation;
-            //             put.transform.localScale = go.transform.localScale;
-            //             go.destroy(false);
-            //         }
-            //     }
-            // }
-        }
+    public static void OnKnifed(GameObject go) {
+        if (go && OnKnifedEvent != null)
+            OnKnifedEvent.Invoke(go);
+        if (!go || Inventory.main.GetHeld().GetTechType() !=
+            TechType.HeatBlade) return; //allow thermoblade to cook dead fish
+        var tt = CraftData.GetTechType(go);
+        if (tt == TechType.None || TechData.GetProcessed(tt) == null) return;
+        var lv = go.GetComponent<LiveMixin>();
+        if (!lv || lv.IsAlive()) return;
+        var put = ObjectUtil.createWorldObject(TechData.GetProcessed(tt));
+        if (!put) return;
+        put.transform.position = go.transform.position;
+        put.transform.rotation = go.transform.rotation;
+        put.transform.localScale = go.transform.localScale;
+        go.destroy(false);
     }
 
-    public static bool isObjectKnifeable(LiveMixin lv) {
+    public static bool IsObjectKnifeable(LiveMixin lv) {
         if (!lv)
             return true;
-        KnifeAttempt k = new KnifeAttempt(lv, !lv.weldable && lv.knifeable && !lv.GetComponent<EscapePod>());
-        if (knifeAttemptEvent != null)
-            knifeAttemptEvent.Invoke(k);
-        return k.allowKnife;
+        var k = new KnifeAttempt(lv, !lv.weldable && lv.knifeable && !lv.GetComponent<EscapePod>());
+        KnifeAttemptEvent?.Invoke(k);
+        return k.AllowKnife;
     }
 
-    public static bool canGravTrapGrab(Gravsphere s, GameObject go) {
+    public static bool CanGravTrapGrab(Gravsphere s, GameObject go) {
         if (!s || !go)
             return false;
 
-        Pickupable pp = go.GetComponent<Pickupable>();
-        bool def = (!pp || !pp.attached) && !go.GetComponent<WaterParkItem>() &&
-                   (gravTrapTechSet.Contains(CraftData.GetTechType(go)) || (bool)go.GetComponent<Creature>());
+        var pp = go.GetComponent<Pickupable>();
+        var def = (!pp || !pp.attached) && !go.GetComponent<WaterParkItem>() &&
+                  (GravTrapTechSet.Contains(CraftData.GetTechType(go)) || (bool)go.GetComponent<Creature>());
 
-        GravTrapGrabAttempt k = new GravTrapGrabAttempt(s, go, def);
-        if (gravTrapAttemptEvent != null)
-            gravTrapAttemptEvent.Invoke(k);
+        var k = new GravTrapGrabAttempt(s, go, def);
+        GravTrapAttemptEvent?.Invoke(k);
         //SNUtil.writeToChat("Gravsphre "+s+" tried to grab "+go+": "+def+" > "+k.allowGrab);
-        return k.allowGrab;
+        return k.AllowGrab;
     }
 
-    public static void hoverSeamothTorpedoStorage(SeaMoth sm, HandTargetEventData data) {
-        for (int i = 0; i < sm.slotIDs.Length; i++) {
-            InventoryItem ii = sm.GetSlotItem(i);
+    public static void HoverSeamothTorpedoStorage(SeaMoth sm, HandTargetEventData data) {
+        for (var i = 0; i < sm.slotIDs.Length; i++) {
+            var ii = sm.GetSlotItem(i);
             if (ii != null && ii.item) {
-                SeamothModule.SeamothModuleStorage storage = SeamothModule.getStorageHandler(ii.item.GetTechType());
+                var storage = SeamothModule.getStorageHandler(ii.item.GetTechType());
                 if (storage != null && storage.storageType == SeamothModule.StorageAccessType.TORPEDO) {
-                    SeamothStorageContainer component = ii.item.GetComponent<SeamothStorageContainer>();
+                    var component = ii.item.GetComponent<SeamothStorageContainer>();
                     //SNUtil.writeToChat("Found "+component+" ["+storage.title+"] for "+ii.item.GetTechType());
                     if (component) {
                         HandReticle.main.SetText(HandReticle.TextType.Use, storage.localeKey, true);
@@ -1736,17 +1719,17 @@ public static class DIHooks {
         }
     }
 
-    public static void openSeamothTorpedoStorage(SeaMoth sm, Transform transf) {
-        TechType foundMatch = TechType.None;
+    public static void OpenSeamothTorpedoStorage(SeaMoth sm, Transform transf) {
+        var foundMatch = TechType.None;
         Inventory.main.ClearUsedStorage();
-        for (int i = 0; i < sm.slotIDs.Length; i++) {
-            InventoryItem ii = sm.GetSlotItem(i);
+        for (var i = 0; i < sm.slotIDs.Length; i++) {
+            var ii = sm.GetSlotItem(i);
             if (ii != null && ii.item) {
-                TechType tt = ii.item.GetTechType();
+                var tt = ii.item.GetTechType();
                 if (foundMatch == tt || foundMatch == TechType.None) {
-                    SeamothModule.SeamothModuleStorage storage = SeamothModule.getStorageHandler(tt);
+                    var storage = SeamothModule.getStorageHandler(tt);
                     if (storage != null && storage.storageType == SeamothModule.StorageAccessType.TORPEDO) {
-                        SeamothStorageContainer component = ii.item.GetComponent<SeamothStorageContainer>();
+                        var component = ii.item.GetComponent<SeamothStorageContainer>();
                         if (component) {
                             foundMatch = tt;
                             storage.apply(component);
@@ -1763,23 +1746,23 @@ public static class DIHooks {
         }
     }
 
-    public static ItemsContainer getVehicleStorageInSlot(Vehicle sm, int slotID, TechType seek) {
-        InventoryItem slotItem = sm.GetSlotItem(slotID);
+    public static ItemsContainer GetVehicleStorageInSlot(Vehicle sm, int slotID, TechType seek) {
+        var slotItem = sm.GetSlotItem(slotID);
         if (slotItem == null)
             return null;
-        Pickupable item = slotItem.item;
+        var item = slotItem.item;
         if (!item)
             return null;
-        TechType tt = item.GetTechType();
+        var tt = item.GetTechType();
         if (tt == seek) {
-            SeamothStorageContainer ssc = item.GetComponent<SeamothStorageContainer>();
+            var ssc = item.GetComponent<SeamothStorageContainer>();
             return ssc ? ssc.container : null;
         }
 
         if (sm is SeaMoth) {
-            SeamothModule.SeamothModuleStorage storage = SeamothModule.getStorageHandler(tt);
+            var storage = SeamothModule.getStorageHandler(tt);
             if (storage != null && storage.storageType == SeamothModule.StorageAccessType.BOX) {
-                SeamothStorageContainer ssc = item.GetComponent<SeamothStorageContainer>();
+                var ssc = item.GetComponent<SeamothStorageContainer>();
                 if (ssc) {
                     storage.apply(ssc);
                     return ssc.container;
@@ -1790,9 +1773,9 @@ public static class DIHooks {
         return null;
     }
 
-    public static void updateSeamothModules(SeaMoth sm, int slotID, TechType techType, bool added) {
+    public static void UpdateSeamothModules(SeaMoth sm, int slotID, TechType techType, bool added) {
         if (added) {
-            SeamothModule.SeamothModuleStorage storage = SeamothModule.getStorageHandler(techType);
+            var storage = SeamothModule.getStorageHandler(techType);
             if (storage != null) {
                 if (storage.storageType == SeamothModule.StorageAccessType.TORPEDO) {
                     if (sm.torpedoSilos != null && slotID < sm.torpedoSilos.Length)
@@ -1804,104 +1787,100 @@ public static class DIHooks {
             }
         }
 
-        for (int i = 0; i < sm.slotIDs.Length; i++) {
-            string slot = sm.slotIDs[i];
-            TechType techTypeInSlot = sm.modules.GetTechTypeInSlot(slot);
+        for (var i = 0; i < sm.slotIDs.Length; i++) {
+            var slot = sm.slotIDs[i];
+            var techTypeInSlot = sm.modules.GetTechTypeInSlot(slot);
             if (techTypeInSlot != TechType.None) {
-                CustomPrefab sp = ItemRegistry.instance.getItem(techTypeInSlot, false);
-                if (sp is SeamothDepthModule) {
+                var sp = ItemRegistry.instance.getItem(techTypeInSlot, false);
+                if (sp is SeamothDepthModule module) {
                     sm.crushDamage.SetExtraCrushDepth(
-                        Mathf.Max(((SeamothDepthModule)sp).depthBonus, sm.crushDamage.extraCrushDepth)
+                        Mathf.Max(module.depthBonus, sm.crushDamage.extraCrushDepth)
                     );
                 }
             }
         }
 
-        if (onSeamothModulesChangedEvent != null)
-            onSeamothModulesChangedEvent.Invoke(sm, slotID, techType, added);
+        OnSeamothModulesChangedEvent?.Invoke(sm, slotID, techType, added);
     }
 
-    public static void updateCyclopsModules(SubRoot sm) {
-        if (onCyclopsModulesChangedEvent != null && !sm.isBase)
-            onCyclopsModulesChangedEvent.Invoke(sm);
+    public static void UpdateCyclopsModules(SubRoot sm) {
+        if (OnCyclopsModulesChangedEvent != null && !sm.isBase)
+            OnCyclopsModulesChangedEvent.Invoke(sm);
     }
 
-    public static void updatePrawnModules(Exosuit sm, int slotID, TechType techType, bool added) {
-        if (onPrawnModulesChangedEvent != null)
-            onPrawnModulesChangedEvent.Invoke(sm, slotID, techType, added);
+    public static void UpdatePrawnModules(Exosuit sm, int slotID, TechType techType, bool added) {
+        OnPrawnModulesChangedEvent?.Invoke(sm, slotID, techType, added);
     }
 
-    public static void useSeamothModule(SeaMoth sm, TechType techType, int slotID) {
-        CustomPrefab sp = ItemRegistry.instance.getItem(techType, false);
+    public static void UseSeamothModule(SeaMoth sm, TechType techType, int slotID) {
+        var sp = ItemRegistry.instance.getItem(techType, false);
         if (sp is SeamothModule smm) {
             smm.onFired(sm, slotID, sm.GetSlotCharge(slotID));
             sm.quickSlotTimeUsed[slotID] = Time.time;
             sm.quickSlotCooldown[slotID] = smm.getUsageCooldown();
         }
 
-        if (onSeamothModuleUsedEvent != null)
-            onSeamothModuleUsedEvent.Invoke(sm, techType, slotID);
+        OnSeamothModuleUsedEvent?.Invoke(sm, techType, slotID);
     }
 
-    public static float getTemperatureForDamage(TemperatureDamage dmg) {
+    public static float GetTemperatureForDamage(TemperatureDamage dmg) {
         if (Mathf.Abs(Time.time - dmg.timeDamageStarted) <= 2.5F) { //active lava dmg
             //SNUtil.writeToChat(dmg+" Touch lava: "+dmg.timeDamageStarted+" > "+Mathf.Abs(Time.time-dmg.timeDamageStarted));
             return 1200;
         }
 
-        LavaWarningTriggerDetector warn = dmg.GetComponentInChildren<LavaWarningTriggerDetector>();
-        if (warn && warn.isInLava())
+        var warn = dmg.GetComponentInChildren<LavaWarningTriggerDetector>();
+        if (warn && warn.IsInLava())
             return dmg.gameObject.FindAncestor<Exosuit>() ? 300 : 400;
-        if (warn && warn.isInGeyser())
+        if (warn && warn.IsInGeyser())
             return 180;
-        Vehicle v = dmg.GetComponent<Vehicle>();
+        var v = dmg.GetComponent<Vehicle>();
         return v
             ? v.precursorOutOfWater ? 25 : v.GetTemperature()
             : WaterTemperatureSimulation.main.GetTemperature(dmg.transform.position);
     }
 
-    public static void pingSonar(SNCameraRoot cam) {
-        if (cam && onSonarUsedEvent != null)
-            onSonarUsedEvent.Invoke(cam);
+    public static void PingSonar(SNCameraRoot cam) {
+        if (cam && OnSonarUsedEvent != null)
+            OnSonarUsedEvent.Invoke(cam);
     }
 
-    public static void pingSeamothSonar(SeaMoth cam) {
-        if (cam && onSeamothSonarUsedEvent != null)
-            onSeamothSonarUsedEvent.Invoke(cam);
+    public static void PingSeamothSonar(SeaMoth cam) {
+        if (cam && OnSeamothSonarUsedEvent != null)
+            OnSeamothSonarUsedEvent.Invoke(cam);
     }
 
-    public static void pingCyclopsSonar(CyclopsSonarButton cam) {
-        if (cam && onCyclopsSonarUsedEvent != null) {
-            SubRoot sb = cam.gameObject.FindAncestor<SubRoot>();
+    public static void PingCyclopsSonar(CyclopsSonarButton cam) {
+        if (cam && OnCyclopsSonarUsedEvent != null) {
+            var sb = cam.gameObject.FindAncestor<SubRoot>();
             if (sb)
-                onCyclopsSonarUsedEvent.Invoke(sb);
+                OnCyclopsSonarUsedEvent.Invoke(sb);
         }
     }
 
-    public static void onEggHatched(GameObject hatched) {
+    public static void OnEggHatched(GameObject hatched) {
         if (hatched) {
             hatched.fullyEnable();
-            if (onEggHatchedEvent != null)
-                onEggHatchedEvent.Invoke(hatched);
+            OnEggHatchedEvent?.Invoke(hatched);
         }
     }
 
-    public static void onEMPHit(EMPBlast e, MonoBehaviour com) {
-        if (com && onEMPHitEvent != null) {
-            onEMPHitEvent.Invoke(e, com.gameObject);
+    public static void OnEmpHit(EMPBlast e, MonoBehaviour com) {
+        if (com && OnEmpHitEvent != null) {
+            OnEmpHitEvent.Invoke(e, com.gameObject);
         }
     }
 
-    public static void onEMPTouch(EMPBlast e, Collider c) {
-        if (c && onEMPTouchEvent != null) {
-            onEMPTouchEvent.Invoke(e, c);
+    public static void OnEmpTouch(EMPBlast e, Collider c) {
+        if (c && OnEmpTouchEvent != null) {
+            OnEmpTouchEvent.Invoke(e, c);
         }
     }
 
-    public static void appendItemTooltip(StringBuilder sb, TechType tt, GameObject obj) {
-        InfectedMixin mix = obj.GetComponent<InfectedMixin>();
+    public static void AppendItemTooltip(StringBuilder sb, TechType tt, GameObject obj) {
+        var mix = obj.GetComponent<InfectedMixin>();
         if (mix) {
-            string tip = getInfectionTooltip(mix);
+            var tip = GetInfectionTooltip(mix);
             if (!string.IsNullOrEmpty(tip))
                 TooltipFactory.WriteDescription(
                     sb,
@@ -1909,23 +1888,21 @@ public static class DIHooks {
                 ); //TooltipFactory.WriteDescription(sb, "Infected: "+((int)(mix.infectedAmount*100))+"%");
         }
 
-        Peeper peep = obj.GetComponent<Peeper>();
+        var peep = obj.GetComponent<Peeper>();
         if (peep && peep.isHero) {
             TooltipFactory.WriteDescription(sb, "Contains unusual enzymes.");
         }
 
-        if (itemTooltipEvent != null) {
-            itemTooltipEvent.Invoke(sb, tt, obj);
-        }
+        ItemTooltipEvent?.Invoke(sb, tt, obj);
 
-        SpawnedItemTracker.SpawnedItemEvent e = SpawnedItemTracker.instance.getSpawnEvent(obj);
+        var e = SpawnedItemTracker.instance.getSpawnEvent(obj);
         if (e != null)
             TooltipFactory.WriteDescription(sb, e.tooltip);
     }
 
-    private static string getInfectionTooltip(InfectedMixin mix) {
+    private static string GetInfectionTooltip(InfectedMixin mix) {
         if (mix.IsInfected()) {
-            float amt = mix.infectedAmount;
+            var amt = mix.infectedAmount;
             //return "Infected: "+((int)(amt*100))+"%";
             return amt >= 0.75
                 ? "This creature is severely infected."
@@ -1935,7 +1912,7 @@ public static class DIHooks {
                         ? "Showing signs of infection."
                         : "Elevated bacterial levels detected.";
         } else {
-            LiveMixin lv = mix.GetComponent<LiveMixin>();
+            var lv = mix.GetComponent<LiveMixin>();
             return !lv || lv.IsAlive() ? "Status: Healthy." : null;
         }
     }
@@ -1958,13 +1935,13 @@ public static class DIHooks {
         SNUtil.writeToChat("Rasterizing fog @ "+pos);
     }*/
 
-    public static Vector4 interceptExtinction(Vector4 orig, WaterscapeVolume.Settings settings) {
-        BiomeBase at = BiomeBase.getBiome(Camera.main.transform.position);
+    public static Vector4 InterceptExtinction(Vector4 orig, WaterscapeVolume.Settings settings) {
+        var at = BiomeBase.GetBiome(Camera.main.transform.position);
         if (at is CustomBiome b) {
-            float d = b.getMurkiness(settings.murkiness) / 100f;
-            float scatter = b.getScatteringFactor(settings.scattering);
-            Vector3 vector = b.getColorFalloff(settings.absorption) + (scatter * Vector3.one);
-            Vector4 ret = new Vector4(vector.x, vector.y, vector.z, scatter) * d;
+            var d = b.getMurkiness(settings.murkiness) / 100f;
+            var scatter = b.getScatteringFactor(settings.scattering);
+            var vector = b.getColorFalloff(settings.absorption) + scatter * Vector3.one;
+            var ret = new Vector4(vector.x, vector.y, vector.z, scatter) * d;
             ret.w = b.getFogStart(settings.startDistance);
             return ret;
         }
@@ -1972,11 +1949,11 @@ public static class DIHooks {
         return orig;
     }
 
-    public static Vector4 interceptScattering(Vector4 orig, WaterscapeVolume.Settings settings) {
-        BiomeBase at = BiomeBase.getBiome(Camera.main.transform.position);
+    public static Vector4 InterceptScattering(Vector4 orig, WaterscapeVolume.Settings settings) {
+        var at = BiomeBase.GetBiome(Camera.main.transform.position);
         if (at is CustomBiome b) {
-            float factor = b.getScatterFactor(settings.GetExtinctionAndScatteringCoefficients().w);
-            Color linear = b.getWaterColor(settings.scatteringColor.linear);
+            var factor = b.getScatterFactor(settings.GetExtinctionAndScatteringCoefficients().w);
+            var linear = b.getWaterColor(settings.scatteringColor.linear);
             Vector4 result;
             result.x = linear.r * factor;
             result.y = linear.g * factor;
@@ -1988,29 +1965,29 @@ public static class DIHooks {
         return orig;
     }
 
-    public static Vector4 interceptEmissive(Vector4 orig, WaterscapeVolume.Settings settings) {
-        BiomeBase at = BiomeBase.getBiome(Camera.main.transform.position);
-        return at is CustomBiome ? ((CustomBiome)at).getEmissiveVector(orig) : orig;
+    public static Vector4 InterceptEmissive(Vector4 orig, WaterscapeVolume.Settings settings) {
+        var at = BiomeBase.GetBiome(Camera.main.transform.position);
+        return at is CustomBiome biome ? biome.getEmissiveVector(orig) : orig;
     }
 
-    public static void recomputeFog() {
+    public static void RecomputeFog() {
         SNUtil.log("Recomputing fog @ " + Camera.main.transform.position, SNUtil.diDLL);
         WaterBiomeManager.main.Rebuild();
         WaterBiomeManager.main.BuildSettingsTextures();
     }
 
-    public static void dumpWaterscapeTextures() {
-        WaterBiomeManager wbm = WaterBiomeManager.main;
+    public static void DumpWaterscapeTextures() {
+        var wbm = WaterBiomeManager.main;
         //string biome = wbm.GetBiome(Camera.main.transform.position);
         //SNUtil.writeToChat("Dumping biome textures @ "+biome);
-        foreach (FieldInfo f in typeof(WaterBiomeManager).GetFields((BindingFlags)0x7fffffff)) {
-            object get = f.GetValue(wbm);
-            if (get is RenderTexture) {
+        foreach (var f in typeof(WaterBiomeManager).GetFields((BindingFlags)0x7fffffff)) {
+            var get = f.GetValue(wbm);
+            if (get is RenderTexture texture) {
                 SNUtil.writeToChat("Dumping RenderTexture WaterBiomeManager::" + f.Name);
-                RenderUtil.dumpTexture(SNUtil.diDLL, f.Name, (RenderTexture)get);
-            } else if (get is Texture2D) {
+                RenderUtil.dumpTexture(SNUtil.diDLL, f.Name, texture);
+            } else if (get is Texture2D texture2D) {
                 SNUtil.writeToChat("Dumping Texture2D WaterBiomeManager::" + f.Name);
-                RenderUtil.dumpTexture(SNUtil.diDLL, f.Name, (Texture2D)get);
+                RenderUtil.dumpTexture(SNUtil.diDLL, f.Name, texture2D);
             } else {
                 //SNUtil.writeToChat("Skipping non-texture object "+get);
             }
@@ -2110,16 +2087,16 @@ public static class DIHooks {
                 //SNUtil.writeToChat("Applying fog of "+vol+" @ "+vol.transform.position);
             }*/
 
-    public static bool interceptConstructability( /*Collider c*/) {
-        bool orig = Builder.UpdateAllowed();
+    public static bool InterceptConstructability( /*Collider c*/) {
+        var orig = Builder.UpdateAllowed();
         //SNUtil.writeToChat("Testing constructability of "+Builder.constructableTechType+", default value = "+orig);
-        if (constructabilityEvent != null) {
+        if (ConstructabilityEvent != null) {
             //SNUtil.writeToChat("Event has listeners");
-            Transform aimTransform = Builder.GetAimTransform();
-            Collider target = Physics.Raycast(
+            var aimTransform = Builder.GetAimTransform();
+            var target = Physics.Raycast(
                 aimTransform.position,
                 aimTransform.forward,
-                out RaycastHit hit,
+                out var hit,
                 Builder.placeMaxDistance,
                 Builder.placeLayerMask.value,
                 QueryTriggerInteraction.Ignore
@@ -2128,11 +2105,11 @@ public static class DIHooks {
                 : null;
             //SNUtil.writeToChat("Placement target: "+target+" "+(target == null ? "" : target.gameObject.GetFullHierarchyPath()));
             //SNUtil.writeToChat("Space check: "+Builder.CheckSpace(Builder.placePosition, Builder.placeRotation, Builder.bounds, Builder.placeLayerMask.value, target));
-            BuildabilityCheck deal = new BuildabilityCheck(orig, target);
-            constructabilityEvent.Invoke(deal);
+            var deal = new BuildabilityCheck(orig, target);
+            ConstructabilityEvent.Invoke(deal);
             //SNUtil.writeToChat("Event state: "+deal.placeable+" / "+deal.ignoreSpaceRequirements);
             return
-                deal.placeable; // && (target == null || deal.ignoreSpaceRequirements || Builder.CheckSpace(Builder.placePosition, Builder.placeRotation, Builder.bounds, Builder.placeLayerMask.value, target));
+                deal.Placeable; // && (target == null || deal.ignoreSpaceRequirements || Builder.CheckSpace(Builder.placePosition, Builder.placeRotation, Builder.bounds, Builder.placeLayerMask.value, target));
         }
 
         return orig;
@@ -2159,60 +2136,60 @@ public static class DIHooks {
                 }
             }*/
 
-    public static void updateSolarPanel(SolarPanel p) {
+    public static void UpdateSolarPanel(SolarPanel p) {
         if (!p)
             return;
-        Constructable c = p.gameObject.GetComponent<Constructable>();
+        var c = p.gameObject.GetComponent<Constructable>();
         if (c && c.constructed) {
-            float eff = p.GetRechargeScalar();
-            if (solarEfficiencyEvent != null) {
-                SolarEfficiencyCheck ch = new SolarEfficiencyCheck(p, eff);
-                solarEfficiencyEvent.Invoke(ch);
-                eff = ch.value;
+            var eff = p.GetRechargeScalar();
+            if (SolarEfficiencyEvent != null) {
+                var ch = new SolarEfficiencyCheck(p, eff);
+                SolarEfficiencyEvent.Invoke(ch);
+                eff = ch.Value;
             }
 
-            float gen = eff * DayNightCycle.main.deltaTime * 0.25f * 5f;
-            SubRoot sub = p.gameObject.FindAncestor<SubRoot>();
+            var gen = eff * DayNightCycle.main.deltaTime * 0.25f * 5f;
+            var sub = p.gameObject.FindAncestor<SubRoot>();
             //SNUtil.writeToChat("Solar panel adding "+gen.ToString("0.0000")+" energy to "+(sub ? sub.name+" ("+sub.powerRelay.internalPowerSource + "/"+sub.powerRelay.inboundPowerSources.toDebugString()+")" : "self"));
             if (sub) {
-                sub.powerRelay.AddEnergy(gen, out float trash);
+                sub.powerRelay.AddEnergy(gen, out var trash);
             } else {
                 p.powerSource.power = Mathf.Clamp(p.powerSource.power + gen, 0f, p.powerSource.maxPower);
             }
         }
     }
 
-    public static bool addPowerToSeabaseDelegate(
+    public static bool AddPowerToSeabaseDelegate(
         IPowerInterface pi,
         float amount,
         out float stored,
         MonoBehaviour component
     ) {
-        PowerSourceBaseReference pref = component.GetComponent<PowerSourceBaseReference>();
-        SubRoot sub = pref ? pref.sub : null;
+        var pref = component.GetComponent<PowerSourceBaseReference>();
+        var sub = pref ? pref.Sub : null;
         //SNUtil.writeToChat(component+" adding " + amount.ToString("0.0000")+" energy to "+(sub ? sub.name+" ("+sub.powerRelay.internalPowerSource + "/"+sub.powerRelay.inboundPowerSources.toDebugString()+")" : "self"));
         return sub ? sub.powerRelay.AddEnergy(amount, out stored) : pi.AddEnergy(amount, out stored);
     }
 
-    public static void linkPowerRelayToBase(PowerRelay pr, IPowerInterface ipf) {
+    public static void LinkPowerRelayToBase(PowerRelay pr, IPowerInterface ipf) {
         if (ipf is MonoBehaviour mb) {
-            PowerSourceBaseReference pbr = mb.gameObject.EnsureComponent<PowerSourceBaseReference>();
-            pbr.target = pr;
+            var pbr = mb.gameObject.EnsureComponent<PowerSourceBaseReference>();
+            pbr.Target = pr;
             if (pr is BasePowerRelay bpr)
-                pbr.sub = bpr.subRoot;
+                pbr.Sub = bpr.subRoot;
         }
     }
 
 
     internal class PowerSourceBaseReference : MonoBehaviour {
-        internal SubRoot sub;
-        internal PowerRelay target;
+        internal SubRoot Sub;
+        internal PowerRelay Target;
 
-        void Update() {
-            if (!sub && target) {
-                PowerSourceBaseReference pref = target.GetComponent<PowerSourceBaseReference>();
+        private void Update() {
+            if (!Sub && Target) {
+                var pref = Target.GetComponent<PowerSourceBaseReference>();
                 if (pref)
-                    sub = pref.sub;
+                    Sub = pref.Sub;
             }
         }
     }
@@ -2225,16 +2202,16 @@ public static class DIHooks {
         return biome;
     }*/
 
-    public static void clickStoryHandTarget(StoryHandTarget tgt) {
+    public static void ClickStoryHandTarget(StoryHandTarget tgt) {
         if (!tgt.enabled || !tgt.isValidHandTarget)
             return;
-        Story.StoryGoal goal = tgt.goal;
-        if (storyHandEvent != null) {
-            StoryHandCheck deal = new StoryHandCheck(goal, tgt);
-            storyHandEvent.Invoke(deal);
-            if (!deal.usable)
+        var goal = tgt.goal;
+        if (StoryHandEvent != null) {
+            var deal = new StoryHandCheck(goal, tgt);
+            StoryHandEvent.Invoke(deal);
+            if (!deal.Usable)
                 return;
-            goal = deal.goal;
+            goal = deal.Goal;
         }
 
         goal.Trigger();
@@ -2243,35 +2220,31 @@ public static class DIHooks {
         tgt.destroyGameObject.destroy(false);
     }
 
-    public static float getRadiationLevel(Player p, float orig) {
-        float ret = orig;
+    public static float GetRadiationLevel(Player p, float orig) {
+        var ret = orig;
         ret = Mathf.Max(ret, p.GetComponent<AoERadiationTracker>().getRadiationIntensity());
         //SNUtil.writeToChat("Rad "+ret.ToString());
         //SNUtil.writeToChat((radiationCheckEvent != null)+" # "+orig);
-        if (radiationCheckEvent != null) {
-            RadiationCheck ch = new RadiationCheck(p.transform.position, ret);
-            radiationCheckEvent.Invoke(ch);
-            ret = ch.value;
+        if (RadiationCheckEvent != null) {
+            var ch = new RadiationCheck(p.transform.position, ret);
+            RadiationCheckEvent.Invoke(ch);
+            ret = ch.Value;
         }
 
         //SNUtil.writeToChat("PRad "+ret.ToString());
         return ret;
     }
 
-    public static void onReaperGrabVehicle(ReaperLeviathan r, Vehicle v) {
+    public static void OnReaperGrabVehicle(ReaperLeviathan r, Vehicle v) {
         StoryGoal.Execute("ReaperGrab", Story.GoalType.Story);
-        if (reaperGrabVehicleEvent != null) {
-            reaperGrabVehicleEvent.Invoke(r, v);
-        }
+        ReaperGrabVehicleEvent?.Invoke(r, v);
     }
 
-    public static void onCyclopsDamaged(SubRoot r, DamageInfo d) {
-        if (cyclopsDamageEvent != null) {
-            cyclopsDamageEvent.Invoke(r, d);
-        }
+    public static void OnCyclopsDamaged(SubRoot r, DamageInfo d) {
+        CyclopsDamageEvent?.Invoke(r, d);
     }
 
-    public static void onDockingTriggerCollided(VehicleDockingBay v, Collider other) {
+    public static void OnDockingTriggerCollided(VehicleDockingBay v, Collider other) {
         if (other.isTrigger)
             return;
         if (v.GetDockedVehicle())
@@ -2280,7 +2253,7 @@ public static class DIHooks {
             return;
         if (v.interpolatingVehicle != null)
             return;
-        Vehicle componentInHierarchy = UWE.Utils.GetComponentInHierarchy<Vehicle>(other.gameObject);
+        var componentInHierarchy = UWE.Utils.GetComponentInHierarchy<Vehicle>(other.gameObject);
         if (componentInHierarchy == null || componentInHierarchy.docked || componentInHierarchy.GetRecentlyUndocked())
             return;
         v.timeDockingStarted = Time.time;
@@ -2289,28 +2262,28 @@ public static class DIHooks {
         v.startRotation = v.interpolatingVehicle.transform.rotation;
     }
 
-    public static void onAcidTriggerCollided(AcidicBrineDamageTrigger v, Collider other) {
+    public static void OnAcidTriggerCollided(AcidicBrineDamageTrigger v, Collider other) {
         if (other.isTrigger)
             return;
-        LiveMixin liveMixin = v.GetLiveMixin(other.gameObject);
+        var liveMixin = v.GetLiveMixin(other.gameObject);
         if (v.IsValidTarget(liveMixin)) {
             v.AddTarget(liveMixin);
         }
     }
 
-    public static void onAirlockTouched(PrecursorDoorMotorModeSetter door, Collider col) {
+    public static void OnAirlockTouched(PrecursorDoorMotorModeSetter door, Collider col) {
         if (col.isTrigger)
             return;
         if (door.setToMotorModeOnEnter == PrecursorDoorMotorMode.None)
             return;
         if (col.gameObject != null && col.gameObject.GetComponentInChildren<IgnoreTrigger>() != null)
             return;
-        GameObject gameObject = UWE.Utils.GetEntityRoot(col.gameObject);
+        var gameObject = UWE.Utils.GetEntityRoot(col.gameObject);
         if (!gameObject)
             gameObject = col.gameObject;
-        Player componentInHierarchy = UWE.Utils.GetComponentInHierarchy<Player>(gameObject);
+        var componentInHierarchy = UWE.Utils.GetComponentInHierarchy<Player>(gameObject);
         if (componentInHierarchy) {
-            PrecursorDoorMotorMode precursorDoorMotorMode = door.setToMotorModeOnEnter;
+            var precursorDoorMotorMode = door.setToMotorModeOnEnter;
             if (precursorDoorMotorMode != PrecursorDoorMotorMode.Auto) {
                 if (precursorDoorMotorMode == PrecursorDoorMotorMode.ForceWalk) {
                     componentInHierarchy.precursorOutOfWater = true;
@@ -2320,9 +2293,9 @@ public static class DIHooks {
             }
         }
 
-        Exosuit componentInHierarchy2 = UWE.Utils.GetComponentInHierarchy<Exosuit>(gameObject);
+        var componentInHierarchy2 = UWE.Utils.GetComponentInHierarchy<Exosuit>(gameObject);
         if (componentInHierarchy2) {
-            PrecursorDoorMotorMode precursorDoorMotorMode = door.setToMotorModeOnEnter;
+            var precursorDoorMotorMode = door.setToMotorModeOnEnter;
             if (precursorDoorMotorMode == PrecursorDoorMotorMode.Auto) {
                 componentInHierarchy2.precursorOutOfWater = false;
                 return;
@@ -2335,9 +2308,9 @@ public static class DIHooks {
             componentInHierarchy2.precursorOutOfWater = true;
         }
 
-        SeaMoth componentInHierarchy3 = UWE.Utils.GetComponentInHierarchy<SeaMoth>(gameObject);
+        var componentInHierarchy3 = UWE.Utils.GetComponentInHierarchy<SeaMoth>(gameObject);
         if (componentInHierarchy3) {
-            PrecursorDoorMotorMode precursorDoorMotorMode = door.setToMotorModeOnEnter;
+            var precursorDoorMotorMode = door.setToMotorModeOnEnter;
             if (precursorDoorMotorMode == PrecursorDoorMotorMode.Auto) {
                 componentInHierarchy3.precursorOutOfWater = false;
                 return;
@@ -2371,12 +2344,11 @@ public static class DIHooks {
         return CraftData.GetItemSize(tt);
     }*/
 
-    public static void onFModEmitterPlay(FMOD_CustomEmitter snd) {
-        if (onSoundPlayedEvent != null)
-            onSoundPlayedEvent.Invoke(snd);
+    public static void OnFModEmitterPlay(FMOD_CustomEmitter snd) {
+        OnSoundPlayedEvent?.Invoke(snd);
     }
 
-    public static float getMaxPropulsible(float orig, GameObject go, MonoBehaviour gun, bool isMass) {
+    public static float GetMaxPropulsible(float orig, GameObject go, MonoBehaviour gun, bool isMass) {
         //SNUtil.writeToChat("Testing "+gun.gameObject.GetFullHierarchyPath()+" grab of "+go.GetFullHierarchyPath());
         if (go.FindAncestor<Constructable>() || go.FindAncestor<SubRoot>() ||
             gun.gameObject.FindAncestor<Vehicle>() == go)
@@ -2387,11 +2359,11 @@ public static class DIHooks {
             return -1;
         }
 
-        float val = orig;
-        if (propulsibilityEvent != null) {
-            PropulsibilityCheck e = new PropulsibilityCheck(go, val, gun, isMass);
-            propulsibilityEvent.Invoke(e);
-            val = e.value;
+        var val = orig;
+        if (PropulsibilityEvent != null) {
+            var e = new PropulsibilityCheck(go, val, gun, isMass);
+            PropulsibilityEvent.Invoke(e);
+            val = e.Value;
         }
 
         if (go.GetComponentInChildren<Vehicle>() || go.GetComponentInChildren<AlwaysPropulsible>())
@@ -2401,20 +2373,20 @@ public static class DIHooks {
         return val;
     }
 
-    public static Vector3 getPropulsionTargetCenter(Vector3 orig, GameObject go) {
-        Vehicle v = go.GetComponentInChildren<Vehicle>();
+    public static Vector3 GetPropulsionTargetCenter(Vector3 orig, GameObject go) {
+        var v = go.GetComponentInChildren<Vehicle>();
         if (v) {
-            Vector3 ret = go.transform.position;
+            var ret = go.transform.position;
             if (v is SeaMoth)
-                ret += (go.transform.forward * -1.25F) + (go.transform.up * -0.125F);
+                ret += go.transform.forward * -1.25F + go.transform.up * -0.125F;
             return ret;
         }
 
         return orig;
     }
 
-    public static Vector3 getPropulsionMoveToPoint(Vector3 orig, PropulsionCannon gun) {
-        Vehicle v = Player.main.GetVehicle();
+    public static Vector3 GetPropulsionMoveToPoint(Vector3 orig, PropulsionCannon gun) {
+        var v = Player.main.GetVehicle();
         return v is SeaMoth && gun.gameObject.FindAncestor<Vehicle>() == v ? v.transform.position : orig;
     }
 
@@ -2426,9 +2398,9 @@ public static class DIHooks {
         SNUtil.log("from trace "+Environment.StackTrace, SNUtil.diDLL);
     }*/
 
-    public static void onVehicleEnter(Vehicle v, Player ep) {
-        if (vehicleEnterEvent != null && v && ep) {
-            vehicleEnterEvent.Invoke(v, ep);
+    public static void OnVehicleEnter(Vehicle v, Player ep) {
+        if (VehicleEnterEvent != null && v && ep) {
+            VehicleEnterEvent.Invoke(v, ep);
         }
     }
 
@@ -2441,60 +2413,59 @@ public static class DIHooks {
         }
     }
     */
-    public static uGUI_DepthCompass.DepthMode getCompassDepth(uGUI_DepthCompass gui, out int depth, out int crush) {
-        uGUI_DepthCompass.DepthMode ret = gui.GetDepthInfo(out depth, out crush);
-        if (depthCompassEvent != null) {
-            DepthCompassCheck ch = new DepthCompassCheck(depth, crush);
-            depthCompassEvent.Invoke(ch);
-            depth = ch.value;
-            crush = ch.crushValue;
+    public static uGUI_DepthCompass.DepthMode GetCompassDepth(uGUI_DepthCompass gui, out int depth, out int crush) {
+        var ret = gui.GetDepthInfo(out depth, out crush);
+        if (DepthCompassEvent != null) {
+            var ch = new DepthCompassCheck(depth, crush);
+            DepthCompassEvent.Invoke(ch);
+            depth = ch.Value;
+            crush = ch.CrushValue;
         }
 
         return ret;
     }
 
-    public static void onRespawnPre(Survival s, Player ep) {
-        if (respawnEvent != null && s && ep)
-            respawnEvent.Invoke(s, ep, false);
+    public static void OnRespawnPre(Survival s, Player ep) {
+        if (RespawnEvent != null && s && ep)
+            RespawnEvent.Invoke(s, ep, false);
     }
 
-    public static void onRespawnPost(Survival s, Player ep) {
-        if (respawnEvent != null && s && ep)
-            respawnEvent.Invoke(s, ep, true);
+    public static void OnRespawnPost(Survival s, Player ep) {
+        if (RespawnEvent != null && s && ep)
+            RespawnEvent.Invoke(s, ep, true);
     }
 
-    public static void onDrillableDrilled(Drillable dr, Vector3 pos, Exosuit driller) {
+    public static void OnDrillableDrilled(Drillable dr, Vector3 pos, Exosuit driller) {
         //SNUtil.writeToChat("Drilling "+dr+" @ "+pos+" by "+driller);
-        if (drillableDrillTickEvent != null && dr)
-            drillableDrillTickEvent.Invoke(dr, pos, driller);
+        if (DrillableDrillTickEvent != null && dr)
+            DrillableDrillTickEvent.Invoke(dr, pos, driller);
     }
 
-    public static void onMapRoomTick(MapRoomFunctionality map) {
-        if (scannerRoomTickEvent != null && map)
-            scannerRoomTickEvent.Invoke(map);
+    public static void OnMapRoomTick(MapRoomFunctionality map) {
+        if (ScannerRoomTickEvent != null && map)
+            ScannerRoomTickEvent.Invoke(map);
     }
 
-    public static void onItemsLost() {
+    public static void OnItemsLost() {
         Inventory.main.container.forEach((ii) => {
-                IrreplaceableItemRegistry.IrreplaceableItemData eff =
+                var eff =
                     IrreplaceableItemRegistry.instance.getEffects(ii.item.GetTechType());
                 if (eff != null) {
                     eff.onDiedWhileHolding.Invoke(ii);
                 }
             }
         );
-        if (itemsLostEvent != null)
-            itemsLostEvent.Invoke();
+        ItemsLostEvent?.Invoke();
     }
 
-    public static void onStorageContainerHover(StorageContainer sc, GUIHand hand) {
-        DiscreteOperationalMachineLogic lgc = sc.GetComponentInParent<DiscreteOperationalMachineLogic>();
+    public static void OnStorageContainerHover(StorageContainer sc, GUIHand hand) {
+        var lgc = sc.GetComponentInParent<DiscreteOperationalMachineLogic>();
         if (lgc) {
             if (lgc.isWorking()) {
                 HandReticle.main.SetProgress(lgc.getProgressScalar());
                 HandReticle.main.SetIcon(HandReticle.IconType.Progress, 1f);
             } else {
-                string err = lgc.getErrorHover();
+                var err = lgc.getErrorHover();
                 if (string.IsNullOrEmpty(err)) {
                     HandReticle.main.SetIcon(HandReticle.IconType.Interact, 1f);
                 } else {
@@ -2504,32 +2475,29 @@ public static class DIHooks {
             }
         }
 
-        if (storageHoverEvent != null)
-            storageHoverEvent.Invoke(sc, hand);
+        StorageHoverEvent?.Invoke(sc, hand);
     }
 
-    public static float getModuleFireCost(float cost, Vehicle v, TechType module) {
-        if (moduleFireCostEvent != null) {
-            ModuleFireCostCheck e = new ModuleFireCostCheck(v, module, cost);
-            moduleFireCostEvent.Invoke(e);
-            cost = e.value;
+    public static float GetModuleFireCost(float cost, Vehicle v, TechType module) {
+        if (ModuleFireCostEvent != null) {
+            var e = new ModuleFireCostCheck(v, module, cost);
+            ModuleFireCostEvent.Invoke(e);
+            cost = e.Value;
         }
 
         return cost;
     }
 
-    public static void onSelfScan() {
-        if (selfScanEvent != null)
-            selfScanEvent.Invoke();
+    public static void OnSelfScan() {
+        SelfScanEvent?.Invoke();
     }
 
-    public static void filterScannerRoomResourceList(uGUI_MapRoomScanner gui) {
-        if (scannerRoomTechTypeListingEvent != null)
-            scannerRoomTechTypeListingEvent.Invoke(gui);
+    public static void FilterScannerRoomResourceList(uGUI_MapRoomScanner gui) {
+        ScannerRoomTechTypeListingEvent?.Invoke(gui);
     }
 
-    public static void tickWorldForces(WorldForces wf) {
-        if (skipWorldForces)
+    public static void TickWorldForces(WorldForces wf) {
+        if (SkipWorldForces)
             return;
         if (wf == null || wf.gameObject == null || !wf.gameObject.activeInHierarchy || !wf.enabled) {
             //WorldForcesManager.instance.RemoveWorldForces(wf);
@@ -2540,8 +2508,8 @@ public static class DIHooks {
         wf.DoFixedUpdate();
     }
 
-    public static void updateSkyApplier(SkyApplier wf) {
-        if (skipSkyApplier)
+    public static void UpdateSkyApplier(SkyApplier wf) {
+        if (SkipSkyApplier)
             return;
         if (!wf || !wf.gameObject || !wf.transform) {
             return;
@@ -2554,11 +2522,11 @@ public static class DIHooks {
     return p.GetRightHandDown();
    }*/
 
-    public static bool onStasisFreeze(StasisSphere s, Collider c, ref Rigidbody target) {
-        StasisReactant m = c.gameObject.GetComponentInParent<StasisReactant>();
+    public static bool OnStasisFreeze(StasisSphere s, Collider c, ref Rigidbody target) {
+        var m = c.gameObject.GetComponentInParent<IStasisReactant>();
         //SNUtil.writeToChat("Stasis hit "+c+": "+m);
         if (m != null && m as MonoBehaviour)
-            m.onStasisHit(s);
+            m.OnStasisHit(s);
         target = c.GetComponentInParent<Rigidbody>();
         if (!target)
             return false;
@@ -2566,10 +2534,9 @@ public static class DIHooks {
             return false;
         if (s.targets.Contains(target))
             return true;
-        StasisEffectCheck ch = new StasisEffectCheck(s, target);
-        if (onStasisRifleFreezeEvent != null)
-            onStasisRifleFreezeEvent.Invoke(ch);
-        string name = target.name.ToLowerInvariant();
+        var ch = new StasisEffectCheck(s, target);
+        OnStasisRifleFreezeEvent?.Invoke(ch);
+        var name = target.name.ToLowerInvariant();
         if (name.StartsWith("explorablewreck", StringComparison.InvariantCultureIgnoreCase))
             return false;
         if (name.Contains("biodome"))
@@ -2586,13 +2553,13 @@ public static class DIHooks {
             return false;
         if (c.GetComponentInParent<WreckHandler>())
             return false;
-        if (ch.addToTargetList)
+        if (ch.AddToTargetList)
             s.targets.Add(target);
-        if (ch.applyKinematicChange)
+        if (ch.ApplyKinematicChange)
             target.isKinematic = true;
-        if (ch.sendMessage)
+        if (ch.SendMessage)
             target.SendMessage("OnFreeze", SendMessageOptions.DontRequireReceiver);
-        if (ch.doFX) {
+        if (ch.DoFX) {
             Utils.PlayOneShotPS(s.vfxFreeze, target.GetComponent<Transform>().position, Quaternion.identity, null);
             FMODUWE.PlayOneShot(s.soundEnter, s.tr.position, 1f);
         }
@@ -2600,38 +2567,36 @@ public static class DIHooks {
         return !target.isKinematic;
     }
 
-    public interface StasisReactant {
+    public interface IStasisReactant {
         /// <summary>
         /// this is called every frame!
         /// </summary>
-        void onStasisHit(StasisSphere s);
+        void OnStasisHit(StasisSphere s);
     }
 
-    public static void onStasisUnfreeze(StasisSphere s, Rigidbody target) {
+    public static void OnStasisUnfreeze(StasisSphere s, Rigidbody target) {
         if (!target)
             return;
         if (target.GetComponent<WreckHandler>())
             return;
-        StasisEffectCheck ch = new StasisEffectCheck(s, target);
-        if (onStasisRifleUnfreezeEvent != null)
-            onStasisRifleUnfreezeEvent.Invoke(ch);
-        if (ch.doFX)
+        var ch = new StasisEffectCheck(s, target);
+        OnStasisRifleUnfreezeEvent?.Invoke(ch);
+        if (ch.DoFX)
             Utils.PlayOneShotPS(s.vfxUnfreeze, target.GetComponent<Transform>().position, Quaternion.identity, null);
-        if (ch.applyKinematicChange)
+        if (ch.ApplyKinematicChange)
             target.isKinematic = false;
-        if (ch.sendMessage)
+        if (ch.SendMessage)
             target.SendMessage("OnUnfreeze", SendMessageOptions.DontRequireReceiver);
     }
 
-    public static void onRedundantFragmentScan() {
-        PDAScanner.ScanTarget tgt = PDAScanner.scanTarget;
+    public static void OnRedundantFragmentScan() {
+        var tgt = PDAScanner.scanTarget;
         SNUtil.writeToChat(
             Language.main.Get(PDAScanner.GetEntryData(tgt.techType).blueprint) + " already known"
         ); //Language.main.Get("ScannerRedundantScanned")
-        RedundantScanEvent r = new RedundantScanEvent();
-        if (onRedundantScanEvent != null)
-            onRedundantScanEvent.Invoke(r);
-        if (!r.preventNormalDrop)
+        var r = new RedundantScanEvent();
+        OnRedundantScanEvent?.Invoke(r);
+        if (!r.PreventNormalDrop)
             CraftData.AddToInventory(TechType.Titanium, 2, false, true);
     }
     /*
@@ -2646,26 +2611,23 @@ public static class DIHooks {
         return ret;
    }*/
 
-    public static EquipmentType getOverriddenEquipmentType(EquipmentType ret, TechType item) {
-        if (equipmentTypeCheckEvent != null) {
-            EquipmentTypeCheck ch = new EquipmentTypeCheck(item, ret);
-            equipmentTypeCheckEvent.Invoke(ch);
-            ret = ch.type;
+    public static EquipmentType GetOverriddenEquipmentType(EquipmentType ret, TechType item) {
+        if (EquipmentTypeCheckEvent != null) {
+            var ch = new EquipmentTypeCheck(item, ret);
+            EquipmentTypeCheckEvent.Invoke(ch);
+            ret = ch.Type;
         }
 
         return ret;
     }
 
-    public static bool tryEat(Survival s, GameObject go) {
-        EatAttempt ea = new EatAttempt(s, go);
-        if (tryEatEvent != null) {
-            tryEatEvent.Invoke(ea);
-        }
+    public static bool TryEat(Survival s, GameObject go) {
+        var ea = new EatAttempt(s, go);
+        TryEatEvent?.Invoke(ea);
 
-        if (ea.allowEat && s.Eat(go)) {
+        if (ea.AllowEat && s.Eat(go)) {
             ConsumableTracker.instance.onConsume(go, true);
-            if (onEatEvent != null)
-                onEatEvent.Invoke(s, go);
+            OnEatEvent?.Invoke(s, go);
             return true;
         } else {
             SoundManager.playSoundAt(
@@ -2679,37 +2641,36 @@ public static class DIHooks {
         }
     }
 
-    public static float getSwimSpeed(float f) {
-        foreach (PlayerMovementSpeedModifier m in Player.main.gameObject.GetComponents<PlayerMovementSpeedModifier>())
+    public static float GetSwimSpeed(float f) {
+        foreach (var m in Player.main.gameObject.GetComponents<PlayerMovementSpeedModifier>())
             f *= m.speedModifier;
-        if (getSwimSpeedEvent != null) {
-            SwimSpeedCalculation calc = new SwimSpeedCalculation(f);
-            getSwimSpeedEvent.Invoke(calc);
-            return calc.speed;
+        if (GetSwimSpeedEvent != null) {
+            var calc = new SwimSpeedCalculation(f);
+            GetSwimSpeedEvent.Invoke(calc);
+            return calc.Speed;
         } else {
             return f;
         }
     }
 
-    public static float getWalkSpeed(float f) {
-        foreach (PlayerMovementSpeedModifier m in Player.main.gameObject.GetComponents<PlayerMovementSpeedModifier>())
+    public static float GetWalkSpeed(float f) {
+        foreach (var m in Player.main.gameObject.GetComponents<PlayerMovementSpeedModifier>())
             f *= m.speedModifier;
         //SNUtil.writeToChat("Walk speed is "+f.ToString("0.000"));
         return f;
     }
 
-    public static void onVehicleDestroyed(Vehicle v) {
-        if (onVehicleDestroyEvent != null)
-            onVehicleDestroyEvent.Invoke(v);
-        List<Pickupable> storeInLocker = new List<Pickupable>();
-        List<IItemsContainer> li = new List<IItemsContainer>();
+    public static void OnVehicleDestroyed(Vehicle v) {
+        OnVehicleDestroyEvent?.Invoke(v);
+        List<Pickupable> storeInLocker = [];
+        List<IItemsContainer> li = [];
         v.GetAllStorages(li);
         foreach (ItemsContainer sc in li) {
-            sc.forEach(ii => fireVehicleLoss(v, false, ii, storeInLocker));
+            sc.forEach(ii => FireVehicleLoss(v, false, ii, storeInLocker));
         }
 
         if (v.modules != null) {
-            v.modules.equipment.Values.ForEach(ii => fireVehicleLoss(v, true, ii, storeInLocker));
+            v.modules.equipment.Values.ForEach(ii => FireVehicleLoss(v, true, ii, storeInLocker));
         }
 
         if (storeInLocker.Count > 0) {
@@ -2717,9 +2678,9 @@ public static class DIHooks {
         }
     }
 
-    private static void fireVehicleLoss(Vehicle v, bool module, InventoryItem ii, List<Pickupable> locker) {
+    private static void FireVehicleLoss(Vehicle v, bool module, InventoryItem ii, List<Pickupable> locker) {
         if (ii != null && ii.item) {
-            IrreplaceableItemRegistry.IrreplaceableItemData eff =
+            var eff =
                 IrreplaceableItemRegistry.instance.getEffects(ii.item.GetTechType());
             if (eff != null) {
                 eff.onLostWithVehicle.Invoke(v, module, ii, locker);
@@ -2727,32 +2688,31 @@ public static class DIHooks {
         }
     }
 
-    public static void onSleep(Bed bed) {
-        if (onSleepEvent != null)
-            onSleepEvent.Invoke(bed);
+    public static void OnSleep(Bed bed) {
+        OnSleepEvent?.Invoke(bed);
     }
 
-    public static float getFoodWaterConsumptionRate(float f) {
-        if (getFoodRateEvent != null) {
-            FoodRateCalculation calc = new FoodRateCalculation(f);
-            getFoodRateEvent.Invoke(calc);
-            return calc.rate;
+    public static float GetFoodWaterConsumptionRate(float f) {
+        if (GetFoodRateEvent != null) {
+            var calc = new FoodRateCalculation(f);
+            GetFoodRateEvent.Invoke(calc);
+            return calc.Rate;
         }
 
         return f;
     }
 
-    public static Vector3 getPlayerMovementControl(Vector3 orig) { //used to override player controls
-        if (getPlayerInputEvent != null) {
-            PlayerInput calc = new PlayerInput(orig);
-            getPlayerInputEvent.Invoke(calc);
-            return calc.selectedInput;
+    public static Vector3 GetPlayerMovementControl(Vector3 orig) { //used to override player controls
+        if (GetPlayerInputEvent != null) {
+            var calc = new PlayerInput(orig);
+            GetPlayerInputEvent.Invoke(calc);
+            return calc.SelectedInput;
         }
 
         return orig;
     }
 
-    public static void doShootTorpedo(
+    public static void DoShootTorpedo(
         Bullet b,
         Vector3 position,
         Quaternion rotation,
@@ -2761,46 +2721,44 @@ public static class DIHooks {
         Vehicle v
     ) {
         b.Shoot(position, rotation, speed, lifeTime);
-        if (onTorpedoFireEvent != null)
-            onTorpedoFireEvent.Invoke(b, v);
+        OnTorpedoFireEvent?.Invoke(b, v);
     }
 
-    public static Transform onTorpedoExploded(Transform result, SeamothTorpedo sm) {
+    public static Transform OnTorpedoExploded(Transform result, SeamothTorpedo sm) {
         result.position = sm.tr.position;
         result.rotation = sm.tr.rotation;
-        if (onTorpedoExplodeEvent != null)
-            onTorpedoExplodeEvent.Invoke(sm, result);
+        OnTorpedoExplodeEvent?.Invoke(sm, result);
         return result;
     }
 
-    public static bool canSeeObject(Creature c, GameObject go) {
+    public static bool CanSeeObject(Creature c, GameObject go) {
         float dist = 0;
-        bool ret = c.hasEyes && c.IsInFieldOfView(go);
-        if (canCreatureSeeObjectEvent != null) {
-            CreatureSeeObjectCheck e = new CreatureSeeObjectCheck(c, go, ret, dist);
-            canCreatureSeeObjectEvent.Invoke(e);
-            ret = e.canSee;
+        var ret = c.hasEyes && c.IsInFieldOfView(go);
+        if (CanCreatureSeeObjectEvent != null) {
+            var e = new CreatureSeeObjectCheck(c, go, ret, dist);
+            CanCreatureSeeObjectEvent.Invoke(e);
+            ret = e.CanSee;
         }
 
         return ret;
     }
 
-    public static void tickPilotedVehicleAggression(AggressiveToPilotingVehicle ai) {
-        Player main = Player.main;
+    public static void TickPilotedVehicleAggression(AggressiveToPilotingVehicle ai) {
+        var main = Player.main;
         if (main == null || main.GetMode() != Player.Mode.LockedPiloting) {
             return;
         }
 
-        Vehicle vehicle = main.GetVehicle();
+        var vehicle = main.GetVehicle();
         if (vehicle == null) {
             return;
         }
 
-        bool can = Vector3.Distance(vehicle.transform.position, ai.transform.position) <= ai.range;
-        if (aggressiveToPilotingEvent != null) {
-            AggressiveToPilotingVehicleCheck e = new AggressiveToPilotingVehicleCheck(ai, vehicle, can);
-            aggressiveToPilotingEvent.Invoke(e);
-            can = e.canTarget;
+        var can = Vector3.Distance(vehicle.transform.position, ai.transform.position) <= ai.range;
+        if (AggressiveToPilotingEvent != null) {
+            var e = new AggressiveToPilotingVehicleCheck(ai, vehicle, can);
+            AggressiveToPilotingEvent.Invoke(e);
+            can = e.CanTarget;
         }
 
         if (can) {
@@ -2809,39 +2767,38 @@ public static class DIHooks {
         }
     }
 
-    public static void onBaseRebuild(Base b) {
-        if (b.cellObjects != null && baseRebuildEvent != null)
-            baseRebuildEvent.Invoke(b);
+    public static void OnBaseRebuild(Base b) {
+        if (b.cellObjects != null && BaseRebuildEvent != null)
+            BaseRebuildEvent.Invoke(b);
     }
 
-    public static void recomputeBaseHullStrength(BaseHullStrength b) {
+    public static void RecomputeBaseHullStrength(BaseHullStrength b) {
         if (b.baseComp != null) {
             if (GameModeUtils.RequiresReinforcements()) {
-                BaseStrengthCalculation calc = new BaseStrengthCalculation(b);
+                var calc = new BaseStrengthCalculation(b);
                 b.victims.Clear();
                 foreach (Int3 cell in b.baseComp.AllCells) {
                     if (b.baseComp.GridToWorld(cell).y < 0f) {
-                        Transform t = b.baseComp.GetCellObject(cell);
+                        var t = b.baseComp.GetCellObject(cell);
                         if (t != null) {
                             b.victims.Add(t.GetComponent<LiveMixin>());
-                            calc.computeCellStrength(cell);
+                            calc.ComputeCellStrength(cell);
                         }
                     }
                 }
 
-                if (baseStrengthComputeEvent != null)
-                    baseStrengthComputeEvent.Invoke(calc);
-                float total = calc.finalStrength;
+                BaseStrengthComputeEvent?.Invoke(calc);
+                var total = calc.FinalStrength;
                 if (!Mathf.Approximately(total, b.totalStrength))
                     SNUtil.writeToChat(
-                        Language.main.GetFormat<float, float>("BaseHullStrChanged", total - b.totalStrength, total)
+                        Language.main.GetFormat("BaseHullStrChanged", total - b.totalStrength, total)
                     );
                 b.totalStrength = total;
             }
         }
     }
 
-    public static void applyItemBackground(uGUI_ItemIcon ico, Sprite spr, InventoryItem ii) {
+    public static void ApplyItemBackground(uGUI_ItemIcon ico, Sprite spr, InventoryItem ii) {
         ico.SetBackgroundSprite(spr);
         if (ii.item.GetTechType() == TechType.Peeper && ii.item.GetComponent<Peeper>().isHero) {
             //ico.background.color = new Color(2F, 1F, 0.2F, 1);
@@ -2851,7 +2808,7 @@ public static class DIHooks {
                 SNUtil.log(e.ToString());
             }
         } else {
-            InfectedMixin im = ii.item.GetComponent<InfectedMixin>();
+            var im = ii.item.GetComponent<InfectedMixin>();
             if (im && im.IsInfected()) {
                 try {
                     ico.background.material.color = new Color(0.2F, 1.5F, 0.2F, 1);
@@ -2875,37 +2832,37 @@ public static class DIHooks {
     //     return pp;
     // }
 
-    public static Pickupable onWaterFilterSpawn(FiltrationMachine fm, Pickupable pp) {
-        Pickupable ret = pp;
-        if (waterFilterSpawnEvent != null) {
-            WaterFilterSpawn e = new WaterFilterSpawn(fm, pp);
-            waterFilterSpawnEvent.Invoke(e);
-            ret = e.item;
+    public static Pickupable OnWaterFilterSpawn(FiltrationMachine fm, Pickupable pp) {
+        var ret = pp;
+        if (WaterFilterSpawnEvent != null) {
+            var e = new WaterFilterSpawn(fm, pp);
+            WaterFilterSpawnEvent.Invoke(e);
+            ret = e.Item;
         }
 
         return ret;
     }
 
-    public static int surfaceTypeDebugLevel = 1;
+    public static int SurfaceTypeDebugLevel = 1;
 
-    public static SurfaceType debugGetSurfaceType(SurfaceType s, Vector3 vec) {
-        if (surfaceTypeDebugLevel > 1 || (surfaceTypeDebugLevel == 1 && s != SurfaceType.Ceiling &&
+    public static SurfaceType DebugGetSurfaceType(SurfaceType s, Vector3 vec) {
+        if (SurfaceTypeDebugLevel > 1 || (SurfaceTypeDebugLevel == 1 && s != SurfaceType.Ceiling &&
                                           s != SurfaceType.Wall && s != SurfaceType.Ground))
             SNUtil.writeToChat("Returning surface type " + s + " from " + vec);
         return s;
     }
 
-    public static void registerUID(UniqueIdentifier uid) {
-        string id = uid.id;
+    public static void RegisterUid(UniqueIdentifier uid) {
+        var id = uid.id;
         if (string.IsNullOrEmpty(id)) {
             //SNUtil.log("Skipping register of UID with null ID: "+uid.name+" @ "+uid.transform.position, SNUtil.diDLL);
             return;
         }
 
-        if (UniqueIdentifier.identifiers.TryGetValue(id, out UniqueIdentifier has)) {
+        if (UniqueIdentifier.identifiers.TryGetValue(id, out var has)) {
             if (has != uid) {
                 if (has) {
-                    if (skipZeroedDeserialization && has.transform.position.sqrMagnitude > 0.01 &&
+                    if (_skipZeroedDeserialization && has.transform.position.sqrMagnitude > 0.01 &&
                         uid.transform.position.sqrMagnitude < 0.01) {
                         SNUtil.log(
                             "Skipping setup of UID at origin: " + uid.name + " in favor of " + has.name + " @ " +
@@ -2924,7 +2881,7 @@ public static class DIHooks {
                                 has.name,
                                 has.transform.position,
                                 uid.name,
-                                uid.transform.position
+                                uid.transform.position,
                             }
                         );
                         UniqueIdentifier.identifiers[id] = uid;
@@ -2941,16 +2898,16 @@ public static class DIHooks {
         }
     }
 
-    public static GameObject createSpawnedItem(TechType tt, bool customOnly) {
-        GameObject ret = CraftData.InstantiateFromPrefab(
+    public static GameObject CreateSpawnedItem(TechType tt, bool customOnly) {
+        var ret = CraftData.InstantiateFromPrefab(
             CraftData.GetPrefabForTechTypeAsync(tt).GetResult(),
             tt,
             customOnly
         );
         if (GameModeUtils.currentEffectiveMode != GameModeOption.Creative) {
-            SpawnedItemTracker.SpawnedItemEvent e = SpawnedItemTracker.instance.addSpawn(tt);
+            var e = SpawnedItemTracker.instance.addSpawn(tt);
             if (ret) {
-                PrefabIdentifier pi = ret.GetComponentInChildren<PrefabIdentifier>();
+                var pi = ret.GetComponentInChildren<PrefabIdentifier>();
                 if (pi)
                     e.setObject(pi);
                 else
@@ -2963,83 +2920,74 @@ public static class DIHooks {
         return ret;
     }
 
-    public static void onCommandUse(DevConsole c, string cmd) {
+    public static void OnCommandUse(DevConsole c, string cmd) {
         CommandTracker.instance.onCommand(cmd);
     }
 
-    public static float getGrowingPlantProgressInTick(float progress, GrowingPlant g) {
-        if (growingPlantTickEvent != null)
-            growingPlantTickEvent.Invoke(g, progress);
+    public static float GetGrowingPlantProgressInTick(float progress, GrowingPlant g) {
+        GrowingPlantTickEvent?.Invoke(g, progress);
         return progress;
     }
 
-    public static void onCuddlefishPlayed(
+    public static void OnCuddlefishPlayed(
         CuteFishHandTarget tgt,
         Player ep,
         CuteFishHandTarget.CuteFishCinematic anim
     ) {
-        if (onPlayWithCuddlefish != null)
-            onPlayWithCuddlefish.Invoke(tgt, ep, anim);
+        OnPlayWithCuddlefish?.Invoke(tgt, ep, anim);
     }
 
-    public static void onRocketStageCompleted(Rocket r) {
-        if (onRocketStageCompletedEvent != null)
-            onRocketStageCompletedEvent.Invoke(r, r.currentRocketStage, Rocket.IsAnyRocketReady);
+    public static void OnRocketStageCompleted(Rocket r) {
+        OnRocketStageCompletedEvent?.Invoke(r, r.currentRocketStage, Rocket.IsAnyRocketReady);
         StoryGoal.Execute("RocketStage" + r.currentRocketStage, Story.GoalType.Story);
         if (Rocket.IsAnyRocketReady)
             StoryGoalScheduler.main.Schedule(new StoryGoal("RocketComplete", Story.GoalType.Story, 10F));
     }
 
-    public static float getCrafterTime(float time, Crafter c, TechType recipe) {
-        CraftTimeCalculation calc = new CraftTimeCalculation(time, c, recipe);
-        if (craftTimeEvent != null)
-            craftTimeEvent.Invoke(calc);
+    public static float GetCrafterTime(float time, Crafter c, TechType recipe) {
+        var calc = new CraftTimeCalculation(time, c, recipe);
+        CraftTimeEvent?.Invoke(calc);
         //SNUtil.writeToChat("Crafting time adjusted to "+calc.craftingDuration.ToString("0.0")+"s from original "+calc.originalDuration.ToString("0.0")+"s");
-        return calc.craftingDuration;
+        return calc.CraftingDuration;
     }
 
-    public static void pulseSeamothDefence(SeaMoth sm) {
-        if (seamothDischargeEvent != null)
-            seamothDischargeEvent.Invoke(sm);
+    public static void PulseSeamothDefence(SeaMoth sm) {
+        SeamothDischargeEvent?.Invoke(sm);
     }
 
-    public static void onTreaderChunkSpawn(SinkingGroundChunk chunk) {
-        if (spawnTreaderChunk != null)
-            spawnTreaderChunk.Invoke(chunk);
+    public static void OnTreaderChunkSpawn(SinkingGroundChunk chunk) {
+        SpawnTreaderChunk?.Invoke(chunk);
     }
 
-    public static void onCrashfishExplode(Crash c) {
-        if (crashfishExplodeEvent != null)
-            crashfishExplodeEvent.Invoke(c);
+    public static void OnCrashfishExplode(Crash c) {
+        CrashfishExplodeEvent?.Invoke(c);
     }
 
-    public static bool checkTargetingSkip(bool orig, Transform obj) {
+    public static bool CheckTargetingSkip(bool orig, Transform obj) {
         if (!obj || !obj.gameObject)
             return orig;
-        PrefabIdentifier id = obj.gameObject.FindAncestor<PrefabIdentifier>();
+        var id = obj.gameObject.FindAncestor<PrefabIdentifier>();
         if (!id)
             return orig;
-        TargetabilityCheck calc = new TargetabilityCheck(!orig, obj, id);
-        if (targetabilityEvent != null)
-            targetabilityEvent.Invoke(calc);
+        var calc = new TargetabilityCheck(!orig, obj, id);
+        TargetabilityEvent?.Invoke(calc);
         //SNUtil.writeToChat("Crafting time adjusted to "+calc.craftingDuration.ToString("0.0")+"s from original "+calc.originalDuration.ToString("0.0")+"s");
-        return !calc.allowTargeting;
+        return !calc.AllowTargeting;
     }
 
-    public static Pickupable onRefundConstructableIngredient(Pickupable pp, Constructable c) {
-        Battery b = pp.GetComponent<Battery>();
+    public static Pickupable OnRefundConstructableIngredient(Pickupable pp, Constructable c) {
+        var b = pp.GetComponent<Battery>();
         if (b)
             b.charge = 0;
         return pp;
     }
 
-    public static void onAuroraSpawn(CrashedShipExploder ex) {
-        if (auroraSpawnEvent != null)
-            auroraSpawnEvent.Invoke(ex);
+    public static void OnAuroraSpawn(CrashedShipExploder ex) {
+        AuroraSpawnEvent?.Invoke(ex);
         ex.gameObject.EnsureComponent<ShipExplosionListener>();
     }
 
-    class ShipExplosionListener : MonoBehaviour {
+    private class ShipExplosionListener : MonoBehaviour {
         private void OnShipExplode() {
             StoryGoalScheduler.main.Schedule(
                 new StoryGoal("AuroraExplode", Story.GoalType.Story, 24F)
@@ -3047,17 +2995,17 @@ public static class DIHooks {
         }
     }
 
-    private static void startTeleport() {
+    private static void StartTeleport() {
         if (!Player.main.GetVehicle() && !Player.main.currentSub) {
-            Pickupable pp = Inventory.main.GetHeld();
+            var pp = Inventory.main.GetHeld();
             if (pp) {
-                PropulsionCannon pc = pp.GetComponent<PropulsionCannon>();
+                var pc = pp.GetComponent<PropulsionCannon>();
                 if (pc && pc.grabbedObject) {
-                    selectedSlot = Inventory.main.quickSlots.activeSlot;
-                    activePropulsionGun = pc;
-                    teleportWithPlayer = pc.grabbedObject;
-                    relativeGrabPosition = teleportWithPlayer.transform.position - Player.main.transform.position;
-                    teleportWithPlayer.transform.position =
+                    _selectedSlot = Inventory.main.quickSlots.activeSlot;
+                    _activePropulsionGun = pc;
+                    _teleportWithPlayer = pc.grabbedObject;
+                    _relativeGrabPosition = _teleportWithPlayer.transform.position - Player.main.transform.position;
+                    _teleportWithPlayer.transform.position =
                         WorldUtil.getClosest<PrecursorTeleporter>(Player.main.transform.position).warpToPos;
                     //SNUtil.writeToChat("Teleporting "+teleportWithPlayer+" with player, pre");
                 }
@@ -3065,20 +3013,20 @@ public static class DIHooks {
         }
     }
 
-    private static void stopTeleport() {
-        if (activePropulsionGun) {
-            if (teleportWithPlayer) {
+    private static void StopTeleport() {
+        if (_activePropulsionGun) {
+            if (_teleportWithPlayer) {
                 //InventoryItem ii = Inventory.main.container.GetItems(activePropulsionGun.GetComponent<Pickupable>().GetTechType()).First();
-                Inventory.main.quickSlots.SelectImmediate(selectedSlot);
-                teleportWithPlayer.transform.position = Player.main.transform.position + relativeGrabPosition;
-                activePropulsionGun.GrabObject(teleportWithPlayer);
+                Inventory.main.quickSlots.SelectImmediate(_selectedSlot);
+                _teleportWithPlayer.transform.position = Player.main.transform.position + _relativeGrabPosition;
+                _activePropulsionGun.GrabObject(_teleportWithPlayer);
                 //SNUtil.writeToChat("Teleporting "+teleportWithPlayer+" with player, post");
             } else {
                 //SNUtil.writeToChat("Object to teleport with player does not yet exist");
             }
         }
 
-        teleportWithPlayer = null;
-        activePropulsionGun = null;
+        _teleportWithPlayer = null;
+        _activePropulsionGun = null;
     }
 }

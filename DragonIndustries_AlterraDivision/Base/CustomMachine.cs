@@ -12,9 +12,9 @@ namespace ReikaKalseki.DIAlterra;
 
 public abstract class CustomMachine<M> : CustomPrefab, DIPrefab<CustomMachine<M>, StringPrefabContainer>
     where M : CustomMachineLogic {
-    private static readonly MachineSaveHandler saveHandler = new MachineSaveHandler();
+    private static readonly MachineSaveHandler saveHandler = new();
 
-    private readonly List<PlannedIngredient> recipe = new List<PlannedIngredient>();
+    private readonly List<PlannedIngredient> recipe = [];
 
     public readonly string id;
 
@@ -48,15 +48,15 @@ public abstract class CustomMachine<M> : CustomPrefab, DIPrefab<CustomMachine<M>
     }
 
     public CustomMachine<M> addIngredient(ItemDef item, int amt) {
-        return this.addIngredient(item.getTechType(), amt);
+        return addIngredient(item.getTechType(), amt);
     }
 
     public CustomMachine<M> addIngredient(CustomPrefab item, int amt) {
-        return this.addIngredient(new ModPrefabTechReference(item), amt);
+        return addIngredient(new ModPrefabTechReference(item), amt);
     }
 
     public CustomMachine<M> addIngredient(TechType item, int amt) {
-        return this.addIngredient(new TechTypeContainer(item), amt);
+        return addIngredient(new TechTypeContainer(item), amt);
     }
 
     public CustomMachine<M> addIngredient(TechTypeReference item, int amt) {
@@ -64,13 +64,10 @@ public abstract class CustomMachine<M> : CustomPrefab, DIPrefab<CustomMachine<M>
         return this;
     }
 
-    public virtual TechGroup GroupForPDA {
-        get { return this.isOutdoors() ? TechGroup.ExteriorModules : TechGroup.InteriorModules; }
-    }
+    public virtual TechGroup GroupForPDA => isOutdoors() ? TechGroup.ExteriorModules : TechGroup.InteriorModules;
 
-    public virtual TechCategory CategoryForPDA {
-        get { return this.isOutdoors() ? TechCategory.ExteriorModule : TechCategory.InteriorModule; }
-    }
+    public virtual TechCategory CategoryForPDA =>
+        isOutdoors() ? TechCategory.ExteriorModule : TechCategory.InteriorModule;
 
     public virtual bool isOutdoors() {
         return false;
@@ -93,7 +90,7 @@ public abstract class CustomMachine<M> : CustomPrefab, DIPrefab<CustomMachine<M>
             "Creating " + fragments.Length + " fragments for " + this + " from " + fragments.toDebugString(),
             ownerMod
         );
-        foreach (CustomPrefab m in fragments) {
+        foreach (var m in fragments) {
             var info = m.GetGadget<ScanningGadget>().ScannerEntryData;
             info.blueprint = Info.TechType;
             // m = GenUtil.getOrCreateFragment(this, info.template, m.objectModify);
@@ -108,7 +105,7 @@ public abstract class CustomMachine<M> : CustomPrefab, DIPrefab<CustomMachine<M>
             null,
             e => {
                 e.blueprint = Info.TechType;
-                e.destroyAfterScan = this.shouldDeleteFragments();
+                e.destroyAfterScan = shouldDeleteFragments();
                 e.isFragment = true;
                 e.totalFragments = needed;
                 e.key = GenUtil.getFragment(Info.TechType, 0).Info.TechType;
@@ -123,7 +120,7 @@ public abstract class CustomMachine<M> : CustomPrefab, DIPrefab<CustomMachine<M>
             "ency_" + Info.ClassID,
             Info.PrefabFileName,
             text,
-            this.isPowerGenerator() ? "Tech/Power" : "Tech/Habitats"
+            isPowerGenerator() ? "Tech/Power" : "Tech/Habitats"
         );
         if (pageHeader != null)
             page.setHeaderImage(TextureManager.getTexture(SNUtil.tryGetModDLL(), "Textures/PDA/" + pageHeader));
@@ -144,34 +141,36 @@ public abstract class CustomMachine<M> : CustomPrefab, DIPrefab<CustomMachine<M>
         return true;
     }
 
+    public virtual bool UnlockedAtStart => true;
+
     //protected abstract OrientedBounds[] GetBounds { get; }
 
     public GameObject GetGameObject() {
-        GameObject world = ObjectUtil.getModPrefabBaseObject(this);
-        M lgc = world.EnsureComponent<M>();
+        var world = ObjectUtil.getModPrefabBaseObject(this);
+        var lgc = world.EnsureComponent<M>();
         lgc.prefab = this;
-        float capacity = lgc.getBaseEnergyStorageCapacityBonus();
+        var capacity = lgc.getBaseEnergyStorageCapacityBonus();
         if (capacity > 0) {
-            PowerSource src = world.EnsureComponent<PowerSource>();
+            var src = world.EnsureComponent<PowerSource>();
             src.power = 0;
             src.maxPower = capacity;
         }
 
-        Constructable ctr = world.EnsureComponent<Constructable>();
+        var ctr = world.EnsureComponent<Constructable>();
         ctr.techType = Info.TechType;
-        ctr.allowedInBase = !this.isOutdoors();
-        ctr.allowedInSub = !this.isOutdoors();
+        ctr.allowedInBase = !isOutdoors();
+        ctr.allowedInSub = !isOutdoors();
         ctr.allowedOnGround = true;
-        ctr.allowedOutside = this.isOutdoors();
+        ctr.allowedOutside = isOutdoors();
         ctr.allowedOnCeiling = false;
         ctr.allowedOnWall = false;
         ctr.rotationEnabled = true;
         ctr.surfaceType = VFXSurfaceTypes.metal;
         ctr.forceUpright = true;
         ctr.allowedOnConstructables = false;
-        LargeWorldEntity lw = world.EnsureComponent<LargeWorldEntity>();
+        var lw = world.EnsureComponent<LargeWorldEntity>();
         lw.cellLevel = LargeWorldEntity.CellLevel.Medium;
-        this.initializeMachine(world);
+        initializeMachine(world);
         world.SetActive(true);
         return world;
     }
@@ -187,7 +186,7 @@ public abstract class CustomMachine<M> : CustomPrefab, DIPrefab<CustomMachine<M>
     }
 
     public virtual Sprite getIcon() {
-        return this.GetItemSprite();
+        return GetItemSprite();
     }
 
     public Assembly getOwnerMod() {
@@ -207,7 +206,7 @@ public abstract class CustomMachine<M> : CustomPrefab, DIPrefab<CustomMachine<M>
     protected virtual RecipeData GetBlueprintRecipe() {
         return new RecipeData {
             Ingredients = RecipeUtil.buildRecipeList(recipe),
-            craftAmount = 1
+            craftAmount = 1,
         };
     }
 
@@ -218,13 +217,13 @@ public abstract class CustomMachine<M> : CustomPrefab, DIPrefab<CustomMachine<M>
 
 internal class MachineSaveHandler : SaveSystem.SaveHandler {
     public override void save(PrefabIdentifier pi) {
-        CustomMachineLogic lgc = pi.GetComponentInChildren<CustomMachineLogic>();
+        var lgc = pi.GetComponentInChildren<CustomMachineLogic>();
         if (lgc)
             lgc.save(data);
     }
 
     public override void load(PrefabIdentifier pi) {
-        CustomMachineLogic lgc = pi.GetComponentInChildren<CustomMachineLogic>();
+        var lgc = pi.GetComponentInChildren<CustomMachineLogic>();
         if (lgc)
             lgc.load(data);
     }
@@ -265,8 +264,8 @@ public abstract class CustomMachineLogic : MonoBehaviour {
 
     private float spawnTime = -1;
 
-    void Start() {
-        this.setupSky();
+    private void Start() {
+        setupSky();
     }
 
     //For things which can be built away from a base and should not count as part of it, eg a remote power source. Do note this breaks base-related functions like "get other pieces" and "consume power"
@@ -293,13 +292,13 @@ public abstract class CustomMachineLogic : MonoBehaviour {
     protected void setupSky() {
         if (prefab == null || !WaterBiomeManager.main || !MarmoSkies.main)
             return;
-        mset.Sky baseSky = this.isOutdoors()
+        var baseSky = isOutdoors()
             ? WaterBiomeManager.main.GetBiomeEnvironment(transform.position)
             : MarmoSkies.main.skyBaseInterior;
         if (!baseSky)
             return;
-        SkyApplier[] skies = gameObject.GetComponentsInChildren<SkyApplier>(true);
-        foreach (SkyApplier sk in skies) {
+        var skies = gameObject.GetComponentsInChildren<SkyApplier>(true);
+        foreach (var sk in skies) {
             if (!sk)
                 continue;
             sk.renderers = gameObject.GetComponentsInChildren<Renderer>();
@@ -312,44 +311,44 @@ public abstract class CustomMachineLogic : MonoBehaviour {
     }
 
     protected virtual Renderer[] findRenderers() {
-        return this.GetComponentsInChildren<Renderer>();
+        return GetComponentsInChildren<Renderer>();
     }
 
-    void Update() {
-        float time = DayNightCycle.main.timePassedAsFloat;
+    private void Update() {
+        var time = DayNightCycle.main.timePassedAsFloat;
         if (prefab == null)
-            this.tryGetPrefab();
+            tryGetPrefab();
         if (!buildable)
-            buildable = this.GetComponent<Constructable>();
+            buildable = GetComponent<Constructable>();
         if (mainRenderers == null)
-            mainRenderers = this.findRenderers();
+            mainRenderers = findRenderers();
         if (spawnTime <= 0)
             spawnTime = time;
         lastTickDelta = time - lastUpdateTime;
-        if (lastTickDelta > 0 && lastTickDelta >= this.getTickRate()) {
-            this.updateEntity(lastTickDelta);
+        if (lastTickDelta > 0 && lastTickDelta >= getTickRate()) {
+            updateEntity(lastTickDelta);
             lastUpdateTime = time;
         }
 
         if (time - lastDayTime >= 5)
-            this.setupSky();
+            setupSky();
         lastDayTime = time;
         if (!storage) {
             storage = gameObject.GetComponentInChildren<StorageContainer>();
             if (storage)
-                this.initStorage(storage);
+                initStorage(storage);
         }
 
-        if (this.needsAttachedBase()) {
-            Transform par = transform.parent;
+        if (needsAttachedBase()) {
+            var par = transform.parent;
             if (!par || !par.GetComponent<SubRoot>()) {
-                this.findClosestSub();
+                findClosestSub();
             }
 
             if (!sub) {
                 sub = gameObject.GetComponentInParent<SubRoot>();
                 if (!sub) {
-                    this.findClosestSub();
+                    findClosestSub();
                 }
             }
         } /*
@@ -361,7 +360,7 @@ public abstract class CustomMachineLogic : MonoBehaviour {
     }
 
     private void tryGetPrefab() {
-        TechType tt = CraftData.GetTechType(gameObject);
+        var tt = CraftData.GetTechType(gameObject);
         if (tt != TechType.None && DIMod.machineList.ContainsKey(tt)) {
             prefab = DIMod.machineList[tt];
         }
@@ -380,10 +379,10 @@ public abstract class CustomMachineLogic : MonoBehaviour {
     protected int addItemToInventory(TechType tt, int amt = 1) {
         if (!storage)
             return 0;
-        int add = 0;
-        for (int i = 0; i < amt; i++) {
-            GameObject item = ObjectUtil.createWorldObject(CraftData.GetClassIdForTechType(tt), true, false);
-            SNUtil.log("Adding " + item + " to " + this.GetType().Name + " inventory");
+        var add = 0;
+        for (var i = 0; i < amt; i++) {
+            var item = ObjectUtil.createWorldObject(CraftData.GetClassIdForTechType(tt), true, false);
+            SNUtil.log("Adding " + item + " to " + GetType().Name + " inventory");
             item.SetActive(false);
             if (storage.container.AddItem(item.GetComponent<Pickupable>()) != null)
                 add++;
@@ -405,7 +404,7 @@ public abstract class CustomMachineLogic : MonoBehaviour {
         if (!GameModeUtils.RequiresPower())
             return true;
         if (amt > 0) {
-            float f = this.getPowerCostFactor();
+            var f = getPowerCostFactor();
             amt *= f;
             sub.powerRelay.ConsumeEnergy(amt, out powerConsumedLastAttempt);
             if (logPowerConsume)
@@ -416,7 +415,7 @@ public abstract class CustomMachineLogic : MonoBehaviour {
             if (amt - powerConsumedLastAttempt > 0.001) {
                 if (logPowerConsume)
                     SNUtil.log("Refunding " + powerConsumedLastAttempt + " power which was less than requested " + amt);
-                sub.powerRelay.AddEnergy(powerConsumedLastAttempt, out float trash); //refund
+                sub.powerRelay.AddEnergy(powerConsumedLastAttempt, out var trash); //refund
             } else {
                 if (logPowerConsume)
                     SNUtil.log("Power drain successful");
@@ -428,24 +427,23 @@ public abstract class CustomMachineLogic : MonoBehaviour {
     }
 
     private float getPowerCostFactor() {
-        CustomMachinePowerCostFactorCheck ch = new CustomMachinePowerCostFactorCheck(this);
-        if (getMachinePowerCostFactorEvent != null)
-            getMachinePowerCostFactorEvent.Invoke(ch);
+        var ch = new CustomMachinePowerCostFactorCheck(this);
+        getMachinePowerCostFactorEvent?.Invoke(ch);
         return powerCostFactor * ch.value;
     }
 
     private void findClosestSub() {
-        if (!this.needsAttachedBase())
+        if (!needsAttachedBase())
             return;
         SNUtil.log(
             "Custom machine " + this + " @ " + transform.position +
             " did not have proper parent component hierarchy: " + transform.parent,
             SNUtil.diDLL
         );
-        foreach (SubRoot s in UnityEngine.Object.FindObjectsOfType<SubRoot>()) {
+        foreach (var s in FindObjectsOfType<SubRoot>()) {
             if (s.isCyclops || !s.isBase)
                 continue;
-            float dist = Vector3.Distance(s.transform.position, transform.position);
+            var dist = Vector3.Distance(s.transform.position, transform.position);
             if (dist > 350)
                 continue;
             if (!sub || dist < Vector3.Distance(sub.transform.position, transform.position)) {
@@ -455,14 +453,14 @@ public abstract class CustomMachineLogic : MonoBehaviour {
 
         if (sub) {
             transform.parent = sub.transform;
-            this.onAttachToBase();
+            onAttachToBase();
             SNUtil.log(
                 "Custom machine " + this + " @ " + transform.position + " parented to sub: " + sub,
                 SNUtil.diDLL
             );
         }
 
-        foreach (SkyApplier sky in gameObject.GetComponents<SkyApplier>()) {
+        foreach (var sky in gameObject.GetComponents<SkyApplier>()) {
             sky.renderers = gameObject.GetComponentsInChildren<Renderer>();
             sky.enabled = true;
             sky.RefreshDirtySky();
@@ -473,19 +471,19 @@ public abstract class CustomMachineLogic : MonoBehaviour {
     protected void setEmissiveColor(Color c, int matIdx = 0, float cooldown = -1) {
         if (mainRenderers == null)
             return;
-        foreach (Renderer r in mainRenderers)
-            this.setEmissiveColor(r, c, matIdx, cooldown);
+        foreach (var r in mainRenderers)
+            setEmissiveColor(r, c, matIdx, cooldown);
     }
 
     protected void setEmissiveColor(Renderer r, Color c, int matIdx = 0, float cooldown = -1) {
         if (!r)
             return;
-        float time = DayNightCycle.main.timePassedAsFloat;
+        var time = DayNightCycle.main.timePassedAsFloat;
         if (time - lastColorChange < colorCooldown && cooldown < colorCooldown)
             return;
         emissiveColor = c;
         colorCooldown = cooldown;
-        Material m = r.materials[matIdx];
+        var m = r.materials[matIdx];
 
         m.EnableKeyword("MARMO_EMISSION");
         if (RenderUtil.getEmissivity(m) < 0.1F)

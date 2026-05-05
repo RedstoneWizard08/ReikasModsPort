@@ -13,7 +13,7 @@ public class Avolite : BasicCustomOre {
 
     public override void prepareGameObject(GameObject go, Renderer[] r0) {
         base.prepareGameObject(go, r0);
-        foreach (Renderer r in r0) {
+        foreach (var r in r0) {
             //GameObject go = ;
             r.materials[0].EnableKeyword("FX_BUILDING");
             r.materials[0].SetFloat("_Built", 0.1F);
@@ -29,5 +29,5 @@ public class Avolite : BasicCustomOre {
     }
 }
 
-class AvoliteTag : MonoBehaviour {
+internal class AvoliteTag : MonoBehaviour {
 }

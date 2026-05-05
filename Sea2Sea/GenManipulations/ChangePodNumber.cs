@@ -29,15 +29,15 @@ internal class ChangePodNumber : ManipulationBase {
 	}*/
 
 	public override void applyToObject(GameObject go) {
-		foreach (Renderer r in go.GetComponentsInChildren<Renderer>()) {
-			foreach (Material m in r.materials) {
-				foreach (string n in m.GetTexturePropertyNames()) {
-					Texture tex = m.GetTexture(n);
+		foreach (var r in go.GetComponentsInChildren<Renderer>()) {
+			foreach (var m in r.materials) {
+				foreach (var n in m.GetTexturePropertyNames()) {
+					var tex = m.GetTexture(n);
 					if (tex is Texture2D) {
-						string file = tex.name;
+						var file = tex.name;
 						if (file.Contains(textureSeek)) {
-							string path = "Textures/"+newTexBase+targetNumber;
-							Texture2D tex2 = TextureManager.getTexture(SeaToSeaMod.modDLL, path);
+							var path = "Textures/"+newTexBase+targetNumber;
+							var tex2 = TextureManager.getTexture(SeaToSeaMod.ModDLL, path);
 							if (tex2 == null) {
 								SNUtil.writeToChat("Could not find desired pod number texture @ " + path);
 								continue;
@@ -53,7 +53,7 @@ internal class ChangePodNumber : ManipulationBase {
 	}
 
 	public override void applyToObject(PlacedObject go) {
-		this.applyToObject(go.obj);
+		applyToObject(go.obj);
 	}
 
 	public override void loadFromXML(XmlElement e) {

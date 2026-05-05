@@ -20,7 +20,7 @@ public class HarmonySystem {
     }
 
     public void apply() {
-        string msg = "Ran " + harmonyInstance.Id + " mod register, started harmony";
+        var msg = "Ran " + harmonyInstance.Id + " mod register, started harmony";
         FileLog.Log(msg + " (harmony log)");
         SNUtil.log(msg);
         try {

@@ -7,7 +7,7 @@ namespace ReikaKalseki.SeaToSea;
 
 public class TrailerBaseLabEquipmentSpawner : WorldGenerator {
 
-	internal static readonly Dictionary<string, int> itemList = new Dictionary<string, int>();
+	internal static readonly Dictionary<string, int> itemList = new();
 
 	static TrailerBaseLabEquipmentSpawner() {
 		addItem("1faf2b57-ff4f-4ea5-a715-7cc5ff6aae60", 7);
@@ -31,14 +31,14 @@ public class TrailerBaseLabEquipmentSpawner : WorldGenerator {
 	}
 
 	public override bool generate(List<GameObject> li) {
-		foreach (KeyValuePair<string, int> kvp in TrailerBaseLabEquipmentSpawner.itemList) {
-			for (int i = 0; i < kvp.Value; i++) {
-				GameObject go = spawner(kvp.Key);
+		foreach (var kvp in itemList) {
+			for (var i = 0; i < kvp.Value; i++) {
+				var go = spawner(kvp.Key);
 				go.transform.position = MathUtil.getRandomVectorAround(position, 0.4F);
 				go.GetComponent<Rigidbody>().isKinematic = false;
 				go.EnsureComponent<WorldForces>().underwaterGravity = 3;
-				go.transform.localRotation = UnityEngine.Random.rotationUniform;
-				TrailerBaseLabEquipmentItem prop = go.EnsureComponent<TrailerBaseLabEquipmentItem>();
+				go.transform.localRotation = Random.rotationUniform;
+				var prop = go.EnsureComponent<TrailerBaseLabEquipmentItem>();
 				prop.Invoke("fixInPlace", 45);
 			}
 		}
@@ -55,26 +55,26 @@ public class TrailerBaseLabEquipmentSpawner : WorldGenerator {
 
 }
 
-class TrailerBaseLabEquipmentItem : MonoBehaviour {
+internal class TrailerBaseLabEquipmentItem : MonoBehaviour {
 
-	private static readonly Vector3 vent1 = new Vector3(-134.15F, -501, 940.29F);
-	private static readonly Vector3 vent2 = new Vector3(-125.20F, -503, 936.16F);
+	private static readonly Vector3 vent1 = new(-134.15F, -501, 940.29F);
+	private static readonly Vector3 vent2 = new(-125.20F, -503, 936.16F);
 
 	private Rigidbody body;
 
 	private float time;
 
-	void Update() {
+	private void Update() {
 		if (!body)
-			body = this.GetComponentInChildren<Rigidbody>();
+			body = GetComponentInChildren<Rigidbody>();
 		time += Time.deltaTime;
-		Vector3 pos = transform.position;
+		var pos = transform.position;
 
 		if (time > 4F && body.velocity.magnitude < 0.03)
-			this.fixInPlace();
+			fixInPlace();
 	}
 
-	void fixInPlace() {
+	private void fixInPlace() {
 		body.isKinematic = true;
 	}
 

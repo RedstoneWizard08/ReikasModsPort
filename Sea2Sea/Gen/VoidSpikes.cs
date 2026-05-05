@@ -10,17 +10,17 @@ namespace ReikaKalseki.SeaToSea;
 
 public sealed class VoidSpikes : WorldGenerator {
 
-	private static readonly Vector3[] spacing = new Vector3[]{
-		new Vector3(16, 8, 16),
-		new Vector3(24, 10, 24),
-		new Vector3(32, 16, 32),
-		new Vector3(40, 16, 40),
-		new Vector3(50, 24, 50),
-	};
+	private static readonly Vector3[] spacing = [
+		new(16, 8, 16),
+		new(24, 10, 24),
+		new(32, 16, 32),
+		new(40, 16, 40),
+		new(50, 24, 50),
+	];
 
-	private static readonly WeightedRandom<string> fishTypes = new WeightedRandom<string>();
+	private static readonly WeightedRandom<string> fishTypes = new();
 
-	private readonly List<SpikeCluster> spikes = new List<SpikeCluster>();
+	private readonly List<SpikeCluster> spikes = [];
 
 	public int count;
 	public float scaleXZ = 1;
@@ -54,7 +54,7 @@ public sealed class VoidSpikes : WorldGenerator {
 	}
 
 	public VoidSpikes(Vector3 pos) : base(pos) {
-		this.rerollCounts();
+		rerollCounts();
 
 		spawner = VoidSpikesBiome.spawnEntity;
 	}
@@ -87,8 +87,8 @@ public sealed class VoidSpikes : WorldGenerator {
 	public IEnumerable<SpikeCluster> split(int seed) {
 		SNUtil.log("Initializing spike clusters [" + count + "] with seed " + seed);
 		UnityEngine.Random.InitState(seed);
-		this.calculateSpikeClusters();
-		foreach (SpikeCluster s in spikes) {
+		calculateSpikeClusters();
+		foreach (var s in spikes) {
 			s.fishCount = fishCount / spikes.Count;
 		}
 		SNUtil.log("Initialized " + spikes.Count + " spikes");
@@ -97,17 +97,18 @@ public sealed class VoidSpikes : WorldGenerator {
 	}
 
 	private void calculateSpikeClusters() {
-		for (int i = 0; i < count; i++) {
-			Vector3? pos = this.getSafePosition();
+		for (var i = 0; i < count; i++) {
+			var pos = getSafePosition();
 			if (pos != null && pos.HasValue) {
-				Vector3 vec = pos.Value;
+				var vec = pos.Value;
 				//SNUtil.log("Success, spike @ "+vec);
 				if (depthCallback != null)
 					vec.y = (float)depthCallback(vec);
-				float f = ((float)MathUtil.getDistanceToLineSegment(vec, VoidSpikesBiome.end500m, VoidSpikesBiome.end900m))/VoidSpikesBiome.biomeVolumeRadius;
+				var f = (float)MathUtil.getDistanceToLineSegment(vec, VoidSpikesBiome.end500m, VoidSpikesBiome.end900m)/VoidSpikesBiome.biomeVolumeRadius;
 				//SNUtil.log("Re-y spike @ "+vec);
-				SpikeCluster s = new SpikeCluster(vec, generateAux, 1-f);
-				s.spawner = spawner;
+				var s = new SpikeCluster(vec, generateAux, 1-f) {
+					spawner = spawner,
+				};
 				spikes.Add(s);
 			}
 		}
@@ -124,31 +125,31 @@ public sealed class VoidSpikes : WorldGenerator {
 			return false;*/
 		UnityEngine.Random.InitState(SNUtil.getWorldSeedInt());
 		if (shouldRerollCounts)
-			this.rerollCounts();
+			rerollCounts();
 		if (spikes.Count == 0) {
-			this.calculateSpikeClusters();
+			calculateSpikeClusters();
 		}
-		foreach (SpikeCluster s in spikes) {
+		foreach (var s in spikes) {
 			s.generate(generated);
 		}
-		for (int i = 0; i < fishCount; i++) {
-			Vector3 vec = MathUtil.getRandomVectorAround(position+offset, Vector3.Scale(spacing[spacing.Length-1], new Vector3(scaleXZ, scaleY, scaleXZ)));
-			if (this.posIntersectsAnySpikes(vec, "fish") || (positionValidity != null && !positionValidity(vec))) {
+		for (var i = 0; i < fishCount; i++) {
+			var vec = MathUtil.getRandomVectorAround(position+offset, Vector3.Scale(spacing[spacing.Length-1], new Vector3(scaleXZ, scaleY, scaleXZ)));
+			if (posIntersectsAnySpikes(vec, "fish") || (positionValidity != null && !positionValidity(vec))) {
 				i--;
 				continue;
 			}
-			GameObject fish = spawner.Invoke(fishTypes.getRandomEntry());
+			var fish = spawner.Invoke(fishTypes.getRandomEntry());
 			//SNUtil.log("Spawning fish "+fish+" @ "+vec);
 			fish.transform.position = vec;
 			generated.Add(fish);
 		}
 		if (generateLeviathan) {
-			GameObject levi = spawner(VanillaCreatures.GHOST_LEVIATHAN_BABY.prefab);
+			var levi = spawner(VanillaCreatures.GHOST_LEVIATHAN_BABY.prefab);
 			levi.transform.position = position + offset;
 			generated.Add(levi);
 		}
-		for (int i = 0; i < 4; i++) {
-			GameObject ent = spawner(VanillaCreatures.CRABSQUID.prefab);
+		for (var i = 0; i < 4; i++) {
+			var ent = spawner(VanillaCreatures.CRABSQUID.prefab);
 			ent.transform.position = MathUtil.interpolate(VoidSpikesBiome.end500m, VoidSpikesBiome.end900m, UnityEngine.Random.Range(0.25F, 0.75F));
 			generated.Add(ent);
 		}
@@ -160,7 +161,7 @@ public sealed class VoidSpikes : WorldGenerator {
 	}
 
 	private bool posIntersectsAnySpikes(Vector3 vec, string why) {
-		foreach (SpikeCluster s in spikes) {
+		foreach (var s in spikes) {
 			if (s.posIntersectsAnySpikes(vec, why, null))
 				return true;
 		}
@@ -170,10 +171,10 @@ public sealed class VoidSpikes : WorldGenerator {
 	private Vector3? getSafePosition() {
 		if (count == 1)
 			return position + offset;
-		Vector3 sc = new Vector3(scaleXZ, scaleY, scaleXZ)*2;
-		Vector3 ret = spikeLocationProvider != null ? spikeLocationProvider() : MathUtil.getRandomVectorAround(position+offset, Vector3.Scale(spacing[0], sc));
-		int tries = 0;
-		while (tries < 50 && !this.isValidPosition(ret)) {
+		var sc = new Vector3(scaleXZ, scaleY, scaleXZ)*2;
+		var ret = spikeLocationProvider != null ? spikeLocationProvider() : MathUtil.getRandomVectorAround(position+offset, Vector3.Scale(spacing[0], sc));
+		var tries = 0;
+		while (tries < 50 && !isValidPosition(ret)) {
 			ret = spikeLocationProvider != null ? spikeLocationProvider() : MathUtil.getRandomVectorAround(position + offset, Vector3.Scale(spacing[tries / 10], sc));
 			tries++;
 		}
@@ -181,13 +182,13 @@ public sealed class VoidSpikes : WorldGenerator {
 	}
 
 	private bool isValidPosition(Vector3 ret) {
-		return (positionValidity == null || positionValidity(ret)) && !this.isTooClose(ret);
+		return (positionValidity == null || positionValidity(ret)) && !isTooClose(ret);
 	}
 
 	private bool isTooClose(Vector3 pos) {
-		foreach (SpikeCluster s in spikes) {
-			Vector3 dist = s.position-pos;
-			if ((dist.x * dist.x) + (dist.z * dist.z) <= 900) {
+		foreach (var s in spikes) {
+			var dist = s.position-pos;
+			if (dist.x * dist.x + dist.z * dist.z <= 900) {
 				return true;
 			}
 		}
@@ -201,11 +202,11 @@ public sealed class VoidSpikes : WorldGenerator {
 		internal bool generateAux;
 		internal bool needsCenterSpace;
 
-		public int fishCount = 0;
+		public int fishCount;
 
 		private VoidSpike centralSpike;
-		private readonly List<VoidSpike> firstRow = new List<VoidSpike>();
-		private readonly List<VoidSpike> auxSpikes = new List<VoidSpike>();
+		private readonly List<VoidSpike> firstRow = [];
+		private readonly List<VoidSpike> auxSpikes = [];
 
 		private float centralScale;
 		private float edgeFactor;
@@ -237,12 +238,13 @@ public sealed class VoidSpikes : WorldGenerator {
 		}
 
 		public Vector3 getRootLocation() {
-			return position + (Vector3.up * 0.5F * centralScale);
+			return position + Vector3.up * 0.5F * centralScale;
 		}
 
 		public override bool generate(List<GameObject> li) {
-			centralSpike = new VoidSpike(position);
-			centralSpike.spawner = spawner;
+			centralSpike = new VoidSpike(position) {
+				spawner = spawner,
+			};
 			centralSpike.setScale(centralScale);
 			centralSpike.oreRichness = needsCenterSpace ? 0.1 : 0.2;
 			centralSpike.plantRate = needsCenterSpace ? 1.25 : 2.5;
@@ -266,18 +268,19 @@ public sealed class VoidSpikes : WorldGenerator {
 				centralSpike.hasFloater = false;
 			}
 			centralSpike.generateSpike();
-			for (int i = 0; i < terraceSpikeCount; i++) {
-				float down = UnityEngine.Random.Range(1F, 3F);
-				float radius = UnityEngine.Random.Range(4F, 12F);
-				float angle = UnityEngine.Random.Range(0, 2F*(float)Math.PI);
-				float cos = (float)Math.Cos(angle);
-				float sin = (float)Math.Sin(angle);
-				Vector3 pos = new Vector3(position.x+(radius*cos), position.y-down, position.z+(radius*sin));
-				VoidSpike s = new VoidSpike(pos);
-				s.spawner = spawner;
-				s.hasFloater = false;
-				s.hasFlora = true;
-				s.plantRate = 2;
+			for (var i = 0; i < terraceSpikeCount; i++) {
+				var down = UnityEngine.Random.Range(1F, 3F);
+				var radius = UnityEngine.Random.Range(4F, 12F);
+				var angle = UnityEngine.Random.Range(0, 2F*(float)Math.PI);
+				var cos = (float)Math.Cos(angle);
+				var sin = (float)Math.Sin(angle);
+				var pos = new Vector3(position.x+radius*cos, position.y-down, position.z+radius*sin);
+				var s = new VoidSpike(pos) {
+					spawner = spawner,
+					hasFloater = false,
+					hasFlora = true,
+					plantRate = 2,
+				};
 				if (radius <= 9)
 					s.hasPod = false;
 				if (s.hasPod) {
@@ -285,30 +288,28 @@ public sealed class VoidSpikes : WorldGenerator {
 					s.podOffset = new Vector3(0.125F * cos, 0, 0.125F * sin);
 				}
 				s.oreRichness = 0.5;
-				s.validPlantPosCheck = (vec, n) => !this.posIntersectsAnySpikes(vec, n, s);
+				s.validPlantPosCheck = (vec, n) => !posIntersectsAnySpikes(vec, n, s);
 				s.setScale(Math.Min(s.getScale(), 1.2F));
 				firstRow.Add(s);
 				s.generateSpike();
 			}
 			if (generateAux) {
-				this.generateAuxSpikes(centralSpike, 2);
-				foreach (VoidSpike s0 in firstRow) {
-					this.generateAuxSpikes(s0, 6);
+				generateAuxSpikes(centralSpike, 2);
+				foreach (var s0 in firstRow) {
+					generateAuxSpikes(s0, 6);
 				}
 			}
 
-			this.generateDeco(li);
-			if (additionalGen != null) {
-				additionalGen.Invoke(li);
-			}
+			generateDeco(li);
+			additionalGen?.Invoke(li);
 
-			for (int i = 0; i < fishCount; i++) {
-				Vector3 vec = MathUtil.getRandomVectorAround(position, 60);
-				if (this.posIntersectsAnySpikes(vec, "fish", null)) {
+			for (var i = 0; i < fishCount; i++) {
+				var vec = MathUtil.getRandomVectorAround(position, 60);
+				if (posIntersectsAnySpikes(vec, "fish", null)) {
 					i--;
 					continue;
 				}
-				GameObject fish = spawner.Invoke(fishTypes.getRandomEntry());
+				var fish = spawner.Invoke(fishTypes.getRandomEntry());
 				//SNUtil.log("Spawning fish "+fish+" @ "+vec);
 				fish.transform.position = vec;
 				li.Add(fish);
@@ -328,14 +329,14 @@ public sealed class VoidSpikes : WorldGenerator {
 
 		private void generateDeco(List<GameObject> li) {
 			//SNUtil.log("Decorating central "+centralSpike);
-			this.generateDeco(li, centralSpike);
-			foreach (VoidSpike s in firstRow) {
+			generateDeco(li, centralSpike);
+			foreach (var s in firstRow) {
 				//SNUtil.log("Decorating terrace "+s);
-				this.generateDeco(li, s);
+				generateDeco(li, s);
 			}
-			foreach (VoidSpike s in auxSpikes) {
+			foreach (var s in auxSpikes) {
 				//SNUtil.log("Decorating aux "+s);
-				this.generateDeco(li, s);
+				generateDeco(li, s);
 			}
 		}
 
@@ -346,18 +347,18 @@ public sealed class VoidSpikes : WorldGenerator {
 		}
 
 		internal bool posIntersectsAnySpikes(Vector3 vec, string n, VoidSpike except) {
-			double r = (n == "ore") ? 0 : (n.Contains("membrain") ? 0.3 : 0.15);
+			var r = n == "ore" ? 0 : n.Contains("membrain") ? 0.3 : 0.15;
 			//SNUtil.log("Checking "+vec+" "+n+" against central "+centralSpike);
 			if (centralSpike.intersects(vec, r))
 				return true;
-			foreach (VoidSpike s in firstRow) {
+			foreach (var s in firstRow) {
 				if (s == except)
 					continue;
 				//SNUtil.log("Checking "+vec+" "+n+" against terrace "+s);
 				if (s.intersects(vec, r))
 					return true;
 			}
-			foreach (VoidSpike s in auxSpikes) {
+			foreach (var s in auxSpikes) {
 				if (s == except)
 					continue;
 				//SNUtil.log("Checking "+vec+" "+n+" against aux "+s);
@@ -368,16 +369,17 @@ public sealed class VoidSpikes : WorldGenerator {
 		}
 
 		private void generateAuxSpikes(VoidSpike s0, float down) {
-			for (int i = 0; i < auxSpikeCount; i++) {
-				Vector3 pos = MathUtil.getRandomVectorAround(s0.position-(Vector3.up*(down+1)), new Vector3(4, down, 4));
+			for (var i = 0; i < auxSpikeCount; i++) {
+				var pos = MathUtil.getRandomVectorAround(s0.position-Vector3.up*(down+1), new Vector3(4, down, 4));
 				pos.y = Math.Min(pos.y, s0.position.y - 1);
-				VoidSpike s = new VoidSpike(pos);
-				s.spawner = spawner;
+				var s = new VoidSpike(pos) {
+					spawner = spawner,
+				};
 				s.setScale(Math.Min(s.getScale(), 0.875F));
 				s.hasFlora = true;
 				s.hasFloater = false;
 				s.hasPod = false;
-				s.validPlantPosCheck = (vec, n) => !this.posIntersectsAnySpikes(vec, n, s);
+				s.validPlantPosCheck = (vec, n) => !posIntersectsAnySpikes(vec, n, s);
 				s.oreRichness = s0.oreRichness;
 				s.isAux = true;
 				s.plantRate = 1.5;

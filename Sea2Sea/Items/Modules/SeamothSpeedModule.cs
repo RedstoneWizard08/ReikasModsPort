@@ -5,13 +5,11 @@ namespace ReikaKalseki.SeaToSea;
 
 public sealed class SeamothSpeedModule : SeamothModule {
     [SetsRequiredMembers]
-    public SeamothSpeedModule() : base(SeaToSeaMod.itemLocale.getEntry("SeaMothSpeed")) {
-        this.preventNaturalUnlock();
+    public SeamothSpeedModule() : base(SeaToSeaMod.ItemLocale.getEntry("SeaMothSpeed")) {
+        preventNaturalUnlock();
     }
 
-    public override QuickSlotType QuickSlotType {
-        get { return TechData.GetSlotType(TechType.SeamothSonarModule); }
-    }
+    public override QuickSlotType QuickSlotType => TechData.GetSlotType(TechType.SeamothSonarModule);
 
     public override float getUsageCooldown() {
         return 5;

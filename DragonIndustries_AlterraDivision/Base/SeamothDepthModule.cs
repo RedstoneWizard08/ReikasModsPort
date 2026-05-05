@@ -13,23 +13,13 @@ public sealed class SeamothDepthModule : SeamothModule {
         dependency = TechType.BaseUpgradeConsole;
     }
 
-    public override CraftTree.Type FabricatorType {
-        get { return CraftTree.Type.Workbench; }
-    }
+    public override CraftTree.Type FabricatorType => CraftTree.Type.Workbench;
 
-    public override QuickSlotType QuickSlotType {
-        get { return QuickSlotType.Passive; }
-    }
+    public override QuickSlotType QuickSlotType => QuickSlotType.Passive;
 
-    public override TechGroup GroupForPDA {
-        get { return TechGroup.Workbench; }
-    }
+    public override TechGroup GroupForPDA => TechGroup.Workbench;
 
-    public override TechCategory CategoryForPDA {
-        get { return TechCategory.Workbench; }
-    }
+    public override TechCategory CategoryForPDA => TechCategory.Workbench;
 
-    public override string[] StepsToFabricatorTab {
-        get { return new string[] { "SeamothMenu" }; }
-    }
+    public override string[] StepsToFabricatorTab => ["SeamothMenu"];
 }

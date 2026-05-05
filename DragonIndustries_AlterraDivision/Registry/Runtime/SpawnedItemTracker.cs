@@ -6,10 +6,10 @@ namespace ReikaKalseki.DIAlterra;
 
 public class SpawnedItemTracker : SerializedTracker<SpawnedItemTracker.SpawnedItemEvent> {
 
-	public static readonly SpawnedItemTracker instance = new SpawnedItemTracker();
+	public static readonly SpawnedItemTracker instance = new();
 
-	private readonly Dictionary<string, SpawnedItemEvent> spawnedIDs = new Dictionary<string, SpawnedItemEvent>();
-	private readonly List<SpawnTagCallback> callbacks = new List<SpawnTagCallback>();
+	private readonly Dictionary<string, SpawnedItemEvent> spawnedIDs = new();
+	private readonly List<SpawnTagCallback> callbacks = [];
 
 	private float lastTick;
 
@@ -18,32 +18,32 @@ public class SpawnedItemTracker : SerializedTracker<SpawnedItemTracker.SpawnedIt
 	}
 
 	private static SpawnedItemEvent parse(XmlElement s) {
-		SpawnedItemEvent e = new SpawnedItemEvent(SNUtil.getTechType(s.getProperty("item")), s.getFloat("eventTime", -1));
+		var e = new SpawnedItemEvent(SNUtil.getTechType(s.getProperty("item")), s.getFloat("eventTime", -1));
 		e.setObject(s);
 		return e;
 	}
 
 	public SpawnedItemEvent addSpawn(TechType tt) {
-		SpawnedItemEvent e = new SpawnedItemEvent(tt, (int)DayNightCycle.main.timePassedAsFloat);
-		this.add(e);
+		var e = new SpawnedItemEvent(tt, (int)DayNightCycle.main.timePassedAsFloat);
+		add(e);
 		return e;
 	}
 
 	public bool isSpawned(GameObject p) {
-		return this.getSpawnEvent(p) != null;
+		return getSpawnEvent(p) != null;
 	}
 
 	public SpawnedItemEvent getSpawnEvent(GameObject p) {
-		PrefabIdentifier pi = p.GetComponent<PrefabIdentifier>();
+		var pi = p.GetComponent<PrefabIdentifier>();
 		return !pi ? null : spawnedIDs.ContainsKey(pi.Id) ? spawnedIDs[pi.Id] : null;
 	}
 
 	public bool isSpawned(Pickupable p) {
-		return this.isSpawned(p.gameObject);
+		return isSpawned(p.gameObject);
 	}
 
 	public SpawnedItemEvent getSpawnEvent(Pickupable p) {
-		return this.getSpawnEvent(p.gameObject);
+		return getSpawnEvent(p.gameObject);
 	}
 
 	public string getDataMap() {
@@ -62,12 +62,12 @@ public class SpawnedItemTracker : SerializedTracker<SpawnedItemTracker.SpawnedIt
 	}
 
 	public void tick() {
-		float time = DayNightCycle.main.timePassedAsFloat;
+		var time = DayNightCycle.main.timePassedAsFloat;
 		if (time - lastTick > 0.5F) {
 			lastTick = time;
 
-			for (int i = callbacks.Count - 1; i >= 0; i--) {
-				SpawnTagCallback tag = callbacks[i];
+			for (var i = callbacks.Count - 1; i >= 0; i--) {
+				var tag = callbacks[i];
 				if (tag.isReady) {
 					bool flag;
 					if (tag.needsSearch) {
@@ -91,7 +91,7 @@ public class SpawnedItemTracker : SerializedTracker<SpawnedItemTracker.SpawnedIt
 
 		public readonly float creationTime;
 
-		public bool isReady { get {  return DayNightCycle.main.timePassedAsFloat-creationTime >= 0.5F; } }
+		public bool isReady => DayNightCycle.main.timePassedAsFloat-creationTime >= 0.5F;
 
 		public bool needsSearch { get; private set; }
 
@@ -114,12 +114,12 @@ public class SpawnedItemTracker : SerializedTracker<SpawnedItemTracker.SpawnedIt
 		}
 
 		public void search() {
-			IList<InventoryItem> li = Inventory.main.container.GetItems(entry.itemType);
+			var li = Inventory.main.container.GetItems(entry.itemType);
 			if (li == null || li.Count == 0) {
 				SNUtil.log("Skipping spawn search tag callback, no matching items for " + entry, SNUtil.diDLL);
 				return;
 			}
-			PrefabIdentifier prefab = li[li.Count - 1].item.GetComponent<PrefabIdentifier>();
+			var prefab = li[li.Count - 1].item.GetComponent<PrefabIdentifier>();
 			if (!prefab || string.IsNullOrEmpty(prefab.Id)) {
 				SNUtil.log("Skipping spawn search tag callback for nulled ID: " + prefab + "; entry = " + entry, SNUtil.diDLL);
 				return;
@@ -137,11 +137,9 @@ public class SpawnedItemTracker : SerializedTracker<SpawnedItemTracker.SpawnedIt
 		public string classID { get; private set; }
 		public string objectID { get; private set; }
 
-		public string tooltip {
-			get {//why does time start at 480
-				return "\n<color=#ffc500ff>This item was spawned by command " + Utils.PrettifyTime((int)eventTime-480) + " into the game.</color>";
-			}
-		}
+		public string tooltip =>
+			//why does time start at 480
+			"\n<color=#ffc500ff>This item was spawned by command " + Utils.PrettifyTime((int)eventTime-480) + " into the game.</color>";
 
 		internal SpawnedItemEvent(TechType tt, double time) : base(time) {
 			itemType = tt;
@@ -156,7 +154,7 @@ public class SpawnedItemTracker : SerializedTracker<SpawnedItemTracker.SpawnedIt
 		}
 
 		public void setObject(PrefabIdentifier pi) {
-			SpawnTagCallback s = new SpawnTagCallback(this, pi);
+			var s = new SpawnTagCallback(this, pi);
 			instance.callbacks.Add(s);
 			SNUtil.log("Registered callback for spawn event " + this, SNUtil.diDLL);
 		}
@@ -175,12 +173,12 @@ public class SpawnedItemTracker : SerializedTracker<SpawnedItemTracker.SpawnedIt
 		}
 
 		internal static SpawnedItemEvent parseLegacy(string s) {
-			string[] parts = s.Split(',');
+			var parts = s.Split(',');
 			if (parts.Length != 2) {
 				SNUtil.log("Error parsing legacy item spawn event '" + s + "'");
 				return null;
 			}
-			SpawnedItemEvent e = new SpawnedItemEvent(SNUtil.getTechType(parts[0]), int.Parse(parts[1]));
+			var e = new SpawnedItemEvent(SNUtil.getTechType(parts[0]), int.Parse(parts[1]));
 			if (parts.Length >= 4) {
 				e.classID = parts[2];
 				e.objectID = parts[3];
@@ -189,7 +187,8 @@ public class SpawnedItemTracker : SerializedTracker<SpawnedItemTracker.SpawnedIt
 		}
 
 		public override string ToString() {
-			return string.Format("[SpawnedItemEvent ItemType={0}, SpawnTime={1}, ClassID={2}, ObjectID={3}]", itemType, eventTime, classID, objectID);
+			return
+				$"[SpawnedItemEvent ItemType={itemType}, SpawnTime={eventTime}, ClassID={classID}, ObjectID={objectID}]";
 		}
 
 

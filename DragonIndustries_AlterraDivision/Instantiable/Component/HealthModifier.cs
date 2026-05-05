@@ -7,7 +7,7 @@ public class HealthModifier : SelfRemovingComponent, CustomSerializedComponent {
 	public float damageFactor = 1;
 
 	public static void add(float dmg, float duration) {
-		HealthModifier m = Player.main.gameObject.AddComponent<HealthModifier>();
+		var m = Player.main.gameObject.AddComponent<HealthModifier>();
 		m.damageFactor = dmg;
 		m.elapseWhen = DayNightCycle.main.timePassedAsFloat + duration;
 	}

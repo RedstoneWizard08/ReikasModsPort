@@ -6,33 +6,21 @@ namespace ReikaKalseki.SeaToSea;
 public sealed class VehicleLightModule : CustomEquipable {
     [SetsRequiredMembers]
     public VehicleLightModule() : base(
-        SeaToSeaMod.itemLocale.getEntry("VehicleLightBonus"),
+        SeaToSeaMod.ItemLocale.getEntry("VehicleLightBonus"),
         "d290b5da-7370-4fb8-81bc-656c6bde78f8"
     ) {
-        this.preventNaturalUnlock();
+        preventNaturalUnlock();
     }
 
-    public override sealed EquipmentType EquipmentType {
-        get { return EquipmentType.VehicleModule; }
-    }
+    public override sealed EquipmentType EquipmentType => EquipmentType.VehicleModule;
 
-    public override QuickSlotType QuickSlotType {
-        get { return QuickSlotType.Selectable; }
-    }
+    public override QuickSlotType QuickSlotType => QuickSlotType.Selectable;
 
-    public override CraftTree.Type FabricatorType {
-        get { return CraftTree.Type.SeamothUpgrades; }
-    }
+    public override CraftTree.Type FabricatorType => CraftTree.Type.SeamothUpgrades;
 
-    public override string[] StepsToFabricatorTab {
-        get { return new string[] { "CommonModules" }; }
-    }
+    public override string[] StepsToFabricatorTab => ["CommonModules"];
 
-    public override TechGroup GroupForPDA {
-        get { return TechGroup.VehicleUpgrades; }
-    }
+    public override TechGroup GroupForPDA => TechGroup.VehicleUpgrades;
 
-    public override TechCategory CategoryForPDA {
-        get { return TechCategory.VehicleUpgrades; }
-    }
+    public override TechCategory CategoryForPDA => TechCategory.VehicleUpgrades;
 }

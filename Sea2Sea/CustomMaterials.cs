@@ -7,19 +7,19 @@ namespace ReikaKalseki.SeaToSea;
 
 public static class CustomMaterials {
     private static readonly Dictionary<Materials, BasicCustomOre>
-        mappings = new Dictionary<Materials, BasicCustomOre>();
+        mappings = new();
 
-    private static readonly Dictionary<TechType, BasicCustomOre> techs = new Dictionary<TechType, BasicCustomOre>();
+    private static readonly Dictionary<TechType, BasicCustomOre> techs = new();
 
     static CustomMaterials() {
         foreach (Materials m in Enum.GetValues(typeof(Materials))) {
-            string id = Enum.GetName(typeof(Materials), m);
+            var id = Enum.GetName(typeof(Materials), m);
             SNUtil.log("Registering material " + id);
-            Material attr = getMaterial(m);
-            XMLLocale.LocaleEntry e = SeaToSeaMod.itemLocale.getEntry(id);
-            VanillaResources template =
+            var attr = getMaterial(m);
+            var e = SeaToSeaMod.ItemLocale.getEntry(id);
+            var template =
                 (VanillaResources)typeof(VanillaResources).GetField(attr.templateName).GetValue(null);
-            BasicCustomOre item = (BasicCustomOre)Activator.CreateInstance(
+            var item = (BasicCustomOre)Activator.CreateInstance(
                 attr.itemClass,
                 new object[] { id, e.name, e.desc, template }
             );
@@ -39,7 +39,7 @@ public static class CustomMaterials {
     }
 
     public static Material getMaterial(Materials key) {
-        FieldInfo info = typeof(Materials).GetField(Enum.GetName(typeof(Materials), key));
+        var info = typeof(Materials).GetField(Enum.GetName(typeof(Materials), key));
         return (Material)Attribute.GetCustomAttribute(info, typeof(Material));
     }
 

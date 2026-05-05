@@ -6,13 +6,13 @@ namespace ReikaKalseki.SeaToSea;
 
 internal class C2CTreader : MonoBehaviour {
 
-	private readonly List<DeepStalkerTag> stalkers = new List<DeepStalkerTag>();
+	private readonly List<DeepStalkerTag> stalkers = [];
 
-	void Start() {
-		base.InvokeRepeating("tick", 0f, 1);
+	private void Start() {
+		InvokeRepeating(nameof(tick), 0f, 1);
 	}
 
-	void Update() {
+	private void Update() {
 
 	}
 
@@ -20,8 +20,8 @@ internal class C2CTreader : MonoBehaviour {
 		this.destroy(false);
 	}
 
-	void OnDisable() {
-		base.CancelInvoke("tick");
+	private void OnDisable() {
+		CancelInvoke(nameof(tick));
 	}
 
 	internal void attachStalker(DeepStalkerTag s) {
@@ -36,27 +36,27 @@ internal class C2CTreader : MonoBehaviour {
 	internal void tick() {
 		if (C2CHooks.skipTreaderTick)
 			return;
-		Player ep = Player.main;
+		var ep = Player.main;
 		if (ep) {
-			float dist = Vector3.Distance(ep.transform.position, transform.position+(transform.forward*10)+(transform.up*0));
+			var dist = Vector3.Distance(ep.transform.position, transform.position+transform.forward*10+transform.up*0);
 			if (dist <= 12) {
-				int amt = Inventory.main.GetPickupCount(TechType.SeaTreaderPoop);
+				var amt = Inventory.main.GetPickupCount(TechType.SeaTreaderPoop);
 				if (amt > 0) {
-					float df = Mathf.Clamp01(1.5F/dist);
-					float chance = Mathf.Clamp(0.25F*amt, 0, 0.8F)*df;
+					var df = Mathf.Clamp01(1.5F/dist);
+					var chance = Mathf.Clamp(0.25F*amt, 0, 0.8F)*df;
 					//SNUtil.writeToChat(dist+" x "+amt+" > "+df+" > "+chance);
-					if (chance > 0 && UnityEngine.Random.Range(0F, 1F) <= chance) {
+					if (chance > 0 && Random.Range(0F, 1F) <= chance) {
 						gameObject.GetComponent<SeaTreaderMeleeAttack>().OnAttackTriggerEnter(Player.main.GetComponentInChildren<Collider>());
 					}
 				}
 			}
 			if (dist <= 120) {
-				int amt = DeepStalkerTag.countDeepStalkersNear(transform);
+				var amt = DeepStalkerTag.countDeepStalkersNear(transform);
 				//int amt = stalkers.Count;
-				for (int i = amt; i < 3; i++) {
-					GameObject go = ObjectUtil.createWorldObject(C2CItems.deepStalker.ClassID, true, true);
+				for (var i = amt; i < 3; i++) {
+					var go = ObjectUtil.createWorldObject(C2CItems.deepStalker.ClassID, true, true);
 					go.transform.position = MathUtil.getRandomVectorAround(transform.position, 12).setY(transform.position.y + 2);
-					go.GetComponent<DeepStalkerTag>().bindToTreader(this.GetComponent<SeaTreader>());
+					go.GetComponent<DeepStalkerTag>().bindToTreader(GetComponent<SeaTreader>());
 				}
 			}
 		}

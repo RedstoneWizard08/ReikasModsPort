@@ -16,31 +16,31 @@ public class GeoGel : CustomPrefab {
     }
 
     protected Sprite GetItemSprite() {
-        return TextureManager.getSprite(SeaToSeaMod.modDLL, "Textures/Items/Geogel");
+        return TextureManager.getSprite(SeaToSeaMod.ModDLL, "Textures/Items/Geogel");
     }
 
     public GameObject GetGameObject() {
-        GameObject world = ObjectUtil.createWorldObject("bfe8345c-fe3c-4c2b-9a03-51bcc5a2a782");
-        GasPod gp = world.GetComponent<GasPod>();
+        var world = ObjectUtil.createWorldObject("bfe8345c-fe3c-4c2b-9a03-51bcc5a2a782");
+        var gp = world.GetComponent<GasPod>();
         if (isDrip) {
-            Renderer r = world.GetComponentInChildren<Renderer>();
+            var r = world.GetComponentInChildren<Renderer>();
             r.transform.localScale *= 0.33F;
             r.materials[0].SetColor("_Color", new Color(0.1F, 0.35F, 0.5F) /*new Color(0.15F, 0.1F, 0.1F)*/);
             world.removeComponent<Pickupable>();
             //world.removeComponent<Collider>();
-            foreach (Collider c in world.GetComponentsInChildren<Collider>())
+            foreach (var c in world.GetComponentsInChildren<Collider>())
                 c.enabled = false;
         } else { //switch render to enzyme 42
             world.EnsureComponent<GeogelTag>();
-            GameObject pfb = ObjectUtil.lookupPrefab("505e7eff-46b3-4ad2-84e1-0fadb7be306c");
-            Renderer r = world.GetComponentInChildren<Renderer>();
-            GameObject mdl = pfb.GetComponentInChildren<Animator>().gameObject.clone();
+            var pfb = ObjectUtil.lookupPrefab("505e7eff-46b3-4ad2-84e1-0fadb7be306c");
+            var r = world.GetComponentInChildren<Renderer>();
+            var mdl = pfb.GetComponentInChildren<Animator>().gameObject.clone();
             mdl.removeChildObject("root", false);
             mdl.transform.SetParent(r.transform.parent);
             mdl.transform.localPosition = r.transform.localPosition;
             gp.model.SetActive(false);
             r = mdl.GetComponentInChildren<Renderer>();
-            Color c = new Color(0.2F, 0.67F, 0.95F); //new Color(0.4F, 0.3F, 0.1F);
+            var c = new Color(0.2F, 0.67F, 0.95F); //new Color(0.4F, 0.3F, 0.1F);
             r.materials[0].SetColor("_Color", c);
             r.materials[0].SetColor("_SpecColor", c);
             r.materials[0].SetFloat("_Fresnel", 0F);
@@ -49,11 +49,11 @@ public class GeoGel : CustomPrefab {
             r.materials[0].SetFloat("_EmissionLM", 200F);
             r.materials[0].SetFloat("_EmissionLMNight", 200F);
             r.materials[0].SetFloat("_MyCullVariable", 1.6F);
-            Light l = world.addLight(2, 4, c);
-            Light l2 = world.addLight(0.67F, 15, c);
+            var l = world.addLight(2, 4, c);
+            var l2 = world.addLight(0.67F, 15, c);
         }
 
-        foreach (FMOD_StudioEventEmitter mod in world.GetComponents<FMOD_StudioEventEmitter>()) {
+        foreach (var mod in world.GetComponents<FMOD_StudioEventEmitter>()) {
             mod.path = ""; //prevent playback
         }
 
@@ -67,7 +67,7 @@ public class GeoGel : CustomPrefab {
         //make exploding oil not cause harm
         gp.gasEffectPrefab =
             ObjectUtil.lookupPrefab(
-                isDrip ? SeaToSeaMod.geogelFogDrip.Info.ClassID : SeaToSeaMod.geogelFog.Info.ClassID
+                isDrip ? SeaToSeaMod.GeogelFogDrip.Info.ClassID : SeaToSeaMod.GeogelFog.Info.ClassID
             );
         gp.damagePerSecond = 0;
         gp.damageRadius = 0;
@@ -78,7 +78,7 @@ public class GeoGel : CustomPrefab {
 }
 
 internal class GeogelTag : MonoBehaviour {
-    void Start() {
+    private void Start() {
         gameObject.removeChildObject("model");
         gameObject.removeComponent<UWE.TriggerStayTracker>();
         gameObject.removeComponent<FMOD_StudioEventEmitter>();

@@ -20,9 +20,9 @@ public sealed class PlacedObject : DICustomPrefab {
 
 	public static readonly string BUBBLE_PREFAB = "fca5cdd9-1d00-4430-8836-a747627cdb2f";
 
-	private static GameObject bubblePrefab = null;
+	private static GameObject bubblePrefab;
 
-	private static readonly Dictionary<string, PlacedObject> ids = new Dictionary<string, PlacedObject>();
+	private static readonly Dictionary<string, PlacedObject> ids = new();
 
 	[SerializeField]
 	internal int referenceID;
@@ -34,10 +34,10 @@ public sealed class PlacedObject : DICustomPrefab {
 	[SerializeField]
 	internal bool isSelected;
 
-	internal PlacedObject parent = null;
+	internal PlacedObject parent;
 
 	static PlacedObject() {
-		registerType(TAGNAME, e => PlacedObject.fromXML(e, false));
+		registerType(TAGNAME, e => fromXML(e, false));
 	}
 
 	public override string getTagName() {
@@ -56,8 +56,8 @@ public sealed class PlacedObject : DICustomPrefab {
 		isBasePiece = pfb.StartsWith("Base_", StringComparison.InvariantCultureIgnoreCase);
 		if (isBasePiece)
 			prefabName = prefabName.Substring(5);
-		this.key(go);
-		this.createFX();
+		key(go);
+		createFX();
 	}
 
 	private void createFX() {
@@ -97,14 +97,14 @@ public sealed class PlacedObject : DICustomPrefab {
 	public sealed override void replaceObject(string pfb) {
 		base.replaceObject(pfb);
 
-		GameObject put = ObjectUtil.createWorldObject(pfb);
+		var put = ObjectUtil.createWorldObject(pfb);
 		if (put != null && put.transform != null) {
 			obj.destroy(false);
-			this.key(put);
+			key(put);
 			put.transform.position = position;
 			put.transform.rotation = rotation;
 			put.transform.localScale = scale;
-			this.createFX();
+			createFX();
 		}
 	}
 
@@ -144,27 +144,27 @@ public sealed class PlacedObject : DICustomPrefab {
 	}
 
 	public void move(Vector3 mov) {
-		this.move(mov.x, mov.y, mov.z);
+		move(mov.x, mov.y, mov.z);
 	}
 
 	public void move(double x, double y, double z) {
-		Vector3 vec = obj.transform.position;
+		var vec = obj.transform.position;
 		vec.x += (float)x;
 		vec.y += (float)y;
 		vec.z += (float)z;
-		this.setPosition(vec);
+		setPosition(vec);
 		//SNUtil.writeToChat(go.obj.transform.position.ToString());
 	}
 
 	public void rotateYaw(double ang, Vector3? relTo) {
-		this.rotate(0, ang, 0, relTo);
+		rotate(0, ang, 0, relTo);
 	}
 
 	public void rotate(double roll, double yaw, double pitch, Vector3? relTo) {
-		Vector3 ctr = position;
-		Vector3 up = obj.transform.up;
-		Vector3 forward = obj.transform.forward;
-		Vector3 right = obj.transform.right;
+		var ctr = position;
+		var up = obj.transform.up;
+		var forward = obj.transform.forward;
+		var right = obj.transform.right;
 		if (relTo != null && relTo.HasValue) {
 			ctr = relTo.Value;
 			up = Vector3.up;
@@ -176,11 +176,11 @@ public sealed class PlacedObject : DICustomPrefab {
 				obj.transform.RotateAround(ctr, forward, (float)roll);
 			if (Math.Abs(pitch) > 0.001)
 				obj.transform.RotateAround(ctr, right, (float)pitch);
-			this.setRotation(obj.transform.rotation);
+			setRotation(obj.transform.rotation);
 		}
 		else {
-			Vector3 euler = obj.transform.rotation.eulerAngles;
-			this.setRotation(Quaternion.Euler(euler.x + (float)roll, euler.y + (float)yaw, euler.z + (float)pitch));
+			var euler = obj.transform.rotation.eulerAngles;
+			setRotation(Quaternion.Euler(euler.x + (float)roll, euler.y + (float)yaw, euler.z + (float)pitch));
 			//SNUtil.writeToChat(go.obj.transform.rotation.eulerAngles.ToString());
 		}
 	}
@@ -195,8 +195,8 @@ public sealed class PlacedObject : DICustomPrefab {
 
 	public override string ToString() {
 		try {
-			Transform t = obj.transform;
-			string pos = t == null ? "null-transform @ "+position+" / "+rotation+" / "+scale : t.position+" / "+t.rotation.eulerAngles+" / "+t.localScale;
+			var t = obj.transform;
+			var pos = t == null ? "null-transform @ "+position+" / "+rotation+" / "+scale : t.position+" / "+t.rotation.eulerAngles+" / "+t.localScale;
 			return prefabName + " [" + tech + "] @ " + pos + " (" + referenceID + ")" + " " + (isSelected ? "*" : "");
 		}
 		catch (Exception ex) {
@@ -205,13 +205,13 @@ public sealed class PlacedObject : DICustomPrefab {
 	}
 
 	private void nestObject(GameObject go, XmlElement e) {
-		PlacedObject p = createNewObject(go);
+		var p = createNewObject(go);
 		if (p != null) {
-			XmlElement e2 = e.OwnerDocument.CreateElement("child");
+			var e2 = e.OwnerDocument.CreateElement("child");
 			p.saveToXML(e2);
 			e.AppendChild(e2);
 			foreach (Transform t in go.transform) {
-				this.nestObject(t.gameObject, e2);
+				nestObject(t.gameObject, e2);
 			}
 		}
 	}
@@ -226,39 +226,39 @@ public sealed class PlacedObject : DICustomPrefab {
 		}
 		if (isSeabase) {
 			foreach (Transform t in obj.transform) {
-				GameObject go2 = t.gameObject;
-				PlacedObject p2 = createNewObject(go2);
+				var go2 = t.gameObject;
+				var p2 = createNewObject(go2);
 				if (p2 == null) {
 					SNUtil.log("Could not find an identifier for " + t, SNUtil.diDLL);
 				}
 				else {
-					XmlElement cell = e.OwnerDocument.CreateElement("part");
+					var cell = e.OwnerDocument.CreateElement("part");
 					p2.saveToXML(cell);
-					BaseCell bc = go2.GetComponent<BaseCell>();
-					StorageContainer sc = go2.GetComponent<StorageContainer>();
-					Charger cg = go2.GetComponent<Charger>();
+					var bc = go2.GetComponent<BaseCell>();
+					var sc = go2.GetComponent<StorageContainer>();
+					var cg = go2.GetComponent<Charger>();
 					if (bc != null) {
-						XmlElement e2 = e.OwnerDocument.CreateElement("cellData");
+						var e2 = e.OwnerDocument.CreateElement("cellData");
 						foreach (Transform t2 in t) {
-							PlacedObject p3 = createNewObject(t2.gameObject);
+							var p3 = createNewObject(t2.gameObject);
 							if (p3 == null) {
 								SNUtil.log("Could not find an identifier for " + t2, SNUtil.diDLL);
 							}
 							else {
-								XmlElement e3 = e.OwnerDocument.CreateElement("component");
+								var e3 = e.OwnerDocument.CreateElement("component");
 								p3.saveToXML(e3);
 								e2.AppendChild(e3);
 								foreach (Transform t3 in t2) {
-									this.nestObject(t3.gameObject, e3);
+									nestObject(t3.gameObject, e3);
 								}
 							}
 						}
 						cell.AppendChild(e2);
 					}
 					else if (sc != null) {
-						XmlElement e2 = e.OwnerDocument.CreateElement("inventory");
-						foreach (TechType tt in sc.container.GetItemTypes()) {
-							XmlElement e3 = e.OwnerDocument.CreateElement("item");
+						var e2 = e.OwnerDocument.CreateElement("inventory");
+						foreach (var tt in sc.container.GetItemTypes()) {
+							var e3 = e.OwnerDocument.CreateElement("item");
 							e3.addProperty("type", "" + tt);
 							e3.addProperty("amount", sc.container.GetItems(tt).Count);
 							e2.AppendChild(e3);
@@ -266,11 +266,11 @@ public sealed class PlacedObject : DICustomPrefab {
 						cell.AppendChild(e2);
 					}
 					else if (cg != null) {
-						XmlElement e2 = e.OwnerDocument.CreateElement("inventory");
-						foreach (KeyValuePair<string, InventoryItem> kvp in cg.equipment.equipment) {
+						var e2 = e.OwnerDocument.CreateElement("inventory");
+						foreach (var kvp in cg.equipment.equipment) {
 							if (kvp.Value == null || kvp.Value.item == null)
 								continue;
-							XmlElement e3 = e.OwnerDocument.CreateElement("item");
+							var e3 = e.OwnerDocument.CreateElement("item");
 							e3.addProperty("type", "" + kvp.Value.item.GetTechType());
 							e3.addProperty("slot", kvp.Key);
 							e2.AppendChild(e3);
@@ -282,17 +282,17 @@ public sealed class PlacedObject : DICustomPrefab {
 			}
 		}
 		else if (isBasePiece) {
-			BaseFoundationPiece bf = obj.GetComponent<BaseFoundationPiece>();
+			var bf = obj.GetComponent<BaseFoundationPiece>();
 			if (bf != null) {
-				XmlElement e2 = e.OwnerDocument.CreateElement("supportData");
+				var e2 = e.OwnerDocument.CreateElement("supportData");
 				e2.addProperty("maxHeight", bf.maxPillarHeight);
 				e2.addProperty("extra", bf.extraHeight);
 				e2.addProperty("minHeight", bf.minHeight);
 				if (bf.pillars != null) {
-					foreach (BaseFoundationPiece.Pillar p in bf.pillars) {
-						Transform l = p.adjustable;
+					foreach (var p in bf.pillars) {
+						var l = p.adjustable;
 						if (l) {
-							XmlElement e3 = e.OwnerDocument.CreateElement("pillar");
+							var e3 = e.OwnerDocument.CreateElement("pillar");
 							e3.addProperty("position", l.position);
 							e3.addProperty("rotation", l.rotation);
 							e3.addProperty("scale", l.localScale);
@@ -334,36 +334,36 @@ public sealed class PlacedObject : DICustomPrefab {
 			//SNUtil
 		}
 
-		this.setPosition(position);
-		this.setRotation(rotation);
+		setPosition(position);
+		setRotation(rotation);
 		obj.transform.localScale = scale;
 		if (fx != null && fx.transform != null)
 			fx.transform.localScale = scale;
 
-		string pp = e.getProperty("parent", true);
+		var pp = e.getProperty("parent", true);
 		if (!string.IsNullOrEmpty(pp) && ids.ContainsKey(pp)) {
 			parent = ids[pp];
 			if (parent != null)
 				obj.transform.parent = parent.obj.transform;
 		}
 
-		foreach (ManipulationBase mb in manipulations) {
+		foreach (var mb in manipulations) {
 			mb.applyToObject(this);
 		}
 	}
 
 	protected override void setPrefabName(string name) {
-		string old = prefabName;
+		var old = prefabName;
 		base.setPrefabName(name);
 		if (old != name)
-			this.replaceObject(name);
+			replaceObject(name);
 	}
 
 	public static PlacedObject fromXML(XmlElement e, bool readXML = true) {
-		DICustomPrefab pfb = new DICustomPrefab("");
+		var pfb = new DICustomPrefab("");
 		pfb.loadFromXML(e);
 		SNUtil.log("Building placed object from custom prefab " + pfb + " > " + e.format(), SNUtil.diDLL);
-		PlacedObject b = createNewObject(pfb);
+		var b = createNewObject(pfb);
 		if (readXML)
 			b.loadFromXML(e);
 		return b;
@@ -380,25 +380,25 @@ public sealed class PlacedObject : DICustomPrefab {
 	internal static PlacedObject createNewObject(GameObject go) {
 		string id = null;
 		//SNUtil.log("Attempting builderObject from '"+go.name+"'");
-		PrefabIdentifier pi = go.GetComponent<PrefabIdentifier>();
+		var pi = go.GetComponent<PrefabIdentifier>();
 		if (pi != null)
 			id = pi.classId;
 		if (id == BUBBLE_PREFAB)
 			return null;
 		if (pi == null && go.name.StartsWith("Base", StringComparison.InvariantCulture)) {
-			string name = go.name.Replace("(Clone)", "").Substring(4);
-			Base.Piece get = Base.Piece.Invalid;
+			var name = go.name.Replace("(Clone)", "").Substring(4);
+			var get = Base.Piece.Invalid;
 			if (name.Contains("WaterPark") && !name.Contains("RoomWaterPark"))
 				name = name.Replace("WaterPark", "RoomWaterPark");
 			else if (name.Contains("CorridorLadder"))
 				name = name.Replace("Corridor", "CorridorIShape");
-			if (Enum.TryParse<Base.Piece>(name, out get)) {
+			if (Enum.TryParse(name, out get)) {
 				if (get != Base.Piece.Invalid) {
 					id = "Base_" + name;
 				}
 			}
 			if (id == null) {
-				TechTag tt = go.GetComponent<TechTag>();
+				var tt = go.GetComponent<TechTag>();
 				if (tt != null && tt.type == TechType.BaseFoundation) {
 					id = "Base_Foundation";
 				}
@@ -412,13 +412,13 @@ public sealed class PlacedObject : DICustomPrefab {
 			SNUtil.writeToChat("Prefab not placed; ID was null");
 			return null;
 		}
-		GameObject go = basePiece ? ObjectUtil.getBasePiece(id) : ObjectUtil.createWorldObject(id);
+		var go = basePiece ? ObjectUtil.getBasePiece(id) : ObjectUtil.createWorldObject(id);
 		return go == null ? null : createNewObject(go);
 	}
 
 	private static PlacedObject createNewObject(GameObject go, string id) {
-		BuilderPlaced sel = go.AddComponent<BuilderPlaced>();
-		PlacedObject ret = new PlacedObject(go, id);
+		var sel = go.AddComponent<BuilderPlaced>();
+		var ret = new PlacedObject(go, id);
 		sel.placement = ret;
 		//SNUtil.dumpObjectData(ret.obj);
 		return ret;

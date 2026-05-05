@@ -12,18 +12,18 @@ public class Calcite : BasicCustomOre {
 
     public override void prepareGameObject(GameObject go, Renderer[] r0) {
         base.prepareGameObject(go, r0);
-        GameObject rref = r0[0].gameObject;
-        for (int i = 0; i < 4; i++) {
-            GameObject rg = r0[0].gameObject.clone();
+        var rref = r0[0].gameObject;
+        for (var i = 0; i < 4; i++) {
+            var rg = r0[0].gameObject.clone();
             rg.transform.SetParent(rref.transform);
-            rg.transform.localScale = Vector3.one * (1F - ((i + 1) * 0.05F));
+            rg.transform.localScale = Vector3.one * (1F - (i + 1) * 0.05F);
             rg.transform.localEulerAngles = new Vector3(270, 0, 0);
             rg.transform.localPosition = Vector3.zero;
         }
 
         r0 = go.GetComponentsInChildren<Renderer>();
-        for (int i = 0; i < r0.Length; i++) {
-            Renderer r = r0[i];
+        for (var i = 0; i < r0.Length; i++) {
+            var r = r0[i];
             RenderUtil.makeTransparent(r);
             r.sharedMaterial.SetFloat("_Fresnel", 0.6F);
             r.sharedMaterial.SetFloat("_Shininess", 10F);

@@ -7,10 +7,10 @@ namespace ReikaKalseki.SeaToSea;
 public class BreathingFluid : BasicCraftingItem {
     [SetsRequiredMembers]
     public BreathingFluid() : base(
-        SeaToSeaMod.itemLocale.getEntry("breathfluid"),
+        SeaToSeaMod.ItemLocale.getEntry("breathfluid"),
         "WorldEntities/Natural/polyaniline"
     ) {
-        sprite = TextureManager.getSprite(SeaToSeaMod.modDLL, "Textures/Items/BreathFluid");
+        sprite = TextureManager.getSprite(SeaToSeaMod.ModDLL, "Textures/Items/BreathFluid");
         unlockRequirement = TechType.Unobtanium; //SeaToSeaMod.rebreatherV2.TechType;
         craftingSubCategory = "C2Chemistry";
         craftingTime = 15;
@@ -28,19 +28,11 @@ public class BreathingFluid : BasicCraftingItem {
         base.prepareGameObject(go, r);
     }
 
-    public override CraftTree.Type FabricatorType {
-        get { return CraftTree.Type.Fabricator; }
-    }
+    public override CraftTree.Type FabricatorType => CraftTree.Type.Fabricator;
 
-    public override TechGroup GroupForPDA {
-        get { return TechGroup.Resources; }
-    }
+    public override TechGroup GroupForPDA => TechGroup.Resources;
 
-    public override TechCategory CategoryForPDA {
-        get { return C2CItems.chemistryCategory; }
-    }
+    public override TechCategory CategoryForPDA => C2CItems.chemistryCategory;
 
-    public override string[] StepsToFabricatorTab {
-        get { return new string[] { "Resources", "C2Chemistry" }; }
-    }
+    public override string[] StepsToFabricatorTab => ["Resources", "C2Chemistry"];
 }

@@ -8,7 +8,7 @@ public class DelayedKill : MonoBehaviour {
 
 	public void initialize(float delay, DamageType dmg) {
 		damage = dmg;
-		Invoke("run", delay);
+		Invoke(nameof(run), delay);
 	}
 
 	private void run() {

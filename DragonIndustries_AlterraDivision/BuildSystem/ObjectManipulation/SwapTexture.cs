@@ -15,7 +15,7 @@ namespace ReikaKalseki.DIAlterra;
 
 public abstract class SwapTexture : ManipulationBase {
 
-	private readonly Dictionary<string, string> swaps = new Dictionary<string, string>();
+	private readonly Dictionary<string, string> swaps = new();
 
 	protected SwapTexture() {
 
@@ -28,26 +28,26 @@ public abstract class SwapTexture : ManipulationBase {
 	}
 
 	public override void applyToObject(GameObject go) {
-		foreach (Renderer r in go.GetComponentsInChildren<Renderer>()) {
-			foreach (Material m in r.materials) {
+		foreach (var r in go.GetComponentsInChildren<Renderer>()) {
+			foreach (var m in r.materials) {
 				if (m.mainTexture != null) {
-					string put = swaps.ContainsKey(m.mainTexture.name) ? swaps[m.mainTexture.name] : null;
+					var put = swaps.ContainsKey(m.mainTexture.name) ? swaps[m.mainTexture.name] : null;
 					if (put != null) {
-						Texture2D tex2 = this.getTexture(put, "main");
+						var tex2 = getTexture(put, "main");
 						if (tex2 != null)
 							m.mainTexture = tex2;
 						//else
 						//SNUtil.writeToChat("Could not find texture "+put);
 					}
 				}
-				foreach (string n in m.GetTexturePropertyNames()) {
-					Texture tex = m.GetTexture(n);
+				foreach (var n in m.GetTexturePropertyNames()) {
+					var tex = m.GetTexture(n);
 					if (tex is Texture2D) {
-						string file = tex.name;
-						string put = swaps.ContainsKey(file) ? swaps[file] : null;
+						var file = tex.name;
+						var put = swaps.ContainsKey(file) ? swaps[file] : null;
 						//SNUtil.writeToChat(n+" > "+file+" > "+put);
 						if (put != null) {
-							Texture2D tex2 = this.getTexture(put, n);
+							var tex2 = getTexture(put, n);
 							//SNUtil.writeToChat(">>"+tex2);
 							if (tex2 != null)
 								m.SetTexture(n, tex2);
@@ -62,7 +62,7 @@ public abstract class SwapTexture : ManipulationBase {
 	}
 
 	public sealed override void applyToObject(PlacedObject go) {
-		this.applyToObject(go.obj);
+		applyToObject(go.obj);
 	}
 
 	public override void loadFromXML(XmlElement e) {
@@ -75,8 +75,8 @@ public abstract class SwapTexture : ManipulationBase {
 	}
 
 	public override void saveToXML(XmlElement e) {
-		foreach (KeyValuePair<string, string> kvp in swaps) {
-			XmlElement e2 = e.OwnerDocument.CreateElement("swap");
+		foreach (var kvp in swaps) {
+			var e2 = e.OwnerDocument.CreateElement("swap");
 			e2.addProperty("from", kvp.Key);
 			e2.addProperty("to", kvp.Value);
 			e.AppendChild(e2);

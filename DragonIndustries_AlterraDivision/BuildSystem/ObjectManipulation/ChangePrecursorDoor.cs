@@ -34,17 +34,17 @@ public class ChangePrecursorDoor : ManipulationBase {
 	}
 
 	public override void applyToObject(GameObject go) {
-		PrecursorKeyTerminal pk = go.GetComponentInChildren<PrecursorKeyTerminal>();
+		var pk = go.GetComponentInChildren<PrecursorKeyTerminal>();
 		if (pk == null) {
-			foreach (Component c in go.GetComponentsInChildren<Component>()) {
+			foreach (var c in go.GetComponentsInChildren<Component>()) {
 				SNUtil.log("extra Component " + c + "/" + c.GetType() + " in " + c.gameObject);
 			}
 		}
-		this.applyToObject(pk);
+		applyToObject(pk);
 	}
 
 	public override void applyToObject(PlacedObject go) {
-		this.applyToObject(go.obj);
+		applyToObject(go.obj);
 	}
 
 	public override void loadFromXML(XmlElement e) {

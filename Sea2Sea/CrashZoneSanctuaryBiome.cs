@@ -9,14 +9,14 @@ namespace ReikaKalseki.SeaToSea;
 public class CrashZoneSanctuaryBiome : CustomBiome {
     public static readonly float biomeRadius = 120;
     private static readonly float radiusFuzz = 24;
-    public static readonly Vector3 biomeCenter = new Vector3(1111.16F, -360.5F, -985F);
+    public static readonly Vector3 biomeCenter = new(1111.16F, -360.5F, -985F);
 
     private static readonly Simplex3DGenerator edgeFuzz =
         (Simplex3DGenerator)new Simplex3DGenerator(2376547).setFrequency(0.1);
 
-    public static readonly CrashZoneSanctuaryBiome instance = new CrashZoneSanctuaryBiome();
+    public static readonly CrashZoneSanctuaryBiome instance = new();
 
-    private readonly Dictionary<string, int> creatureCounts = new Dictionary<string, int>();
+    private readonly Dictionary<string, int> creatureCounts = new();
 
     private CrashZoneSanctuaryBiome() : base("Glowing Sanctuary", 1F) {
         creatureCounts[VanillaCreatures.BLADDERFISH.prefab] = 36;
@@ -44,17 +44,17 @@ public class CrashZoneSanctuaryBiome : CustomBiome {
         }
         */
 
-        this.createDiscoveryStoryGoal(5, SeaToSeaMod.miscLocale.getEntry("sanctuaryenter"));
+        createDiscoveryStoryGoal(5, SeaToSeaMod.MiscLocale.getEntry("sanctuaryenter"));
 
         creatureCounts[C2CItems.sanctuaryray.ClassID] = 18;
 
-        foreach (KeyValuePair<string, int> kvp in creatureCounts) {
-            for (int i = 0; i < kvp.Value; i++) {
-                Vector3 pos = MathUtil.getRandomVectorAround(
+        foreach (var kvp in creatureCounts) {
+            for (var i = 0; i < kvp.Value; i++) {
+                var pos = MathUtil.getRandomVectorAround(
                     biomeCenter,
                     new Vector3(biomeRadius, 0, biomeRadius) * 0.67F
                 ).setY(-340);
-                if (this.isInBiome(pos))
+                if (IsInBiome(pos))
                     GenUtil.registerWorldgen(new PositionedPrefab(kvp.Key, pos));
             }
         }
@@ -65,20 +65,20 @@ public class CrashZoneSanctuaryBiome : CustomBiome {
     }
 
     public override VanillaMusic[] getMusicOptions() {
-        return new VanillaMusic[] { VanillaMusic.COVE };
+        return [VanillaMusic.COVE];
     }
 
-    public override bool isCaveBiome() {
+    public override bool IsCaveBiome() {
         return false;
     }
 
-    public override bool existsInSeveralPlaces() {
+    public override bool ExistsInSeveralPlaces() {
         return false;
     }
 
-    public override bool isInBiome(Vector3 pos) {
-        float dist = Vector3.Distance(pos, biomeCenter);
-        return dist <= biomeRadius + radiusFuzz && dist <= biomeRadius + (edgeFuzz.getValue(pos) * radiusFuzz);
+    public override bool IsInBiome(Vector3 pos) {
+        var dist = Vector3.Distance(pos, biomeCenter);
+        return dist <= biomeRadius + radiusFuzz && dist <= biomeRadius + edgeFuzz.getValue(pos) * radiusFuzz;
     }
 
     public override double getDistanceToBiome(Vector3 vec) {
@@ -113,34 +113,34 @@ public class CrashZoneSanctuaryBiome : CustomBiome {
         return 0.5F;
     }
 
-    public override bool isVoidBiome() {
+    public override bool IsVoidBiome() {
         return false;
     }
 
     public static void cleanPlantOverlap() { //called manually to compute prebaked positions
-        HashSet<Vector3> positions = new HashSet<Vector3>();
-        foreach (SanctuaryPlantTag sp in UnityEngine.Object.FindObjectsOfType<SanctuaryPlantTag>()) {
-            Vector3 pos = sp.transform.position;
-            if (!instance.isInBiome(pos))
+        HashSet<Vector3> positions = [];
+        foreach (var sp in UnityEngine.Object.FindObjectsOfType<SanctuaryPlantTag>()) {
+            var pos = sp.transform.position;
+            if (!instance.IsInBiome(pos))
                 continue;
             positions.Add(pos);
-            foreach (PrefabIdentifier pi in WorldUtil.getObjectsNearWithComponent<PrefabIdentifier>(pos, 2.5F)) {
+            foreach (var pi in WorldUtil.getObjectsNearWithComponent<PrefabIdentifier>(pos, 2.5F)) {
                 //does not find the grass because no collider
                 if (CrashZoneSanctuarySpawner.spawnsPlant(pi.ClassId))
                     pi.gameObject.destroy();
             }
         }
 
-        HashSet<Vector3> satellitePositions = new HashSet<Vector3>();
-        foreach (PrefabIdentifier pi in UnityEngine.Object.FindObjectsOfType<PrefabIdentifier>()) {
+        HashSet<Vector3> satellitePositions = [];
+        foreach (var pi in UnityEngine.Object.FindObjectsOfType<PrefabIdentifier>()) {
             if (pi && CrashZoneSanctuarySpawner.spawnsPlant(pi.ClassId))
                 satellitePositions.Add(pi.transform.position);
         }
 
-        HashSet<Vector3> fernPositions = new HashSet<Vector3>();
-        foreach (PrefabIdentifier pi in UnityEngine.Object.FindObjectsOfType<PrefabIdentifier>()) {
-            if (pi && pi.ClassId == SeaToSeaMod.crashSanctuaryFern.Info.ClassID) {
-                foreach (Vector3 pos in positions) {
+        HashSet<Vector3> fernPositions = [];
+        foreach (var pi in UnityEngine.Object.FindObjectsOfType<PrefabIdentifier>()) {
+            if (pi && pi.ClassId == SeaToSeaMod.CrashSanctuaryFern.Info.ClassID) {
+                foreach (var pos in positions) {
                     if (Vector3.Distance(pos, pi.transform.position) <= 3.75F) {
                         pi.gameObject.destroy();
                         break;
@@ -149,7 +149,7 @@ public class CrashZoneSanctuaryBiome : CustomBiome {
 
                 if (!pi || !pi.transform)
                     continue;
-                foreach (Vector3 pos in satellitePositions) {
+                foreach (var pos in satellitePositions) {
                     if (Vector3.Distance(pos, pi.transform.position) <= 2F) {
                         pi.gameObject.destroy();
                         break;
@@ -158,7 +158,7 @@ public class CrashZoneSanctuaryBiome : CustomBiome {
 
                 if (!pi || !pi.transform)
                     continue;
-                foreach (Vector3 pos in fernPositions) {
+                foreach (var pos in fernPositions) {
                     if (Vector3.Distance(pos, pi.transform.position) <= 0.3F) {
                         pi.gameObject.destroy();
                         break;
@@ -173,33 +173,33 @@ public class CrashZoneSanctuaryBiome : CustomBiome {
     }
 
     public static void dumpPlantData() {
-        string path = BuildingHandler.instance.getDumpFile("sanctuary_plants");
-        XmlDocument doc = new XmlDocument();
-        XmlElement rootnode = doc.CreateElement("Root");
+        var path = BuildingHandler.instance.getDumpFile("sanctuary_plants");
+        var doc = new XmlDocument();
+        var rootnode = doc.CreateElement("Root");
         doc.AppendChild(rootnode);
 
-        foreach (SanctuaryPlantTag sp in UnityEngine.Object.FindObjectsOfType<SanctuaryPlantTag>()) {
-            if (!instance.isInBiome(sp.transform.position))
+        foreach (var sp in UnityEngine.Object.FindObjectsOfType<SanctuaryPlantTag>()) {
+            if (!instance.IsInBiome(sp.transform.position))
                 continue;
-            PositionedPrefab pfb = new PositionedPrefab(sp.GetComponent<PrefabIdentifier>());
-            XmlElement e = doc.CreateElement("flame");
+            var pfb = new PositionedPrefab(sp.GetComponent<PrefabIdentifier>());
+            var e = doc.CreateElement("flame");
             pfb.saveToXML(e);
             doc.DocumentElement.AppendChild(e);
         }
 
-        foreach (PrefabIdentifier pi in UnityEngine.Object.FindObjectsOfType<PrefabIdentifier>()) {
-            if (pi && CrashZoneSanctuarySpawner.spawnsPlant(pi.ClassId) && instance.isInBiome(pi.transform.position)) {
-                PositionedPrefab pfb = new PositionedPrefab(pi);
-                XmlElement e = doc.CreateElement("plant");
+        foreach (var pi in UnityEngine.Object.FindObjectsOfType<PrefabIdentifier>()) {
+            if (pi && CrashZoneSanctuarySpawner.spawnsPlant(pi.ClassId) && instance.IsInBiome(pi.transform.position)) {
+                var pfb = new PositionedPrefab(pi);
+                var e = doc.CreateElement("plant");
                 pfb.saveToXML(e);
                 doc.DocumentElement.AppendChild(e);
             }
         }
 
-        foreach (PrefabIdentifier pi in UnityEngine.Object.FindObjectsOfType<PrefabIdentifier>()) {
-            if (pi && pi.ClassId == SeaToSeaMod.crashSanctuaryFern.Info.ClassID) {
-                PositionedPrefab pfb = new PositionedPrefab(pi);
-                XmlElement e = doc.CreateElement("fern");
+        foreach (var pi in UnityEngine.Object.FindObjectsOfType<PrefabIdentifier>()) {
+            if (pi && pi.ClassId == SeaToSeaMod.CrashSanctuaryFern.Info.ClassID) {
+                var pfb = new PositionedPrefab(pi);
+                var e = doc.CreateElement("fern");
                 pfb.saveToXML(e);
                 doc.DocumentElement.AppendChild(e);
             }

@@ -18,19 +18,19 @@ internal abstract class GenericMethodCall : ManipulationBase {
 	private MethodInfo call;
 
 	public override void applyToObject(GameObject go) {
-		call.Invoke(null, new object[] { go });
+		call.Invoke(null, [go]);
 	}
 
 	public override void applyToObject(PlacedObject go) {
-		this.applyToObject(go.obj);
+		applyToObject(go.obj);
 	}
 
 	public override void loadFromXML(XmlElement e) {
-		string tn = e.getProperty("typeName");
-		string name = e.getProperty("name");
-		Type t = InstructionHandlers.getTypeBySimpleName(tn);
+		var tn = e.getProperty("typeName");
+		var name = e.getProperty("name");
+		var t = InstructionHandlers.getTypeBySimpleName(tn);
 		//call = t.GetMethod(name, unchecked((System.Reflection.BindingFlags)0x7fffffff));
-		call = t.GetMethod(name, new Type[] { typeof(GameObject) });
+		call = t.GetMethod(name, [typeof(GameObject)]);
 	}
 
 	public override void saveToXML(XmlElement e) {

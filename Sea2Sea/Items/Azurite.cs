@@ -8,7 +8,7 @@ namespace ReikaKalseki.SeaToSea;
 public class Azurite : BasicCustomOre {
     internal static readonly float BASE_LIGHT_RANGE = 2.5F;
 
-    internal static readonly Vector3 mountainBaseAzurite = new Vector3(
+    internal static readonly Vector3 mountainBaseAzurite = new(
         939.533630371094F,
         -347.903259277344F,
         1443.25720214844F
@@ -24,13 +24,13 @@ public class Azurite : BasicCustomOre {
         go.EnsureComponent<AzuriteTag>();
         go.EnsureComponent<AzuriteOreSparker>();
 
-        Light l = go.addLight(0.9F, BASE_LIGHT_RANGE, new Color(0F, 0.65F, 1F));
+        var l = go.addLight(0.9F, BASE_LIGHT_RANGE, new Color(0F, 0.65F, 1F));
         l.type = LightType.Point;
     }
 }
 
 internal class AzuriteOreSparker : AzuriteSparker {
-    AzuriteOreSparker() : base(3.2F, 1.8F, false) {
+    private AzuriteOreSparker() : base(3.2F, 1.8F, false) {
     }
 }
 
@@ -53,8 +53,8 @@ internal abstract class AzuriteSparker : MonoBehaviour {
         particleOrigin = orgn != null && orgn.HasValue ? orgn.Value : Vector3.zero;
     }
 
-    void Update() {
-        foreach (PlayerDistanceTracker p in this.GetComponentsInChildren<PlayerDistanceTracker>())
+    private void Update() {
+        foreach (var p in GetComponentsInChildren<PlayerDistanceTracker>())
             p.gameObject.destroy();
         if (!sparker) {
             sparker = gameObject.getChildObject("xUnderwaterElecSource_medium");
@@ -75,16 +75,16 @@ internal abstract class AzuriteSparker : MonoBehaviour {
         }
 
         if (!body)
-            body = this.GetComponentInChildren<Rigidbody>();
-        if (this.disableSparking()) {
+            body = GetComponentInChildren<Rigidbody>();
+        if (disableSparking()) {
             sparker.SetActive(false);
         } else if (UnityEngine.Random.Range(0, 20) == 0 && Time.deltaTime > 0.01F) {
             if (!sparker.activeSelf) {
                 if (UnityEngine.Random.Range(0, 1F) < 0.5F * activityLevel) {
                     sparker.SetActive(true);
                     sparker.transform.localPosition = particleOrigin;
-                    foreach (ParticleSystem p in particles) {
-                        ParticleSystem.MainModule pm = p.main;
+                    foreach (var p in particles) {
+                        var pm = p.main;
                         pm.startSize = size * 0.2F;
                     }
                 }
@@ -103,9 +103,9 @@ internal abstract class AzuriteSparker : MonoBehaviour {
     }
 }
 
-class AzuriteTag : MonoBehaviour {
-    static readonly float DAMAGE_RANGE = 12;
-    static readonly float DAMAGE_RANGE_MOUNTAIN = 6;
+internal class AzuriteTag : MonoBehaviour {
+    private static readonly float DAMAGE_RANGE = 12;
+    private static readonly float DAMAGE_RANGE_MOUNTAIN = 6;
 
     private float lastTime;
 
@@ -113,36 +113,36 @@ class AzuriteTag : MonoBehaviour {
     private Light light;
     private Rigidbody body;
 
-    void Start() {
+    private void Start() {
         render = gameObject.GetComponentInChildren<Renderer>();
         light = gameObject.GetComponentInChildren<Light>();
-        body = this.GetComponentInChildren<Rigidbody>();
+        body = GetComponentInChildren<Rigidbody>();
     }
 
-    void Update() {
-        float time = DayNightCycle.main.timePassedAsFloat;
-        float dT = Time.deltaTime;
+    private void Update() {
+        var time = DayNightCycle.main.timePassedAsFloat;
+        var dT = Time.deltaTime;
         double phase = gameObject.GetInstanceID();
-        double sp = 1 + (0.4 * Math.Cos(
+        var sp = 1 + 0.4 * Math.Cos(
             0.02 * (body.isKinematic ? gameObject.transform.position.magnitude : 0) % (600 * Math.PI)
-        )); //was 0.75 and 0.25
-        double tick = ((sp * time) + phase) % (200 * Math.PI);
-        float lt = (float)Math.Sin(tick) + (0.4F * (float)Math.Sin((tick * 4.63) - 289.2));
-        float f = CustomMaterials.getMaterial(CustomMaterials.Materials.VENT_CRYSTAL).glow - 1.5F + (2F * lt);
+        ); //was 0.75 and 0.25
+        var tick = (sp * time + phase) % (200 * Math.PI);
+        var lt = (float)Math.Sin(tick) + 0.4F * (float)Math.Sin(tick * 4.63 - 289.2);
+        var f = CustomMaterials.getMaterial(CustomMaterials.Materials.VENT_CRYSTAL).glow - 1.5F + 2F * lt;
         RenderUtil.setEmissivity(render, f);
-        light.range = Azurite.BASE_LIGHT_RANGE + (0.5F * f);
-        bool isMountainBase = (transform.position - Azurite.mountainBaseAzurite).sqrMagnitude <= 0.0625F;
+        light.range = Azurite.BASE_LIGHT_RANGE + 0.5F * f;
+        var isMountainBase = (transform.position - Azurite.mountainBaseAzurite).sqrMagnitude <= 0.0625F;
         if (isMountainBase)
             body.isKinematic = true;
         if (dT > 0 && body.isKinematic && Player.main != null && !Player.main.IsInsideWalkable() &&
             Player.main.IsSwimming()) {
-            if (!C2CItems.hasSealedOrReinforcedSuit(out bool seal, out bool reinf)) {
-                GameObject ep = Player.main.gameObject;
-                float distsq = (ep.transform.position - gameObject.transform.position).sqrMagnitude;
-                float r = isMountainBase ? DAMAGE_RANGE_MOUNTAIN : DAMAGE_RANGE;
+            if (!C2CItems.hasSealedOrReinforcedSuit(out var seal, out var reinf)) {
+                var ep = Player.main.gameObject;
+                var distsq = (ep.transform.position - gameObject.transform.position).sqrMagnitude;
+                var r = isMountainBase ? DAMAGE_RANGE_MOUNTAIN : DAMAGE_RANGE;
                 r *= r;
                 if (distsq < r) {
-                    float amt = 2.5F * dT * Mathf.Min(1, 1 - (distsq / r));
+                    var amt = 2.5F * dT * Mathf.Min(1, 1 - distsq / r);
                     if (isMountainBase)
                         amt *= 0.5F;
                     //SNUtil.writeToChat(distsq+" & "+dT+" > "+amt);

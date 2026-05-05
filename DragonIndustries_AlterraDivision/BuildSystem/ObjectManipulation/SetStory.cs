@@ -17,12 +17,12 @@ internal sealed class SetStory : ManipulationBase {
 	private string goalKey;
 
 	public override void applyToObject(GameObject go) {
-		StoryHandTarget sh = go.EnsureComponent<StoryHandTarget>();
+		var sh = go.EnsureComponent<StoryHandTarget>();
 		sh.goal = new Story.StoryGoal(goalKey, Story.GoalType.Encyclopedia, 0);
 	}
 
 	public override void applyToObject(PlacedObject go) {
-		this.applyToObject(go.obj);
+		applyToObject(go.obj);
 	}
 
 	public override void loadFromXML(XmlElement e) {

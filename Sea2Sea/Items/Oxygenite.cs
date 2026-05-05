@@ -6,7 +6,7 @@ using UnityEngine;
 namespace ReikaKalseki.SeaToSea;
 
 public class Oxygenite : BasicCustomOre {
-    public static readonly List<PositionedPrefab> spawns = new List<PositionedPrefab>();
+    public static readonly List<PositionedPrefab> spawns = [];
 
     [SetsRequiredMembers]
     public Oxygenite(string id, string name, string desc, VanillaResources template) : base(id, name, desc, template) {
@@ -20,7 +20,7 @@ public class Oxygenite : BasicCustomOre {
     }
 
     public static void setupOxygeniteRender(GameObject go, float lightRadius = 1) {
-        foreach (Renderer r in go.GetComponentsInChildren<Renderer>()) {
+        foreach (var r in go.GetComponentsInChildren<Renderer>()) {
             //GameObject go = ;
             r.materials[0].SetFloat("_Fresnel", 1.0F);
             r.materials[0].SetFloat("_Shininess", 5.5F);
@@ -29,8 +29,8 @@ public class Oxygenite : BasicCustomOre {
             RenderUtil.swapToModdedTextures(r, CustomMaterials.getItem(CustomMaterials.Materials.OXYGENITE));
         }
 
-        Color c = new Color(0.5F, 1, 0.9F);
-        Light l = go.addLight(1F, 4 * lightRadius, c);
+        var c = new Color(0.5F, 1, 0.9F);
+        var l = go.addLight(1F, 4 * lightRadius, c);
         l.type = LightType.Point;
         l.transform.localPosition = Vector3.up;
         l = go.addLight(2.5F, 1F * lightRadius, c);
@@ -61,12 +61,12 @@ public class Oxygenite : BasicCustomOre {
     }
     */
     public static void dumpLocations() {
-        string file = BuildingHandler.instance.dumpPrefabs("oxygeniteSpawns", spawns);
+        var file = BuildingHandler.instance.dumpPrefabs("oxygeniteSpawns", spawns);
         SNUtil.writeToChat("Exported " + spawns.Count + " oxygenite to " + file);
     }
 }
 
 public class OxygeniteTag : MonoBehaviour {
-    void Start() {
+    private void Start() {
     }
 }

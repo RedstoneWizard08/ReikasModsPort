@@ -17,7 +17,7 @@ public class ExscansionMod : BaseUnityPlugin {
 
     public static readonly Assembly modDLL = Assembly.GetExecutingAssembly();
 
-    public static readonly Config<ESConfig.ConfigEntries> config = new Config<ESConfig.ConfigEntries>(modDLL);
+    public static readonly Config<ESConfig.ConfigEntries> config = new(modDLL);
 
     public static ScannerRoomMarker abandonedBase;
     public static ScannerRoomMarker alienBase;
@@ -26,7 +26,7 @@ public class ExscansionMod : BaseUnityPlugin {
     private void Awake() {
         config.load();
 
-        HarmonySystem harmony = new HarmonySystem(MOD_KEY, modDLL, typeof(ESPatches));
+        var harmony = new HarmonySystem(MOD_KEY, modDLL, typeof(ESPatches));
         harmony.apply();
 
         ModVersionCheck.getFromGitVsInstall("Exscansion", modDLL, "Exscansion").register();
@@ -41,6 +41,9 @@ public class ExscansionMod : BaseUnityPlugin {
         fossils = new ScannerRoomMarker(
             EnumHandler.AddEntry<TechType>("Fossils").WithPdaInfo("Fossilized Remains", "")
         );
+        abandonedBase.Register();
+        alienBase.Register();
+        fossils.Register();
 
         /*
         if (config.getBoolean(ESConfig.ConfigEntries.BASES)) {

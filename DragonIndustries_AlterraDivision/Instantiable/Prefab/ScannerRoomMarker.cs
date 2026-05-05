@@ -23,11 +23,11 @@ public sealed class ScannerRoomMarker : CustomPrefab {
     }
 
     private GameObject GetGameObject() {
-        GameObject world = new GameObject("ScannerRoomMarker(Clone)");
+        var world = new GameObject("ScannerRoomMarker(Clone)");
         world.EnsureComponent<TechTag>().type = markerType;
-        PrefabIdentifier pi = world.EnsureComponent<PrefabIdentifier>();
+        var pi = world.EnsureComponent<PrefabIdentifier>();
         pi.ClassId = Info.ClassID;
-        ResourceTracker tgt = world.EnsureComponent<ResourceTracker>();
+        var tgt = world.EnsureComponent<ResourceTracker>();
         tgt.techType = markerType;
         tgt.overrideTechType = markerType;
         tgt.prefabIdentifier = pi;

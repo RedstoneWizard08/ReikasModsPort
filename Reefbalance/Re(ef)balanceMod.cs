@@ -17,17 +17,17 @@ public class ReefbalanceMod : BaseUnityPlugin {
 
     public static readonly Assembly modDLL = Assembly.GetExecutingAssembly();
 
-    public static readonly Config<RBConfig.ConfigEntries> config = new Config<RBConfig.ConfigEntries>(modDLL);
+    public static readonly Config<RBConfig.ConfigEntries> config = new(modDLL);
 
-    private static readonly TechType[] decoratives = new TechType[] { //does not include aurora as that has no techtype
+    private static readonly TechType[] decoratives = [ //does not include aurora as that has no techtype
         TechType.ToyCar,
         TechType.LabEquipment1,
         TechType.LabEquipment2,
         TechType.LabEquipment3,
         TechType.LabContainer,
-    };
+    ];
 
-    private static readonly TechType[] smallSeeds = new TechType[] {
+    private static readonly TechType[] smallSeeds = [
         TechType.BluePalmSeed,
         TechType.EyesPlantSeed,
         TechType.KooshChunk,
@@ -37,11 +37,11 @@ public class ReefbalanceMod : BaseUnityPlugin {
         TechType.RedBushSeed,
         TechType.RedRollPlantSeed,
         TechType.RedConePlantSeed,
-    };
+    ];
 
     //private static readonly HashSet<TechType> meatFoods = new HashSet<TechType>();
     //private static readonly HashSet<TechType> vegFoods = new HashSet<TechType>();
-    private static readonly Dictionary<TechType, int> scanCountOverrides = new Dictionary<TechType, int>();
+    private static readonly Dictionary<TechType, int> scanCountOverrides = new();
 
     public static BasicCraftingItem baseGlass;
 
@@ -52,19 +52,19 @@ public class ReefbalanceMod : BaseUnityPlugin {
     }
 
     public void Awake() {
-        HarmonySystem harmony = new HarmonySystem(MOD_KEY, modDLL, typeof(RBPatches));
+        var harmony = new HarmonySystem(MOD_KEY, modDLL, typeof(RBPatches));
         harmony.apply();
 
         ModVersionCheck.getFromGitVsInstall("Re(ef)Balance", modDLL, "Reefbalance").register();
         SNUtil.checkModHash(modDLL);
 
-        DIHooks.onFruitPlantTickEvent += fpt => {
-            FruitPlant fp = fpt.getPlant();
+        DIHooks.OnFruitPlantTickEvent += fpt => {
+            var fp = fpt.GetPlant();
             if (CraftData.GetTechType(fp.gameObject) == TechType.HangingFruitTree)
-                fp.fruitSpawnInterval = fpt.getBaseGrowthTime() / config.getFloat(RBConfig.ConfigEntries.LANTERN_SPEED);
+                fp.fruitSpawnInterval = fpt.GetBaseGrowthTime() / config.getFloat(RBConfig.ConfigEntries.LANTERN_SPEED);
         };
 
-        DIHooks.onSkyApplierSpawnEvent += (sk) => {
+        DIHooks.OnSkyApplierSpawnEvent += (sk) => {
             if (sk.name.StartsWith("Seamoth", StringComparison.InvariantCultureIgnoreCase) && sk.name.EndsWith(
                     "Arm(Clone)",
                     StringComparison.InvariantCultureIgnoreCase
@@ -76,10 +76,10 @@ public class ReefbalanceMod : BaseUnityPlugin {
             }
 
             if (config.getBoolean(RBConfig.ConfigEntries.LARGE_KYANITE_DROPS) && sk.gameObject) {
-                Drillable d = sk.gameObject.FindAncestor<Drillable>();
+                var d = sk.gameObject.FindAncestor<Drillable>();
                 if (d && d.resources != null && d.resources.Length == 1 &&
                     d.resources[0].techType == TechType.Kyanite) {
-                    Drillable drs = ObjectUtil.lookupPrefab(VanillaResources.LARGE_DIAMOND.prefab)
+                    var drs = ObjectUtil.lookupPrefab(VanillaResources.LARGE_DIAMOND.prefab)
                         .GetComponent<Drillable>();
                     d.resources[0].chance = drs.resources[0].chance;
                     // d.kChanceToSpawnResources = drs.kChanceToSpawnResources;
@@ -89,15 +89,15 @@ public class ReefbalanceMod : BaseUnityPlugin {
             }
         };
 
-        DIHooks.knifeHarvestEvent += h => {
-            if (h.drops.Count > 0 && config.getBoolean(RBConfig.ConfigEntries.DOUBLE_THERMAL_CORAL) &&
+        DIHooks.KnifeHarvestEvent += h => {
+            if (h.Drops.Count > 0 && config.getBoolean(RBConfig.ConfigEntries.DOUBLE_THERMAL_CORAL) &&
                 Inventory.main.GetHeld().GetTechType() == TechType.HeatBlade) {
-                if (h.objectType == TechType.BigCoralTubes)
-                    h.drops[h.defaultDrop] = h.drops[h.defaultDrop] * 2;
-                else if (h.objectType == TechType.TreeMushroom)
-                    h.drops[h.defaultDrop] = h.drops[h.defaultDrop] * 2;
-                else if (h.objectType == TechType.RedTipRockThings)
-                    h.drops[TechType.CoralChunk] *= 2; //Ecocean
+                if (h.ObjectType == TechType.BigCoralTubes)
+                    h.Drops[h.DefaultDrop] *= 2;
+                else if (h.ObjectType == TechType.TreeMushroom)
+                    h.Drops[h.DefaultDrop] *= 2;
+                else if (h.ObjectType == TechType.RedTipRockThings)
+                    h.Drops[TechType.CoralChunk] *= 2; //Ecocean
             }
         };
 
@@ -107,24 +107,24 @@ public class ReefbalanceMod : BaseUnityPlugin {
                 "Reinforced Glass",
                 "Laminated glass with titanium reinforcement, suitable for underwater pressure vessels.",
                 "WorldEntities/Natural/Glass"
-            );
-            baseGlass.craftingSubCategory = "" + TechCategory.BasicMaterials;
-            baseGlass.craftingTime = 1.5F;
-            baseGlass.numberCrafted = 2;
-            baseGlass.unlockRequirement = TechType.Unobtanium;
+            ) {
+                craftingSubCategory = "" + TechCategory.BasicMaterials,
+                craftingTime = 1.5F,
+                numberCrafted = 2,
+                unlockRequirement = TechType.Unobtanium,
+            };
             baseGlass.addIngredient(TechType.Glass, 1).addIngredient(TechType.Titanium, 1);
             baseGlass.sprite = TextureManager.getSprite(modDLL, "Textures/Items/baseglass");
             baseGlass.Register();
 
-            HashSet<TechType> set = new HashSet<TechType>
-                { TechType.Spotlight, TechType.Techlight /*, TechType.Aquarium*/ };
-            for (TechType tt = TechType.BaseRoom; tt <= TechType.BaseNuclearReactor; tt++) {
+            HashSet<TechType> set = [TechType.Spotlight, TechType.Techlight];
+            for (var tt = TechType.BaseRoom; tt <= TechType.BaseNuclearReactor; tt++) {
                 set.Add(tt);
             }
 
-            foreach (TechType tt in set) {
+            foreach (var tt in set) {
                 if (RecipeUtil.recipeExists(tt)) {
-                    Ingredient i = RecipeUtil.removeIngredient(tt, TechType.Glass);
+                    var i = RecipeUtil.removeIngredient(tt, TechType.Glass);
                     if (i != null) {
                         RecipeUtil.addIngredient(tt, baseGlass.Info.TechType, i.amount);
                     }
@@ -196,15 +196,14 @@ public class ReefbalanceMod : BaseUnityPlugin {
             TechTypeMappingConfig<int>.dictionaryAssign(scanCountOverrides)
         );
 
-        if (scanCountOverridesCalculation != null)
-            scanCountOverridesCalculation.Invoke(scanCountOverrides);
+        scanCountOverridesCalculation?.Invoke(scanCountOverrides);
 
-        foreach (KeyValuePair<TechType, int> kvp in scanCountOverrides) {
+        foreach (var kvp in scanCountOverrides) {
             PDAHandler.EditFragmentsToScan(kvp.Key, kvp.Value);
             SNUtil.log("Setting fragment scan requirement: " + kvp.Key + " = " + kvp.Value);
         }
 
-        int uran = config.getInt(RBConfig.ConfigEntries.URANPERROD);
+        var uran = config.getInt(RBConfig.ConfigEntries.URANPERROD);
         if (uran != (int)config.getEntry(RBConfig.ConfigEntries.URANPERROD).vanillaValue) {
             RecipeUtil.modifyIngredients(
                 TechType.ReactorRod,
@@ -214,7 +213,7 @@ public class ReefbalanceMod : BaseUnityPlugin {
                 }
             );
 
-            TechType refuel = SNUtil.getTechType("ReplenishReactorRod");
+            var refuel = SNUtil.getTechType("ReplenishReactorRod");
             if (refuel != TechType.None) {
                 RecipeUtil.modifyIngredients(
                     refuel,
@@ -295,22 +294,22 @@ public class ReefbalanceMod : BaseUnityPlugin {
         }
 
         if (config.getBoolean(RBConfig.ConfigEntries.COMPACT_DECO)) {
-            foreach (TechType deco in decoratives) {
+            foreach (var deco in decoratives) {
                 CraftDataHandler.SetItemSize(deco, new Vector2int(1, 1));
             }
         }
 
         if (config.getBoolean(RBConfig.ConfigEntries.COMPACT_SEEDS)) {
-            for (int i = (int)TechType.TreeMushroomPiece; i < (int)(object)TechType.HangingFruit - 1; i++) {
+            for (var i = (int)TechType.TreeMushroomPiece; i < (int)(object)TechType.HangingFruit - 1; i++) {
                 if (Enum.IsDefined(typeof(TechType), i)) {
-                    TechType item = (TechType)i;
+                    var item = (TechType)i;
                     //if (item == TechType.MelonSeed || item == TechType.HangingFruit)
                     //	continue;
                     CraftDataHandler.SetItemSize(item, new Vector2int(1, 1));
                 }
             }
 
-            for (int i = (int)TechType.MelonSeed + 1; i < (int)(object)TechType.SnakeMushroomSpore; i++) {
+            for (var i = (int)TechType.MelonSeed + 1; i < (int)(object)TechType.SnakeMushroomSpore; i++) {
                 if (Enum.IsDefined(typeof(TechType), i))
                     CraftDataHandler.SetItemSize((TechType)i, new Vector2int(1, 1));
             }
@@ -321,23 +320,23 @@ public class ReefbalanceMod : BaseUnityPlugin {
     }
 
     public static float getFoodValue(Eatable e, float baseVal) {
-        float ret = baseVal;
+        var ret = baseVal;
         if (e.decomposes) {
-            RBConfig.ConfigEntries ce = getFoodType(e);
-            float elapsed = Mathf.Max(
+            var ce = getFoodType(e);
+            var elapsed = Mathf.Max(
                 0,
-                DayNightCycle.main.timePassedAsFloat - e.timeDecayStart - (1200 * config.getFloat(ce))
+                DayNightCycle.main.timePassedAsFloat - e.timeDecayStart - 1200 * config.getFloat(ce)
             ); //1 day = 1200 float units
             if (elapsed > 0)
-                ret = Mathf.Max(baseVal - (elapsed * e.kDecayRate), -25f);
+                ret = Mathf.Max(baseVal - elapsed * e.kDecayRate, -25f);
         }
 
         return ret;
     }
 
     private static RBConfig.ConfigEntries getFoodType(Eatable e) {
-        TechType id = CraftData.GetTechType(e.gameObject);
-        FoodCategory cat = id.getFoodCategory();
+        var id = CraftData.GetTechType(e.gameObject);
+        var cat = id.getFoodCategory();
         switch (cat) {
             case FoodCategory.PLANT:
                 return RBConfig.ConfigEntries.FOOD_DELAY_VEG;
@@ -355,16 +354,16 @@ public class ReefbalanceMod : BaseUnityPlugin {
     }
 
     public static void calculatePrawnStorage(Exosuit s) {
-        int height = 4 + s.modules.GetCount(TechType.VehicleStorageModule);
+        var height = 4 + s.modules.GetCount(TechType.VehicleStorageModule);
         s.storageContainer.Resize(8, 2 * height);
     }
 
     public static float getDrillingSpeed(Drillable dr, Exosuit s) {
         if (!s) //eg seamoth arm
             return 1;
-        s.energyInterface.GetValues(out float charge, out float capacity);
-        double f = Math.Sqrt(charge / capacity);
-        float sp = (float)(5 * MathUtil.linterpolate(capacity, 400, 2000, 1, 3, true));
+        s.energyInterface.GetValues(out var charge, out var capacity);
+        var f = Math.Sqrt(charge / capacity);
+        var sp = (float)(5 * MathUtil.linterpolate(capacity, 400, 2000, 1, 3, true));
         //SNUtil.writeToChat(charge+"/"+capacity+" ("+f+") > "+sp);
         return sp;
     }
@@ -377,18 +376,18 @@ public class ReefbalanceMod : BaseUnityPlugin {
         return !config.getBoolean(RBConfig.ConfigEntries.ALWAYS_SPAWN_DB) && KnownTech.Contains(tt);
     }
 
-    class ContainmentFacilityDragonRepellent : MonoBehaviour {
-        void Update() {
+    private class ContainmentFacilityDragonRepellent : MonoBehaviour {
+        private void Update() {
             float r = 120;
             if (Player.main.transform.position.y <= 1350 &&
                 Vector3.Distance(transform.position, Player.main.transform.position) <= 100) {
-                RaycastHit[] hit = Physics.SphereCastAll(gameObject.transform.position, r, new Vector3(1, 1, 1), r);
-                foreach (RaycastHit rh in hit) {
+                var hit = Physics.SphereCastAll(gameObject.transform.position, r, new Vector3(1, 1, 1), r);
+                foreach (var rh in hit) {
                     if (rh.transform != null && rh.transform.gameObject) {
-                        SeaDragon c = rh.transform.gameObject.GetComponent<SeaDragon>();
+                        var c = rh.transform.gameObject.GetComponent<SeaDragon>();
                         if (c) {
-                            Vector3 vec = transform.position +
-                                          ((c.transform.position - transform.position).normalized * 120);
+                            var vec = transform.position +
+                                      (c.transform.position - transform.position).normalized * 120;
                             c.GetComponent<SwimBehaviour>().SwimTo(vec, 20);
                         }
                     }

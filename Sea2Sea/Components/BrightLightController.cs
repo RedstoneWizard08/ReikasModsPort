@@ -9,7 +9,7 @@ internal class BrightLightController : MonoBehaviour {
     private Ecocean.ECMoth ecoceanComponent;
     private CyclopsLightingPanel cyclopsControl;
 
-    private List<Light> bonusLights = new List<Light>();
+    private List<Light> bonusLights = [];
 
     private bool hasModule;
 
@@ -50,13 +50,13 @@ internal class BrightLightController : MonoBehaviour {
             return null;
         if (!orig.GetComponent<Light>())
             return null;
-        GameObject go = orig.clone();
+        var go = orig.clone();
         go.name += "BonusLight";
         go.transform.SetParent(orig.transform.parent);
         go.transform.position = orig.transform.position;
         go.transform.rotation = orig.transform.rotation;
         go.transform.localScale = orig.transform.localScale;
-        Light l = go.GetComponent<Light>();
+        var l = go.GetComponent<Light>();
         l.color = Color.Lerp(l.color, Color.white, 0.5F); //new Color(0.75F, 0.95F, 1);
         l.range = lightRange;
         l.intensity = lightIntensity;
@@ -66,27 +66,27 @@ internal class BrightLightController : MonoBehaviour {
         return l;
     }
 
-    void Update() {
+    private void Update() {
         if (!vehicle) {
-            vehicle = this.GetComponent<Vehicle>();
+            vehicle = GetComponent<Vehicle>();
             if (!vehicle)
-                vehicle = this.GetComponent<SubRoot>();
+                vehicle = GetComponent<SubRoot>();
             if (vehicle is BaseRoot) {
                 this.destroy(false);
                 return;
             }
         }
 
-        bool cyclops = vehicle is SubRoot;
+        var cyclops = vehicle is SubRoot;
         if (cyclops && !cyclopsControl)
-            cyclopsControl = this.GetComponentInChildren<CyclopsLightingPanel>();
+            cyclopsControl = GetComponentInChildren<CyclopsLightingPanel>();
         if (vehicle) {
             if (bonusLights.Count == 0) {
-                this.rebuildLights(cyclops);
+                rebuildLights(cyclops);
             }
 
             if (!cyclops && !ecoceanComponent) {
-                ecoceanComponent = this.GetComponent<Ecocean.ECMoth>();
+                ecoceanComponent = GetComponent<Ecocean.ECMoth>();
                 if (ecoceanComponent)
                     ecoceanComponent.getLightIntensity = () => ecLightIntensity;
             }
@@ -94,26 +94,26 @@ internal class BrightLightController : MonoBehaviour {
             return;
         }
 
-        bool flag1 = hasModule && this.areLightsOn();
-        bool flag2 = flag1 &&
-                     (cyclops || ((Vehicle)vehicle).isVehicleUpgradeSelected(C2CItems.lightModule.Info.TechType));
-        foreach (Light l in bonusLights) {
+        var flag1 = hasModule && areLightsOn();
+        var flag2 = flag1 &&
+                    (cyclops || ((Vehicle)vehicle).isVehicleUpgradeSelected(C2CItems.lightModule.Info.TechType));
+        foreach (var l in bonusLights) {
             if (l) {
                 l.gameObject.SetActive(flag1);
                 l.intensity = flag2 ? lightIntensityBrights : lightIntensity;
                 l.range = flag2 ? lightRangeBrights : lightRange;
             } else {
-                this.rebuildLights(cyclops);
+                rebuildLights(cyclops);
                 return;
             }
         }
 
-        ecLightIntensity = flag1 ? (flag2 ? 4 : 2.5F) : 1;
+        ecLightIntensity = flag1 ? flag2 ? 4 : 2.5F : 1;
 
         if (flag1) {
-            float amt = Time.deltaTime * (flag2 ? energyConsumptionBrights : energyConsumptionBaseline);
+            var amt = Time.deltaTime * (flag2 ? energyConsumptionBrights : energyConsumptionBaseline);
             if (cyclops) {
-                ((SubRoot)vehicle).powerRelay.ConsumeEnergy(amt, out float trash);
+                ((SubRoot)vehicle).powerRelay.ConsumeEnergy(amt, out var trash);
             } else {
                 ((Vehicle)vehicle).ConsumeEnergy(amt);
             }
@@ -121,13 +121,13 @@ internal class BrightLightController : MonoBehaviour {
     }
 
     private void rebuildLights(bool cyclops) {
-        foreach (Light l in bonusLights) {
+        foreach (var l in bonusLights) {
             if (l)
                 l.gameObject.destroy(false);
         }
 
         bonusLights.Clear();
-        GameObject go = gameObject.getChildObject(cyclops ? "Floodlights" : "lights_parent");
+        var go = gameObject.getChildObject(cyclops ? "Floodlights" : "lights_parent");
         if (!go) {
             SNUtil.writeToChat("Could not find light parent on " + gameObject + "=" + vehicle);
             return;
@@ -136,7 +136,7 @@ internal class BrightLightController : MonoBehaviour {
         foreach (Transform t in go.transform) {
             if (!t)
                 continue;
-            Light l = this.createBonusLight(t.gameObject);
+            var l = createBonusLight(t.gameObject);
             if (l)
                 bonusLights.Add(l);
         }
@@ -144,18 +144,18 @@ internal class BrightLightController : MonoBehaviour {
 
     public void recalculateModule() {
         if (!vehicle) {
-            this.Invoke("recalculateModule", 0.5F);
+            Invoke(nameof(recalculateModule), 0.5F);
             return;
         }
 
-        hasModule = vehicle is SubRoot
-            ? ((SubRoot)vehicle).cyclopsHasUpgrade(C2CItems.lightModule.Info.TechType)
+        hasModule = vehicle is SubRoot root
+            ? root.cyclopsHasUpgrade(C2CItems.lightModule.Info.TechType)
             : ((Vehicle)vehicle).vehicleHasUpgrade(C2CItems.lightModule.Info.TechType);
     }
 
-    bool areLightsOn() {
-        return vehicle is SeaMoth
-            ? ((SeaMoth)vehicle).lightsActive
+    private bool areLightsOn() {
+        return vehicle is SeaMoth moth
+            ? moth.lightsActive
             : !(vehicle is SubRoot) || (cyclopsControl && cyclopsControl.floodlightsOn);
     }
 }

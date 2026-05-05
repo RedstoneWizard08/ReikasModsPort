@@ -1,90 +1,87 @@
 ﻿using System.Collections.Generic;
+using ReikaKalseki.DIAlterra;
 using UnityEngine;
 
 namespace ReikaKalseki.Ecocean;
 
 public class PlantHidingTracker : MonoBehaviour {
+    private static readonly HidingVignette visualIndicator;
 
-	private static readonly HidingVignette visualIndicator;
+    public static float shaderIntensityFactor = 0.55F;
+    public static Color shaderColor = new(0.1F, 0.5F, 0.1F);
 
-	public static float shaderIntensityFactor = 0.55F;
-	public static Color shaderColor = new Color(0.1F, 0.5F, 0.1F);
+    static PlantHidingTracker() {
+        visualIndicator = new HidingVignette();
+        ScreenFXManager.instance.addOverride(visualIndicator);
+    }
 
-	static PlantHidingTracker() {
-		visualIndicator = new HidingVignette();
-		ScreenFXManager.instance.addOverride(visualIndicator);
-	}
+    private class HidingVignette : ScreenFXManager.ScreenFXOverride {
+        internal float intensity;
 
-	class HidingVignette : ScreenFXManager.ScreenFXOverride {
+        internal HidingVignette() : base(-100) {
+        }
 
-		internal float intensity = 0;
+        public override void onTick() {
+            if (intensity > 0) {
+                //ScreenFXManager.instance.registerOverrideThisTick(ScreenFXManager.instance.mesmerShader);
+                //ScreenFXManager.instance.mesmerShader.amount = intensity*0.3F;
+                //ScreenFXManager.instance.mesmerShader.mat.SetVector("_ColorStrength", new Vector4(0, 0, 0, intensity));
+                ScreenFXManager.instance.registerOverrideThisTick(ScreenFXManager.instance.smokeShader);
+                ScreenFXManager.instance.smokeShader.intensity = intensity * shaderIntensityFactor;
+                ScreenFXManager.instance.smokeShader.color = shaderColor;
+                ScreenFXManager.instance.smokeShader.mat.color = shaderColor;
+                ScreenFXManager.instance.smokeShader.mat.SetColor("_Color", shaderColor);
+            }
+        }
+    }
 
-		internal HidingVignette() : base(-100) {
+    private readonly HashSet<PlantHidingCollider> contacts = [];
+    private Color renderColor;
 
-		}
+    private float lastCheckTime = -1;
 
-		public override void onTick() {
-			if (intensity > 0) {
-				//ScreenFXManager.instance.registerOverrideThisTick(ScreenFXManager.instance.mesmerShader);
-				//ScreenFXManager.instance.mesmerShader.amount = intensity*0.3F;
-				//ScreenFXManager.instance.mesmerShader.mat.SetVector("_ColorStrength", new Vector4(0, 0, 0, intensity));
-				ScreenFXManager.instance.registerOverrideThisTick(ScreenFXManager.instance.smokeShader);
-				ScreenFXManager.instance.smokeShader.intensity = intensity * shaderIntensityFactor;
-				ScreenFXManager.instance.smokeShader.color = shaderColor;
-				ScreenFXManager.instance.smokeShader.mat.color = shaderColor;
-				ScreenFXManager.instance.smokeShader.mat.SetColor("_Color", shaderColor);
-			}
-		}
+    internal float minRadius;
 
-	}
+    private void Update() {
+        var time = DayNightCycle.main.timePassedAsFloat;
+        if (time - lastCheckTime >= 1) {
+            contacts.RemoveWhere(c => !(c && (c.transform.position - transform.position).sqrMagnitude < 900));
+            lastCheckTime = time;
+        }
 
-	private readonly HashSet<PlantHidingCollider> contacts = new HashSet<PlantHidingCollider>();
-	private Color renderColor;
+        if (this.isPlayer() || (Player.main.GetVehicle() &&
+                                Player.main.GetVehicle().GetComponent<PlantHidingTracker>() == this)) {
+            var dT = Time.deltaTime;
+            var active = isActive();
+            if (active) {
+                visualIndicator.intensity = Mathf.Min(1, visualIndicator.intensity + dT);
+                shaderColor = renderColor;
+                shaderIntensityFactor = 0.55F + 0.025F * (contacts.Count - 1);
+            } else {
+                visualIndicator.intensity = Mathf.Max(0, visualIndicator.intensity - dT);
+            }
+        }
+    }
 
-	private float lastCheckTime = -1;
+    internal bool isActive() {
+        return contacts.Count > 0;
+    }
 
-	internal float minRadius;
+    internal void addContact(PlantHidingCollider pc) {
+        contacts.Add(pc);
+        computeColor();
+    }
 
-	void Update() {
-		float time = DayNightCycle.main.timePassedAsFloat;
-		if (time - lastCheckTime >= 1) {
-			contacts.RemoveWhere(c => !(c && (c.transform.position - transform.position).sqrMagnitude < 900));
-			lastCheckTime = time;
-		}
-		if (this.isPlayer() || (Player.main.GetVehicle() && Player.main.GetVehicle().GetComponent<PlantHidingTracker>() == this)) {
-			float dT = Time.deltaTime;
-			bool active = this.isActive();
-			if (active) {
-				visualIndicator.intensity = Mathf.Min(1, visualIndicator.intensity + dT);
-				shaderColor = renderColor;
-				shaderIntensityFactor = 0.55F + (0.025F * (contacts.Count - 1));
-			}
-			else {
-				visualIndicator.intensity = Mathf.Max(0, visualIndicator.intensity - dT);
-			}
-		}
-	}
+    internal void removeContact(PlantHidingCollider pc) {
+        contacts.Remove(pc);
+        computeColor();
+    }
 
-	internal bool isActive() {
-		return contacts.Count > 0;
-	}
-
-	internal void addContact(PlantHidingCollider pc) {
-		contacts.Add(pc);
-		this.computeColor();
-	}
-
-	internal void removeContact(PlantHidingCollider pc) {
-		contacts.Remove(pc);
-		this.computeColor();
-	}
-
-	private void computeColor() {
-		renderColor = Color.clear;
-		foreach (PlantHidingCollider pc in contacts)
-			renderColor += pc.renderColor;
-		renderColor /= contacts.Count;
-		renderColor = renderColor.WithAlpha(1);
-	}
-
+    private void computeColor() {
+        renderColor = Color.clear;
+        foreach (var pc in contacts)
+            renderColor += pc.renderColor;
+        renderColor /= contacts.Count;
+        renderColor = renderColor.WithAlpha(1);
+    }
 }

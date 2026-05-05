@@ -7,10 +7,10 @@ namespace ReikaKalseki.SeaToSea;
 public class KharaaTreatment : BasicCraftingItem {
     [SetsRequiredMembers]
     public KharaaTreatment() : base(
-        SeaToSeaMod.itemLocale.getEntry("KharaaTreatment"),
+        SeaToSeaMod.ItemLocale.getEntry("KharaaTreatment"),
         "WorldEntities/Natural/FirstAidKit"
     ) {
-        sprite = TextureManager.getSprite(SeaToSeaMod.modDLL, "Textures/Items/KharaaTreatment");
+        sprite = TextureManager.getSprite(SeaToSeaMod.ModDLL, "Textures/Items/KharaaTreatment");
         unlockRequirement = TechType.Unobtanium; //TechType.Workbench;//SeaToSeaMod.healFlower.TechType;
         craftingTime = 18;
         inventorySize = new Vector2int(2, 2);
@@ -26,19 +26,11 @@ public class KharaaTreatment : BasicCraftingItem {
         base.prepareGameObject(go, r);
     }
 
-    public override CraftTree.Type FabricatorType {
-        get { return CraftTree.Type.Workbench; }
-    }
+    public override CraftTree.Type FabricatorType => CraftTree.Type.Workbench;
 
-    public override TechGroup GroupForPDA {
-        get { return TechGroup.Workbench; }
-    }
+    public override TechGroup GroupForPDA => TechGroup.Workbench;
 
-    public override TechCategory CategoryForPDA {
-        get { return TechCategory.Workbench; }
-    }
+    public override TechCategory CategoryForPDA => TechCategory.Workbench;
 
-    public override string[] StepsToFabricatorTab {
-        get { return new string[] { "C2CMedical" }; }
-    }
+    public override string[] StepsToFabricatorTab => ["C2CMedical"];
 }

@@ -22,14 +22,14 @@ internal class ParentTo : ManipulationBase {
 	}
 
 	public override void applyToObject(GameObject go) {
-		GameObject find = this.findObject(go);
+		var find = findObject(go);
 		if (find != null) {
 			go.transform.parent = find.transform;
 		}
 	}
 
 	public sealed override void applyToObject(PlacedObject go) {
-		this.applyToObject(go.obj);
+		applyToObject(go.obj);
 	}
 
 	public override void loadFromXML(XmlElement e) {
@@ -45,19 +45,19 @@ internal class ParentTo : ManipulationBase {
 	private GameObject findObject(GameObject from) {
 		switch (type) {
 			case SeekType.FindNearTechType:
-				return this.findNear(from, go => go.GetComponent<TechTag>().type == SNUtil.getTechType(seekID));
+				return findNear(from, go => go.GetComponent<TechTag>().type == SNUtil.getTechType(seekID));
 			case SeekType.FindNearClassID:
-				return this.findNear(from, go => go.GetComponent<PrefabIdentifier>().classId == seekID);
+				return findNear(from, go => go.GetComponent<PrefabIdentifier>().classId == seekID);
 			default:
 				return null;
 		}
 	}
 
 	private GameObject findNear(GameObject from, Func<GameObject, bool> f) {
-		RaycastHit[] hit = UnityEngine.Physics.SphereCastAll(from.transform.position, 4, new Vector3(1, 1, 1), 4);
+		var hit = Physics.SphereCastAll(from.transform.position, 4, new Vector3(1, 1, 1), 4);
 		if (hit == null || hit.Length == 0)
 			return null;
-		foreach (RaycastHit rh in hit) {
+		foreach (var rh in hit) {
 			if (rh.transform != null && rh.transform.gameObject != null && f(rh.transform.gameObject))
 				return rh.transform.gameObject;
 		}

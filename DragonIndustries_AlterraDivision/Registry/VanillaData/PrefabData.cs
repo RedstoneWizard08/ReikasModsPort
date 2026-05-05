@@ -5,9 +5,9 @@ namespace ReikaKalseki.DIAlterra;
 
 public static class PrefabData { //TODO make prefab list an enum?
 
-	private static readonly Dictionary<string, string> data = new Dictionary<string, string>();
+	private static readonly Dictionary<string, string> data = new();
 	private static readonly Dictionary<string, string> inverse;
-	private static readonly Dictionary<string, string> shortName = new Dictionary<string, string>();
+	private static readonly Dictionary<string, string> shortName = new();
 
 	static PrefabData() {
 		data["0001c04a-5bb4-4fb9-adb4-fcc7e3de308c"] = "WorldEntities/Slots/Ship/Loot_ShipInterior_AuxPowerRoom1";
@@ -3334,8 +3334,8 @@ public static class PrefabData { //TODO make prefab list an enum?
 		data["fff7ee12-c75d-48bd-a6e0-8fb4856cd1ab"] = "WorldEntities/Atmosphere/UnderwaterIslands/Cave";
 
 		inverse = data.ToDictionary(e => e.Value, e => e.Key);
-		foreach (KeyValuePair<string, string> kvp in data) {
-			string sh = kvp.Value.Substring(kvp.Value.LastIndexOf('/')+1);
+		foreach (var kvp in data) {
+			var sh = kvp.Value.Substring(kvp.Value.LastIndexOf('/')+1);
 			shortName[sh] = kvp.Key;
 		}
 	}

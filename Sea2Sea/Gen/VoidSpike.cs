@@ -9,11 +9,10 @@ using UnityEngine;
 namespace ReikaKalseki.SeaToSea;
 
 public sealed class VoidSpike : WorldGenerator {
-    private static readonly HashSet<string> oreSet = new HashSet<string>();
-    private static readonly WeightedRandom<OreType> oreChoices = new WeightedRandom<OreType>();
+    private static readonly HashSet<string> oreSet = [];
+    private static readonly WeightedRandom<OreType> oreChoices = new();
 
-    private static readonly Dictionary<string, LargeWorldLevelPrefab> prefabCache =
-        new Dictionary<string, LargeWorldLevelPrefab>();
+    private static readonly Dictionary<string, LargeWorldLevelPrefab> prefabCache = new();
 
     private static readonly string FLOATER = createPrefabCopy(
         "37ea521a-6be4-437c-8ed7-6b453d9218a8",
@@ -27,7 +26,7 @@ public sealed class VoidSpike : WorldGenerator {
 
     private static readonly float FLOATER_BASE_SCALE = 0.12F;
 
-    private static readonly OreSpawner ORE_SPAWNER = new OreSpawner();
+    private static readonly OreSpawner ORE_SPAWNER = new();
 
     private static readonly Spike[][] spikes = new Spike[][] {
         createSpikes(true),
@@ -35,14 +34,14 @@ public sealed class VoidSpike : WorldGenerator {
     };
 
     private static Spike[] createSpikes(bool center) {
-        return new Spike[] {
-            new Spike("282cdcbc-8670-4f9a-ae1d-9d8a09f9e880", 3.0, 16.2, center),
-            new Spike("f0438971-2761-412c-bc42-df80577de473", 3.3, 24.4, center),
-        };
+        return [
+            new("282cdcbc-8670-4f9a-ae1d-9d8a09f9e880", 3.0, 16.2, center),
+            new("f0438971-2761-412c-bc42-df80577de473", 3.3, 24.4, center),
+        ];
     }
 
     private static LargeWorldLevelPrefab createPrefabCopy(string template, LargeWorldEntity.CellLevel lvl) {
-        LargeWorldLevelPrefab get = prefabCache.ContainsKey(template) ? prefabCache[template] : null;
+        var get = prefabCache.ContainsKey(template) ? prefabCache[template] : null;
         if (get == null) {
             get = new LargeWorldLevelPrefab(template, lvl).registerPrefab();
             prefabCache[template] = get;
@@ -52,13 +51,13 @@ public sealed class VoidSpike : WorldGenerator {
         return get;
     }
 
-    private static readonly VanillaFlora[] podPrefabs = new VanillaFlora[] {
+    private static readonly VanillaFlora[] podPrefabs = [
         VanillaFlora.ANCHOR_POD_SMALL1,
         VanillaFlora.ANCHOR_POD_SMALL2,
         VanillaFlora.ANCHOR_POD_MED1,
         VanillaFlora.ANCHOR_POD_MED2,
         VanillaFlora.ANCHOR_POD_LARGE,
-    };
+    ];
 
     static VoidSpike() {
     }
@@ -83,8 +82,8 @@ public sealed class VoidSpike : WorldGenerator {
     }
 
     public static bool isSpike(string pfb) {
-        foreach (Spike[] s0 in spikes) {
-            foreach (Spike s in s0)
+        foreach (var s0 in spikes) {
+            foreach (var s in s0)
                 if (s.prefab.ClassID == pfb)
                     return true;
         }
@@ -107,9 +106,9 @@ public sealed class VoidSpike : WorldGenerator {
     private float scale = 1;
     private Vector3 scaleVec;
 
-    public bool hasFloater = false;
-    public bool hasPod = false;
-    public bool hasFlora = false;
+    public bool hasFloater;
+    public bool hasPod;
+    public bool hasFlora;
 
     public double oreRichness = 1;
     public double plantRate = 1;
@@ -128,11 +127,11 @@ public sealed class VoidSpike : WorldGenerator {
     internal GameObject floater;
     internal GameObject floaterLight;
 
-    private List<GameObject> plants = new List<GameObject>();
-    private List<GameObject> resources = new List<GameObject>();
+    private List<GameObject> plants = [];
+    private List<GameObject> resources = [];
 
     public VoidSpike(Vector3 pos) : base(pos) {
-        this.setScale(UnityEngine.Random.Range(0.75F, 2.5F));
+        setScale(UnityEngine.Random.Range(0.75F, 2.5F));
         if (UnityEngine.Random.Range(0, 4) == 0) {
             hasFloater = true;
         } else {
@@ -151,7 +150,7 @@ public sealed class VoidSpike : WorldGenerator {
     }
 
     public override void loadFromXML(XmlElement e) {
-        this.setScale((float)e.getFloat("scale", scale));
+        setScale((float)e.getFloat("scale", scale));
         oreRichness = e.getFloat("oreRichness", oreRichness);
 
         if (e.hasProperty("hasFloater"))
@@ -174,31 +173,31 @@ public sealed class VoidSpike : WorldGenerator {
         if (spike == null)
             return false;
         //vec = vec+Vector3.up*0.4F; //since we *want* the actual pos to slightly intersect
-        return ObjectUtil.objectCollidesPosition(spike, vec) || this.isPointWithinBoundingCone(vec, r);
+        return ObjectUtil.objectCollidesPosition(spike, vec) || isPointWithinBoundingCone(vec, r);
     }
 
     private bool isPointWithinBoundingCone(Vector3 vec, double dr) {
-        double up = 0.0 * scale;
+        var up = 0.0 * scale;
         double down = 24 * scale;
         if (vec.y > position.y + up)
             return false;
         if (vec.y < position.y - down)
             return false;
-        double d = (position.y + up - vec.y) / (up + down);
-        double r = type.radius * scale * 1.3 * (1 - d);
+        var d = (position.y + up - vec.y) / (up + down);
+        var r = type.radius * scale * 1.3 * (1 - d);
         if (r <= 0)
             return false;
         r += dr;
-        double dist = ((vec.x - position.x) * (vec.x - position.x)) + ((vec.z - position.z) * (vec.z - position.z));
+        double dist = (vec.x - position.x) * (vec.x - position.x) + (vec.z - position.z) * (vec.z - position.z);
         //SNUtil.log("vec "+vec+" & pos "+position+", "+dist+" of "+r*r+" @ "+d+" > "+(dist <= r*r));
         return dist <= r * r;
     }
 
     public override bool generate(List<GameObject> generated) {
-        this.generateSpike();
-        this.generateFlora();
-        this.generateResources();
-        this.collateGenerated(generated);
+        generateSpike();
+        generateFlora();
+        generateResources();
+        collateGenerated(generated);
         return true;
     }
 
@@ -231,27 +230,27 @@ public sealed class VoidSpike : WorldGenerator {
         //SNUtil.offsetColliders(spike, Vector3.down*3.5F);
         if (hasFloater) {
             floater = spawner(FLOATER);
-            floater.transform.position = position + (Vector3.up * 0.55F * scale);
+            floater.transform.position = position + Vector3.up * 0.55F * scale;
             floater.transform.localScale = scaleVec * FLOATER_BASE_SCALE;
             floater.transform.rotation = Quaternion.Euler(0, UnityEngine.Random.Range(0F, 360F), 0);
             floaterLight = spawner(FLOATER_LIGHT);
-            floaterLight.transform.position = floater.transform.position + (Vector3.up * 1 * scale);
+            floaterLight.transform.position = floater.transform.position + Vector3.up * 1 * scale;
         }
 
         if (hasPod) {
-            pod = this.spawnAnchorPod(scale >= 1.75, scale >= 1 && scale <= 1.75, scale <= 1);
+            pod = spawnAnchorPod(scale >= 1.75, scale >= 1 && scale <= 1.75, scale <= 1);
         }
     }
 
     internal void generateFlora() {
         if (hasFlora) {
-            VoidChunkPlants vc = new VoidChunkPlants(position + (Vector3.up * 0.5F * scale));
+            var vc = new VoidChunkPlants(position + Vector3.up * 0.5F * scale);
             vc.count = (int)(vc.count * 1.3 * plantRate);
             vc.fuzz *= 2 * scale;
             if (hasPod)
                 vc.fuzz *= 0.8F;
             vc.fuzz.y *= 0.25F;
-            vc.validPlantPosCheck = this.isValidPlantPos;
+            vc.validPlantPosCheck = isValidPlantPos;
             vc.allowKelp = !hasPod && !hasFloater && !isAux && !needsCenterSpace;
             vc.spawner = spawner;
             //vc.plantCallBackrotation = membrain;
@@ -267,28 +266,28 @@ public sealed class VoidSpike : WorldGenerator {
 
     internal void generateResources() {
         if (oreRichness > 0) {
-            int n = (int)(9 * oreRichness); //was 8 when not regenning
+            var n = (int)(9 * oreRichness); //was 8 when not regenning
             //SNUtil.log("Attempting "+n+" ores.");
-            for (int i = 0; i < n; i++) {
-                float radius = UnityEngine.Random.Range(0, (float)(type.radius - 0.15)) * scale;
-                float angle = UnityEngine.Random.Range(0, 2F * (float)Math.PI);
-                float cos = (float)Math.Cos(angle);
-                float sin = (float)Math.Sin(angle);
-                Vector3 pos = new Vector3(
-                    position.x + (radius * cos),
-                    position.y + (0.55F * scale),
-                    position.z + (radius * sin)
+            for (var i = 0; i < n; i++) {
+                var radius = UnityEngine.Random.Range(0, (float)(type.radius - 0.15)) * scale;
+                var angle = UnityEngine.Random.Range(0, 2F * (float)Math.PI);
+                var cos = (float)Math.Cos(angle);
+                var sin = (float)Math.Sin(angle);
+                var pos = new Vector3(
+                    position.x + radius * cos,
+                    position.y + 0.55F * scale,
+                    position.z + radius * sin
                 );
                 //pos.y += (3.5F-radius);
                 //SNUtil.log("Attempted ore @ "+pos);
-                if ((validPlantPosCheck == null || validPlantPosCheck(pos + (Vector3.up * 0.15F), "ore")) &&
+                if ((validPlantPosCheck == null || validPlantPosCheck(pos + Vector3.up * 0.15F, "ore")) &&
                     (floater == null || !ObjectUtil.objectCollidesPosition(floater, pos))) {
-                    OreType ore = oreChoices.getRandomEntry();
+                    var ore = oreChoices.getRandomEntry();
                     while (pos.y > ore.maxY) {
                         ore = oreChoices.getRandomEntry();
                     }
 
-                    GameObject go = spawner(ore.isLarge ? ore.ore : ORE_SPAWNER.Info.ClassID);
+                    var go = spawner(ore.isLarge ? ore.ore : ORE_SPAWNER.Info.ClassID);
                     go.transform.position = pos;
                     go.transform.rotation = Quaternion.Euler(
                         UnityEngine.Random.Range(0F, 30F),
@@ -296,7 +295,7 @@ public sealed class VoidSpike : WorldGenerator {
                         0
                     ); //UnityEngine.Random.rotationUniform;
                     if (!ore.isLarge) {
-                        Pickupable p = go.EnsureComponent<Pickupable>();
+                        var p = go.EnsureComponent<Pickupable>();
                         p.isPickupable = true;
                         //p.SetTechTypeOverride();
                     }
@@ -321,23 +320,23 @@ public sealed class VoidSpike : WorldGenerator {
             allowSmallSize = false;
         }
 
-        int min = allowSmallSize ? 0 : (allowMediumSize ? 2 : podPrefabs.Length - 1);
-        int max = allowLargeSize ? podPrefabs.Length : (allowMediumSize ? podPrefabs.Length - 1 : 2);
-        VanillaFlora p = podPrefabs[UnityEngine.Random.Range(min, max)];
-        GameObject go = spawner(p.getRandomPrefab(true));
-        go.transform.position = MathUtil.getRandomVectorAround(position + (Vector3.up * -0.4F * scale), 0.2F);
+        var min = allowSmallSize ? 0 : allowMediumSize ? 2 : podPrefabs.Length - 1;
+        var max = allowLargeSize ? podPrefabs.Length : allowMediumSize ? podPrefabs.Length - 1 : 2;
+        var p = podPrefabs[UnityEngine.Random.Range(min, max)];
+        var go = spawner(p.getRandomPrefab(true));
+        go.transform.position = MathUtil.getRandomVectorAround(position + Vector3.up * -0.4F * scale, 0.2F);
         go.transform.rotation = Quaternion.AngleAxis(UnityEngine.Random.Range(0F, 360F), Vector3.up);
-        this.setPlantHeight(position.y, p, go);
+        setPlantHeight(position.y, p, go);
         return go;
     }
 
     private void setPlantHeight(double yRef, VanillaFlora p, GameObject go) {
-        double maxSink = Math.Min(p.maximumSink * 0.8, scale * 8);
-        float sink = UnityEngine.Random.Range(0F, (float)maxSink);
+        var maxSink = Math.Min(p.maximumSink * 0.8, scale * 8);
+        var sink = UnityEngine.Random.Range(0F, (float)maxSink);
         if (p == VanillaFlora.BRINE_LILY)
             sink = (float)(p.maximumSink * 0.95);
-        double newY = yRef + p.baseOffset - sink;
-        Vector3 pos = go.transform.position;
+        var newY = yRef + p.baseOffset - sink;
+        var pos = go.transform.position;
         go.transform.position = pos;
     }
 
@@ -370,12 +369,12 @@ public sealed class VoidSpike : WorldGenerator {
         }
 
         public override void prepareGameObject(GameObject go, Renderer[] r) {
-            LargeWorldEntity lw = go.EnsureComponent<LargeWorldEntity>();
+            var lw = go.EnsureComponent<LargeWorldEntity>();
             lw.cellLevel = level;
         }
 
         internal LargeWorldLevelPrefab registerPrefab() {
-            this.Register();
+            Register();
             return this;
         }
     }
@@ -387,7 +386,7 @@ public sealed class VoidSpike : WorldGenerator {
         }
 
         public GameObject GetGameObject() {
-            GameObject go = new GameObject("Void Spike Ore Spawner");
+            var go = new GameObject("Void Spike Ore Spawner");
             go.EnsureComponent<PrefabIdentifier>().ClassId = Info.ClassID;
             go.EnsureComponent<TechTag>().type = Info.TechType;
             go.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.Medium;
@@ -397,94 +396,94 @@ public sealed class VoidSpike : WorldGenerator {
         }
     }
 
-    class OreSpawnerController : MonoBehaviour {
-        internal float speed = 0;
+    private class OreSpawnerController : MonoBehaviour {
+        internal float speed;
 
         private Transform currentOre;
-        private float despawnTime = 0;
-        private float nextTime = 0;
-        private float lastSpawnTime = 0;
+        private float despawnTime;
+        private float nextTime;
+        private float lastSpawnTime;
 
-        private bool hasSpawned = false;
+        private bool hasSpawned;
 
-        private Renderer[] currentRenderers = null;
+        private Renderer[] currentRenderers;
 
         private static readonly float LIFESPAN_MIN = 45;
         private static readonly float LIFESPAN_MAX = 90;
         private static readonly float GAP_MIN = 30;
         private static readonly float GAP_MAX = 60;
 
-        void Start() {
+        private void Start() {
             //SNUtil.writeToChat("Started ore spawner @ "+transform.position);
             if (speed <= 0.1) {
                 speed = UnityEngine.Random.Range(0.5F, 2F);
             }
 
             if (currentOre == null || !currentOre.gameObject.activeInHierarchy) {
-                this.findOldOre();
+                findOldOre();
                 //SNUtil.writeToChat("Spawner @ "+transform.position+" found: "+(currentOre == null ? "none" : ""+currentOre.gameObject.GetComponentInParent<Pickupable>().GetTechType()));
             }
 
             if (lastSpawnTime <= 0) {
-                float time = DayNightCycle.main.timePassedAsFloat;
+                var time = DayNightCycle.main.timePassedAsFloat;
                 lastSpawnTime = time;
                 if (currentOre == null) {
-                    nextTime = time + (UnityEngine.Random.Range(GAP_MIN, GAP_MAX) / speed);
+                    nextTime = time + UnityEngine.Random.Range(GAP_MIN, GAP_MAX) / speed;
                     if (!hasSpawned)
                         nextTime *= 0.25F;
                 } else {
-                    despawnTime = time + (UnityEngine.Random.Range(LIFESPAN_MIN, LIFESPAN_MAX) / speed);
+                    despawnTime = time + UnityEngine.Random.Range(LIFESPAN_MIN, LIFESPAN_MAX) / speed;
                 }
             }
         }
 
         private void findOldOre() {
-            Collider[] near = Physics.OverlapSphere(gameObject.transform.position, 0.1F);
-            foreach (Collider c in near) {
+            var near = Physics.OverlapSphere(gameObject.transform.position, 0.1F);
+            foreach (var c in near) {
                 //SNUtil.writeToChat("Check "+c+" in "+c.gameObject);
                 if (c.gameObject == null || c.gameObject == gameObject) {
                     continue;
                 }
 
-                Pickupable p = c.gameObject.GetComponentInParent<Pickupable>();
-                PrefabIdentifier i = c.gameObject.GetComponentInParent<PrefabIdentifier>();
-                if (p != null && i != null && VoidSpike.oreSet.Contains(i.classId)) {
+                var p = c.gameObject.GetComponentInParent<Pickupable>();
+                var i = c.gameObject.GetComponentInParent<PrefabIdentifier>();
+                if (p != null && i != null && oreSet.Contains(i.classId)) {
                     if (currentOre == null)
-                        this.setCurrentOre(c.gameObject.transform);
+                        setCurrentOre(c.gameObject.transform);
                     else
                         c.gameObject.destroy(false);
                 }
             }
         }
 
-        void Update() {
-            float time = DayNightCycle.main.timePassedAsFloat;
+        private void Update() {
+            var time = DayNightCycle.main.timePassedAsFloat;
             //SNUtil.writeToChat(time+": ["+currentOre+"] > "+nextTime+"/"+lastSpawnTime+" > "+despawnTime);
             if (currentOre && currentOre.gameObject && currentOre.gameObject.activeInHierarchy) {
-                float f = (float)MathUtil.linterpolate(time, lastSpawnTime, despawnTime, 0, 1);
+                var f = (float)MathUtil.linterpolate(time, lastSpawnTime, despawnTime, 0, 1);
                 if (f >= 1) {
-                    this.destroyCurrent();
+                    destroyCurrent();
                 } else {
-                    float f2 = f < 0.1 ? 1 - (f * 10) : f;
-                    foreach (Renderer r in currentRenderers) {
+                    var f2 = f < 0.1 ? 1 - f * 10 : f;
+                    foreach (var r in currentRenderers) {
                         if (!r)
                             continue;
-                        foreach (Material m in r.materials) {
-                            m.SetFloat(ShaderPropertyID._Built, 0.75F - (f2 * 0.3125F));
+                        foreach (var m in r.materials) {
+                            m.SetFloat(ShaderPropertyID._Built, 0.75F - f2 * 0.3125F);
                         }
                     }
                 }
             } else if (time >= nextTime) {
-                this.spawn(time);
+                spawn(time);
             }
         }
 
-        void OnDestroy() {
-            this.destroyCurrent();
+        private void OnDestroy() {
+            destroyCurrent();
         }
 
-        void OnDisable() {
-            this.destroyCurrent();
+        private void OnDisable() {
+            destroyCurrent();
         }
 
         private void destroyCurrent() {
@@ -497,27 +496,27 @@ public sealed class VoidSpike : WorldGenerator {
         }
 
         private GameObject spawn(float time) {
-            OreType ore = oreChoices.getRandomEntry();
+            var ore = oreChoices.getRandomEntry();
             while (ore.isLarge || transform.position.y > ore.maxY) {
                 ore = oreChoices.getRandomEntry();
             }
 
-            GameObject go = ObjectUtil.createWorldObject(ore.ore);
-            go.transform.position = gameObject.transform.position + (Vector3.up * (float)ore.objOffset);
+            var go = ObjectUtil.createWorldObject(ore.ore);
+            go.transform.position = gameObject.transform.position + Vector3.up * (float)ore.objOffset;
             go.transform.rotation = Quaternion.Euler(0, UnityEngine.Random.Range(0, 360F), 0);
             //go.name = "spawned_ore";
             //go.transform.parent = gameObject.transform;
 
-            this.setCurrentOre(go.transform);
+            setCurrentOre(go.transform);
             currentRenderers = currentOre.gameObject.GetComponentsInChildren<Renderer>(true);
 
-            foreach (Renderer r in currentRenderers) {
-                if (r is MeshRenderer) {
-                    ((MeshRenderer)r).shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-                    ((MeshRenderer)r).receiveShadows = false;
+            foreach (var r in currentRenderers) {
+                if (r is MeshRenderer renderer) {
+                    renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                    renderer.receiveShadows = false;
                 }
 
-                foreach (Material m in r.materials) {
+                foreach (var m in r.materials) {
                     m.EnableKeyword("FX_BUILDING");
                     //material2.SetTexture(ShaderPropertyID._EmissiveTex, this._EmissiveTex);
                     m.SetFloat(ShaderPropertyID._Cutoff, 0.5F);
@@ -535,8 +534,8 @@ public sealed class VoidSpike : WorldGenerator {
 
             //SNUtil.writeToChat("Spawned @ "+gameObject.transform.position+": "+go.GetComponentInChildren<Pickupable>().GetTechType());
 
-            despawnTime = time + (UnityEngine.Random.Range(LIFESPAN_MIN, LIFESPAN_MAX) / speed);
-            nextTime = despawnTime + (UnityEngine.Random.Range(GAP_MIN, GAP_MAX) / speed);
+            despawnTime = time + UnityEngine.Random.Range(LIFESPAN_MIN, LIFESPAN_MAX) / speed;
+            nextTime = despawnTime + UnityEngine.Random.Range(GAP_MIN, GAP_MAX) / speed;
             lastSpawnTime = time;
 
             hasSpawned = true;
@@ -545,15 +544,15 @@ public sealed class VoidSpike : WorldGenerator {
 
         private void setCurrentOre(Transform t) {
             if (currentRenderers != null) {
-                foreach (Renderer r in currentRenderers) {
-                    if (!(r))
+                foreach (var r in currentRenderers) {
+                    if (!r)
                         continue;
-                    if (r is MeshRenderer) {
-                        ((MeshRenderer)r).shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
-                        ((MeshRenderer)r).receiveShadows = true;
+                    if (r is MeshRenderer renderer) {
+                        renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
+                        renderer.receiveShadows = true;
                     }
 
-                    foreach (Material m in r.materials) {
+                    foreach (var m in r.materials) {
                         m.DisableKeyword("FX_BUILDING");
                     }
                 }
@@ -561,9 +560,9 @@ public sealed class VoidSpike : WorldGenerator {
 
             currentOre = t;
             if (t) {
-                Pickupable p = t.gameObject.GetComponentInChildren<Pickupable>(true);
+                var p = t.gameObject.GetComponentInChildren<Pickupable>(true);
                 if (p)
-                    p.pickedUpEvent.AddHandler(this, pp => this.setCurrentOre(null));
+                    p.pickedUpEvent.AddHandler(this, pp => setCurrentOre(null));
             }
         }
     }
@@ -586,7 +585,7 @@ public sealed class VoidSpike : WorldGenerator {
     }
 
     private class SpikeClusterHook : MonoBehaviour {
-        void Update() { //TODO spawn fish
+        private void Update() { //TODO spawn fish
         }
     }
 
@@ -597,19 +596,19 @@ public sealed class VoidSpike : WorldGenerator {
             if (scale <= 0.01)
                 scale = gameObject.transform.localScale.x;
             //SNUtil.log("Fixing spike colliders @ "+gameObject.transform.position+": "+scale);
-            this.fixColliders();
+            fixColliders();
         }
 
         private void fixColliders() {
             //SNUtil.log("Spike "+this+" has colliders: ");
             //bool trigger = false;
-            foreach (Collider c in gameObject.GetAllComponentsInChildren<Collider>()) {
+            foreach (var c in gameObject.GetAllComponentsInChildren<Collider>()) {
                 //trigger |= c.isTrigger;
                 //SNUtil.log(c.name+" @ "+c.bounds+" = "+c.GetType());
-                if (c is SphereCollider) {
+                if (c is SphereCollider collider) {
                     //SNUtil.log("R="+((SphereCollider)c).radius+", C="+((SphereCollider)c).center);
-                    ((SphereCollider)c).radius = ((SphereCollider)c).radius * 0.95F;
-                    ((SphereCollider)c).center = ((SphereCollider)c).center + (Vector3.up * 0.25F * scale);
+                    collider.radius *= 0.95F;
+                    collider.center += Vector3.up * 0.25F * scale;
                 }
                 //c.destroy(false);
             } /*

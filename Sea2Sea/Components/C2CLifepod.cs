@@ -17,48 +17,48 @@ internal class C2CLifepod : MonoBehaviour {
 	private Vector3 rotationSpeed;
 
 	private Vector3 lastPosition;
-	private MovingAverage movementSpeedXZ = new MovingAverage(90);
+	private MovingAverage movementSpeedXZ = new(90);
 
 	private BiomeBase currentBiome;
 
 	private static readonly float MAX_ROTATE_SPEED = 2F;
 
-	void FixedUpdate() {
+	private void FixedUpdate() {
 		if (C2CHooks.skipPodTick)
 			return;
 		if (!pod)
-			pod = this.GetComponent<EscapePod>();
+			pod = GetComponent<EscapePod>();
 		if (!body)
-			body = this.GetComponent<Rigidbody>();
+			body = GetComponent<Rigidbody>();
 		if (!stabilizer)
-			stabilizer = this.GetComponent<Stabilizer>();
+			stabilizer = GetComponent<Stabilizer>();
 		if (!forces)
-			forces = this.GetComponent<WorldForces>();
+			forces = GetComponent<WorldForces>();
 		if (!live)
-			live = this.GetComponent<LiveMixin>();
-		if (body && SeaToSeaMod.config.getBoolean(C2CConfig.ConfigEntries.PODFAIL)) {
-			currentBiome = BiomeBase.getBiome(transform.position.setY(Mathf.Min(-3, transform.position.y - 10)));
-			float sp = this.getMovementSpeed();
-			float dT = Time.fixedDeltaTime;
+			live = GetComponent<LiveMixin>();
+		if (body && SeaToSeaMod.ModConfig.getBoolean(C2CConfig.ConfigEntries.PODFAIL)) {
+			currentBiome = BiomeBase.GetBiome(transform.position.setY(Mathf.Min(-3, transform.position.y - 10)));
+			var sp = getMovementSpeed();
+			var dT = Time.fixedDeltaTime;
 			if (pathVariation == null)
-				this.getOrCreateNoise();
+				getOrCreateNoise();
 			if (sp > 0) {
 				body.constraints = RigidbodyConstraints.None;
 				body.drag = 0;
 				body.angularDrag = 0;
 				stabilizer.enabled = false;
 				forces.enabled = false;
-				float sp2 = sp < 1 ? sp*sp : sp;
-				if (currentBiome == VanillaBiomes.DUNES) {
+				var sp2 = sp < 1 ? sp*sp : sp;
+				if (currentBiome == VanillaBiomes.Dunes) {
 					sp2 *= 2F;
 				}
-				else if (currentBiome == VanillaBiomes.SPARSE || currentBiome == VanillaBiomes.GRANDREEF || currentBiome == VanillaBiomes.TREADER) {
+				else if (currentBiome == VanillaBiomes.Sparse || currentBiome == VanillaBiomes.Grandreef || currentBiome == VanillaBiomes.Treader) {
 					sp2 *= 1.5F;
 				}
-				else if (currentBiome == VanillaBiomes.MUSHROOM) {
+				else if (currentBiome == VanillaBiomes.Mushroom) {
 					sp2 *= 1.25F;
 				}
-				Vector3 force = 0.2F*new Vector3(-1F, 0, 0.25F+(1.8F*(float)pathVariation.getValue(new Vector3(DayNightCycle.main.timePassedAsFloat, 0, 0))))*sp2;
+				var force = 0.2F*new Vector3(-1F, 0, 0.25F+1.8F*(float)pathVariation.getValue(new Vector3(DayNightCycle.main.timePassedAsFloat, 0, 0)))*sp2;
 				//SNUtil.writeToChat(sp.ToString("0.000")+">"+force.ToString("F4"));
 				body.velocity = force;
 
@@ -72,31 +72,31 @@ internal class C2CLifepod : MonoBehaviour {
 					rotationSpeed.z = Mathf.Clamp(rotationSpeed.z, -MAX_ROTATE_SPEED, MAX_ROTATE_SPEED);
 				}
 			}
-			float depth = -transform.position.y;
-			float tgt = this.getTargetDepth();
+			var depth = -transform.position.y;
+			var tgt = getTargetDepth();
 			//SNUtil.writeToChat(depth.ToString("000.0")+"/"+tgt.ToString("000.0"));
 			if (tgt > 0.1F && tgt > depth) {
-				float sink = 0.25F;
+				var sink = 0.25F;
 				if (tgt - depth > 80 || tgt >= 150)
 					sink = 0.75F;
 				else if (tgt - depth > 40 || tgt >= 80)
 					sink = 0.5F;
-				if (currentBiome == VanillaBiomes.VOID)
+				if (currentBiome == VanillaBiomes.Void)
 					sink = 2.5F;
-				if (currentBiome == VanillaBiomes.DUNES)
+				if (currentBiome == VanillaBiomes.Dunes)
 					sink = 1F;
 				body.velocity = body.velocity.setY(-sink);
 				//SNUtil.writeToChat(body.velocity.ToString("F4"));
 			}
 			else if (depth > 10 && tgt < depth) {
-				float rise = 0.2F;
-				if (this.isStuck())
-					rise = 1.5F * (float)Math.Max(0.1, 1 - (movementSpeedXZ.getAverage() * 100));
+				var rise = 0.2F;
+				if (isStuck())
+					rise = 1.5F * (float)Math.Max(0.1, 1 - movementSpeedXZ.getAverage() * 100);
 				body.velocity = body.velocity.setY(rise);
 			}
 		}
 		if (transform.position.y < -900) {
-			float delay = 0F;
+			var delay = 0F;
 			if (Player.main.currentEscapePod == pod) {
 				//delay = 2.5F;
 				SoundManager.playSoundAt(SoundManager.buildSound("event:/sub/cyclops/explode"), transform.position);
@@ -110,7 +110,7 @@ internal class C2CLifepod : MonoBehaviour {
 	}
 
 	private void getOrCreateNoise() {
-		long use = SaveLoadManager.main.firstStart;
+		var use = SaveLoadManager.main.firstStart;
 		if (pathVariation == null || pathVariation.seed != use) {
 			pathVariation = (Simplex1DGenerator)new Simplex1DGenerator(use).setFrequency(0.004F);
 		}
@@ -119,38 +119,38 @@ internal class C2CLifepod : MonoBehaviour {
 	private float getPassedDays() {
 		if (!Story.StoryGoalManager.main.completedGoals.Contains("Goal_Builder"))
 			return 0;
-		float time = DayNightCycle.main.timePassedAsFloat-0.4F;
+		var time = DayNightCycle.main.timePassedAsFloat-0.4F;
 		//SNUtil.writeToChat((time*10/DayNightCycle.kDayLengthSeconds).ToString("00.00"));
-		return (time / DayNightCycle.kDayLengthSeconds) - 3; //subtract 3 days as that is the assumed time to build a builder tool
+		return time / DayNightCycle.kDayLengthSeconds - 3; //subtract 3 days as that is the assumed time to build a builder tool
 	}
 
 	private float getMovementSpeed() {
-		float days = this.getPassedDays();
-		return days < 3 ? 0 : days < 8 ? 1 : days < 20 ? 1 + (1.5F * (days - 8) / 12F) : Mathf.Min(5F, 2.5F + ((days - 20) * 0.5F));
+		var days = getPassedDays();
+		return days < 3 ? 0 : days < 8 ? 1 : days < 20 ? 1 + 1.5F * (days - 8) / 12F : Mathf.Min(5F, 2.5F + (days - 20) * 0.5F);
 	}
 
 	private float getTargetDepth() {
-		float days = this.getPassedDays();
+		var days = getPassedDays();
 		if (days < 20)
 			return 0;
 		days -= 20;
-		if (this.isStuck())
+		if (isStuck())
 			return 0;
-		if (currentBiome == VanillaBiomes.SHALLOWS)
+		if (currentBiome == VanillaBiomes.Shallows)
 			return Mathf.Min(1, days / 15F) * 10;
-		if (currentBiome == VanillaBiomes.KELP)
+		if (currentBiome == VanillaBiomes.Kelp)
 			return Mathf.Min(1, days / 10F) * 36;
-		return currentBiome == VanillaBiomes.REDGRASS
+		return currentBiome == VanillaBiomes.Redgrass
 			? Mathf.Min(1, days / 10F) * 80
-			: currentBiome == VanillaBiomes.BLOODKELP
+			: currentBiome == VanillaBiomes.Bloodkelp
 				? Mathf.Min(1, days / 8F) * 120
-				: currentBiome == VanillaBiomes.MUSHROOM
+				: currentBiome == VanillaBiomes.Mushroom
 					? Mathf.Min(1, days / 6F) * 150
-					: currentBiome == VanillaBiomes.SPARSE
+					: currentBiome == VanillaBiomes.Sparse
 						? Mathf.Min(1, days / 6F) * 180
-						: currentBiome == VanillaBiomes.DUNES || currentBiome == VanillaBiomes.SPARSE || currentBiome == VanillaBiomes.GRANDREEF || currentBiome == VanillaBiomes.TREADER
+						: currentBiome == VanillaBiomes.Dunes || currentBiome == VanillaBiomes.Sparse || currentBiome == VanillaBiomes.Grandreef || currentBiome == VanillaBiomes.Treader
 							? Mathf.Min(1, days / 4F) * 220
-							: currentBiome == VanillaBiomes.VOID ? 9999 : -transform.position.y;
+							: currentBiome == VanillaBiomes.Void ? 9999 : -transform.position.y;
 	}
 
 	private bool isStuck() {

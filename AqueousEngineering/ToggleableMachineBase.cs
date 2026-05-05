@@ -21,11 +21,11 @@ public abstract class ToggleableMachineBase : CustomMachineLogic {
 	}
 
 	protected override void updateEntity(float seconds) {
-		float time = DayNightCycle.main.timePassedAsFloat;
+		var time = DayNightCycle.main.timePassedAsFloat;
 		if (time - lastButtonCheck >= 1 && sub) {
 			lastButtonCheck = time;
-			foreach (BaseControlPanelLogic panel in sub.GetComponentsInChildren<BaseControlPanelLogic>()) {
-				panel.addButton(this.getButtonType());
+			foreach (var panel in sub.GetComponentsInChildren<BaseControlPanelLogic>()) {
+				panel.addButton(getButtonType());
 			}
 		}
 		if (GameModeUtils.RequiresPower() && sub && sub.powerRelay.GetPower() < 0.1F)

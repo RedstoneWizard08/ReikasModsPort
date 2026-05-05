@@ -44,7 +44,7 @@ public static class C2CItems {
 
     public static TechType emperorRootCommon;
 
-    public static readonly Dictionary<string, EmperorRoot> emperorRoots = new Dictionary<string, EmperorRoot>();
+    public static readonly Dictionary<string, EmperorRoot> emperorRoots = new();
     //public static TechType postCoveTreeCommon;
     //public static readonly Dictionary<DecoPlants, PostCoveTree> postCoveTrees = new Dictionary<DecoPlants, PostCoveTree>();
 
@@ -86,12 +86,11 @@ public static class C2CItems {
 
     public static CraftTree.Type hatchingEnzymes;
 
-    private static readonly Dictionary<TechType, IngotDefinition> ingots = new Dictionary<TechType, IngotDefinition>();
+    private static readonly Dictionary<TechType, IngotDefinition> ingots = new();
 
-    private static readonly Dictionary<TechType, IngotDefinition> ingotsByUnpack =
-        new Dictionary<TechType, IngotDefinition>();
+    private static readonly Dictionary<TechType, IngotDefinition> ingotsByUnpack = new();
 
-    private static readonly Dictionary<TechType, TechType> brokenTablets = new Dictionary<TechType, TechType>();
+    private static readonly Dictionary<TechType, TechType> brokenTablets = new();
 
     internal static void registerTabletTechKey(BrokenTablet tb) {
         brokenTablets[tb.Info.TechType] = tb.tablet;
@@ -103,14 +102,14 @@ public static class C2CItems {
      }*/
 
     internal static void preAdd() {
-        XMLLocale.LocaleEntry e = SeaToSeaMod.miscLocale.getEntry("CraftingNodes");
+        var e = SeaToSeaMod.MiscLocale.getEntry("CraftingNodes");
         chemistryCategory = EnumHandler.AddEntry<TechCategory>("C2Chemistry").WithPdaInfo(e.getString("chemistry"))
             .RegisterToTechGroup(TechGroup.Resources);
         CraftTreeHandler.AddTabNode(
             CraftTree.Type.Fabricator,
             "C2Chemistry",
             e.getString("chemistry"),
-            TextureManager.getSprite(SeaToSeaMod.modDLL, "Textures/CraftTab/chemistry"),
+            TextureManager.getSprite(SeaToSeaMod.ModDLL, "Textures/CraftTab/chemistry"),
             "Resources"
         );
 
@@ -120,14 +119,14 @@ public static class C2CItems {
             CraftTree.Type.Fabricator,
             "C2CIngots",
             e.getString("ingots"),
-            TextureManager.getSprite(SeaToSeaMod.modDLL, "Textures/CraftTab/ingotmaking"),
+            TextureManager.getSprite(SeaToSeaMod.ModDLL, "Textures/CraftTab/ingotmaking"),
             "Resources"
         );
         CraftTreeHandler.AddTabNode(
             CraftTree.Type.Fabricator,
             "C2CIngots2",
             e.getString("ingotUnpack"),
-            TextureManager.getSprite(SeaToSeaMod.modDLL, "Textures/CraftTab/ingotbreaking"),
+            TextureManager.getSprite(SeaToSeaMod.ModDLL, "Textures/CraftTab/ingotbreaking"),
             "Resources"
         );
 
@@ -135,7 +134,7 @@ public static class C2CItems {
             CraftTree.Type.Workbench,
             "C2CMedical",
             e.getString("medical"),
-            TextureManager.getSprite(SeaToSeaMod.modDLL, "Textures/CraftTab/medical")
+            TextureManager.getSprite(SeaToSeaMod.ModDLL, "Textures/CraftTab/medical")
         );
         CraftTreeHandler.AddTabNode(
             CraftTree.Type.Workbench,
@@ -147,7 +146,7 @@ public static class C2CItems {
             CraftTree.Type.Workbench,
             "C2CModElectronics",
             e.getString("modelectric"),
-            TextureManager.getSprite(SeaToSeaMod.modDLL, "Textures/CraftTab/modelectronic")
+            TextureManager.getSprite(SeaToSeaMod.ModDLL, "Textures/CraftTab/modelectronic")
         );
 
         precursorCategory = EnumHandler.AddEntry<TechCategory>("C2CPrecursor").WithPdaInfo(e.getString("precursor"))
@@ -185,19 +184,20 @@ public static class C2CItems {
         treatment = new KharaaTreatment();
         oxygeniteCharge = new OxygeniteCharge();
         bkelpBumpWormItem = new WorldCollectedItem(
-            SeaToSeaMod.itemLocale.getEntry("BKelpBumpWormItem"),
+            SeaToSeaMod.ItemLocale.getEntry("BKelpBumpWormItem"),
             "WorldEntities/Natural/StalkerTooth"
-        );
-        bkelpBumpWormItem.sprite = TextureManager.getSprite(SeaToSeaMod.modDLL, "Textures/Items/BumpWormItem");
-        bkelpBumpWormItem.inventorySize = SeaToSeaMod.config.getBoolean(C2CConfig.ConfigEntries.HARDMODE)
-            ? new Vector2int(3, 2)
-            : new Vector2int(2, 1);
-        bkelpBumpWormItem.renderModify = (r) => {
-            r.transform.localScale = new Vector3(8, 8, 6);
-            r.materials[0].SetFloat("_Shininess", 0);
-            r.materials[0].SetFloat("_SpecInt", 0.2F);
-            r.materials[0].SetFloat("_Fresnel", 0F);
-            RenderUtil.setEmissivity(r, 0.75F);
+        ) {
+            sprite = TextureManager.getSprite(SeaToSeaMod.ModDLL, "Textures/Items/BumpWormItem"),
+            inventorySize = SeaToSeaMod.ModConfig.getBoolean(C2CConfig.ConfigEntries.HARDMODE)
+                ? new Vector2int(3, 2)
+                : new Vector2int(2, 1),
+            renderModify = (r) => {
+                r.transform.localScale = new Vector3(8, 8, 6);
+                r.materials[0].SetFloat("_Shininess", 0);
+                r.materials[0].SetFloat("_SpecInt", 0.2F);
+                r.materials[0].SetFloat("_Fresnel", 0F);
+                RenderUtil.setEmissivity(r, 0.75F);
+            },
         };
         bkelpBumpWormItem.Register();
 
@@ -220,44 +220,48 @@ public static class C2CItems {
     internal static void addCraftingItems() {
         CraftingItems.addAll();
 
-        largeOxygenite = new LargeOxygenite(SeaToSeaMod.itemLocale.getEntry("OXYGENITE"));
+        largeOxygenite = new LargeOxygenite(SeaToSeaMod.ItemLocale.getEntry("OXYGENITE"));
         largeOxygenite.Register();
     }
 
     internal static void addCreatures() {
-        deepStalker = new DeepStalker(SeaToSeaMod.itemLocale.getEntry("DeepStalker"));
+        deepStalker = new DeepStalker(SeaToSeaMod.ItemLocale.getEntry("DeepStalker"));
         deepStalker.Register();
-        sanctuaryray = new SanctuaryJellyray(SeaToSeaMod.itemLocale.getEntry("SanctuaryJellyray"));
+        sanctuaryray = new SanctuaryJellyray(SeaToSeaMod.ItemLocale.getEntry("SanctuaryJellyray"));
         sanctuaryray.Register();
-        purpleBoomerang = new PurpleBoomerang(SeaToSeaMod.itemLocale.getEntry("PurpleBoomerang"));
-        purpleBoomerang.cookableIntoBase = 1;
+        purpleBoomerang = new PurpleBoomerang(SeaToSeaMod.ItemLocale.getEntry("PurpleBoomerang"))
+            {
+                CookableIntoBase = 1,
+            };
         purpleBoomerang.Register();
-        purpleHolefish = new PurpleHolefish(SeaToSeaMod.itemLocale.getEntry("PurpleHolefish"));
+        purpleHolefish = new PurpleHolefish(SeaToSeaMod.ItemLocale.getEntry("PurpleHolefish"));
         purpleHolefish.Register();
-        purpleHoopfish = new PurpleHoopfish(SeaToSeaMod.itemLocale.getEntry("PurpleHoopfish"));
-        purpleHoopfish.cookableIntoBase = 1;
+        purpleHoopfish = new PurpleHoopfish(SeaToSeaMod.ItemLocale.getEntry("PurpleHoopfish"))
+            {
+                CookableIntoBase = 1,
+            };
         purpleHoopfish.Register();
-        voltaicBladderfish = new VoltaicBladderfish(SeaToSeaMod.itemLocale.getEntry("VoltaicBladderfish"));
+        voltaicBladderfish = new VoltaicBladderfish(SeaToSeaMod.ItemLocale.getEntry("VoltaicBladderfish"));
         voltaicBladderfish.Register();
         //giantRockGrub = new GiantRockGrub(SeaToSeaMod.itemLocale.getEntry("GiantRockGrub"));
         //giantRockGrub.Patch();
-        broodmother = new BloodKelpBroodmother(SeaToSeaMod.itemLocale.getEntry("BloodKelpBroodmother"));
+        broodmother = new BloodKelpBroodmother(SeaToSeaMod.ItemLocale.getEntry("BloodKelpBroodmother"));
         broodmother.Register();
 
-        deepStalker.data =
+        deepStalker.Data =
             SNUtil.getModifiedACUParams(TechType.Stalker, 1, 1, 1, 1.5F);
-        sanctuaryray.data =
+        sanctuaryray.Data =
             SNUtil.getModifiedACUParams(TechType.Jellyray, 1, 1, 1, 1.25F);
-        purpleBoomerang.data =
+        purpleBoomerang.Data =
             SNUtil.getModifiedACUParams(TechType.Boomerang, 1, 1, 1, 0.67F);
-        purpleHoopfish.data =
+        purpleHoopfish.Data =
             SNUtil.getModifiedACUParams(TechType.Hoopfish, 1.2F, 1.2F, 1.2F, 1.25F);
-        purpleHolefish.data =
+        purpleHolefish.Data =
             SNUtil.getModifiedACUParams(TechType.HoleFish, 4F, 4F, 4F, 3.0F);
-        voltaicBladderfish.data =
+        voltaicBladderfish.Data =
             SNUtil.getModifiedACUParams(TechType.Bladderfish, 1, 1, 1, 1);
 
-        voidSpikeLevi = new VoidSpikeLeviathan(SeaToSeaMod.itemLocale.getEntry("VoidSpikeLevi"));
+        voidSpikeLevi = new VoidSpikeLeviathan(SeaToSeaMod.ItemLocale.getEntry("VoidSpikeLevi"));
         voidSpikeLevi.register();
     }
 
@@ -315,7 +319,7 @@ public static class C2CItems {
     internal static void addFlora() {
         alkali = new AlkaliPlant();
         alkali.Register();
-        XMLLocale.LocaleEntry e = SeaToSeaMod.itemLocale.getEntry(alkali.ClassID);
+        var e = SeaToSeaMod.ItemLocale.getEntry(alkali.ClassID);
         alkali.addPDAEntry(e.pda, 3, e.getString("header"));
         SNUtil.log(" > " + alkali);
         GenUtil.registerPlantWorldgen(alkali, BiomeType.Mountains_IslandCaveFloor, 1, 1F);
@@ -327,20 +331,20 @@ public static class C2CItems {
 
         kelp = new VentKelp();
         kelp.Register();
-        e = SeaToSeaMod.itemLocale.getEntry(kelp.ClassID);
+        e = SeaToSeaMod.ItemLocale.getEntry(kelp.ClassID);
         kelp.addPDAEntry(e.pda, 3, e.getString("header"));
         SNUtil.log(" > " + kelp);
 
         healFlower = new HealingFlower();
         healFlower.Register();
-        e = SeaToSeaMod.itemLocale.getEntry(healFlower.ClassID);
+        e = SeaToSeaMod.ItemLocale.getEntry(healFlower.ClassID);
         healFlower.addPDAEntry(e.pda, 5, e.getString("header"));
         SNUtil.log(" > " + healFlower);
         GenUtil.registerPlantWorldgen(healFlower, BiomeType.GrassyPlateaus_CaveFloor, 1, 2.5F);
 
         mountainGlow = new MountainGlow();
         mountainGlow.Register();
-        e = SeaToSeaMod.itemLocale.getEntry(mountainGlow.ClassID);
+        e = SeaToSeaMod.ItemLocale.getEntry(mountainGlow.ClassID);
         mountainGlow.addPDAEntry(e.pda, 8, e.getString("header"));
         SNUtil.log(" > " + mountainGlow);
         GenUtil.registerPrefabWorldgen(
@@ -370,31 +374,32 @@ public static class C2CItems {
 
         sanctuaryPlant = new SanctuaryPlant();
         sanctuaryPlant.Register();
-        e = SeaToSeaMod.itemLocale.getEntry(sanctuaryPlant.ClassID);
+        e = SeaToSeaMod.ItemLocale.getEntry(sanctuaryPlant.ClassID);
         sanctuaryPlant.addPDAEntry(e.pda, 10, e.getString("header"));
         SNUtil.log(" > " + sanctuaryPlant);
 
-        e = SeaToSeaMod.itemLocale.getEntry("BRINE_CORAL");
-        brineCoral = SNUtil.addTechTypeToVanillaPrefabs(e, SeaToSeaMod.lrCoralClusters.ToArray());
+        e = SeaToSeaMod.ItemLocale.getEntry("BRINE_CORAL");
+        brineCoral = SNUtil.addTechTypeToVanillaPrefabs(e, SeaToSeaMod.LrCoralClusters.ToArray());
         SNUtil.addPDAEntry(brineCoral, e.key, e.name, 3, e.getString("category"), e.pda, e.getString("header"));
 
         brineCoralPiece = new WorldCollectedItem(
-            SeaToSeaMod.itemLocale.getEntry("BrineCoralPiece"),
+            SeaToSeaMod.ItemLocale.getEntry("BrineCoralPiece"),
             VanillaResources.TITANIUM.prefab
-        );
-        brineCoralPiece.sprite = TextureManager.getSprite(SeaToSeaMod.modDLL, "Textures/Items/BrineCoralPiece");
-        brineCoralPiece.renderModify = (r) => {
-            GameObject mdl = r.setModel(
-                ObjectUtil.lookupPrefab("908d3f0e-04b9-42b4-80c8-a70624eb5455")
-                    .getChildObject("lost_river_skull_coral_01")
-            );
-            //r = mdl.GetComponentInChildren<Renderer>();
-            //RenderUtil.swapTextures(SeaToSeaMod.modDLL, r, "Textures/BrineCoralPiece"); //no such texture
+        ) {
+            sprite = TextureManager.getSprite(SeaToSeaMod.ModDLL, "Textures/Items/BrineCoralPiece"),
+            renderModify = (r) => {
+                var mdl = r.setModel(
+                    ObjectUtil.lookupPrefab("908d3f0e-04b9-42b4-80c8-a70624eb5455")
+                        .getChildObject("lost_river_skull_coral_01")
+                );
+                //r = mdl.GetComponentInChildren<Renderer>();
+                //RenderUtil.swapTextures(SeaToSeaMod.modDLL, r, "Textures/BrineCoralPiece"); //no such texture
+            },
         };
         brineCoralPiece.Register();
 
-        e = SeaToSeaMod.itemLocale.getEntry("EMPEROR_ROOT");
-        foreach (string pfb in VanillaFlora.BLOOD_ROOT_FERTILE) {
+        e = SeaToSeaMod.ItemLocale.getEntry("EMPEROR_ROOT");
+        foreach (var pfb in VanillaFlora.BLOOD_ROOT_FERTILE) {
             emperorRoots[pfb] = new EmperorRoot(e, pfb);
             emperorRoots[pfb].Register();
         }
@@ -402,7 +407,7 @@ public static class C2CItems {
         emperorRootCommon = EnumHandler.AddEntry<TechType>(e.key).WithPdaInfo(e.name, e.desc);
         SNUtil.addPDAEntry(emperorRootCommon, e.key, e.name, 5, e.getString("category"), e.pda, e.getString("header"));
 
-        emperorRootOil = new EmperorRootOil(SeaToSeaMod.itemLocale.getEntry("EmperorRootOil"));
+        emperorRootOil = new EmperorRootOil(SeaToSeaMod.ItemLocale.getEntry("EmperorRootOil"));
         emperorRootOil.Register();
 
         /*
@@ -457,22 +462,22 @@ public static class C2CItems {
     }
 
     internal static void addMachines() {
-        XMLLocale.LocaleEntry e = SeaToSeaMod.itemLocale.getEntry("bioprocessor");
+        var e = SeaToSeaMod.ItemLocale.getEntry("bioprocessor");
         processor = new Bioprocessor(e);
         processor.Register();
         SNUtil.log("Registered custom machine " + processor);
         processor.addPDAPage(e.pda, "Bioprocessor");
-        processor.addFragments(4, 5, SeaToSeaMod.bioprocFragments);
+        processor.addFragments(4, 5, SeaToSeaMod.BioprocFragments);
         Bioprocessor.addRecipes();
 
-        e = SeaToSeaMod.itemLocale.getEntry("rebreathercharger");
+        e = SeaToSeaMod.ItemLocale.getEntry("rebreathercharger");
         rebreatherCharger = new RebreatherRecharger(e);
         rebreatherCharger.Register();
         SNUtil.log("Registered custom machine " + rebreatherCharger);
         rebreatherCharger.addPDAPage(e.pda, "RebreatherCharger");
-        rebreatherCharger.addFragments(4, 7.5F, SeaToSeaMod.rebreatherChargerFragments);
+        rebreatherCharger.addFragments(4, 7.5F, SeaToSeaMod.RebreatherChargerFragments);
 
-        e = SeaToSeaMod.itemLocale.getEntry("geyserfilter");
+        e = SeaToSeaMod.ItemLocale.getEntry("geyserfilter");
         geyserFilter = new GeyserFilter(e);
         geyserFilter.Register();
         SNUtil.log("Registered custom machine " + geyserFilter);
@@ -499,7 +504,7 @@ public static class C2CItems {
             (s, go) => {
                 if (C2CUtil.playerCanHeal() && !Player.main.GetComponent<HealingOverTime>() &&
                     Player.main.GetComponent<LiveMixin>().AddHealth(0.1F) > 0.05) {
-                    HealingOverTime ht = Player.main.gameObject.EnsureComponent<HealingOverTime>();
+                    var ht = Player.main.gameObject.EnsureComponent<HealingOverTime>();
                     ht.setValues(20, 20);
                     ht.activate();
                     return true;
@@ -513,16 +518,16 @@ public static class C2CItems {
             (s, go) => {
                 if (C2CUtil.playerCanHeal() && !Player.main.GetComponent<HealingOverTime>() &&
                     Player.main.GetComponent<LiveMixin>().AddHealth(0.1F) > 0.05) {
-                    HealingOverTime ht = Player.main.gameObject.EnsureComponent<HealingOverTime>();
+                    var ht = Player.main.gameObject.EnsureComponent<HealingOverTime>();
                     ht.setValues(50, 5);
                     ht.activate();
-                    foreach (DamageOverTime dt in Player.main.gameObject.GetComponentsInChildren<DamageOverTime>()) {
+                    foreach (var dt in Player.main.gameObject.GetComponentsInChildren<DamageOverTime>()) {
                         dt.damageRemaining = 0;
-                        dt.CancelInvoke("DoDamage");
+                        dt.CancelInvoke(nameof(DamageOverTime.DoDamage));
                         dt.destroy();
                     }
 
-                    foreach (PlayerMovementSpeedModifier ds in Player.main.gameObject
+                    foreach (var ds in Player.main.gameObject
                                  .GetComponents<PlayerMovementSpeedModifier>()) {
                         if (ds.speedModifier < 1)
                             ds.destroy();
@@ -539,14 +544,14 @@ public static class C2CItems {
         UsableItemRegistry.instance.addUsableItem(
             treatment.Info.TechType,
             (s, go) => {
-                float time = DayNightCycle.main.timePassedAsFloat;
+                var time = DayNightCycle.main.timePassedAsFloat;
                 return LiquidBreathingSystem.instance.useKharaaTreatment();
             }
         );
         UsableItemRegistry.instance.addUsableItem(
             CraftingItems.getItem(CraftingItems.Items.WeakEnzyme42).Info.TechType,
             (s, go) => {
-                float time = DayNightCycle.main.timePassedAsFloat;
+                var time = DayNightCycle.main.timePassedAsFloat;
                 return LiquidBreathingSystem.instance.applyTemporaryKharaaTreatment();
             }
         );
@@ -555,17 +560,17 @@ public static class C2CItems {
             (s, go) => {
                 if (LiquidBreathingSystem.instance.hasLiquidBreathing())
                     return false;
-                InventoryItem ii = Inventory.main.equipment.GetItemInSlot("Tank");
+                var ii = Inventory.main.equipment.GetItemInSlot("Tank");
                 if (ii == null || !ii.item)
                     return false;
-                Oxygen ox = ii.item.GetComponent<Oxygen>();
+                var ox = ii.item.GetComponent<Oxygen>();
                 if (!ox)
                     return false;
-                float max = ox.oxygenCapacity * 5;
-                float has = ox.oxygenAvailable;
+                var max = ox.oxygenCapacity * 5;
+                var has = ox.oxygenAvailable;
                 if (has > max * 0.75F)
                     return false;
-                OxygenBoost ob = ox.gameObject.EnsureComponent<OxygenBoost>();
+                var ob = ox.gameObject.EnsureComponent<OxygenBoost>();
                 ob.limit = max;
                 ob.original = ox.oxygenCapacity;
                 ob.oxygen = ox;
@@ -580,13 +585,13 @@ public static class C2CItems {
         IrreplaceableItemRegistry.instance.registerItem(
             CustomMaterials.getItem(CustomMaterials.Materials.PHASE_CRYSTAL)
         );
-        IrreplaceableItemRegistry.instance.registerItem(C2CItems.voidStealth, SeamothVoidStealthModule.lossData);
+        IrreplaceableItemRegistry.instance.registerItem(voidStealth, SeamothVoidStealthModule.lossData);
         IrreplaceableItemRegistry.instance.registerItem(TechType.PrecursorKey_Blue);
         IrreplaceableItemRegistry.instance.registerItem(TechType.PrecursorKey_Red);
     }
 
     internal static void onTechUnlocked(TechType tech) {
-        if (DIHooks.getWorldAge() < 0.25F)
+        if (DIHooks.GetWorldAge() < 0.25F)
             return;
         if (brokenTablets.ContainsKey(tech))
             SNUtil.triggerTechPopup(brokenTablets[tech]);
@@ -595,12 +600,12 @@ public static class C2CItems {
             SNUtil.triggerTechPopup(tech);
     }
 
-    class OxygenBoost : MonoBehaviour {
+    private class OxygenBoost : MonoBehaviour {
         internal float limit;
         internal float original;
         internal Oxygen oxygen;
 
-        void Update() {
+        private void Update() {
             oxygen.oxygenCapacity = Mathf.Min(limit, oxygen.oxygenAvailable);
             if (oxygen.oxygenAvailable <= original) {
                 oxygen.oxygenCapacity = original;
@@ -623,7 +628,7 @@ public static class C2CItems {
         }
 
         public void pickupUnpacked() {
-            for (int i = 0; i < count; i++) {
+            for (var i = 0; i < count; i++) {
                 InventoryUtil.addItem(material);
             }
         }
@@ -639,7 +644,7 @@ public static class C2CItems {
     }
 
     internal static void addIngot(TechType item, TechType ing, DuplicateRecipeDelegateWithRecipe unpack, int amt) {
-        IngotDefinition id = new IngotDefinition(item, ing, unpack, amt);
+        var id = new IngotDefinition(item, ing, unpack, amt);
         ingots[item] = id;
         ingotsByUnpack[unpack.Info.TechType] = id;
     }
@@ -653,7 +658,7 @@ public static class C2CItems {
     }
 
     internal static List<IngotDefinition> getIngots() {
-        return new List<IngotDefinition>(ingots.Values);
+        return [..ingots.Values];
     }
 
     internal static void setChemistry(TechType item) {
@@ -667,12 +672,12 @@ public static class C2CItems {
     }
 
     public static bool hasSealedOrReinforcedSuit(out bool isSealed, out bool isReinf) {
-        InventoryItem suit = Inventory.main.equipment.GetItemInSlot("Body");
-        InventoryItem glove = Inventory.main.equipment.GetItemInSlot("Gloves");
-        bool sealSuit = suit != null && suit.item.GetTechType() == C2CItems.sealSuit.Info.TechType;
-        bool reinfSuit = suit != null && suit.item.GetTechType() == TechType.ReinforcedDiveSuit;
-        bool sealGlove = glove != null && glove.item.GetTechType() == C2CItems.sealGloves.Info.TechType;
-        bool reinfGlove = glove != null && glove.item.GetTechType() == TechType.ReinforcedGloves;
+        var suit = Inventory.main.equipment.GetItemInSlot("Body");
+        var glove = Inventory.main.equipment.GetItemInSlot("Gloves");
+        var sealSuit = suit != null && suit.item.GetTechType() == C2CItems.sealSuit.Info.TechType;
+        var reinfSuit = suit != null && suit.item.GetTechType() == TechType.ReinforcedDiveSuit;
+        var sealGlove = glove != null && glove.item.GetTechType() == sealGloves.Info.TechType;
+        var reinfGlove = glove != null && glove.item.GetTechType() == TechType.ReinforcedGloves;
         isSealed = sealSuit && sealGlove;
         isReinf = reinfSuit && reinfGlove;
         return (sealSuit || reinfSuit) && (sealGlove || reinfGlove);

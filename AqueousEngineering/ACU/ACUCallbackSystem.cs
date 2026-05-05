@@ -11,110 +11,111 @@ using UnityEngine;
 
 namespace ReikaKalseki.AqueousEngineering;
 
-public class ACUCallbackSystem {
-    public static readonly ACUCallbackSystem instance = new ACUCallbackSystem();
+public class AcuCallbackSystem {
+    public static readonly AcuCallbackSystem Instance = new();
 
-    private static readonly Dictionary<TechType, float> toyValues = new Dictionary<TechType, float>();
+    private static readonly Dictionary<TechType, float> ToyValues = new();
 
-    static ACUCallbackSystem() {
-        addStalkerToy(TechType.Titanium, 0.1F);
-        addStalkerToy(TechType.ScrapMetal, 0.25F);
-        addStalkerToy(TechType.Silver, 0.5F);
-        addStalkerToy(TechType.Gold, 0.75F);
-        addStalkerToy(AqueousEngineeringMod.toy.Info.TechType, 1.5F);
+    static AcuCallbackSystem() {
+        AddStalkerToy(TechType.Titanium, 0.1F);
+        AddStalkerToy(TechType.ScrapMetal, 0.25F);
+        AddStalkerToy(TechType.Silver, 0.5F);
+        AddStalkerToy(TechType.Gold, 0.75F);
+        AddStalkerToy(AqueousEngineeringMod.toy.Info.TechType, 1.5F);
     }
 
-    public static void addStalkerToy(TechType tt, float amt) {
-        toyValues[tt] = amt;
+    public static void AddStalkerToy(TechType tt, float amt) {
+        ToyValues[tt] = amt;
     }
 
-    public static bool isStalkerToy(TechType tt) {
-        return toyValues.ContainsKey(tt);
+    public static bool IsStalkerToy(TechType tt) {
+        return ToyValues.ContainsKey(tt);
     }
 
-    private readonly string oldSaveDir = Path.Combine(
+    private readonly string _oldSaveDir = Path.Combine(
         Path.GetDirectoryName(AqueousEngineeringMod.modDLL.Location),
         "acu_data_cache"
     );
 
-    private static readonly string saveFileName = "ACUCache.dat";
+    private static readonly string SaveFileName = "ACUCache.dat";
 
-    private readonly Dictionary<Vector3, CachedACUData> cache = new Dictionary<Vector3, CachedACUData>();
+    private readonly Dictionary<Vector3, CachedAcuData> _cache = new();
 
-    private ACUCallbackSystem() {
+    private AcuCallbackSystem() {
     }
 
-    internal void register() {
-        IngameMenuHandler.Main.RegisterOnLoadEvent(this.loadSave);
-        IngameMenuHandler.Main.RegisterOnSaveEvent(this.save);
-        SNUtil.migrateSaveDataFolder(oldSaveDir, ".xml", saveFileName);
+    internal void Register() {
+        // TODO
+        // IngameMenuHandler.Main.RegisterOnLoadEvent(loadSave);
+        // IngameMenuHandler.Main.RegisterOnSaveEvent(save);
+        SNUtil.migrateSaveDataFolder(_oldSaveDir, ".xml", SaveFileName);
     }
 
     internal class CreatureCache {
-        internal readonly string entityID;
+        internal readonly string EntityID;
 
-        internal float hunger;
-        internal float happy;
+        internal float Hunger;
+        internal float Happy;
 
         internal CreatureCache(string id) {
-            entityID = id;
+            EntityID = id;
         }
 
-        internal void loadFromXML(XmlElement e) {
-            hunger = (float)e.getFloat("hunger", double.NaN);
-            happy = (float)e.getFloat("happy", double.NaN);
+        internal void LoadFromXML(XmlElement e) {
+            Hunger = (float)e.getFloat("hunger", double.NaN);
+            Happy = (float)e.getFloat("happy", double.NaN);
         }
 
-        internal void saveToXML(XmlElement e) {
-            e.addProperty("hunger", hunger);
-            e.addProperty("happy", happy);
-            e.addProperty("entityID", entityID);
+        internal void SaveToXML(XmlElement e) {
+            e.addProperty("hunger", Hunger);
+            e.addProperty("happy", Happy);
+            e.addProperty("entityID", EntityID);
         }
 
-        internal void apply(Creature c) {
-            c.Hunger.Value = hunger;
-            c.Happy.Value = happy;
+        internal void Apply(Creature c) {
+            c.Hunger.Value = Hunger;
+            c.Happy.Value = Happy;
         }
 
         public override string ToString() {
-            return string.Format("[CreatureCache EntityID={0}, Hunger={1}, Happy={2}]", entityID, hunger, happy);
+            return $"[CreatureCache EntityID={EntityID}, Hunger={Hunger}, Happy={Happy}]";
         }
     }
 
-    internal class CachedACUData {
-        internal readonly Vector3 acuRoot;
+    internal class CachedAcuData {
+        internal readonly Vector3 AcuRoot;
 
-        internal float lastPlanktonBoost;
-        internal float boostStrength;
-        internal float lastTick;
-        internal float nextSoundTime;
+        internal float LastPlanktonBoost;
+        internal float BoostStrength;
+        internal float LastTick;
+        internal float NextSoundTime;
 
-        internal Dictionary<string, CreatureCache> creatureData = new Dictionary<string, CreatureCache>();
+        internal Dictionary<string, CreatureCache> CreatureData = new();
 
-        internal CachedACUData(Vector3 pos) {
-            acuRoot = pos;
+        internal CachedAcuData(Vector3 pos) {
+            AcuRoot = pos;
         }
 
-        internal void loadFromXML(XmlElement e) {
-            lastPlanktonBoost = (float)e.getFloat("plankton", double.NaN);
-            boostStrength = (float)e.getFloat("boost", double.NaN);
-            lastTick = (float)e.getFloat("tick", double.NaN);
+        internal void LoadFromXML(XmlElement e) {
+            LastPlanktonBoost = (float)e.getFloat("plankton", double.NaN);
+            BoostStrength = (float)e.getFloat("boost", double.NaN);
+            LastTick = (float)e.getFloat("tick", double.NaN);
 
-            foreach (XmlElement e2 in e.getDirectElementsByTagName("creatureStatus")) {
-                CreatureCache c = new CreatureCache(e2.getProperty("entityID"));
-                c.loadFromXML(e2);
+            foreach (var e2 in e.getDirectElementsByTagName("creatureStatus")) {
+                var c = new CreatureCache(e2.getProperty("entityID"));
+                c.LoadFromXML(e2);
             }
         }
 
-        internal void saveToXML(XmlElement e) {
-            e.addProperty("position", acuRoot);
-            e.addProperty("plankton", lastPlanktonBoost);
-            e.addProperty("boost", boostStrength);
-            e.addProperty("tick", lastTick);
+        internal void SaveToXML(XmlElement e) {
+            e.addProperty("position", AcuRoot);
+            e.addProperty("plankton", LastPlanktonBoost);
+            e.addProperty("boost", BoostStrength);
+            e.addProperty("tick", LastTick);
 
-            foreach (CreatureCache go in creatureData.Values) {
-                XmlElement e2 = e.OwnerDocument.CreateElement("creatureStatus");
-                go.saveToXML(e2);
+            foreach (var go in CreatureData.Values) {
+                var e2 = e.OwnerDocument.CreateElement("creatureStatus");
+                go.SaveToXML(e2);
                 e.AppendChild(e2);
             }
         }
@@ -122,24 +123,24 @@ public class ACUCallbackSystem {
         public override string ToString() {
             return string.Format(
                 "[CachedACUData AcuRoot={0}, LastPlanktonBoost={1}, LastTick={2}, CreatureData={3}]",
-                acuRoot,
-                lastPlanktonBoost,
-                lastTick,
-                creatureData.toDebugString()
+                AcuRoot,
+                LastPlanktonBoost,
+                LastTick,
+                CreatureData.toDebugString()
             );
         }
     }
 
-    private void loadSave() {
-        string path = Path.Combine(SNUtil.getCurrentSaveDir(), saveFileName);
+    private void LoadSave() {
+        var path = Path.Combine(SNUtil.getCurrentSaveDir(), SaveFileName);
         if (File.Exists(path)) {
-            XmlDocument doc = new XmlDocument();
+            var doc = new XmlDocument();
             doc.Load(path);
             foreach (XmlElement e in doc.DocumentElement.ChildNodes) {
                 try {
-                    CachedACUData pfb = new CachedACUData(e.getVector("position").Value);
-                    pfb.loadFromXML(e);
-                    cache[pfb.acuRoot] = pfb;
+                    var pfb = new CachedAcuData(e.getVector("position").Value);
+                    pfb.LoadFromXML(e);
+                    _cache[pfb.AcuRoot] = pfb;
                 } catch (Exception ex) {
                     SNUtil.log("Error parsing entry '" + e.InnerXml + "': " + ex.ToString());
                 }
@@ -147,129 +148,129 @@ public class ACUCallbackSystem {
         }
 
         SNUtil.log("Loaded ACU data cache: ");
-        SNUtil.log(cache.toDebugString());
+        SNUtil.log(_cache.toDebugString());
     }
 
-    private void save() {
-        string path = Path.Combine(SNUtil.getCurrentSaveDir(), saveFileName);
-        XmlDocument doc = new XmlDocument();
-        XmlElement rootnode = doc.CreateElement("Root");
+    private void Save() {
+        var path = Path.Combine(SNUtil.getCurrentSaveDir(), SaveFileName);
+        var doc = new XmlDocument();
+        var rootnode = doc.CreateElement("Root");
         doc.AppendChild(rootnode);
-        foreach (CachedACUData go in cache.Values) {
-            XmlElement e = doc.CreateElement("cache");
-            go.saveToXML(e);
+        foreach (var go in _cache.Values) {
+            var e = doc.CreateElement("cache");
+            go.SaveToXML(e);
             doc.DocumentElement.AppendChild(e);
         }
 
         doc.Save(path);
     }
 
-    public void tick(WaterPark acu) {
+    public void Tick(WaterPark acu) {
         if (acu && acu.gameObject) {
-            ACUCallback com = acu.gameObject.EnsureComponent<ACUCallback>();
-            com.setACU(acu);
+            var com = acu.gameObject.EnsureComponent<AcuCallback>();
+            com.SetAcu(acu);
         }
     }
 
-    private CachedACUData getOrCreateCache(ACUCallback acu) {
-        Vector3 pos = acu.lowestSegment.transform.position;
-        if (!cache.ContainsKey(pos)) {
-            cache[pos] = new CachedACUData(pos);
+    private CachedAcuData GetOrCreateCache(AcuCallback acu) {
+        var pos = acu.LowestSegment.transform.position;
+        if (!_cache.ContainsKey(pos)) {
+            _cache[pos] = new CachedAcuData(pos);
         }
 
-        return cache[pos];
+        return _cache[pos];
     }
 
-    public void debugACU() {
-        WaterPark wp = Player.main.currentWaterPark;
+    public void DebugAcu() {
+        var wp = Player.main.currentWaterPark;
         if (wp) {
             SNUtil.writeToChat("ACU @ " + wp.transform.position + ": ");
-            ACUCallback call = wp.GetComponent<ACUCallback>();
+            var call = wp.GetComponent<AcuCallback>();
             if (!call)
                 SNUtil.writeToChat("No hook");
-            SNUtil.writeToChat("Biome set: [" + string.Join(", ", call.potentialBiomes) + "]");
-            SNUtil.writeToChat("Plant count: " + call.plantCount);
-            SNUtil.writeToChat("Prey count: " + call.herbivoreCount);
-            SNUtil.writeToChat("Predator count: " + call.carnivoreCount);
-            SNUtil.writeToChat("Sparkle count: " + call.sparkleCount);
-            call.nextIsDebug = true;
+            SNUtil.writeToChat("Biome set: [" + string.Join(", ", call.PotentialBiomes) + "]");
+            SNUtil.writeToChat("Plant count: " + call.PlantCount);
+            SNUtil.writeToChat("Prey count: " + call.HerbivoreCount);
+            SNUtil.writeToChat("Predator count: " + call.CarnivoreCount);
+            SNUtil.writeToChat("Sparkle count: " + call.SparkleCount);
+            call.NextIsDebug = true;
         }
     }
 
-    internal enum ACUWarnings {
-        NOTHEME,
-        NOPLANTS,
-        SAMEPLANT,
-        NOHERBS,
-        NOCARNS,
-        CARNPREY,
-        CARNSPACE,
-        HERBFOOD,
-        MIXEDTHEME,
+    internal enum AcuWarnings {
+        Notheme,
+        Noplants,
+        Sameplant,
+        Noherbs,
+        Nocarns,
+        Carnprey,
+        Carnspace,
+        Herbfood,
+        Mixedtheme,
     }
 
-    internal class ACUContentView : StorageContainer {
-        private ACUCallback controller;
+    internal class AcuContentView : StorageContainer {
+        private AcuCallback _controller;
 
-        private static readonly Type resourceMonitorLogic =
+        private static readonly Type ResourceMonitorLogic =
             InstructionHandlers.getTypeBySimpleName("ResourceMonitor.Components.ResourceMonitorLogic");
 
-        internal void setController(ACUCallback acu) {
-            if (controller == acu)
+        internal void SetController(AcuCallback acu) {
+            if (_controller == acu)
                 return;
-            controller = acu; /*
+            _controller = acu; /*
             storageRoot = gameObject.EnsureComponent<ChildObjectIdentifier>();
             storageRoot.ClassId = "ACUFakeInv";
             storageRoot.id = "";*/
-            container = new ACUContainerRelay(acu);
+            container = new AcuContainerRelay(acu);
         }
 
-        void Update() {
+        private void Update() {
             if (container != null)
-                ((ACUContainerRelay)container).tick();
+                ((AcuContainerRelay)container).Tick();
         }
 
         public override void Awake() {
             creationTime =
                 DayNightCycle.main
                     .timePassedAsFloat; //do not invoke createContainer, which means need to do the below hook manually
-            if (resourceMonitorLogic != null)
-                this.Invoke("notifyResourceMonitor", 10);
+            if (ResourceMonitorLogic != null)
+                Invoke(nameof(NotifyResourceMonitor), 10);
         }
 
-        private void notifyResourceMonitor() {
+        private void NotifyResourceMonitor() {
             //SNUtil.writeToChat("Updating StorageMonitors with ACU "+controller.acu.transform.position);
-            Type t2 = resourceMonitorLogic.Assembly.GetType("ResourceMonitor.Patchers.StorageContainerAwakePatcher");
-            IList li = (IList)t2.GetField(
+            var t2 = ResourceMonitorLogic.Assembly.GetType("ResourceMonitor.Patchers.StorageContainerAwakePatcher");
+            var li = (IList)t2.GetField(
                 "registeredResourceMonitors",
                 BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static
             ).GetValue(null);
-            MethodInfo call = resourceMonitorLogic.GetMethod(
+            var call = ResourceMonitorLogic.GetMethod(
                 "AlertNewStorageContainerPlaced",
                 BindingFlags.Public | BindingFlags.Instance
             );
-            foreach (object obj in li) {
-                call.Invoke(obj, BindingFlags.Default, null, new object[] { this }, null);
+            foreach (var obj in li) {
+                call.Invoke(obj, BindingFlags.Default, null, [this], null);
             }
         }
     }
 
-    internal class ACUContainerRelay : ItemsContainer {
-        private readonly ACUCallback controller;
+    internal class AcuContainerRelay : ItemsContainer {
+        private readonly AcuCallback _controller;
 
-        internal ACUContainerRelay(ACUCallback call) : base(8, 10, call.transform, "ACURelay", null) {
-            controller = call;
-            onRemoveItem += (ii) => { controller.acu.RemoveItem(ii.item.GetComponent<WaterParkItem>()); };
+        internal AcuContainerRelay(AcuCallback call) : base(8, 10, call.transform, "ACURelay", null) {
+            _controller = call;
+            onRemoveItem += (ii) => { _controller.Acu.RemoveItem(ii.item.GetComponent<WaterParkItem>()); };
         }
 
-        internal void tick() {
+        internal void Tick() {
             _items.Clear();
-            foreach (WaterParkItem wp in controller.acu.items) {
-                Pickupable pp = wp.GetComponent<Pickupable>();
+            foreach (var wp in _controller.Acu.items) {
+                var pp = wp.GetComponent<Pickupable>();
                 if (pp) {
-                    TechType tt = pp.GetTechType();
-                    Vector2int sz = CraftData.GetItemSize(tt);
-                    ItemGroup grp = _items.ContainsKey(tt) ? _items[tt] : new ItemGroup(_items.Count, sz.x, sz.y);
+                    var tt = pp.GetTechType();
+                    var sz = TechData.GetItemSize(tt);
+                    var grp = _items.ContainsKey(tt) ? _items[tt] : new ItemGroup(_items.Count, sz.x, sz.y);
                     grp.items.Add(new InventoryItem(pp));
                     _items[tt] = grp;
                 }
@@ -278,111 +279,111 @@ public class ACUCallbackSystem {
         }
     }
 
-    internal class ACUCallback : MonoBehaviour {
-        internal WaterPark acu;
+    internal class AcuCallback : MonoBehaviour {
+        internal WaterPark Acu;
 
-        internal BaseRoot seabase;
-        internal BaseCell baseCell;
-        internal ACUContentView contentView;
-        internal StorageContainer planter;
-        internal List<WaterParkPiece> column;
-        internal GameObject lowestSegment;
-        internal GameObject floor;
-        internal List<GameObject> decoHolders;
+        internal BaseRoot Seabase;
+        internal BaseCell BaseCell;
+        internal AcuContentView ContentView;
+        internal StorageContainer Planter;
+        internal List<WaterParkGeometry> Column;
+        internal GameObject LowestSegment;
+        internal GameObject Floor;
+        internal List<GameObject> DecoHolders;
 
-        internal HashSet<BiomeRegions.RegionType> potentialBiomes = new HashSet<BiomeRegions.RegionType>();
-        internal BiomeRegions.RegionType currentTheme = BiomeRegions.Shallows;
-        internal float plantCount;
-        internal float herbivoreCount;
-        internal float carnivoreCount;
-        internal int sparkleCount;
-        internal int cuddleCount;
-        internal int gasopodCount;
-        internal bool consistentBiome;
+        internal HashSet<BiomeRegions.RegionType> PotentialBiomes = [];
+        internal BiomeRegions.RegionType CurrentTheme = BiomeRegions.Shallows;
+        internal float PlantCount;
+        internal float HerbivoreCount;
+        internal float CarnivoreCount;
+        internal int SparkleCount;
+        internal int CuddleCount;
+        internal int GasopodCount;
+        internal bool ConsistentBiome;
 
-        internal BaseBioReactor isAboveBioreactor;
+        internal BaseBioReactor IsAboveBioreactor;
 
-        internal float infectedTotal;
-        internal float currentBonus;
-        internal float stalkerToyValue;
+        internal float InfectedTotal;
+        internal float CurrentBonus;
+        internal float StalkerToyValue;
 
-        private readonly List<ACUWarnings> currentWarnings = new List<ACUWarnings>();
+        private readonly List<AcuWarnings> _currentWarnings = [];
 
-        internal bool nextIsDebug = false;
+        internal bool NextIsDebug;
 
-        internal float lastThemeUpdate;
-        internal bool appliedTheme;
+        internal float LastThemeUpdate;
+        internal bool AppliedTheme;
 
-        private GameObject bubbleVents;
-        private ParticleSystem[] ventBubbleEmitters;
+        private GameObject _bubbleVents;
+        private ParticleSystem[] _ventBubbleEmitters;
 
-        private CachedACUData cache;
+        private CachedAcuData _cache;
 
-        internal void setACU(WaterPark w) {
-            if (acu != w) {
-                this.CancelInvoke("tick");
-                if (contentView)
-                    contentView.destroy(false);
-                contentView = null;
-                planter = null;
-                seabase = null;
-                column = null;
-                decoHolders = null;
-                lowestSegment = null;
-                isAboveBioreactor = null;
-                floor = null;
-                cache = null;
+        internal void SetAcu(WaterPark w) {
+            if (Acu != w) {
+                CancelInvoke(nameof(Tick));
+                if (ContentView)
+                    ContentView.destroy(false);
+                ContentView = null;
+                Planter = null;
+                Seabase = null;
+                Column = null;
+                DecoHolders = null;
+                LowestSegment = null;
+                IsAboveBioreactor = null;
+                Floor = null;
+                _cache = null;
 
-                acu = w;
+                Acu = w;
 
-                if (acu) {
+                if (Acu) {
                     //SNUtil.writeToChat("Setup ACU Hook");
-                    SNUtil.log("Switching ACU " + acu + " @ " + acu.transform.position + " to " + this);
-                    this.InvokeRepeating("tick", 0, 1);
-                    seabase = acu.GetComponentInParent<BaseRoot>();
-                    planter = acu.planter.GetComponentInChildren<StorageContainer>();
-                    column = ACUCallbackSystem.instance.getACUComponents(acu);
-                    lowestSegment = ACUCallbackSystem.instance.getACUFloor(column);
-                    baseCell = ObjectUtil.getBaseRoom(seabase, lowestSegment);
-                    if (lowestSegment) {
-                        floor = lowestSegment.getChildObject("Large_Aquarium_Room_generic_ground");
-                        decoHolders = lowestSegment.getChildObjects(ACUTheming.ACU_DECO_SLOT_NAME);
-                        bubbleVents = lowestSegment.getChildObject("Bubbles");
+                    SNUtil.log("Switching ACU " + Acu + " @ " + Acu.transform.position + " to " + this);
+                    InvokeRepeating(nameof(Tick), 0, 1);
+                    Seabase = Acu.GetComponentInParent<BaseRoot>();
+                    Planter = Acu.planter.GetComponentInChildren<StorageContainer>();
+                    Column = Instance.GetAcuComponents(Acu);
+                    LowestSegment = Instance.GetAcuFloor(Column);
+                    BaseCell = ObjectUtil.getBaseRoom(Seabase, LowestSegment);
+                    if (LowestSegment) {
+                        Floor = LowestSegment.getChildObject("Large_Aquarium_Room_generic_ground");
+                        DecoHolders = LowestSegment.getChildObjects(AcuTheming.AcuDecoSlotName);
+                        _bubbleVents = LowestSegment.getChildObject("Bubbles");
                     } else {
                         SNUtil.log(
-                            "ACU " + acu.transform.position + " had no lowest segment??? C=" + column
-                                .Select<WaterParkPiece, string>(wpp => wpp.transform.position.ToString())
+                            "ACU " + Acu.transform.position + " had no lowest segment??? C=" + Column
+                                .Select<WaterParkGeometry, string>(wpp => wpp.transform.position.ToString())
                                 .toDebugString()
                         );
                     }
 
-                    ventBubbleEmitters = bubbleVents.GetComponentsInChildren<ParticleSystem>();
-                    contentView = acu.gameObject.EnsureComponent<ACUContentView>();
-                    contentView.enabled = true;
-                    contentView.setController(this);
-                    isAboveBioreactor = ACUCallbackSystem.instance.checkAboveBioreactor(acu, this);
-                    this.load();
+                    _ventBubbleEmitters = _bubbleVents.GetComponentsInChildren<ParticleSystem>();
+                    ContentView = Acu.gameObject.EnsureComponent<AcuContentView>();
+                    ContentView.enabled = true;
+                    ContentView.SetController(this);
+                    IsAboveBioreactor = Instance.CheckAboveBioreactor(Acu, this);
+                    Load();
                 }
             }
         }
 
-        private void load() {
-            cache = instance.getOrCreateCache(this);
-            foreach (CreatureCache cc in cache.creatureData.Values) {
-                WaterParkItem wp = this.getItemByID(cc.entityID);
+        private void Load() {
+            _cache = Instance.GetOrCreateCache(this);
+            foreach (var cc in _cache.CreatureData.Values) {
+                var wp = GetItemByID(cc.EntityID);
                 if (wp) {
-                    Creature c = wp.GetComponent<Creature>();
+                    var c = wp.GetComponent<Creature>();
                     if (c) {
-                        cc.apply(c);
+                        cc.Apply(c);
                         SNUtil.log("Deserializing cached ACU creature status " + cc);
                     }
                 }
             }
         }
 
-        internal WaterParkItem getItemByID(string id) {
-            foreach (WaterParkItem wp in acu.items) {
-                PrefabIdentifier pi = wp.GetComponent<PrefabIdentifier>();
+        internal WaterParkItem GetItemByID(string id) {
+            foreach (var wp in Acu.items) {
+                var pi = wp.GetComponent<PrefabIdentifier>();
                 if (pi && pi.Id == id)
                     return wp;
             }
@@ -390,81 +391,81 @@ public class ACUCallbackSystem {
             return null;
         }
 
-        internal CreatureCache getOrCreateCreatureStatus(MonoBehaviour wp) {
-            if (cache == null)
+        internal CreatureCache GetOrCreateCreatureStatus(MonoBehaviour wp) {
+            if (_cache == null)
                 return null;
-            string id = wp.gameObject.FindAncestor<PrefabIdentifier>().Id; //NOT classID
-            if (!cache.creatureData.ContainsKey(id)) {
-                cache.creatureData[id] = new CreatureCache(id);
+            var id = wp.gameObject.FindAncestor<PrefabIdentifier>().Id; //NOT classID
+            if (!_cache.CreatureData.ContainsKey(id)) {
+                _cache.CreatureData[id] = new CreatureCache(id);
             }
 
-            return cache.creatureData[id];
+            return _cache.CreatureData[id];
         }
 
-        public float getBoostStrength(float time) {
-            if (cache == null)
+        public float GetBoostStrength(float time) {
+            if (_cache == null)
                 return 0;
-            float dt = time - cache.lastPlanktonBoost;
-            return dt <= 15 ? (1 - (dt / 15F)) * cache.boostStrength : 0;
+            var dt = time - _cache.LastPlanktonBoost;
+            return dt <= 15 ? (1 - dt / 15F) * _cache.BoostStrength : 0;
         }
 
-        public void boost(ACUFuel amt) {
-            cache.lastPlanktonBoost = DayNightCycle.main.timePassedAsFloat;
-            cache.boostStrength = amt.effectStrength;
+        public void Boost(ACUFuel amt) {
+            _cache.LastPlanktonBoost = DayNightCycle.main.timePassedAsFloat;
+            _cache.BoostStrength = amt.effectStrength;
         }
 
-        internal void printTerminalInfo() { /*
+        internal void PrintTerminalInfo() { /*
             SNUtil.writeToChat("Biome Archetype: "+currentTheme);
             SNUtil.writeToChat("Plant Count: "+plantCount);
             SNUtil.writeToChat("Herbivore Count: "+herbivoreCount);
             SNUtil.writeToChat("Carnivore Count: "+carnivoreCount);
 
             SNUtil.writeToChat("Stalker Toy Rating: "+stalkerToyValue.ToString("0.0"));*/
-            Dictionary<string, object> values = new Dictionary<string, object>();
-            double day = DayNightCycle.main.GetDay();
-            int dday = (int)day;
-            double frac = day - dday;
+            var values = new Dictionary<string, object>();
+            var day = DayNightCycle.main.GetDay();
+            var dday = (int)day;
+            var frac = day - dday;
             values["day"] = dday;
             values["time"] = (int)(frac * 1200) + "s";
-            values["contents"] = this.generateContentList();
-            values["biome"] = currentTheme.getName();
-            values["plants"] = plantCount.ToString("0.0");
-            values["herbivores"] = herbivoreCount.ToString("0.0");
-            values["carnivores"] = carnivoreCount.ToString("0.0");
-            values["sparkles"] = sparkleCount;
-            values["infected"] = infectedTotal.ToString("0.00");
-            values["bonus"] = (currentBonus * 100).ToString("0.00");
-            values["stalkerToy"] = stalkerToyValue.ToString("0.0");
-            values["ampeelYield"] = AmpeelAntenna.computeACUValue(acu).ToString("0.00");
-            values["height"] = acu.height;
-            values["count"] = acu.usedSpace;
-            values["capacity"] = acu.wpPieceCapacity * acu.height;
-            values["alerts"] = currentWarnings.Count == 0
+            values["contents"] = GenerateContentList();
+            values["biome"] = CurrentTheme.getName();
+            values["plants"] = PlantCount.ToString("0.0");
+            values["herbivores"] = HerbivoreCount.ToString("0.0");
+            values["carnivores"] = CarnivoreCount.ToString("0.0");
+            values["sparkles"] = SparkleCount;
+            values["infected"] = InfectedTotal.ToString("0.00");
+            values["bonus"] = (CurrentBonus * 100).ToString("0.00");
+            values["stalkerToy"] = StalkerToyValue.ToString("0.0");
+            values["ampeelYield"] = AmpeelAntenna.computeACUValue(Acu).ToString("0.00");
+            values["height"] = Acu.height;
+            values["count"] = Acu.usedSpace;
+            values["capacity"] = Acu.wpPieceCapacity * Acu.height;
+            values["alerts"] = _currentWarnings.Count == 0
                 ? "[None]"
                 : string.Join(
                     "\n",
-                    currentWarnings.Select<ACUWarnings, string>(w =>
+                    _currentWarnings.Select(w =>
                         AqueousEngineeringMod.acuLocale.getEntry(w.ToString()).desc
                     )
                 );
 
-            XMLLocale.LocaleEntry e = AqueousEngineeringMod.acuMonitorBlock.locale;
-            PDAManager.PDAPage pp = PDAManager.getPage(e.key + "PDA");
+            var e = AqueousEngineeringMod.acuMonitorBlock.locale;
+            var pp = PDAManager.getPage(e.key + "PDA");
             pp.unlock();
             pp.setPlaceholderValues(e.pda, values, true);
             pp.show(pda => pp.update(AqueousEngineeringMod.acuLocale.getEntry("NotTerminalPDA").desc, true, false));
         }
 
-        private string generateContentList() {
-            CountMap<TechType> counts = new CountMap<TechType>();
-            Dictionary<TechType, int> sizes = new Dictionary<TechType, int>();
-            foreach (WaterParkItem wp in new List<WaterParkItem>(acu.items)) {
+        private string GenerateContentList() {
+            var counts = new CountMap<TechType>();
+            var sizes = new Dictionary<TechType, int>();
+            foreach (var wp in new List<WaterParkItem>(Acu.items)) {
                 if (!wp)
                     continue;
-                Pickupable pp = wp.gameObject.GetComponentInChildren<Pickupable>();
-                TechType tt = pp ? pp.GetTechType() : TechType.None;
+                var pp = wp.gameObject.GetComponentInChildren<Pickupable>();
+                var tt = pp ? pp.GetTechType() : TechType.None;
                 if (tt != TechType.None) {
-                    int sz = wp.GetSize();
+                    var sz = wp.GetSize();
                     if (sz > 0) {
                         sizes[tt] = sz;
                         counts.add(tt);
@@ -472,8 +473,8 @@ public class ACUCallbackSystem {
                 }
             }
 
-            StringBuilder sb = new StringBuilder();
-            foreach (TechType tt in counts.getItems()) {
+            var sb = new StringBuilder();
+            foreach (var tt in counts.getItems()) {
                 sb.Append(Language.main.Get(tt));
                 sb.Append(": ");
                 sb.Append(counts.getCount(tt));
@@ -485,77 +486,78 @@ public class ACUCallbackSystem {
             return sb.ToString();
         }
 
-        public void tick() {
-            if (!floor || !lowestSegment) {
-                this.setACU(null);
+        public void Tick() {
+            if (!Floor || !LowestSegment) {
+                SetAcu(null);
                 return;
             }
 
-            float time = DayNightCycle.main.timePassedAsFloat;
-            float dT = time - cache.lastTick;
-            cache.lastTick = time;
+            var time = DayNightCycle.main.timePassedAsFloat;
+            var dT = time - _cache.LastTick;
+            _cache.LastTick = time;
             if (dT <= 0.0001)
                 return;
             //SNUtil.writeToChat(dT+" s");
-            bool healthy = false;
-            bool consistent = true;
-            currentWarnings.Clear();
-            potentialBiomes.Clear();
-            potentialBiomes.AddRange(BiomeRegions.getAllBiomes());
+            var healthy = false;
+            var consistent = true;
+            _currentWarnings.Clear();
+            PotentialBiomes.Clear();
+            PotentialBiomes.AddRange(BiomeRegions.getAllBiomes());
             //SNUtil.writeToChat("SC:"+sc);
-            PrefabIdentifier[] plants = planter.GetComponentsInChildren<PrefabIdentifier>();
-            plantCount = 0;
-            herbivoreCount = 0;
-            carnivoreCount = 0;
-            int teeth = 0;
-            cuddleCount = 0;
-            gasopodCount = 0;
-            infectedTotal = 0;
-            sparkleCount = 0;
+            var plants = Planter.GetComponentsInChildren<PrefabIdentifier>();
+            PlantCount = 0;
+            HerbivoreCount = 0;
+            CarnivoreCount = 0;
+            var teeth = 0;
+            CuddleCount = 0;
+            GasopodCount = 0;
+            InfectedTotal = 0;
+            SparkleCount = 0;
             //SNUtil.writeToChat("@@"+string.Join(",", possibleBiomes));
-            List<InfectedMixin> infectedFish = new List<InfectedMixin>();
-            List<WaterParkCreature> foodFish = new List<WaterParkCreature>();
-            List<Stalker> stalkers = new List<Stalker>();
-            stalkerToyValue = 0;
-            bool hasStalkerToy = false;
-            bool acuRoom = BaseRoomSpecializationSystem.instance.getSavedType(acu) ==
-                           BaseRoomSpecializationSystem.RoomTypes.ACU;
-            foreach (WaterParkItem wp in new List<WaterParkItem>(acu.items)) {
+            List<InfectedMixin> infectedFish = [];
+            List<WaterParkCreature> foodFish = [];
+            List<Stalker> stalkers = [];
+            StalkerToyValue = 0;
+            var hasStalkerToy = false;
+            var acuRoom = BaseRoomSpecializationSystem.instance.getSavedType(Acu) ==
+                          BaseRoomSpecializationSystem.RoomTypes.ACU;
+            foreach (var wp in new List<WaterParkItem>(Acu.items)) {
                 //clone because might change in ACUEcosystems.handleCreature
                 if (!wp)
                     continue;
-                Pickupable pp = wp.gameObject.GetComponentInChildren<Pickupable>();
-                TechType tt = pp ? pp.GetTechType() : TechType.None;
-                if (isStalkerToy(tt)) {
+                var pp = wp.gameObject.GetComponentInChildren<Pickupable>();
+                var tt = pp ? pp.GetTechType() : TechType.None;
+                if (IsStalkerToy(tt)) {
                     hasStalkerToy |= tt == AqueousEngineeringMod.toy.TechType;
-                    stalkerToyValue += toyValues[tt];
+                    StalkerToyValue += ToyValues[tt];
                     pp.gameObject.transform.localScale = Vector3.one * 0.5F;
                 } else if (tt == TechType.StalkerTooth) {
                     pp.gameObject.transform.localScale = Vector3.one * 0.125F;
                     teeth++;
                 } else if (wp is WaterParkCreature wpc) {
-                    if (wpc.parameters == null) {
-                        SNUtil.log(
-                            "WaterParkCreature had null params: " + wpc.name + " / " + wp.GetComponent<Creature>()
-                        );
-                        ObjectUtil.dumpObjectData(wpc.gameObject);
-                        wpc.parameters = WaterParkCreature.GetParameters(wpc.GetComponent<Pickupable>().GetTechType());
-                        if (wpc.parameters == null) {
-                            SNUtil.log("Fetches null params!");
-                            wpc.parameters = WaterParkCreatureParameters.GetDefaultValue();
-                        }
-                    }
+                    // TODO
+                    // if (wpc.parameters == null) {
+                    //     SNUtil.log(
+                    //         "WaterParkCreature had null params: " + wpc.name + " / " + wp.GetComponent<Creature>()
+                    //     );
+                    //     ObjectUtil.dumpObjectData(wpc.gameObject);
+                    //     wpc.parameters = WaterParkCreature.GetParameters(wpc.GetComponent<Pickupable>().GetTechType());
+                    //     if (wpc.parameters == null) {
+                    //         SNUtil.log("Fetches null params!");
+                    //         wpc.parameters = WaterParkCreatureParameters.GetDefaultValue();
+                    //     }
+                    // }
 
-                    InfectedMixin mix = wp.GetComponent<InfectedMixin>();
+                    var mix = wp.GetComponent<InfectedMixin>();
                     if (mix) {
-                        float amt = mix.GetInfectedAmount();
+                        var amt = mix.GetInfectedAmount();
                         if (amt > 0) {
-                            infectedTotal += amt;
+                            InfectedTotal += amt;
                             infectedFish.Add(mix);
                         }
                     }
 
-                    Creature c = ACUEcosystems.handleCreature(
+                    var c = ACUEcosystems.handleCreature(
                         this,
                         dT,
                         wpc,
@@ -563,7 +565,7 @@ public class ACUCallbackSystem {
                         foodFish,
                         plants,
                         acuRoom,
-                        potentialBiomes
+                        PotentialBiomes
                     );
                     if (tt == TechType.Stalker) {
                         stalkers.Add((Stalker)c);
@@ -572,16 +574,16 @@ public class ACUCallbackSystem {
             }
 
             if (AqueousEngineeringMod.config.getBoolean(AEConfig.ConfigEntries.ACUSOUND) &&
-                time >= cache.nextSoundTime && acu.items.Count > 0) {
-                WaterParkCreature wpc = acu.items.GetRandom() as WaterParkCreature;
+                time >= _cache.NextSoundTime && Acu.items.Count > 0) {
+                var wpc = Acu.items.GetRandom() as WaterParkCreature;
                 if (wpc) {
-                    bool flag = false;
+                    var flag = false;
                     FMOD_CustomEmitter emit = null;
-                    FMOD_CustomLoopingEmitter[] ca = wpc.GetComponentsInChildren<FMOD_CustomLoopingEmitter>();
+                    var ca = wpc.GetComponentsInChildren<FMOD_CustomLoopingEmitter>();
                     if (ca != null && ca.Length > 0) {
                         emit = ca.GetRandom();
                     } else {
-                        AttackLastTarget[] a = wpc.GetComponentsInChildren<AttackLastTarget>();
+                        var a = wpc.GetComponentsInChildren<AttackLastTarget>();
                         if (a != null && a.Length > 0)
                             emit = a.GetRandom().attackStartSound;
                     }
@@ -593,99 +595,99 @@ public class ACUCallbackSystem {
                         flag = true;
                     }
 
-                    cache.nextSoundTime =
+                    _cache.NextSoundTime =
                         flag ? time + UnityEngine.Random.Range(5F, 15F) : time + UnityEngine.Random.Range(2F, 5F);
                 }
             }
 
-            HashSet<ACUEcosystems.PlantFood> plantTypes = ACUEcosystems.collectPlants(this, plants, potentialBiomes);
-            consistent = potentialBiomes.Count > 0 && plantCount > 0;
-            int max = potentialBiomes.Count == 1
-                ? ACUEcosystems.getPlantsForBiome(potentialBiomes.First<BiomeRegions.RegionType>()).Count
+            var plantTypes = ACUEcosystems.collectPlants(this, plants, PotentialBiomes);
+            consistent = PotentialBiomes.Count > 0 && PlantCount > 0;
+            var max = PotentialBiomes.Count == 1
+                ? ACUEcosystems.getPlantsForBiome(PotentialBiomes.First()).Count
                 : 99;
-            bool plantVar = plantTypes.Count >= Mathf.Min(2, max);
-            bool tooManyCarnisPrey = carnivoreCount > Math.Max(
+            var plantVar = plantTypes.Count >= Mathf.Min(2, max);
+            var tooManyCarnisPrey = CarnivoreCount > Math.Max(
                 1,
-                herbivoreCount / Mathf.Max(1, 6 - (sparkleCount * 0.5F))
+                HerbivoreCount / Mathf.Max(1, 6 - SparkleCount * 0.5F)
             );
-            bool tooManyCarnisSpace = carnivoreCount > acu.height * (acuRoom ? 2F : 1.5F);
-            bool tooManyHerbis = herbivoreCount > plantCount * (4 + (sparkleCount * 0.5F)) * (acuRoom ? 1.5F : 1F);
-            bool hasPlants = plantCount > 0;
-            bool hasHerbis = herbivoreCount > 0;
-            bool hasCarnis = carnivoreCount > 0;
+            var tooManyCarnisSpace = CarnivoreCount > Acu.height * (acuRoom ? 2F : 1.5F);
+            var tooManyHerbis = HerbivoreCount > PlantCount * (4 + SparkleCount * 0.5F) * (acuRoom ? 1.5F : 1F);
+            var hasPlants = PlantCount > 0;
+            var hasHerbis = HerbivoreCount > 0;
+            var hasCarnis = CarnivoreCount > 0;
             healthy = hasPlants && hasHerbis && hasCarnis && !tooManyCarnisPrey && !tooManyCarnisSpace &&
                       !tooManyHerbis;
             if (!hasPlants)
-                currentWarnings.Add(ACUWarnings.NOPLANTS);
+                _currentWarnings.Add(AcuWarnings.Noplants);
             if (!plantVar && hasPlants)
-                currentWarnings.Add(ACUWarnings.SAMEPLANT);
+                _currentWarnings.Add(AcuWarnings.Sameplant);
             if (!hasHerbis)
-                currentWarnings.Add(ACUWarnings.NOHERBS);
+                _currentWarnings.Add(AcuWarnings.Noherbs);
             if (!hasCarnis)
-                currentWarnings.Add(ACUWarnings.NOCARNS);
+                _currentWarnings.Add(AcuWarnings.Nocarns);
             if (tooManyCarnisPrey)
-                currentWarnings.Add(ACUWarnings.CARNPREY);
+                _currentWarnings.Add(AcuWarnings.Carnprey);
             if (tooManyCarnisSpace)
-                currentWarnings.Add(ACUWarnings.CARNSPACE);
+                _currentWarnings.Add(AcuWarnings.Carnspace);
             if (tooManyHerbis && hasHerbis)
-                currentWarnings.Add(ACUWarnings.HERBFOOD);
+                _currentWarnings.Add(AcuWarnings.Herbfood);
 
-            currentBonus = 0;
+            CurrentBonus = 0;
             if (consistent)
-                currentBonus += 1F;
+                CurrentBonus += 1F;
             else
-                currentWarnings.Add(ACUWarnings.NOTHEME);
+                _currentWarnings.Add(AcuWarnings.Notheme);
             if (healthy)
-                currentBonus += 2F;
-            if (sparkleCount > 0)
-                currentBonus *= 1 + (sparkleCount * 0.5F);
-            if (nextIsDebug)
+                CurrentBonus += 2F;
+            if (SparkleCount > 0)
+                CurrentBonus *= 1 + SparkleCount * 0.5F;
+            if (NextIsDebug)
                 SNUtil.writeToChat(
-                    plantCount + "/" + herbivoreCount + "/" + carnivoreCount + "$" + sparkleCount + " & " +
-                    string.Join(", ", potentialBiomes) + " > " + healthy + " & " + consistent + " > " + currentBonus
+                    PlantCount + "/" + HerbivoreCount + "/" + CarnivoreCount + "$" + SparkleCount + " & " +
+                    string.Join(", ", PotentialBiomes) + " > " + healthy + " & " + consistent + " > " + CurrentBonus
                 );
-            float f0 = this.getBoostStrength(time);
-            if (ventBubbleEmitters != null) {
-                foreach (ParticleSystem p in ventBubbleEmitters) {
+            var f0 = GetBoostStrength(time);
+            if (_ventBubbleEmitters != null) {
+                foreach (var p in _ventBubbleEmitters) {
                     if (p && p.gameObject.name == "xBubbleColumn") {
-                        ParticleSystem.MainModule main = p.main;
+                        var main = p.main;
                         main.startColor = Color.Lerp(Color.white, new Color(0.2F, 1F, 0.4F), f0);
-                        main.startSizeMultiplier = 0.5F + (1.5F * f0);
-                        main.startLifetimeMultiplier = 1.7F + (2.3F * f0);
+                        main.startSizeMultiplier = 0.5F + 1.5F * f0;
+                        main.startLifetimeMultiplier = 1.7F + 2.3F * f0;
                     }
                 }
             }
 
-            currentBonus += 5F * f0;
-            if (infectedTotal > 0) {
-                currentBonus -= infectedTotal * 2;
-                if (UnityEngine.Random.Range(0F, 1F) <= infectedTotal * 0.015F * dT) {
-                    GameObject go = ObjectUtil.createWorldObject(VanillaCreatures.WARPER.prefab);
-                    bool inACU = UnityEngine.Random.Range(0F, 1F) < 0.2F;
+            CurrentBonus += 5F * f0;
+            if (InfectedTotal > 0) {
+                CurrentBonus -= InfectedTotal * 2;
+                if (UnityEngine.Random.Range(0F, 1F) <= InfectedTotal * 0.015F * dT) {
+                    var go = ObjectUtil.createWorldObject(VanillaCreatures.WARPER.prefab);
+                    var inAcu = UnityEngine.Random.Range(0F, 1F) < 0.2F;
                     go.transform.position =
-                        inACU
-                            ? acu.transform.position
-                            : MathUtil.getRandomVectorAround(acu.transform.position, new Vector3(10, 0, 10));
-                    Warper wp = go.GetComponent<Warper>();
+                        inAcu
+                            ? Acu.transform.position
+                            : MathUtil.getRandomVectorAround(Acu.transform.position, new Vector3(10, 0, 10));
+                    var wp = go.GetComponent<Warper>();
                     wp.WarpIn(null);
-                    if (inACU) {
-                        go.EnsureComponent<ACUWarper>();
+                    if (inAcu) {
+                        go.EnsureComponent<AcuWarper>();
                     } else {
                         AttractToTarget.attractCreatureToTarget(
                             wp,
-                            acu.gameObject.FindAncestor<BaseCell>().GetComponent<LiveMixin>(),
+                            Acu.gameObject.FindAncestor<BaseCell>().GetComponent<LiveMixin>(),
                             false
                         );
                     }
                 }
             }
 
-            if (currentBonus > 0) {
-                float boost = currentBonus * dT;
-                foreach (WaterParkCreature wp in foodFish) {
+            if (CurrentBonus > 0) {
+                var boost = CurrentBonus * dT;
+                foreach (var wp in foodFish) {
                     //SNUtil.writeToChat(wp+" > "+boost+" > "+wp.matureTime+"/"+wp.timeNextBreed);
-                    if (wp.canBreed) {
-                        Peeper pp = wp.gameObject.GetComponent<Peeper>();
+                    if (wp.GetCanBreed()) {
+                        var pp = wp.gameObject.GetComponent<Peeper>();
                         if (pp && pp.isHero)
                             wp.timeNextBreed =
                                 DayNightCycle.main.timePassedAsFloat + 1000; //prevent sparkle peepers from breeding
@@ -697,97 +699,90 @@ public class ACUCallbackSystem {
                 }
             }
 
-            if (consistent && healthy && potentialBiomes.Contains(BiomeRegions.Kelp)) {
-                bool single = potentialBiomes.Count == 1;
-                foreach (Stalker s in stalkers) {
+            if (consistent && healthy && PotentialBiomes.Contains(BiomeRegions.Kelp)) {
+                var single = PotentialBiomes.Count == 1;
+                foreach (var s in stalkers) {
                     if (hasStalkerToy)
                         s.Happy.Add(dT * 0.05F);
                     if (teeth < 6) {
-                        float f = dT * Mathf.Min(8, stalkerToyValue) * 0.00012F * (1 + (2 * s.Happy.Value)) *
-                                  (single ? 1 : 0.2F);
+                        var f = dT * Mathf.Min(8, StalkerToyValue) * 0.00012F * (1 + 2 * s.Happy.Value) *
+                                (single ? 1 : 0.2F);
                         //SNUtil.writeToChat(s.Happy.Value+" x "+stalkerToyValue+" > "+f);
                         if (UnityEngine.Random.Range(0F, 1F) < f) {
                             //do not use, so can have ref to GO; reimplement // s.LoseTooth();
-                            GameObject go = UnityEngine.Object.Instantiate<GameObject>(s.toothPrefab);
+                            var go = Instantiate(s.toothPrefab);
                             //SNUtil.writeToChat(s+" > "+go);
                             go.transform.position = s.loseToothDropLocation.transform.position;
                             go.transform.rotation = s.loseToothDropLocation.transform.rotation;
                             if (go.activeSelf && s.isActiveAndEnabled) {
-                                foreach (Collider c in go.GetComponentsInChildren<Collider>())
+                                foreach (var c in go.GetComponentsInChildren<Collider>())
                                     Physics.IgnoreCollision(s.stalkerBodyCollider, c);
                             }
 
                             Utils.PlayFMODAsset(s.loseToothSound, go.transform, 8f);
                             LargeWorldEntity.Register(go);
-                            acu.AddItem(go.GetComponent<Pickupable>());
+                            Acu.AddItem(go.GetComponent<Pickupable>());
                         }
                     }
                 }
             }
 
-            if (nextIsDebug)
-                SNUtil.writeToChat("Final biome set: [" + string.Join(", ", potentialBiomes) + "]");
-            if (potentialBiomes.Count == 1) {
-                BiomeRegions.RegionType theme = potentialBiomes.First<BiomeRegions.RegionType>();
+            if (NextIsDebug)
+                SNUtil.writeToChat("Final biome set: [" + string.Join(", ", PotentialBiomes) + "]");
+            if (PotentialBiomes.Count == 1) {
+                var theme = PotentialBiomes.First();
                 if (theme == BiomeRegions.Other)
                     theme = BiomeRegions.Shallows;
-                bool changed = theme != currentTheme;
-                currentTheme = theme;
-                consistentBiome = true;
-                ACUTheming.updateACUTheming(this, theme, time, changed || time - lastThemeUpdate > 5 || !appliedTheme);
-            } else if (potentialBiomes.Count > 1) {
-                currentWarnings.Add(ACUWarnings.MIXEDTHEME);
-                consistentBiome = false;
+                var changed = theme != CurrentTheme;
+                CurrentTheme = theme;
+                ConsistentBiome = true;
+                AcuTheming.UpdateAcuTheming(this, theme, time, changed || time - LastThemeUpdate > 5 || !AppliedTheme);
+            } else if (PotentialBiomes.Count > 1) {
+                _currentWarnings.Add(AcuWarnings.Mixedtheme);
+                ConsistentBiome = false;
             } else {
-                consistentBiome = false;
+                ConsistentBiome = false;
             }
 
-            nextIsDebug = false;
+            NextIsDebug = false;
         }
 
-        public bool isHealthy() {
-            return currentWarnings.Count == 0;
+        public bool IsHealthy() {
+            return _currentWarnings.Count == 0;
         }
     }
 
-    class ACUWarper : MonoBehaviour {
-        void Update() {
+    private class AcuWarper : MonoBehaviour {
+        private void Update() {
             transform.localScale = Vector3.one * 0.4F;
         }
     }
 
-    internal List<WaterParkPiece> getACUComponents(WaterPark acu) {
-        List<WaterParkPiece> li = new List<WaterParkPiece>();
-        foreach (WaterParkPiece wp in acu.transform.parent.GetComponentsInChildren<WaterParkPiece>()) {
-            if (wp && wp.name.ToLowerInvariant().Contains("bottom") && wp.GetBottomPiece().GetModule() == acu)
-                li.Add(wp);
-        }
+    internal List<WaterParkGeometry> GetAcuComponents(WaterPark acu) {
+        List<WaterParkGeometry> li = [];
+        li.AddRange(
+            acu.transform.parent.GetComponentsInChildren<WaterParkGeometry>().Where(wp =>
+                wp && wp.name.ToLowerInvariant().Contains("bottom") && wp.GetModule() == acu
+            )
+        );
 
         return li;
     }
 
-    internal GameObject getACUFloor(IEnumerable<WaterParkPiece> li) {
-        foreach (WaterParkPiece wp in li) {
-            if (wp.floorBottom && wp.floorBottom.activeSelf && wp.IsBottomPiece())
-                return wp.floorBottom;
-        }
-
-        return null;
+    internal GameObject GetAcuFloor(IEnumerable<WaterParkGeometry> li) {
+        return (from wp in li where wp.geometryFace.direction == Base.Direction.Below select wp.gameObject)
+            .FirstOrDefault();
     }
 
-    internal GameObject getACUCeiling(IEnumerable<WaterParkPiece> li) {
-        foreach (WaterParkPiece wp in li) {
-            if (wp.ceilingTop && wp.ceilingTop.activeSelf)
-                return wp.ceilingTop;
-        }
-
-        return null;
+    internal GameObject GetAcuCeiling(IEnumerable<WaterParkGeometry> li) {
+        return (from wp in li where wp.gameObject.name.Contains("BaseWaterParkCeilingTop") select wp.gameObject)
+            .FirstOrDefault();
     }
 
-    internal BaseBioReactor checkAboveBioreactor(WaterPark acu, ACUCallback call) {
+    internal BaseBioReactor CheckAboveBioreactor(WaterPark acu, AcuCallback call) {
         //BaseCell cell = call.lowestSegment.FindAncestor<BaseCell>();
-        Vector3 at = acu.transform.position; //cell.transform.position; //acu pos is lowest one
-        Vector3 seek = at + (Vector3.down * 3.5F);
+        var at = acu.transform.position; //cell.transform.position; //acu pos is lowest one
+        var seek = at + Vector3.down * 3.5F;
         /*
         BaseCell below = null;
         foreach (BaseCell bc in cell.transform.parent.GetComponentsInChildren<BaseCell>()) {
@@ -799,7 +794,7 @@ public class ACUCallbackSystem {
         if (below) {
 
         }*/
-        foreach (BaseBioReactor bio in acu.transform.parent.GetComponentsInChildren<BaseBioReactor>()) {
+        foreach (var bio in acu.transform.parent.GetComponentsInChildren<BaseBioReactor>()) {
             //acu is parented directly to base, as is bioreactor
             if ((bio.transform.position - seek).sqrMagnitude < 0.01) {
                 return bio;

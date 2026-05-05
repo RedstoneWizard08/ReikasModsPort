@@ -8,18 +8,18 @@ internal class ECReaper : PassiveSonarEntity {
 	protected new void Update() {
 		base.Update();
 		if (!roar1) {
-			foreach (FMOD_CustomLoopingEmitter em in this.GetComponents<FMOD_CustomLoopingEmitter>()) {
+			foreach (var em in GetComponents<FMOD_CustomLoopingEmitter>()) {
 				if (em.asset != null && em.asset.path.Contains("idle")) {
 					roar1 = em;
 					break;
 				}
 			}
-			roar2 = this.GetComponent<FMOD_CustomLoopingEmitterWithCallback>();
+			roar2 = GetComponent<FMOD_CustomLoopingEmitterWithCallback>();
 		}
 	}
 
 	protected override bool isAudible() {
-		return this.isRoaring(roar1) || this.isRoaring(roar2);
+		return isRoaring(roar1) || isRoaring(roar2);
 	}
 
 }

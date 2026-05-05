@@ -22,7 +22,7 @@ internal class SeabaseLegLengthPreservation : ManipulationBase {
 	}
 
 	public override void applyToObject(GameObject go) {
-		BaseFoundationPiece bf = go.GetComponent<BaseFoundationPiece>();
+		var bf = go.GetComponent<BaseFoundationPiece>();
 		if (bf) {
 			if (data == null) {
 				bf.gameObject.destroy();
@@ -31,13 +31,13 @@ internal class SeabaseLegLengthPreservation : ManipulationBase {
 				bf.maxPillarHeight = (float)data.getFloat("maxHeight", double.NaN);
 				bf.extraHeight = (float)data.getFloat("extra", double.NaN);
 				bf.minHeight = (float)data.getFloat("minHeight", double.NaN);
-				List<XmlElement> li = data.getDirectElementsByTagName("pillar");
-				foreach (BaseFoundationPiece.Pillar p in bf.pillars) {
-					Transform l = p.adjustable;
+				var li = data.getDirectElementsByTagName("pillar");
+				foreach (var p in bf.pillars) {
+					var l = p.adjustable;
 					if (l) {
-						bool matched = false;
-						foreach (XmlElement e3 in li) {
-							Vector3 pos = e3.getVector("position").Value;
+						var matched = false;
+						foreach (var e3 in li) {
+							var pos = e3.getVector("position").Value;
 							//SNUtil.log("Comparing xml pos "+pos+" to "+l.position+" = "+Vector3.Distance(pos, l.position));
 							if (Vector3.Distance(pos, l.position) <= 0.25) {
 								l.rotation = e3.getQuaternion("rotation").Value;
@@ -55,7 +55,7 @@ internal class SeabaseLegLengthPreservation : ManipulationBase {
 							p.root.destroy();
 						}
 						if (l) {
-							foreach (Shocker s in UnityEngine.Object.FindObjectsOfType<Shocker>()) {
+							foreach (var s in Object.FindObjectsOfType<Shocker>()) {
 								if (s && s.gameObject)
 									s.gameObject.ignoreCollisions(l.gameObject);
 							}
@@ -67,7 +67,7 @@ internal class SeabaseLegLengthPreservation : ManipulationBase {
 	}
 
 	public override void applyToObject(PlacedObject go) {
-		this.applyToObject(go.obj);
+		applyToObject(go.obj);
 	}
 
 	public override void loadFromXML(XmlElement e) {
