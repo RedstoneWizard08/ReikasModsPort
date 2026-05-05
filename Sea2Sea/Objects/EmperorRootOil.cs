@@ -1,0 +1,60 @@
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using ReikaKalseki.DIAlterra;
+using UnityEngine;
+
+namespace ReikaKalseki.SeaToSea;
+
+public class EmperorRootOil : WorldCollectedItem {
+    public static readonly float LIFESPAN = 120; //was 90
+    private static float lastInventoryTickTime;
+
+    [SetsRequiredMembers]
+    internal EmperorRootOil(XMLLocale.LocaleEntry e) : base(e, "18229b4b-3ed3-4b35-ae30-43b1c31a6d8d") {
+        sprite = TextureManager.getSprite(SeaToSeaMod.modDLL, "Textures/Items/EmperorRootOil");
+        AddOnRegister(() => {
+                SaveSystem.addSaveHandler(
+                    ClassID,
+                    new SaveSystem.ComponentFieldSaveHandler<EmperorRootOilTag>().addField("pickupTime")
+                );
+            }
+        );
+    }
+
+    public override void prepareGameObject(GameObject go, Renderer[] rr) {
+        foreach (Renderer r in rr)
+            setupRendering(r, true);
+        go.EnsureComponent<EmperorRootOilTag>();
+    }
+
+    public static void setupRendering(Renderer r, bool light) {
+        RenderUtil.swapTextures(
+            SeaToSeaMod.modDLL,
+            r,
+            "Textures/Items/World/EmperorRootOil",
+            new Dictionary<int, string> { { 0, "Shell" }, { 1, "Inner" } }
+        );
+        if (light) {
+            Light l = r.gameObject.addLight(2, 2, new Color(0.2F, 0.5F, 1F));
+        }
+    }
+
+    public static void tickInventory(Player ep, float time) {
+        if (time - lastInventoryTickTime >= 1) {
+            Inventory.main.container.forEachOfType(
+                C2CItems.emperorRootOil.Info.TechType,
+                ii => {
+                    EmperorRootOilTag tag = ii.item.GetComponent<EmperorRootOilTag>();
+                    if (tag && tag.pickupTime > -1 && time - tag.pickupTime >= LIFESPAN) {
+                        Inventory.main.container.forceRemoveItem(ii);
+                    }
+                }
+            );
+            lastInventoryTickTime = time;
+        }
+    }
+
+    internal class EmperorRootOilTag : MonoBehaviour {
+        public float pickupTime = -1;
+    }
+}

@@ -1,0 +1,274 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Reflection;
+using Nautilus.Assets;
+using Nautilus.Handlers;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace ReikaKalseki.DIAlterra;
+
+public static class PDAManager {
+    private static readonly Dictionary<string, PDAPage> pages = new Dictionary<string, PDAPage>();
+
+    static PDAManager() {
+    }
+
+    public static PDAPage getPage(string id) {
+        return pages.ContainsKey(id) ? pages[id] : null;
+    }
+
+    public static PDAPage createPage(XMLLocale.LocaleEntry text) {
+        return createPage(text.key, text.name, text.pda, text.getString("category"));
+    }
+
+    public static PDAPage createPage(string id, string name, string text, string cat) {
+        if (pages.ContainsKey(id))
+            throw new Exception("PDA page ID '" + id + "' already in use! " + pages[id]);
+        PDAPage sig = new PDAPage(id, name, text, cat);
+        pages[sig.id] = sig;
+        SNUtil.log("Registered PDA page " + sig);
+        return sig;
+    }
+
+    public class PDAPage {
+        public readonly string id;
+
+        public readonly string name;
+
+        //public readonly string text;
+        public readonly string category;
+
+        public string text { get; private set; }
+
+        private readonly PDAEncyclopedia.EntryData pageData = new PDAEncyclopedia.EntryData();
+
+        public readonly Assembly ownerMod;
+
+        private List<string> tree = new List<string>();
+
+        private readonly PDAPrefab prefabID;
+
+        internal PDAPage(string id, string n, string text, string cat) {
+            this.id = id;
+            name = n;
+            this.text = text;
+            category = cat;
+
+            tree.AddRange(cat.Split('/'));
+
+            pageData.audio = null;
+            pageData.key = id;
+            // pageData.timeCapsule = false;
+            pageData.unlocked = false;
+
+            prefabID = new PDAPrefab(this);
+
+            ownerMod = SNUtil.tryGetModDLL();
+        }
+
+        public PDAPage addSubcategory(string s) {
+            tree.Add(s);
+            return this;
+        }
+
+        public PDAPage setVoiceover(string path) {
+            string sid = VanillaSounds.getID(path);
+            if (sid == null) {
+                SNUtil.log("Sound path " + path + " did not find an ID. Registering as custom.");
+                pageData.audio = SoundManager.registerPDASound(SNUtil.tryGetModDLL(), "pda_vo_" + id, path).asset;
+            } else {
+                pageData.audio = SoundManager.buildSound(path, sid);
+            }
+
+            SNUtil.log("Setting " + this + " sound to " + pageData.audio.id + "=" + pageData.audio.path);
+            return this;
+        }
+
+        public PDAPage setHeaderImage(Texture2D img) {
+            pageData.image = img;
+            return this;
+        }
+
+        public void register() {
+            pageData.nodes = tree.ToArray();
+            pageData.path = string.Join("/", tree);
+            PDAHandler.AddEncyclopediaEntry(pageData);
+            CustomLocaleKeyDatabase.registerKey("Ency_" + pageData.key, name);
+            this.injectString();
+
+            prefabID.Register();
+        }
+
+        public void append(string s, bool force = false) {
+            text += s;
+            this.injectString(force);
+        }
+
+        public void update(string text, bool force = false, bool allowNotification = true) {
+            if (this.text == text)
+                return;
+            this.text = text;
+            this.injectString(force, allowNotification);
+        }
+
+        public void format(bool force = false, bool allowNotification = true, params object[] args) {
+            //SNUtil.log("Formatting " + this + " with " + args.toDebugString());
+            update(string.Format(text, args), force, allowNotification);
+        }
+
+        public void setPlaceholderValues(
+            string template,
+            Dictionary<string, object> values,
+            bool force = false,
+            bool allowNotification = true
+        ) {
+            this.update(
+                values.Aggregate(
+                    template,
+                    (placeholder, value) => placeholder.Replace("$" + value.Key, value.Value.ToString())
+                ),
+                force,
+                allowNotification
+            );
+        }
+
+        private void injectString(bool force = false, bool allowNotification = true) { /*
+            if (force && DIHooks.isWorldLoaded())
+                Language.main.strings["EncyDesc_"+pageData.key] = text;
+            else*/
+            LanguageHandler.SetLanguageLine("EncyDesc_" + pageData.key, text);
+            if (force && DIHooks.isWorldLoaded()) {
+                uGUI_EncyclopediaTab tab = (uGUI_EncyclopediaTab)Player.main.GetPDA().ui.tabs[PDATab.Encyclopedia];
+                if (tab && tab.activeEntry && tab.activeEntry.key == pageData.key)
+                    tab.DisplayEntry(pageData.key); //.SetText(text);
+            }
+
+            if (allowNotification)
+                this.markUpdated(5);
+        }
+
+        public void markUpdated(float duration = 3F) {
+            SNUtil.addEncyNotification(id, duration);
+        }
+
+        public TreeNode getNode() {
+            List<string> li = new List<string>(tree) {
+                id
+            };
+            return PDAEncyclopedia.tree.FindNodeByPath(li.ToArray());
+        }
+
+        public uGUI_ListEntry getListEntry() {
+            uGUI_EncyclopediaTab tab = (uGUI_EncyclopediaTab)Player.main.GetPDA().ui.tabs[PDATab.Encyclopedia];
+            foreach (uGUI_ListEntry e in tab.GetComponentsInChildren<uGUI_ListEntry>()) {
+                if (e.GetComponentInChildren<Text>().text == name) {
+                    return e;
+                }
+            }
+
+            return null;
+        }
+
+        public void show(Action<PDA> onClose = null) {
+            PDA pda = Player.main.GetPDA();
+            pda.Open(PDATab.Encyclopedia, null, onClose != null ? new PDA.OnClose(onClose) : null);
+            uGUI_EncyclopediaTab ency = (uGUI_EncyclopediaTab)Player.main.GetPDA().ui.tabs[PDATab.Encyclopedia];
+            CraftNode node = ency.ExpandTo(id);
+            ency.Activate(node);
+        }
+
+        public bool unlock(bool doSound = true) {
+            if (!this.isUnlocked()) {
+                pageData.unlocked = true;
+                PDAEncyclopedia.Add(pageData.key, true);
+
+                if (doSound)
+                    SoundManager.playSound("event:/tools/scanner/new_PDA_data"); //music + "integrating PDA data"
+
+                return true;
+            }
+
+            return false;
+        }
+        /*
+        public void relock() {
+            pageData.unlocked = false;
+            PDAEncyclopedia.NotifyRemove((CraftNode)getNode());
+            PDAEncyclopedia.entries.Remove(pageData.key);
+            //PDAEncyclopedia.mapping.Remove(pageData.key);
+        }*/
+
+        public bool isUnlocked() {
+            return pageData.unlocked || PDAEncyclopedia.entries.ContainsKey(pageData.key);
+        }
+
+        public override string ToString() {
+            return string.Format(
+                "[PDAPage Id={0}, Name={1}, Text={2}, Category={3}, Header={4}, Mod={5}]",
+                id,
+                name,
+                text.Replace("\n", ""),
+                category,
+                pageData.image,
+                ownerMod.Location
+            );
+        }
+
+        public string getPDAClassID() {
+            return prefabID.ClassID;
+        }
+
+        public TechType getTechType() {
+            return prefabID.Info.TechType;
+        }
+    }
+
+    sealed class PDAPrefab : CustomPrefab, DIPrefab<StringPrefabContainer> {
+        internal readonly PDAPage page;
+
+        public float glowIntensity { get; set; }
+        public StringPrefabContainer baseTemplate { get; set; }
+
+        [SetsRequiredMembers]
+        internal PDAPrefab(PDAPage p) : base(p.id, p.name, "PDA page " + p.name) {
+            page = p;
+            baseTemplate = new StringPrefabContainer("0f1dd54e-b36e-40ca-aa85-d01df1e3e426"); //blood kelp PDA
+            SetGameObject(GetGameObject);
+            Info.WithIcon(getIcon());
+        }
+
+        public GameObject GetGameObject() {
+            GameObject go = ObjectUtil.getModPrefabBaseObject<StringPrefabContainer>(this);
+            StoryHandTarget tgt = go.EnsureComponent<StoryHandTarget>();
+            if (tgt.goal == null)
+                tgt.goal = new Story.StoryGoal();
+            tgt.goal.goalType = Story.GoalType.Encyclopedia;
+            tgt.goal.key = page.id;
+            return go;
+        }
+
+        public Assembly getOwnerMod() {
+            return SNUtil.diDLL;
+        }
+
+        public string ClassID => Info.ClassID;
+
+        public bool isResource() {
+            return false;
+        }
+
+        public string getTextureFolder() {
+            return null;
+        }
+
+        public void prepareGameObject(GameObject go, Renderer[] r) {
+        }
+
+        public Sprite getIcon() {
+            return SpriteManager.Get(TechType.PDA);
+        }
+    }
+}

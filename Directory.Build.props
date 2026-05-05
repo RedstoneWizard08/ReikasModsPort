@@ -1,0 +1,24 @@
+<Project>
+    <PropertyGroup>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <LangVersion>12</LangVersion>
+        <DiscoverEditorConfigFiles>false</DiscoverEditorConfigFiles>
+        <TargetFramework>net472</TargetFramework>
+        
+        <RestoreAdditionalProjectSources>
+            https://api.nuget.org/v3/index.json;
+            https://nuget.bepinex.dev/v3/index.json;
+        </RestoreAdditionalProjectSources>
+        
+        <GameDir>/home/redstone/.local/share/Steam/steamapps/common/Subnautica</GameDir>
+        <ManagedDir>$(GameDir)/Subnautica_Data/Managed</ManagedDir>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2" PrivateAssets="all" />
+
+        <Reference Include="Assembly-CSharp" HintPath="$(ManagedDir)/Assembly-CSharp.dll" Publicize="true" />
+        <Reference Include="Assembly-CSharp-firstpass" HintPath="$(ManagedDir)/Assembly-CSharp-firstpass.dll" Publicize="true" />
+        <Reference Include="FMODUnity" HintPath="$(ManagedDir)/FMODUnity.dll" Publicize="true" />
+    </ItemGroup>
+</Project>

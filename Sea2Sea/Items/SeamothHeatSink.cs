@@ -1,0 +1,40 @@
+﻿using System.Diagnostics.CodeAnalysis;
+using ReikaKalseki.DIAlterra;
+using UnityEngine;
+
+namespace ReikaKalseki.SeaToSea;
+
+public class SeamothHeatSink : BasicCraftingItem {
+    [SetsRequiredMembers]
+    public SeamothHeatSink() : base(
+        SeaToSeaMod.itemLocale.getEntry("SeamothHeatSink"),
+        "WorldEntities/Natural/CopperWire"
+    ) {
+        sprite = TextureManager.getSprite(SeaToSeaMod.modDLL, "Textures/Items/Seamothheatsink");
+        craftingSubCategory = "Tools";
+        craftingTime = 4;
+        unlockRequirement = TechType.Unobtanium;
+        inventorySize = new Vector2int(1, 2);
+        renderModify = r => { EjectedHeatSink.setTexture(r); };
+    }
+
+    public override void prepareGameObject(GameObject go, Renderer[] r) {
+        base.prepareGameObject(go, r);
+    }
+
+    public override CraftTree.Type FabricatorType {
+        get { return CraftTree.Type.SeamothUpgrades; }
+    }
+
+    public override TechGroup GroupForPDA {
+        get { return TechGroup.VehicleUpgrades; }
+    }
+
+    public override TechCategory CategoryForPDA {
+        get { return TechCategory.VehicleUpgrades; }
+    }
+
+    public override string[] StepsToFabricatorTab {
+        get { return new string[] { "Torpedoes" }; }
+    }
+}

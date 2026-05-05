@@ -1,0 +1,434 @@
+<Root>
+	<GLOWSHROOM>
+		<name>
+			Lumenshroom
+		</name>
+		<desc>
+			A large flora species which periodically emits large drops of seed-laden oil.
+		</desc>
+		<pda>
+			This plant regularly expels large droplets of oil containing its seeds, the event of which is heralded by an initially gradual and then sudden increase in its luminosity.
+			
+			Unfortunately, the fertility of this species seems to be inextricably tied to its natural habitat; while the plant can be cultivated anywhere, it will not exhibit this seed ejection behavior in captivity. However, when this fact is combined with the inedibility of the cap or the stony stem, there is little reason to maintain such cultivations unless as decoration.
+		</pda>
+		<header>
+			Glowshroom
+		</header>
+	</GLOWSHROOM>
+	<LAVASHROOM>
+		<name>
+			Hollow Lanternshroom
+		</name>
+		<desc>
+			A large domed plant that channels molten rock through its core, firing it out at random intervals.
+		</desc>
+		<pda>
+			The magmashroom is fairly closely related to the jellyshrooms found in shallower caves, and shares its dependence upon a symbiotic relationship with a host organism. Where that species relies on decaying animal matter provided by the remains of its associated crabsnake, the magmashroom has eschewed that approach in favor of hosting colonies of chemosynthetic bacteria in its cap, which can extract nutrients from the magma channeled up through the hollow central core.
+			
+			Small surges in the pressure of this magma can result in eruptions from the jellyshroom, including the ejection of lava bomb projectiles, which pose a hazard to nearby creatures and explorers. Caution is strongly advised.
+		</pda>
+		<header>
+			Lavashroom
+		</header>
+	</LAVASHROOM>
+	<GlowOil>
+		<name>
+			 Lumenshroom Oil
+		</name>
+		<desc>
+			A large globule of oil containing several unusual seeds.
+		</desc>
+		<pda>
+			These large drops of viscous oil contain the seeds of future generations in a dormant state, ready to be reactivated by favorable environmental conditions. These seeds possess an unusual property, arising from their unique chemical environment, in that they are capable of strong chemiluminescence. However, probably as an energy-conservation measure, this behavior is only exhibited in the presence of other light sources, and only ones matching neither the wavelengths of sunlight nor other seed droplets.
+		
+			Assessment: Seeds can be planted to maintain captive populations of the flora, and the enveloping oil may have crafting applications
+		</pda>
+		<header>
+			GlowOil
+		</header>
+	</GlowOil>
+	<LavaBomb>
+		<name>
+			 Lava Bomb
+		</name>
+		<desc>
+			
+		</desc>
+		<pda>
+			Periodically fired by Lanternshrooms, these globules of semi-molten rock are notable primarily for the extreme hazard they present to those nearby. Their extreme temperature dramatically heats the surrounding water, often far past the thermal limits of any standard construction material, and a direct impact would apply severe kinetic forces.
+		</pda>
+		<category>
+			PlanetaryGeology
+		</category>
+		<header>
+			lavabomb
+		</header>
+	</LavaBomb>
+	<VoidBubble>
+		<name>
+			 Void Bubble
+		</name>
+		<desc>
+			
+		</desc>
+		<pda>
+			Rising from the unseen depths outside the crater's boundary, these large gelatinous objects possess an unusual property: While they are buoyant when free-floating, their collision with another object triggers a chemical reaction, causing them to become denser than the surrounding water and begin to sink. In sufficient number, these could drag even the largest creatures - or submarines - well beyond survivable depths.
+			
+			The actual nature of these objects is poorly understood; they may be biological waste products, geologic phenomena, communities of single-celled organisms, or even the eggs of a much larger organism than any encountered so far on 4546B.
+			
+			Assessment: Avoid if possible, cut free to maintain vehicular control
+		</pda>
+		<header>
+			VoidBubble
+		</header>
+		<category>
+			PlanetaryGeology
+		</category>
+	</VoidBubble>
+	<VoidTongue>
+		<name>
+			 Abyssal Terror
+		</name>
+		<desc>
+			
+		</desc>
+		<pda>
+			Lurking in the extreme depths around the crater's edge appears to be some organism far larger than even the largest living leviathans found in the shallower waters. The main body of the creature has never been seen, so most of its characteristics remain completely unknown. What little is known is that the creature appears to be largely sessile, using a long grasping appendage - leg, tongue, or otherwise - to snare objects in the waters far above it and drag them down towards it, presumably to feed.
+			
+			While the actual grasping process does inflict some minor damage, a far greater concern is that even if its grip is lost and the target escapes, vehicles can be pulled well below their crush depth, especially if they fail to avoid subsequent capture attempts.
+			
+			Assessment: Avoid large depths when in the void
+		</pda>
+		<header>
+			VoidTongue
+		</header>
+		<category>
+			Lifeforms/Fauna/Leviathans
+		</category>
+	</VoidTongue>
+	<WaterCurrent>
+		<name>
+			 Water Current
+		</name>
+		<desc>
+			
+		</desc>
+		<pda>
+			Due to the local topography or geology, some subterranean passages feature markedly increased water flow velocity, usually at chokepoints or near heat sources. This can present a hazard to diving, as these currents may carry one to undesired locations, will slow down reverse travel - or in the worst cases, entirely prevent it - and may carry heat from some sources to present a more direct danger.
+		</pda>
+		<header>
+			WaterCurrent
+		</header>
+		<category>
+			PlanetaryGeology
+		</category>
+	</WaterCurrent>
+	<HeatColumnShell>
+		<name>
+			 Thermal Plume
+		</name>
+		<desc>
+			
+		</desc>
+		<pda>
+			Probably driven by volcanic activity on the seafloor far below, these upwellings of heated water carry organic detritus that sank to the seafloor eons ago.
+			
+			Note: The debris and turbulence within may prove useful in some circumstances.
+		</pda>
+		<header>
+			HeatColumnShell
+		</header>
+		<category>
+			PlanetaryGeology
+		</category>
+	</HeatColumnShell>
+	<TreeBud>
+		<name>
+			
+		</name>
+		<desc>
+			
+		</desc>
+		<pda>
+			
+		</pda>
+	</TreeBud>
+	<plankton>
+		<name>
+			Phytoplankton Cluster
+		</name>
+		<desc>
+			
+		</desc>
+		<pda>
+			Rather than a single organism, this entity is a large cluster of migrating phytoplankton. Interestingly, it seems to possess the capability to detect minute movements in the surrounding water, and will emit light if sufficiently disturbed. This behavior not only can be used to detect the presence of such plankton blooms at a distance, but also as an early indication of more distant but large water movements, such as those created by swimming megafauna.
+			
+			The plankton itself is slightly toxic, but these chemical defenses might make them useful for crafting purposes.
+		</pda>
+		<header>
+			Plankton
+		</header>
+		<category>
+			Lifeforms/Flora/Sea
+		</category>
+	</plankton>
+	<planktonItem>
+		<name>
+			Phytoplankton Samples
+		</name>
+		<desc>
+			A quantity of wild phytoplankton with motion-sensing properties.
+		</desc>
+		<pda>
+			
+		</pda>
+	</planktonItem>
+	<PlanktonScoop>
+		<name>
+			Seamoth Water Sampling Scoop
+		</name>
+		<desc>
+			A module designed to collect and filter plankton-laden ocean water.
+		</desc>
+		<pda>
+			
+		</pda>
+	</PlanktonScoop>
+	<piezoCrystal>
+		<name>
+			Piezocrystal Deposit
+		</name>
+		<desc>
+			
+		</desc>
+		<pda>
+			These rare crystalline deposits have been named after their tendency to exhibit piezoelectric properties, converting the water pressure to electric charge. This charge eventually accumulates to such a level as to trigger a violent discharge into the surroundings. Though their materials would be valuable if harvested, the sheer amount of energy that they would release when broken makes such attempts impossible.
+			
+			Assessment: Exercise strong caution; may damage electronics and cause minor injury
+		</pda>
+		<header>
+			Piezo
+		</header>
+		<category>
+			PlanetaryGeology
+		</category>
+	</piezoCrystal>
+	<mushroomStack>
+		<name>
+			Nozzlevine
+		</name>
+		<desc>
+			A midsize tubular plant consisting of a linked chain of conical units.
+		</desc>
+		<pda>
+			One of the rarer flora species on 4546B, nozzlevine excels at siphoning material from the soil, which might explain why it can maintain such a vibrant color and luminosity even in regions where the sunlight and/or soil content is poor and little else can thrive.
+			
+			Each plant is composed of one or more chainlike stems, which are in turn comprised of a series of linked subparts. Each junction is slightly non-axial, resulting in the overall chain following a curved trajectory.
+			
+			Given that these flora seem to expend all their energy and nutrients on growth and luminosity, there remains little material within them that could be put to functional use.
+			
+			Assessment: Decorative
+		</pda>
+		<header>
+			MushroomStack
+		</header>
+	</mushroomStack>
+	<pinkLeaves>
+		<name>
+			Rose Lily
+		</name>
+		<desc>
+			A brightly glowing pink leafy plant.
+		</desc>
+		<pda>
+			
+		</pda>
+	</pinkLeaves>
+	<mushroomTendril>
+		<name>
+			Disk Strand
+		</name>
+		<desc>
+			
+		</desc>
+		<pda>
+			
+		</pda>
+		<header>
+			MushroomTendril
+		</header>
+	</mushroomTendril>
+	<treeMushroomSpores>
+		<name>
+			Disk Spores
+		</name>
+		<desc>
+			A collection of cells and organic detritus shed by mushroom disk trees. Contain unusual proteins, and suitable as use for fish food.
+		</desc>
+		<pda>
+			
+		</pda>
+		<header>
+			
+		</header>
+	</treeMushroomSpores>
+	<voidOrganic>
+		<name>
+			Abyssal Organic Material
+		</name>
+		<desc>
+			Organic detritus rising from the depths.
+		</desc>
+		<pda>
+			
+		</pda>
+		<header>
+			
+		</header>
+	</voidOrganic>
+	<pinkBulbStack>
+		<name>
+			Bulb Chain
+		</name>
+		<desc>
+			A small plant consisting of a group of strands inflated to a sphere at semi-regular intervals.
+		</desc>
+		<pda>
+			Bulb Chain grows in sandy soils with moderate light exposure, taking up ecological niches left behind by more prolific flora species.
+			
+			Assessment: Decorative
+		</pda>
+		<header>
+			PinkBulbStack
+		</header>
+	</pinkBulbStack>
+	<mushroomVaseStrand>
+		<name>
+			Tonguelily
+		</name>
+		<desc>
+			A small (for 4546B) organism consisting of a bioluminescent tendril anchored in a solid blue socket.
+		</desc>
+		<pda>
+			Despite its flora-like appearance and name, tonguelilies are in fact animals not dissimilar to some sea fans on Earth.
+			
+			Found growing in small clusters in areas with high microorganism levels in the water, tonguelilies thrive by using one or more long glowing tendrils - the "tongues" that are their namesake - to catch pollen, bacteria, or similar microorganisms drifting by, whereupon it is digested and repurposed to the creature's metabolism, with unused trace materials collecting in the hollow base.
+			
+			Conveniently, these strands are capable of limitless regeneration once removed.
+			
+			Assessment: Filter feeding behavior has possible water filtering applications
+		</pda>
+		<header>
+			MushroomVaseStrand
+		</header>
+	</mushroomVaseStrand>
+	<celeryTree>
+		<name>
+			Celery Tree
+		</name>
+		<desc>
+			A large tree-like plant.
+		</desc>
+		<pda>
+			With the small amount of land present on 4546B, with even less being both flat and lush, celery trees are largely confined to the microbiome created by the floating island. While these plants may not be trees in the true botanical sense, they are named as such because of their outward resemblance, being both many times taller than a human and composed of a leafy canopy atop a rigid fibrous trunk.
+		</pda>
+		<header>
+			CeleryTree
+		</header>
+	</celeryTree>
+	<sonarFlora>
+		<name>
+			Sonar Flora
+		</name>
+		<desc>
+			
+		</desc>
+		<pda>
+			
+		</pda>
+		<header>
+			sonarflora
+		</header>
+		<category>
+			Lifeforms/Flora/Sea
+		</category>
+	</sonarFlora>
+	<FoodEffects>
+		<name>
+			
+		</name>
+		<desc>
+			
+		</desc>
+		<pda>
+			
+		</pda>
+		<koosh>
+			Is squishy and gross, but edible.
+		</koosh>
+		<bulbo>
+			Contains bitter sap.
+		</bulbo>
+		<jaffa>
+			Smells terrible and tastes worse.
+		</jaffa>
+		<dockleaf>
+			Tastes pungent but pleasant, though of little nutritional value.
+		</dockleaf>
+		<poison>
+			Is dangerously poisonous.
+		</poison>
+		<acidburn>
+			Gives acid burns when eaten.
+		</acidburn>
+		<vomit>
+			Triggers severe nausea and indigestion.
+		</vomit>
+		<slow>
+			Oily mass is safe to consume but triggers lethargy.
+		</slow>
+		<speed>
+			Causes hyperactivity.
+		</speed>
+		<visual>
+			Has hallucinogenic properties.
+		</visual>
+		<tag>
+			
+		</tag>
+	</FoodEffects>
+	<Mouseovers>
+		<name>
+			
+		</name>
+		<desc>
+			
+		</desc>
+		<pda>
+			
+		</pda>
+		<VaseStrandClick>
+			Collect filtered minerals
+		</VaseStrandClick>
+		<VaseStrandCollecting>
+			Accumulating minerals
+		</VaseStrandCollecting>
+		<VaseStrandGrowing>
+			Regenerating tendrils
+		</VaseStrandGrowing>
+		<VaseStrandNoSpawns>
+			Insufficient microbiological matter in this area
+		</VaseStrandNoSpawns>
+	</Mouseovers>
+	<enum>
+		<name>
+			
+		</name>
+		<desc>
+			
+		</desc>
+		<pda>
+			
+		</pda>
+	</enum>
+</Root>

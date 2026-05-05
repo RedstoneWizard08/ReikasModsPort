@@ -1,0 +1,137 @@
+<Root>
+  <CraftingNodes>
+	<name>
+		
+	</name>
+	<desc>
+		
+	</desc>
+	<pda>
+		
+	</pda>
+	<nuclear>
+		Nuclear Products
+	</nuclear>
+  </CraftingNodes>
+	<MiniPoop>
+		<name>
+			Alien Feces (Small)
+		</name>
+		<desc>
+			A small quantity of fecal matter from alien fauna.
+		</desc>
+		<pda>
+			
+		</pda>
+	</MiniPoop>
+	<StalkerToy>
+		<name>
+			Stalker Chew Toy
+		</name>
+		<desc>
+			A large fish cast from solid titanium, coated in reflective materials to make it irresistible to stalkers.
+		</desc>
+		<pda>
+			
+		</pda>
+	</StalkerToy>
+	<FulguriteRod>
+		<name>
+			Fulgurite Fuel Rod
+		</name>
+		<desc>
+			A special nuclear fuel blend that burns extremely quickly, releasing large amounts of energy for a short time.
+		</desc>
+		<pda>
+			
+		</pda>
+	</FulguriteRod>
+	<WaterCooledRod>
+		<name>
+			Water-Cooled Fuel Rod
+		</name>
+		<desc>
+			A refined nuclear fuel item that produces slightly less power per time but lasts much longer.
+		</desc>
+		<pda>
+			
+		</pda>
+	</WaterCooledRod>
+	<ShieldedRod>
+		<name>
+			Shielded Fuel Rod
+		</name>
+		<desc>
+			A nuclear fuel rod clad in thick leaded glass. No effect on power production but almost entirely eliminates ambient radiation.
+		</desc>
+		<pda>
+			
+		</pda>
+	</ShieldedRod>
+	<IonRod>
+		<name>
+			Nuclear Ion Fuel Rod
+		</name>
+		<desc>
+			The ultimate in nuclear fuel technology, harnessing ion crystals to massively improve both the total energy output and power production rate of the nuclear reactor.
+		</desc>
+		<pda>
+			
+		</pda>
+	</IonRod>
+	<ReprocessedRod>
+		<name>
+			Reprocessed Fuel Rod
+		</name>
+		<desc>
+			Waste nuclear istopes, reprocessed to eke out the last bit of available energy.
+		</desc>
+		<pda>
+			
+		</pda>
+	</ReprocessedRod>
+	<Name>
+		<name>
+			
+		</name>
+		<desc>
+			
+		</desc>
+		<pda>
+			
+		</pda>
+	</Name>
+	<Name>
+		<name>
+			
+		</name>
+		<desc>
+			
+		</desc>
+		<pda>
+			
+		</pda>
+	</Name>
+	<Name>
+		<name>
+			
+		</name>
+		<desc>
+			
+		</desc>
+		<pda>
+			
+		</pda>
+	</Name>
+	<Name>
+		<name>
+			
+		</name>
+		<desc>
+			
+		</desc>
+		<pda>
+			
+		</pda>
+	</Name>
+</Root>

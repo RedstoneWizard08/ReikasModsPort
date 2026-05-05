@@ -1,0 +1,426 @@
+<Root>
+	<BaseSonar>
+		<name>
+			Seabase Sonar Antenna
+		</name>
+		<desc>
+			Continuously fires sonar pulses from a seabase.
+		</desc>
+		<pda>
+			
+		</pda>
+		<images>
+			https://i.imgur.com/1dmnXVC.jpg
+			https://i.imgur.com/EuVldLW.jpg
+		</images>
+	</BaseSonar>
+	<BaseRepellent>
+		<name>
+			Creature Repellant Pylon
+		</name>
+		<navName>
+			Repellant Pylon
+		</navName>
+		<desc>
+			Discourages close approach of creatures to the seabase.
+		</desc>
+		<pda>
+			
+		</pda>
+		<images>
+			https://i.imgur.com/OP1EBai.jpg
+			https://i.imgur.com/zUfvtbp.jpg
+			https://i.imgur.com/x69MINt.jpg
+		</images>
+	</BaseRepellent>
+	<BaseBeacon>
+		<name>
+			Seabase Beacon
+		</name>
+		<desc>
+			A beacon affixed to the seabase that broadcasts location and status information.
+		</desc>
+		<pda>
+			
+		</pda>
+		<images>
+			https://i.imgur.com/FxFSZIX.jpg
+			https://i.imgur.com/vURW5a8.jpg
+		</images>
+	</BaseBeacon>
+	<BaseAmpeelAntenna>
+		<name>
+			Ampeel Antenna
+		</name>
+		<desc>
+			Draws small amounts of power from passing ampeels to maintain power in a seabase. Most effective at short range.
+			
+			Not capable of sustaining high power loads under normal circumstances. Can also be placed in an ACU containing ampeels, with a reduced effect.
+		</desc>
+		<pda>
+			
+		</pda>
+		<images>
+			https://i.imgur.com/Tmn0WLq.jpg
+		</images>
+	</BaseAmpeelAntenna>
+	<BaseFarmer>
+		<name>
+			Autofarming Unit
+		</name>
+		<desc>
+			Automatically harvests from mature plants in nearby growbeds. Will not completely kill the plant.
+		</desc>
+		<pda>
+			
+		</pda>
+		<images>
+			https://i.imgur.com/3Ox1InD.jpg
+			https://i.imgur.com/qWp7c3k.jpg
+		</images>
+	</BaseFarmer>
+	<BaseACUCleaner>
+		<name>
+			ACU Cleaning System
+		</name>
+		<navName>
+			ACU Cleaner
+		</navName>
+		<desc>
+			Keeps the ACU clean of debris, including excreted waste from the contained animals.
+		</desc>
+		<pda>
+			
+		</pda>
+		<images>
+			https://i.imgur.com/FUGKWp6.jpg
+			https://i.imgur.com/BYcY1SE.jpg
+		</images>
+	</BaseACUCleaner>
+	<BaseRemoteCamera>
+		<name>
+			Scanner Camera Relay Antenna
+		</name>
+		<navName>
+			Camera Relay
+		</navName>
+		<desc>
+			Eliminates the distance attenuation from scanner room camera signals for the attached seabase.
+		</desc>
+		<pda>
+			
+		</pda>
+		<images>
+			https://i.imgur.com/lFiuQMu.jpg
+			https://i.imgur.com/YVAYuyZ.jpg
+		</images>
+	</BaseRemoteCamera>
+	<BaseBattery>
+		<name>
+			Seabase Battery Bank
+		</name>
+		<desc>
+			Generates no power, but significantly increases the maximum storage of a seabase, allowing it to last longer between intermittent power cycles. Stackable effect.
+		</desc>
+		<pda>
+			
+		</pda>
+		<extradesc>
+			Displays charge state using color indicators.
+		</extradesc>
+		<images>
+			https://i.imgur.com/PJqmBs8.jpg
+		</images>
+	</BaseBattery>
+	<BaseACUBooster>
+		<name>
+			ACU Feeding System
+		</name>
+		<navName>
+			ACU Feeder
+		</navName>
+		<desc>
+			Periodically adds small amounts of plankton to the ACU to top up food supplies for herbivorous fish, increasing their fertility. Does not stack.
+		</desc>
+		<pda>
+			
+		</pda>
+		<extradesc>
+			Only available if Ecocean is installed, as it uses its plankton as a "fuel".
+		</extradesc>
+		<images>
+			https://i.imgur.com/NZ8lP89.jpg
+		</images>
+	</BaseACUBooster>
+	<BasePlanktonFeeder>
+		<name>
+			Plankton Feeder
+		</name>
+		<desc>
+			Disperses plankton into the water to attract filter feeders and help encourage their reproduction in a wild setting.
+		</desc>
+		<pda>
+			
+		</pda>
+		<extradesc>
+			Only available if Ecocean is installed, as it uses its plankton as a "fuel".
+		</extradesc>
+		<images>
+			https://i.imgur.com/M9QZhke.jpg
+		</images>
+	</BasePlanktonFeeder>
+	<BaseItemDisplay>
+		<name>
+			Item Display
+		</name>
+		<desc>
+			Holds an item in suspension above it for decorative purposes.
+		</desc>
+		<pda>
+			
+		</pda>
+		<images>
+			https://i.imgur.com/irPd0kh.jpg
+			https://i.imgur.com/7NWXKLn.jpg
+		</images>
+	</BaseItemDisplay>
+	<BaseDomeLight>
+		<name>
+			Dome Light
+		</name>
+		<desc>
+			A small light that illuminates in all directions.
+		</desc>
+		<pda>
+			
+		</pda>
+		<images>
+			https://i.imgur.com/JoA3gTH.jpg
+		</images>
+	</BaseDomeLight>
+	<BaseATPTap>
+		<name>
+			Precursor Power Tap
+		</name>
+		<desc>
+			A device that can siphon a tiny fraction of the power flowing through active precursor power conduits.
+		</desc>
+		<pda>
+			
+		</pda>
+		<images>
+			https://i.imgur.com/PH3Bet8.jpg
+		</images>
+	</BaseATPTap>
+	<BaseStasisTurret>
+		<name>
+			Stasis Pylon
+		</name>
+		<desc>
+			A device which can be commanded to trigger a stasis pulse around itself, to temporarily freeze local fauna to allow safe entry or exit into the seabase.
+		</desc>
+		<extradesc>
+			Manual input required - cannot fire automatically
+		</extradesc>
+		<pda>
+			
+		</pda>
+		<images>
+			https://i.imgur.com/qgKQDna.jpg
+		</images>
+	</BaseStasisTurret>
+	<BaseControlPanel>
+		<name>
+			Control Terminal
+		</name>
+		<desc>
+			Hosts controls for other devices.
+		</desc>
+		<extradesc>
+			
+		</extradesc>
+		<pda>
+			
+		</pda>
+		<images>
+			https://i.imgur.com/DkfcDed.jpg
+			https://i.imgur.com/GLo1Kix.jpg
+		</images>
+	</BaseControlPanel>
+	<BaseDrillableGrinder>
+		<name>
+			Rock Crusher
+		</name>
+		<desc>
+			Breaks down large resource deposits into hand-collectable chunks.
+		</desc>
+		<extradesc>
+			
+		</extradesc>
+		<pda>
+			The rock crusher is a powerful industrial device designed to substantially increase mineralogic yields. It can break down large material deposits into pieces compatible with direct use in fabrication, without the need to transport heavy and expensive drilling equipment to the mining site.
+			
+			Manufacturer's Note: Under certain circumstances, the combined act of markedly increasing material surface area and agitating the material in the water may trigger a chemical reaction with the local environment and alter the products yielded from the grinding process.
+			
+			Not rated for ultrahard crystalline materials, in hot environments, or without ambient cooling fluid.
+		</pda>
+		<images>
+			https://i.imgur.com/L0xNPH2.jpg
+		</images>
+	</BaseDrillableGrinder>
+	<BaseRepairBeacon>
+		<name>
+			Hull Repair Nanite Controller
+		</name>
+		<desc>
+			Deploys repair nanites to perform small-scale repairs to ship structural members.
+		</desc>
+		<pda>
+			
+		</pda>
+		<frag>
+			Broken Hull Repair Nanites
+		</frag>
+	</BaseRepairBeacon>
+	<BaseRoomDataDisplay>
+		<name>
+			Room Info Panel
+		</name>
+		<desc>
+			Displays information about the current seabase room.
+		</desc>
+		<pda>
+			
+		</pda>
+	</BaseRoomDataDisplay>
+	<BaseACUMonitor>
+		<name>
+			ACU Status Terminal
+		</name>
+		<desc>
+			Can provide information regarding the status of the attached ACU.
+		</desc>
+		<pdatitle>
+			ACU Status
+		</pdatitle>
+		<pda>
+			Time
+			--------------
+			Day $day, Time $time
+			
+			Contents
+			--------------
+			$contents
+			
+			Ecosystem Data
+			--------------
+			Biome Archetype: $biome
+			Total Plant 'Units': $plants
+			Total Herbivore 'Units': $herbivores
+			Total Carnivore 'Units': $carnivores
+			
+			Ecosystem Details
+			--------------
+			Kharaa Infection Load: $infected
+			Enzyme Host Peepers: $sparkles
+			Productivity Factor: +$bonus%
+			
+			Ecosystem Alerts
+			--------------
+			$alerts
+			
+			Misc Data
+			--------------
+			ACU Stack Height: $height
+			Occupancy: $count/$capacity
+			Stalker Toy Value: $stalkerToy
+			Potential Ampeel Antenna Power Yield: $ampeelYield/s
+		</pda>
+		<category>
+			DownloadedData
+		</category>
+		<noacu>
+			No connected ACU
+		</noacu>
+		<tooltip>
+			See ACU information
+		</tooltip>
+	</BaseACUMonitor>
+	<BaseFloatingPowerRelay>
+		<name>
+			Floating Power Transmitter
+		</name>
+		<desc>
+			Extends the range of a power source. Does not need to be connected to a wall.
+		</desc>
+		<pda>
+			
+		</pda>
+	</BaseFloatingPowerRelay>
+	<ItemCollector>
+		<name>
+			Item Collector
+		</name>
+		<desc>
+			Expands upon the gravtrap technology to automatically collect the items it catches as well. Is constructed to be highly heat-resistant. May have unintended consequences on nearby ACUs.
+		</desc>
+		<pda>
+			
+		</pda>
+	</ItemCollector>
+	<CyclopsCollectorTether>
+		<name>
+			Item Collector Cyclops Tether
+		</name>
+		<desc>
+			Leashes an item collector under the cyclops (when running), allowing for automatic collection as the cyclops moves around.
+		</desc>
+		<pda>
+			
+		</pda>
+	</CyclopsCollectorTether>
+	<ItemDistributor>
+		<name>
+			Item Routing Assistant
+		</name>
+		<desc>
+			Attempts to transfer its contents to sorted storages elsewhere on the seabase, helping maintain organization of resources.
+		</desc>
+		<pda>
+			
+		</pda>
+	</ItemDistributor>
+	<BasePillar>
+		<name>
+			Reinforcement Pillar
+		</name>
+		<desc>
+			Buttresses interior spaces against exterior water pressure.
+		</desc>
+		<pda>
+			
+		</pda>
+	</BasePillar>
+	<WirelessCharger>
+		<name>
+			Wireless Charger
+		</name>
+		<desc>
+			A battery charger that works at range, with reduced efficiency.
+		</desc>
+		<pda>
+			
+		</pda>
+	</WirelessCharger>
+	<Name>
+		<name>
+			
+		</name>
+		<desc>
+			
+		</desc>
+		<pda>
+			
+		</pda>
+	</Name>
+</Root>

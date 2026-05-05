@@ -1,0 +1,404 @@
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using FMOD.Studio;
+using Nautilus.Utility;
+using ReikaKalseki.DIAlterra;
+using UnityEngine;
+
+namespace ReikaKalseki.SeaToSea;
+
+public class DeepStalker : RetexturedFish {
+    private readonly XMLLocale.LocaleEntry locale;
+
+    [SetsRequiredMembers]
+    internal DeepStalker(XMLLocale.LocaleEntry e) : base(e, VanillaCreatures.STALKER.prefab) {
+        locale = e;
+        glowIntensity = 1.25F;
+
+        scanTime = 8;
+        eggBase = TechType.Stalker;
+        eggMaturationTime = 2400;
+        eggSpawnRate = 0.25F;
+        eggSpawns.Add(BiomeType.GrandReef_TreaderPath);
+    }
+
+    public override void prepareGameObject(GameObject world, Renderer[] r0) {
+        DeepStalkerTag kc = world.EnsureComponent<DeepStalkerTag>();
+        foreach (Renderer r in r0) {
+            r.materials[0].SetColor("_GlowColor", new Color(1, 1, 1, 1));
+        }
+
+        AggressiveToPilotingVehicle agv = world.EnsureComponent<AggressiveToPilotingVehicle>();
+        agv.aggressionPerSecond = 0.2F;
+        agv.creature = world.GetComponent<Creature>();
+        agv.lastTarget = world.EnsureComponent<LastTarget>();
+    }
+
+    public override BehaviourType getBehavior() {
+        return BehaviourType.Shark;
+    }
+}
+
+class DeepStalkerTag : MonoBehaviour {
+    private static readonly SoundManager.SoundData biteSound = SoundManager.registerSound(
+        SeaToSeaMod.modDLL,
+        "deepstalkerbite",
+        "Sounds/deepstalker-bite.ogg",
+        SoundManager.soundMode3D,
+        s => { SoundManager.setup3D(s, 24); }
+    );
+
+    private static float lastPlayerBiteTime;
+
+    private Renderer render;
+    private Stalker creatureComponent;
+    private AggressiveWhenSeeTarget playerHuntComponent;
+    private MeleeAttack attackComponent;
+    private CollectShiny collectorComponent;
+    private SwimBehaviour swimmer;
+    private WaterParkCreature acuComponent;
+
+    private readonly Color peacefulColor = new Color(0.2F, 0.67F, 1F, 1);
+    private readonly Color aggressiveColor = new Color(1, 0, 0, 1);
+    private readonly float colorChangeSpeed = 1;
+
+    private float aggressionForColor = 0;
+    private float aggressionForACUColor = 0;
+
+    private float platinumGrabTime = -1;
+    private float lastAreaCheck = -1;
+    private float lastDespawnCheck = -1;
+
+    private float lastTextureSwapTime;
+
+    private float targetCooldown = 0;
+
+    private GameObject currentForcedTarget;
+
+    private SeaTreader treaderTarget;
+
+    void Start() {
+        acuComponent = this.GetComponent<WaterParkCreature>();
+    }
+
+    private void Update() {
+        if (!render) {
+            render = this.GetComponentInChildren<Renderer>();
+        }
+
+        if (!creatureComponent) {
+            creatureComponent = this.GetComponent<Stalker>();
+            creatureComponent.liveMixin.data.maxHealth = 800; //stalker base is 300
+        }
+
+        if (!attackComponent) {
+            attackComponent = this.GetComponent<MeleeAttack>();
+            attackComponent.biteDamage *= 0.67F;
+            attackComponent.biteAggressionDecrement *= 2;
+            attackComponent.biteAggressionThreshold *= 0.8F;
+            attackComponent.canBeFed = true;
+            attackComponent.canBiteCyclops = false;
+            attackComponent.canBiteCreature = true;
+            attackComponent.canBitePlayer = true;
+            attackComponent.canBiteVehicle = true;
+            attackComponent.ignoreSameKind = false;
+            //attackComponent.attackSound.asset = biteSound.asset;
+            //attackComponent.attackSound.path = biteSound.asset.path;
+        }
+
+        if (!collectorComponent) {
+            collectorComponent = this.GetComponent<CollectShiny>();
+            //collectorComponent.priorityMultiplier.
+        }
+
+        if (!swimmer) {
+            swimmer = this.GetComponent<SwimBehaviour>();
+        }
+
+        if (!playerHuntComponent) {
+            foreach (AggressiveWhenSeeTarget agg in this.GetComponents<AggressiveWhenSeeTarget>()) {
+                if (agg.targetType == EcoTargetType.Shark) {
+                    agg.aggressionPerSecond *= 0.15F;
+                    agg.ignoreSameKind = false;
+                    agg.maxRangeScalar *= 1.5F;
+                    playerHuntComponent = agg;
+                    break;
+                }
+            }
+        }
+
+        float dT = Time.deltaTime;
+
+        if (render && creatureComponent) {
+            float target = creatureComponent.Aggression.Value;
+            if (acuComponent) {
+                if (UnityEngine.Random.Range(0F, 1F) <= 0.008F) {
+                    aggressionForACUColor = UnityEngine.Random.Range(0F, 1F);
+                }
+
+                target = aggressionForACUColor;
+            }
+
+            if (aggressionForColor < target) {
+                aggressionForColor = Mathf.Min(target, aggressionForColor + (dT * colorChangeSpeed));
+            } else if (aggressionForColor > target) {
+                aggressionForColor = Mathf.Max(target, aggressionForColor - (dT * colorChangeSpeed));
+            }
+
+            render.materials[0].SetColor("_GlowColor", Color.Lerp(peacefulColor, aggressiveColor, aggressionForColor));
+        }
+
+        float time = DayNightCycle.main.timePassedAsFloat;
+
+        if (render && time > lastTextureSwapTime + 1) {
+            lastTextureSwapTime = time;
+            RenderUtil.swapTextures(SeaToSeaMod.modDLL, render, "Textures/Creature/DeepStalker", null);
+        }
+
+        if (time < targetCooldown) {
+            playerHuntComponent.lastTarget.SetTarget(null);
+            currentForcedTarget = null;
+            collectorComponent.DropShinyTarget();
+        } else {
+            bool has = this.currentlyHasPlatinum();
+            if (has) {
+                playerHuntComponent.lastTarget.SetTarget(null);
+                currentForcedTarget = null;
+                creatureComponent.Aggression.Add(-0.15F);
+                collectorComponent.shinyTarget.EnsureComponent<ResourceTrackerUpdater>().tracker =
+                    collectorComponent.shinyTarget.GetComponent<ResourceTracker>();
+            }
+
+            if (currentForcedTarget && currentForcedTarget == Player.main.gameObject &&
+                UnityEngine.Random.Range(0F, 1F) <= 0.12F) {
+                if (has || time - lastPlayerBiteTime < 5 || Inventory.main.GetPickupCount(
+                        CustomMaterials.getItem(CustomMaterials.Materials.PLATINUM).Info.TechType
+                    ) == 0) {
+                    //SNUtil.writeToChat("Dropped player target");
+                    playerHuntComponent.lastTarget.SetTarget(null);
+                    currentForcedTarget = null;
+                }
+            }
+
+            if (currentForcedTarget && time - platinumGrabTime <= 12) {
+                this.triggerPtAggro(currentForcedTarget, false);
+            } else if (!has && !currentForcedTarget && time - lastAreaCheck >= 1 &&
+                       !this.GetComponent<WaterParkCreature>()) {
+                lastAreaCheck = time;
+                if (!treaderTarget || !treaderTarget.gameObject.activeInHierarchy || Vector3.Distance(
+                        treaderTarget.transform.position,
+                        transform.position
+                    ) >= 120)
+                    this.bindToTreader(WorldUtil.getClosest<SeaTreader>(gameObject));
+                List<GameObject> loosePlatinum = new List<GameObject>();
+                List<CollectShiny> stalkersWithPlatinum = new List<CollectShiny>();
+                WorldUtil.getGameObjectsNear(
+                    transform.position,
+                    40,
+                    go => this.parseNearbyObject(go, loosePlatinum, stalkersWithPlatinum)
+                );
+                bool flag = false;
+                if (loosePlatinum.Count > 0) {
+                    collectorComponent.shinyTarget = loosePlatinum[UnityEngine.Random.Range(0, loosePlatinum.Count)];
+                    flag = true;
+                } else {
+                    Player ep = Player.main;
+                    float dist = Vector3.Distance(ep.transform.position, transform.position);
+                    if (dist <= 30) {
+                        int amt = Inventory.main.GetPickupCount(
+                            CustomMaterials.getItem(CustomMaterials.Materials.PLATINUM).Info.TechType
+                        );
+                        //SNUtil.writeToChat("Counting platinum = "+amt);
+                        if (amt > 0 && UnityEngine.Random.Range(0F, 1F) <= Mathf.Min(amt * 0.06F, 0.67F)) {
+                            this.triggerPtAggro(ep.gameObject);
+                            flag = true;
+                        }
+                    }
+                }
+
+                if (!flag && stalkersWithPlatinum.Count > 0) {
+                    CollectShiny c = stalkersWithPlatinum[UnityEngine.Random.Range(0, stalkersWithPlatinum.Count)];
+                    collectorComponent.shinyTarget = c.shinyTarget;
+                    this.triggerPtAggro(c.gameObject);
+                }
+            }
+        }
+
+        if (!this.GetComponent<WaterParkCreature>()) {
+            float distp = Vector3.Distance(transform.position, Player.main.transform.position);
+            if (distp >= 200) {
+                this.destroyCreature();
+            } else if (treaderTarget) {
+                float dist = Vector3.Distance(transform.position, treaderTarget.transform.position);
+                if (dist >= 150 && distp >= 30) {
+                    this.destroyCreature();
+                } else if (dist >= 80) {
+                    swimmer.SwimTo(treaderTarget.transform.position, 20);
+                }
+            }
+
+            if (time >= lastDespawnCheck + 2.5F && distp > 40) {
+                lastDespawnCheck = time;
+                if (countDeepStalkersNear(transform) > 5)
+                    this.destroyCreature();
+            }
+        }
+    }
+
+    internal static int countDeepStalkersNear(Transform t) {
+        int amt = 0;
+        WorldUtil.getGameObjectsNear(
+            t.position,
+            60,
+            go => {
+                DeepStalkerTag c = go.GetComponent<DeepStalkerTag>();
+                if (c && c.isAlive() && !c.GetComponent<WaterParkCreature>())
+                    amt++;
+            }
+        );
+        return amt;
+    }
+
+    private void parseNearbyObject(
+        GameObject go,
+        List<GameObject> loosePlatinum,
+        List<CollectShiny> stalkersWithPlatinum
+    ) {
+        PlatinumTag pt = go.GetComponent<PlatinumTag>();
+        if (pt && pt.getTimeOnGround() >= 2.5F) {
+            //collectorComponent.shinyTarget = go;
+            loosePlatinum.Add(go);
+        }
+
+        CollectShiny c = go.GetComponent<CollectShiny>();
+        if (c && c.shinyTarget && c.targetPickedUp && c.shinyTarget.GetComponent<PlatinumTag>()) {
+            //collectorComponent.shinyTarget = c.shinyTarget;
+            //triggerPtAggro(go);
+            //break;
+            stalkersWithPlatinum.Add(c);
+        }
+    }
+
+    private void destroyCreature() {
+        collectorComponent.DropShinyTarget();
+        gameObject.destroy();
+    }
+
+    public bool isAlive() {
+        return creatureComponent && creatureComponent.liveMixin && creatureComponent.liveMixin.IsAlive();
+    }
+
+    public bool currentlyHasPlatinum() {
+        return collectorComponent && collectorComponent.targetPickedUp && collectorComponent.shinyTarget &&
+               collectorComponent.shinyTarget.GetComponent<PlatinumTag>();
+    }
+
+    internal void onHitWithElectricDefense() {
+        currentForcedTarget = null;
+        targetCooldown = DayNightCycle.main.timePassedAsFloat + 12;
+        creatureComponent.Aggression.Add(-1F);
+        collectorComponent.DropShinyTarget();
+        collectorComponent.timeNextFindShiny = targetCooldown;
+    }
+
+    public void OnMeleeAttack(GameObject target) {
+        //SNUtil.writeToChat(this+" attacked "+target);
+        if (target == Player.main.gameObject) {
+            lastPlayerBiteTime = DayNightCycle.main.timePassedAsFloat;
+            Pickupable p = Inventory.main.container.RemoveItem(
+                CustomMaterials.getItem(CustomMaterials.Materials.PLATINUM).Info.TechType
+            );
+            if (p) {
+                float ch = Mathf.Clamp(SeaToSeaMod.config.getFloat(C2CConfig.ConfigEntries.PLATTHEFT), 0.25F, 1F);
+                if (SeaToSeaMod.config.getBoolean(C2CConfig.ConfigEntries.HARDMODE))
+                    ch *= 3;
+                if (UnityEngine.Random.Range(0F, 1F) < ch) {
+                    Inventory.main.InternalDropItem(p, false);
+                    this.grab(p.gameObject);
+                }
+            }
+        } else {
+            Stalker s = target.GetComponentInParent<Stalker>();
+            if (s) {
+                s.liveMixin.AddHealth(attackComponent.biteDamage);
+                CollectShiny c = s.GetComponent<CollectShiny>();
+                GameObject go = c.shinyTarget;
+                if (go) {
+                    c.DropShinyTarget();
+                    this.grab(go);
+                }
+            }
+        }
+    }
+
+    public void OnShinyPickedUp(GameObject target) {
+        PlatinumTag pt = target.GetComponent<PlatinumTag>();
+        if (pt)
+            pt.pickup(this);
+    }
+
+    public void OnShinyDropped(GameObject target) {
+        PlatinumTag pt = target.GetComponent<PlatinumTag>();
+        if (pt)
+            pt.drop();
+    }
+
+    private void grab(GameObject go) {
+        collectorComponent.DropShinyTarget();
+        collectorComponent.shinyTarget = go;
+        collectorComponent.TryPickupShinyTarget();
+    }
+
+    internal void tryStealFrom(Stalker s) {
+        this.triggerPtAggro(s.gameObject, true);
+    }
+
+    internal void bindToTreader(SeaTreader s) {
+        treaderTarget = s;
+        if (s)
+            s.gameObject.GetComponent<C2CTreader>().attachStalker(this);
+    }
+
+    void OnDestroy() {
+        if (treaderTarget) {
+            C2CTreader c2c = treaderTarget.gameObject.GetComponent<C2CTreader>();
+            if (c2c)
+                c2c.removeStalker(this);
+        }
+
+        if (collectorComponent)
+            collectorComponent.DropShinyTarget();
+    }
+
+    void OnDisable() {
+        this.OnDestroy();
+    }
+
+    void OnKill() {
+        this.OnDestroy();
+    }
+
+    internal void triggerPtAggro(GameObject target, bool isNew = true) {
+        float time = DayNightCycle.main.timePassedAsFloat;
+        if (time < targetCooldown)
+            return;
+        if (this.GetComponent<WaterParkCreature>())
+            return;
+        if (isNew) {
+            platinumGrabTime = time;
+            //SNUtil.writeToChat(this+" aimed at "+target);
+        } else {
+            //SNUtil.writeToChat(this+" is seeking "+target);
+        }
+
+        currentForcedTarget = target;
+        if (creatureComponent && creatureComponent.liveMixin && creatureComponent.liveMixin.IsAlive()) {
+            creatureComponent.Aggression.Add(isNew ? 0.3F : 0.1F);
+            if (playerHuntComponent) {
+                playerHuntComponent.lastTarget.SetTarget(currentForcedTarget);
+            }
+
+            swimmer.SwimTo(currentForcedTarget.transform.position, 20);
+        }
+    }
+}

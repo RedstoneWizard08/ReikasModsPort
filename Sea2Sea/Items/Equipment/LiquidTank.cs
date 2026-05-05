@@ -1,0 +1,44 @@
+﻿using System.Diagnostics.CodeAnalysis;
+using ReikaKalseki.DIAlterra;
+using UnityEngine;
+
+namespace ReikaKalseki.SeaToSea;
+
+public sealed class LiquidTank : CustomEquipable {
+    [SetsRequiredMembers]
+    public LiquidTank() : base(SeaToSeaMod.itemLocale.getEntry("LiquidTank"), "WorldEntities/Tools/HighCapacityTank") {
+        isArmor = true;
+        this.preventNaturalUnlock();
+        AddOnRegister(() => {
+                SaveSystem.addSaveHandler(
+                    ClassID,
+                    new SaveSystem.ComponentFieldSaveHandler<Battery>().addField("_charge")
+                );
+            }
+        );
+    }
+
+    public override Vector2int SizeInInventory {
+        get { return new Vector2int(3, 3); }
+    }
+
+    public override CraftTree.Type FabricatorType {
+        get { return CraftTree.Type.Workbench; }
+    }
+
+    public override string[] StepsToFabricatorTab {
+        get { return new string[] { "TankMenu" }; }
+    }
+
+    public override void prepareGameObject(GameObject go, Renderer[] r) {
+        Oxygen o2 = go.EnsureComponent<Oxygen>();
+        o2.oxygenAvailable = 0;
+        o2.oxygenCapacity = LiquidBreathingSystem.TANK_CAPACITY;
+        Battery b = go.EnsureComponent<Battery>();
+        b._capacity = LiquidBreathingSystem.ITEM_VALUE;
+    }
+
+    public override EquipmentType EquipmentType {
+        get { return EquipmentType.Tank; }
+    }
+}

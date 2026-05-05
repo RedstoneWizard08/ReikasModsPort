@@ -1,0 +1,124 @@
+<Root>
+	<DrillableMeteorite>
+		<name>
+			Meteorite
+		</name>
+		<desc>
+			A large chunk of rock and metal originating from space. Rich in minerals.
+		</desc>
+		<pda>
+			meteorite
+		</pda>
+		<materialListHeader>
+			Possible Materials:
+		</materialListHeader>
+		<fcsNote>
+			This deposit can be harvested with automated mining machinery, but the use of such hardware may influence overall yields and specific material production rates.
+		</fcsNote>
+		<tooltip>
+			Metal-rich Meteorite
+		</tooltip>
+		<tooltipSecondary>
+			Source of many mineral varieties.
+		</tooltipSecondary>
+	</DrillableMeteorite>
+	<DrillableLavaDome>
+		<name>
+			Lava Dome
+		</name>
+		<desc>
+			A large upwelling of semisolid magma from deep underground. Contains crystalline materials.
+		</desc>
+		<pda>
+			lavadome
+		</pda>
+		<materialListHeader>
+			Possible Materials:
+		</materialListHeader>
+		<fcsNote>
+			This deposit can be harvested with automated mining machinery, but the use of such hardware may influence overall yields and specific material production rates.
+		</fcsNote>
+		<tooltip>
+			Lava Dome
+		</tooltip>
+		<tooltipSecondary>
+			Contains crystalline materials.
+		</tooltipSecondary>
+	</DrillableLavaDome>
+	<JailBreakConsole>
+		<name>
+			Precursor Modification Console
+		</name>
+		<desc>
+			
+		</desc>
+		<pda>
+			
+		</pda>
+		<tooltip>
+			Precursor Modification Console
+		</tooltip>
+		<tooltipSecondary>
+			Modify equipment
+		</tooltipSecondary>
+		<tooltipDisabled>
+			Not holding compatible equipment
+		</tooltipDisabled>
+		<popupTitle>
+			Laser Cutter Upgraded
+		</popupTitle>
+		<popupSubtitle>
+			Firmware Unlocked
+		</popupSubtitle>
+		<popupDescription>
+			Can now harvest directly from the Aurora's hull
+		</popupDescription>
+	</JailBreakConsole>
+	<FallingMaterialSpawner>
+		<name>
+			Falling Material
+		</name>
+		<desc>
+			Falling Material Predicted Approximate Impact Location
+		</desc>
+		<pda>
+			
+		</pda>
+		<timer>
+			Debris impact ({0} pieces){1}predicted in:
+		</timer>
+	</FallingMaterialSpawner>
+	<ScannerRoomMeteorPlanner>
+		<name>
+			Falling Material Detection Module
+		</name>
+		<desc>
+			Reprograms a scanner room's detection systems to track orbital debris and predict the time and approximate location of materials falling from space.
+		</desc>
+		<pda>
+			
+		</pda>
+	</ScannerRoomMeteorPlanner>
+	<AuroraLaserCut>
+		<name>
+			
+		</name>
+		<desc>
+			Use unlocked laser cutter to harvest metal salvage
+		</desc>
+		<pda>
+			
+		</pda>
+	</AuroraLaserCut>
+	<AuroraLaserCutNeedsUnlock>
+		<name>
+			
+		</name>
+		<desc>
+			Laser cutter firmware forbids dismantling Alterra property
+		</desc>
+		<pda>
+			
+		</pda>
+	</AuroraLaserCutNeedsUnlock>
+</Root>

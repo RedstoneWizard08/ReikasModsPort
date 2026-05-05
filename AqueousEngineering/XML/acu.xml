@@ -1,0 +1,125 @@
+<Root>
+	<NotTerminalPDA>
+		<name>
+			
+		</name>
+		<desc>
+			&lt;b&gt;No Data Found.&lt;/b&gt;
+			
+			Open a data terminal attached to an ACU to view ACU Status information.
+		</desc>
+		<pda>
+			
+		</pda>
+	</NotTerminalPDA>
+	<NOPLANTS>
+		<name>
+			
+		</name>
+		<desc>
+			Plants absent
+		</desc>
+		<pda>
+			
+		</pda>
+	</NOPLANTS>
+	<SAMEPLANT>
+		<name>
+			
+		</name>
+		<desc>
+			Insufficient plant variety
+		</desc>
+		<pda>
+			
+		</pda>
+	</SAMEPLANT>
+	<NOHERBS>
+		<name>
+			
+		</name>
+		<desc>
+			Herbivores absent
+		</desc>
+		<pda>
+			
+		</pda>
+	</NOHERBS>
+	<NOCARNS>
+		<name>
+			
+		</name>
+		<desc>
+			Carnivores absent
+		</desc>
+		<pda>
+			
+		</pda>
+	</NOCARNS>
+	<CARNPREY>
+		<name>
+			
+		</name>
+		<desc>
+			Too many carnivores for the available prey
+		</desc>
+		<pda>
+			
+		</pda>
+	</CARNPREY>
+	<CARNSPACE>
+		<name>
+			
+		</name>
+		<desc>
+			Too many carnivores for the available space
+		</desc>
+		<pda>
+			
+		</pda>
+	</CARNSPACE>
+	<HERBFOOD>
+		<name>
+			
+		</name>
+		<desc>
+			Too many herbivores for the available plants
+		</desc>
+		<pda>
+			
+		</pda>
+	</HERBFOOD>
+	<NOTHEME>
+		<name>
+			
+		</name>
+		<desc>
+			No biome shared by all contained species
+		</desc>
+		<pda>
+			
+		</pda>
+	</NOTHEME>
+	<MIXEDTHEME>
+		<name>
+			
+		</name>
+		<desc>
+			Contained species not consistent with a single biome
+		</desc>
+		<pda>
+			
+		</pda>
+	</MIXEDTHEME>
+	<Name>
+		<name>
+			
+		</name>
+		<desc>
+			
+		</desc>
+		<pda>
+			
+		</pda>
+	</Name>
+</Root>

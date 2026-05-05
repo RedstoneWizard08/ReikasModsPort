@@ -1,0 +1,498 @@
+<Root>
+  <deepair>
+	<name>
+		
+	</name>
+	<desc>
+		Warning: Passing 500 meters. Extreme environmental pressure detected. Oxygen consumption at maximum tolerable level.
+	</desc>
+	<pda>
+		Sounds/pdaprompt/500mwarn.ogg
+	</pda>
+  </deepair>
+  <lrpoison>
+	<name>
+		
+	</name>
+	<desc>
+		Emergency: Chemical trauma imminent. Evacuate this region immediately, or fabricate chemical shielding.
+	</desc>
+	<pda>
+		Sounds/pdaprompt/lrpoisonwarn.ogg
+	</pda>
+  </lrpoison>
+  <voidspikeenter>
+	<name>
+		
+	</name>
+	<desc>
+		Short-range scans show an abundance of suspended land masses in the region below. Detecting unknown mineral deposits.
+	</desc>
+	<pda>
+		Sounds/pdaprompt/voidspike.ogg
+	</pda>
+  </voidspikeenter>
+  <glassforestenter>
+	<name>
+		
+	</name>
+	<desc>
+		This ecological biome is dominated by volcanic activity. The water here is rich with chemical materials.
+	</desc>
+	<pda>
+		Sounds/pdaprompt/glassforest-enter.ogg
+	</pda>
+  </glassforestenter>
+  <sanctuaryenter>
+	<name>
+		
+	</name>
+	<desc>
+		Scans of this biome indicate this location supports the only remaining specimens of nearby lifeforms.
+	</desc>
+	<pda>
+		Sounds/pdaprompt/sanctuary-enter.ogg
+	</pda>
+  </sanctuaryenter>
+  <aurorafire>
+	<name>
+		
+	</name>
+	<desc>
+		Caution: Hazardous fire levels detected. The radiation suit is not equipped for this environment.
+	</desc>
+	<pda>
+		Sounds/pdaprompt/aurorafirewarn.ogg
+	</pda>
+  </aurorafire>
+  <aurorafire_norad>
+	<name>
+		
+	</name>
+	<desc>
+		Caution: Hazardous fire levels detected.
+	</desc>
+	<pda>
+		Sounds/pdaprompt/aurorafirewarn_norad.ogg
+	</pda>
+  </aurorafire_norad>
+  <underislandgeyserminerals>
+	<name>
+		
+	</name>
+	<desc>
+		Detecting intense volcanic activity on the seafloor in this region, resulting in high concentrations of mineral resources.
+	</desc>
+	<pda>
+		Sounds/pdaprompt/underislandgeyserminerals.ogg
+	</pda>
+  </underislandgeyserminerals>
+  <kelpcavedrone>
+	<name>
+		
+	</name>
+	<desc>
+		Detecting Alterra fabricator vehicle signatures in a nearby cave system, depth 80 meters. Caution is strongly advised around local volcanic activity.
+	</desc>
+	<pda>
+		Sounds/pdaprompt/kelpcaveprompt.ogg
+	</pda>
+  </kelpcavedrone>
+  <kelpcavedronelate>
+	<name>
+		
+	</name>
+	<desc>
+		Detecting technological artifacts in the vicinity of lifepod 3. Further exploration is recommended.
+	</desc>
+	<pda>
+		Sounds/pdaprompt/kelpcavepromptlate.ogg
+	</pda>
+  </kelpcavedronelate>
+  <redgrasscave>
+	<name>
+		
+	</name>
+	<desc>
+		Scans indicate biological specimens in this cave system which may be used to synthesize new chemical materials.
+	</desc>
+	<pda>
+		Sounds/pdaprompt/cavebioprompt.ogg
+	</pda>
+  </redgrasscave>
+  <kooshcave>
+	<name>
+		
+	</name>
+	<desc>
+		The local caves appear to contain high concentrations of unusual metal deposits.
+	</desc>
+	<pda>
+		Sounds/pdaprompt/kooshcaveprompt.ogg
+	</pda>
+  </kooshcave>
+  <sanctuaryprompt>
+	<name>
+		
+	</name>
+	<desc>
+		Detecting unknown ecological signature in the region, and possibly unique lifeforms. It is imperative that you acquire live specimens before radiation levels make survival unlikely.
+	</desc>
+	<pda>
+		Sounds/pdaprompt/sanctuaryprompt.ogg
+	</pda>
+  </sanctuaryprompt>
+  <meteorprompt>
+	<name>
+		
+	</name>
+	<desc>
+		Materials from the Aurora undergoing atmospheric re-entry may have unexpected applications and other blueprints may require those resources.
+	</desc>
+	<pda>
+		Sounds/pdaprompt/meteor.ogg
+	</pda>
+  </meteorprompt>
+  <treaderpoo>
+	<name>
+		
+	</name>
+	<desc>
+		Unsavory biological materials may still be used for survival purposes.
+	</desc>
+	<pda>
+		Sounds/pdaprompt/treaderpooprompt.ogg
+	</pda>
+  </treaderpoo>
+  <obsidian>
+	<name>
+		
+	</name>
+	<desc>
+		
+	</desc>
+	<pda>
+		Sounds/pdaprompt/obsidianprompt.ogg
+	</pda>
+  </obsidian>
+  <dunearch>
+	<name>
+		
+	</name>
+	<desc>
+		Unknown radio transmission detected in the region. Unable to identify lifepod signature. Outputting results to databank.
+	</desc>
+	<pda>
+		Sounds/pdaprompt/dunearchprompt.ogg
+	</pda>
+  </dunearch>
+  <trailerbase>
+	<name>
+		
+	</name>
+	<desc>
+		Picking up multiple titanium signatures in this area. Scans do not match the Aurora.
+	</desc>
+	<pda>
+		Sounds/pdaprompt/trailerbaseprompt.ogg
+	</pda>
+  </trailerbase>
+  <followradio>
+	<name>
+		
+	</name>
+	<desc>
+		Exploration of radio transmissions originating from the Aurora's survivors may provide technologies and help ensure survival.
+	</desc>
+	<pda>
+		Sounds/pdaprompt/radioprompt.ogg
+	</pda>
+  </followradio>
+  <needlaunchcargo>
+	<name>
+		
+	</name>
+	<desc>
+		Further cargo required: Bring onboard research specimens to Alterra.
+	</desc>
+	<pda>
+		Sounds/pdaprompt/cannot-launch-need-cargo.ogg
+	</pda>
+  </needlaunchcargo>
+  <needscaneverything>
+	<name>
+		
+	</name>
+	<desc>
+		Cannot launch rocket without scanning the planet's materials and lifeforms.
+	</desc>
+	<pda>
+		Sounds/pdaprompt/cannot-launch-need-scans.ogg
+	</pda>
+  </needscaneverything>
+  <needalldata>
+	<name>
+		
+	</name>
+	<desc>
+		Open your PDA to see your current directive to gather data on the status of the Aurora's crew, and the circumstances of the alien vaccine development program and quarantine.
+	</desc>
+	<pda>
+		Sounds/pdaprompt/needalldata.ogg
+	</pda>
+  </needalldata>
+  <unfinishedexplore>
+	<name>
+		
+	</name>
+	<desc>
+		Cannot launch rocket. Your exploration of this region is incomplete. Please refer to the databank for further information.
+	</desc>
+	<pda>
+		Sounds/pdaprompt/unfinished-explore.ogg
+	</pda>
+  </unfinishedexplore>
+  <notseenallbiomes>
+	<name>
+		
+	</name>
+	<desc>
+		Detecting multiple unexplored ecological biomes. Your primary research task is to acquire further information.
+	</desc>
+	<pda>
+		Sounds/pdaprompt/cannot-launch-missing-biomes.ogg
+	</pda>
+  </notseenallbiomes>
+  <liqbrselfscan>
+	<name>
+		
+	</name>
+	<desc>
+		Oxygen efficiency at 50%. A self scan is strongly advised.
+	</desc>
+	<pda>
+		Sounds/pdaprompt/liq-br-selfscan.ogg
+	</pda>
+  </liqbrselfscan>
+  <liqbrselfscaneasy>
+	<name>
+		
+	</name>
+	<desc>
+		Oxygen efficiency at 30%. A self scan is strongly advised.
+	</desc>
+	<pda>
+		Sounds/pdaprompt/liq-br-selfscan-easy.ogg
+	</pda>
+  </liqbrselfscaneasy>
+  <liqbrselfscanhard>
+	<name>
+		
+	</name>
+	<desc>
+		Oxygen efficiency at 20%. A self scan is strongly advised.
+	</desc>
+	<pda>
+		Sounds/pdaprompt/liq-br-selfscan-hard.ogg
+	</pda>
+  </liqbrselfscanhard>
+  <needpcfsecurity>
+	<name>
+		
+	</name>
+	<desc>		
+		Facility security interlocks active. Access currently prohibited.
+	</desc>
+	<pda>
+		Sounds/pdaprompt/needpcfsecurity.ogg
+	</pda>
+  </needpcfsecurity>
+  <auroraringterminal_c2c>
+	<name>
+		
+	</name>
+	<desc>
+		Technology blueprint corruption was detected on your PDA. Your databank was repaired to maximize productivity.
+	</desc>
+	<pda>
+		Sounds/pdaprompt/auroraringterminal.ogg
+	</pda>
+  </auroraringterminal_c2c>
+  <hiddenseamothprompt>
+	<name>
+		
+	</name>
+	<desc>
+		Detecting vehicle blueprint data somewhere in this cave system, in a deeper area.
+	</desc>
+	<pda>
+		Sounds/pdaprompt/hiddenseamothprompt.ogg
+	</pda>
+  </hiddenseamothprompt>
+  <bkelpnestprompt>
+	<name>
+		
+	</name>
+	<desc>
+		Detecting unusually high concentrations of organic materials in the local cave systems.
+	</desc>
+	<pda>
+		Sounds/pdaprompt/bkelpnestprompt.ogg
+	</pda>
+  </bkelpnestprompt>
+  <bulkheadLaserCutterUpgrade>
+	<name>
+		Laser Cutter Temperature Upgrade
+	</name>
+	<desc>
+		&lt;color=#FFA622FF&gt;Laser Cutter&lt;/color&gt;\n&lt;color=#74C8F8FF&gt;Temperature Upgrade&lt;/color&gt;
+	</desc>
+	<pda>
+		Can now also cut reinforced titanium plating
+	</pda>
+	<error>
+		Reinforced bulkheads require increased cutting temperatures
+	</error>
+  </bulkheadLaserCutterUpgrade>
+  <bioprocessorBoost>
+	<name>
+		Bioprocessor Efficiency Upgrade
+	</name>
+	<desc>
+		&lt;color=#FFA622FF&gt;Bioprocessor&lt;/color&gt;\n&lt;color=#74C8F8FF&gt;Efficiency Upgrade&lt;/color&gt;
+	</desc>
+	<pda>
+		Now completes recipes with 33% less energy required
+	</pda>
+  </bioprocessorBoost>
+  <jellyshroomSeamothDepth>
+	<name>
+		Seamoth Depth Data
+	</name>
+	<desc>
+		&lt;color=#FFA622FF&gt;Seamoth&lt;/color&gt;\n&lt;color=#74C8F8FF&gt;Depth Data&lt;/color&gt;
+	</desc>
+	<pda>
+		
+	</pda>
+  </jellyshroomSeamothDepth>
+  <HUDAlerts>
+	<name>
+		
+	</name>
+	<desc>
+		
+	</desc>
+	<pda>
+		
+	</pda>
+	<chemwarn>
+		Poisoning Detected
+	</chemwarn>
+	<o2warn>
+		Elevated O2 Consumption
+	</o2warn>
+	<pressurewarn>
+		Extreme Pressure Detected
+	</pressurewarn>
+	<leakwarn>
+		Power Loss Detected
+	</leakwarn>
+	<heatwarn>
+		Extreme Temperature Detected
+	</heatwarn>
+	<influngwarn>
+		Reduced Liquid Respiration Efficiency
+	</influngwarn>
+	<teleportrecovery>
+		Recovering From Rescue Warp
+	</teleportrecovery>
+  </HUDAlerts>
+  <TrackerPage>
+	<name>
+		
+	</name>
+	<desc>
+		
+	</desc>
+	<pda>
+		Found in this area:
+	</pda>
+	<category>
+		Exploration Findings
+	</category>
+	<incomplete>
+		There's more to explore here.
+	</incomplete>
+  </TrackerPage>
+  <MercuryDesc>
+	<name>
+		
+	</name>
+	<desc>
+		Mercury is a valuable constituent of advanced circuit fabrication, and its oxide is useful as a red dye.
+	</desc>
+	<pda>
+		A rare ore, formed of mercury oxides. Aside from centuries of history of being used directly as a red dye, the mercury content can be extracted and reprocessed into advanced electronic systems.
+		
+		Assessment: Essential for advanced fabrication
+	</pda>
+  </MercuryDesc>
+  <EnzymePeeperDisplay>
+	<name>
+		Enzyme Host Peeper
+	</name>
+	<desc>
+		
+	</desc>
+	<pda>
+		
+	</pda>
+  </EnzymePeeperDisplay>
+  <Appends>
+	<name>
+		
+	</name>
+	<desc>
+		
+	</desc>
+	<pda>
+		
+	</pda>
+	<lavashroom>
+		Assessment: Ejected lava bombs may produce useful materials upon rupture as the superheated core is suddenly exposed to seawater.
+	</lavashroom>
+  </Appends>
+  <CraftingNodes>
+	<name>
+		
+	</name>
+	<desc>
+		
+	</desc>
+	<pda>
+		
+	</pda>
+	<chemistry>
+		Chemistry
+	</chemistry>
+	<ingots>
+		Metal Ingots
+	</ingots>
+	<ingotUnpack>
+		Metal Unpacking
+	</ingotUnpack>
+	<medical>
+		Medical
+	</medical>
+	<precursor>
+		Alien Fabricators
+	</precursor>
+	<helmet>
+		Masks
+	</helmet>
+	<modelectric>
+		Electronics
+	</modelectric>
+  </CraftingNodes>
+</Root>

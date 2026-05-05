@@ -1,0 +1,233 @@
+<Root>
+  <DockToChangeVehicleUpgrades>
+	<name>
+		
+	</name>
+	<desc>
+		Vehicle upgrades can only be exchanged while docked
+	</desc>
+	<pda>
+		
+	</pda>
+  </DockToChangeVehicleUpgrades>
+  <PrawnBayDoorHeatWarn>
+	<name>
+		
+	</name>
+	<desc>
+		WARNING: Extreme temperatures on the other side of this doorway
+	</desc>
+	<pda>
+		
+	</pda>
+  </PrawnBayDoorHeatWarn>
+  <LostRiverCachePanel>
+	<name>
+		
+	</name>
+	<desc>
+		Upload human biological data
+	</desc>
+	<pda>
+		
+	</pda>
+  </LostRiverCachePanel>
+  <NeedRepairDataBox>
+	<name>
+		
+	</name>
+	<desc>
+		Repair databox to recover blueprint
+	</desc>
+	<pda>
+		
+	</pda>
+  </NeedRepairDataBox>
+  <SanctuaryPlantGrowing>
+	<name>
+		
+	</name>
+	<desc>
+		Growing a new core
+	</desc>
+	<pda>
+		
+	</pda>
+  </SanctuaryPlantGrowing>
+  <SanctuaryPlantClick>
+	<name>
+		
+	</name>
+	<desc>
+		Harvest core
+	</desc>
+	<pda>
+		
+	</pda>
+  </SanctuaryPlantClick>
+  <GelFountainRecharging>
+	<name>
+		
+	</name>
+	<desc>
+		Pressure building
+	</desc>
+	<pda>
+		
+	</pda>
+  </GelFountainRecharging>
+  <GelFountainClick>
+	<name>
+		
+	</name>
+	<desc>
+		Pressurized
+	</desc>
+	<pda>
+		
+	</pda>
+  </GelFountainClick>
+  <CampfireCooking>
+	<name>
+		
+	</name>
+	<desc>
+		Smoking fish
+	</desc>
+	<pda>
+		
+	</pda>
+  </CampfireCooking>
+  <CampfireClick>
+	<name>
+		
+	</name>
+	<desc>
+		Supply a raw fish to smoke
+	</desc>
+	<pda>
+		
+	</pda>
+  </CampfireClick>
+  <SmokedNoExpire>
+	<name>
+		
+	</name>
+	<desc>
+		Remains good indefinitely.
+	</desc>
+	<pda>
+		
+	</pda>
+  </SmokedNoExpire>
+  <BKelpBumpWormClick>
+	<name>
+		
+	</name>
+	<desc>
+		Collect
+	</desc>
+	<pda>
+		
+	</pda>
+  </BKelpBumpWormClick>
+  <EnzymesNotKnown>
+	<name>
+		
+	</name>
+	<desc>
+		You do not know how to use this!
+	</desc>
+	<pda>
+		
+	</pda>
+  </EnzymesNotKnown>
+  <BreakPostCoveDomeResource>
+	<name>
+		
+	</name>
+	<desc>
+		Break juvenile glass coral
+	</desc>
+	<pda>
+		
+	</pda>
+  </BreakPostCoveDomeResource>
+  <NoBioprocBasePower>
+	<name>
+		
+	</name>
+	<desc>
+		Seabase has no power supply
+	</desc>
+	<pda>
+		
+	</pda>
+  </NoBioprocBasePower>
+  <WeakBioprocBasePower>
+	<name>
+		
+	</name>
+	<desc>
+		Seabase power supply is too weak for this machine
+	</desc>
+	<pda>
+		
+	</pda>
+  </WeakBioprocBasePower>
+  <NoGeyserToFilter>
+	<name>
+		
+	</name>
+	<desc>
+		Geyser filter needs to be placed over a geyser!
+	</desc>
+	<pda>
+		
+	</pda>
+  </NoGeyserToFilter>
+  <GhostLeviathanSample>
+	<name>
+		
+	</name>
+	<desc>
+		Sample outer membrane
+	</desc>
+	<pda>
+		
+	</pda>
+  </GhostLeviathanSample>
+  <GhostLeviathanSampleCooldown>
+	<name>
+		
+	</name>
+	<desc>
+		Creature needs time to regrow tissue
+	</desc>
+	<pda>
+		
+	</pda>
+  </GhostLeviathanSampleCooldown>
+  <VentClick>
+	<name>
+		
+	</name>
+	<desc>
+		Travel through pipes
+	</desc>
+	<pda>
+		
+	</pda>
+  </VentClick>
+  <VentClickDeny>
+	<name>
+		
+	</name>
+	<desc>
+		Travel not yet possible - pipe network unmapped
+	</desc>
+	<pda>
+		
+	</pda>
+  </VentClickDeny>
+</Root>
