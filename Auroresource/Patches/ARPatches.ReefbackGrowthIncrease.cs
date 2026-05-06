@@ -10,7 +10,7 @@ namespace ReikaKalseki.Auroresource;
 
 internal static partial class ARPatches {
     [HarmonyPatch(typeof(BreakableResource))]
-    [HarmonyPatch("Awake")]
+    [HarmonyPatch(nameof(BreakableResource.Awake))]
     public static class ReefbackGrowthIncrease {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -20,7 +20,7 @@ internal static partial class ARPatches {
                     new CodeInstruction(OpCodes.Ldarg_0),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.Auroresource.ARHooks",
-                        "onBreakableResourceSpawn",
+                        nameof(ARHooks.OnBreakableResourceSpawn),
                         false,
                         typeof(BreakableResource)
                     )

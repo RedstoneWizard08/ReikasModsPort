@@ -1,7 +1,7 @@
 import os
-import re
 
-ROOT = "../AqueousEngineering/Patches"
+from config import ROOT
+
 SC_ROOT = os.path.dirname(__file__)
 
 root_dir = os.path.join(SC_ROOT, ROOT)
@@ -16,16 +16,18 @@ for file in os.listdir(root_dir):
         lines = f.readlines()
     
     pos = 0
+    found = False
 
     for line in lines:
         if line.strip().startswith("[HarmonyPatch"):
+            found = True
             break
 
         pos += 1
     
     pos += 1
 
-    if '"' not in lines[pos]:
+    if not found or '"' not in lines[pos]:
         continue
 
     name = lines[pos - 1].split('typeof(')[1].split(')')[0]

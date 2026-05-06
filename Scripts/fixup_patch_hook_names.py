@@ -1,7 +1,7 @@
 import os
-import re
 
-ROOT = "../AqueousEngineering/Patches"
+from config import ROOT, HOOK_CLASS
+
 SC_ROOT = os.path.dirname(__file__)
 
 root_dir = os.path.join(SC_ROOT, ROOT)
@@ -19,7 +19,7 @@ for file in os.listdir(root_dir):
     found = False
 
     for line in lines:
-        if line.strip() == '"ReikaKalseki.AqueousEngineering.AEHooks",' and 'nameof' in lines[pos + 1]:
+        if line.strip() == f'"{HOOK_CLASS}",' and 'nameof' in lines[pos + 1]:
             found = True
             break
 

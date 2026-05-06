@@ -10,7 +10,7 @@ namespace ReikaKalseki.Auroresource;
 
 internal static partial class ARPatches {
     [HarmonyPatch(typeof(Drillable))]
-    [HarmonyPatch("SpawnLoot")]
+    [HarmonyPatch(nameof(Drillable.SpawnLootAsync))]
     public static class DrillableDropsHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -27,7 +27,7 @@ internal static partial class ARPatches {
                 );
                 codes[idx].operand = InstructionHandlers.convertMethodOperand(
                     "ReikaKalseki.Auroresource.ARHooks",
-                    "getDrillableDrop",
+                    nameof(ARHooks.GetDrillableDrop),
                     false,
                     typeof(Drillable)
                 );

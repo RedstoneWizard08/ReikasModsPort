@@ -10,7 +10,7 @@ namespace ReikaKalseki.Auroresource;
 
 internal static partial class ARPatches {
     [HarmonyPatch(typeof(MapRoomFunctionality))]
-    [HarmonyPatch("Start")]
+    [HarmonyPatch(nameof(MapRoomFunctionality.Start))]
     public static class MapRoomModuleAddHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -20,7 +20,7 @@ internal static partial class ARPatches {
                     new CodeInstruction(OpCodes.Ldarg_0),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.Auroresource.ARHooks",
-                        "onMapRoomSpawn",
+                        nameof(ARHooks.OnMapRoomSpawn),
                         false,
                         typeof(MapRoomFunctionality)
                     )

@@ -10,7 +10,7 @@ namespace ReikaKalseki.Auroresource;
 
 internal static partial class ARPatches {
     [HarmonyPatch(typeof(Geyser))]
-    [HarmonyPatch("Start")]
+    [HarmonyPatch(nameof(Geyser.Start))]
     public static class GeyserSpawn {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -20,7 +20,7 @@ internal static partial class ARPatches {
                     new CodeInstruction(OpCodes.Ldarg_0),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.Auroresource.ARHooks",
-                        "onGeyserSpawn",
+                        nameof(ARHooks.OnGeyserSpawn),
                         false,
                         typeof(Geyser)
                     )
