@@ -1,5 +1,6 @@
 ﻿using System;
 using ReikaKalseki.DIAlterra;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -215,13 +216,13 @@ public class LiquidBreathingSystem {
     }
 
     public static GameObject GetO2Label(uGUI_OxygenBar gui) {
-        return gui.gameObject.getChildObject("OxygenTextLabel");
+        return gui.gameObject.getChildObject("Icon/Text");
     }
 
     public void UpdateOxygenGUI(uGUI_OxygenBar gui) {
         var bar = gui.bar;
-        var t = GetO2Label(gui).GetComponent<Text>();
-        var tn = gui.gameObject.getChildObject("OxygenTextValue").GetComponent<Text>();
+        var t = GetO2Label(gui).GetComponent<TextMeshProUGUI>();
+        var tn = gui.text;
         if (_baseO2BarTexture == null) {
             _baseO2BarTexture = bar.texture;
             _baseO2BarColor = bar.borderColor;

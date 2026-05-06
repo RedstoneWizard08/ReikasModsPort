@@ -43,7 +43,7 @@ internal static partial class C2CPatches {
                         new CodeInstruction(OpCodes.Ldloc_S, 12),
                         InstructionHandlers.createMethodCall(
                             "ReikaKalseki.SeaToSea.C2CHooks",
-                            "onRepulsionCannonTryHit",
+                            nameof(C2CHooks.OnRepulsionCannonTryHit),
                             false,
                             typeof(RepulsionCannon),
                             typeof(Rigidbody)

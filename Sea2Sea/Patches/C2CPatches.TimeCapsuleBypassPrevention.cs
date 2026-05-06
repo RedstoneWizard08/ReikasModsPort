@@ -10,14 +10,19 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(TimeCapsule))]
-    [HarmonyPatch(nameof(TimeCapsule.Collect))]
+    [HarmonyPatch(nameof(TimeCapsule.PickupItemsAsync))]
     public static class TimeCapsuleBypassPrevention {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
             InsnList codes = [];
             try {
                 codes.add(OpCodes.Ldarg_0);
-                codes.invoke("ReikaKalseki.SeaToSea.C2CHooks", "CollectTimeCapsule", false, typeof(TimeCapsule));
+                codes.invoke(
+                    "ReikaKalseki.SeaToSea.C2CHooks",
+                    nameof(C2CHooks.CollectTimeCapsule),
+                    false,
+                    typeof(TimeCapsule)
+                );
                 codes.add(OpCodes.Ret);
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
