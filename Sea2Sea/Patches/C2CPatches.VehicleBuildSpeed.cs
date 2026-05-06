@@ -20,18 +20,25 @@ internal static partial class C2CPatches {
                     new CodeInstruction(OpCodes.Ldarg_0),
                     new CodeInstruction(OpCodes.Ldarg_1),
                     new CodeInstruction(OpCodes.Ldarg_2),
-                    InstructionHandlers.createMethodCall("ReikaKalseki.SeaToSea.C2CHooks", "getVehicleConstructionSpeed", false, typeof(ConstructorInput), typeof(TechType), typeof(float)),
+                    InstructionHandlers.createMethodCall(
+                        "ReikaKalseki.SeaToSea.C2CHooks",
+                        "getVehicleConstructionSpeed",
+                        false,
+                        typeof(ConstructorInput),
+                        typeof(TechType),
+                        typeof(float)
+                    ),
                     new CodeInstruction(OpCodes.Starg_S, 2)
                 );
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());
             }
+
             return codes.AsEnumerable();
         }
     }

@@ -19,17 +19,23 @@ internal static partial class C2CPatches {
                 codes.patchInitialHook(
                     new CodeInstruction(OpCodes.Ldarg_0),
                     new CodeInstruction(OpCodes.Ldarg_1),
-                    InstructionHandlers.createMethodCall("ReikaKalseki.SeaToSea.C2CHooks", "addO2ToPlayer", false, typeof(OxygenManager), typeof(float)),
+                    InstructionHandlers.createMethodCall(
+                        "ReikaKalseki.SeaToSea.C2CHooks",
+                        "addO2ToPlayer",
+                        false,
+                        typeof(OxygenManager),
+                        typeof(float)
+                    ),
                     new CodeInstruction(OpCodes.Starg_S, 1)
                 );
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());
             }
+
             return codes.AsEnumerable();
         }
     }

@@ -19,16 +19,22 @@ internal static partial class C2CPatches {
             try {
                 codes.add(OpCodes.Ldarg_0);
                 codes.add(OpCodes.Ldarg_1);
-                codes.invoke("ReikaKalseki.SeaToSea.C2CHooks", "canWarperAggroPlayer", false, typeof(WarperInspectPlayer), typeof(GameObject));
+                codes.invoke(
+                    "ReikaKalseki.SeaToSea.C2CHooks",
+                    "canWarperAggroPlayer",
+                    false,
+                    typeof(WarperInspectPlayer),
+                    typeof(GameObject)
+                );
                 codes.add(OpCodes.Ret);
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());
             }
+
             return codes.AsEnumerable();
         }
     }

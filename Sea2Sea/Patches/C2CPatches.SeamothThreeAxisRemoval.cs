@@ -17,23 +17,39 @@ internal static partial class C2CPatches {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try {
-                var idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Callvirt, "UnityEngine.Transform", "get_rotation", true, new Type[0]);
+                var idx = InstructionHandlers.getInstruction(
+                    codes,
+                    0,
+                    0,
+                    OpCodes.Callvirt,
+                    "UnityEngine.Transform",
+                    "get_rotation",
+                    true,
+                    new Type[0]
+                );
                 //idx = InstructionHandlers.getLastOpcodeBefore(codes, idx, OpCodes.Stloc_2);
                 idx = InstructionHandlers.getInstruction(codes, idx, 0, OpCodes.Ldloc_2) + 1;
                 InsnList li = [];
                 li.add(OpCodes.Ldarg_0);
                 li.add(OpCodes.Ldloc_1);
-                li.invoke("ReikaKalseki.SeaToSea.C2CHooks", "get3AxisSpeed", false, typeof(float), typeof(Vehicle), typeof(Vector3));
+                li.invoke(
+                    "ReikaKalseki.SeaToSea.C2CHooks",
+                    "get3AxisSpeed",
+                    false,
+                    typeof(float),
+                    typeof(Vehicle),
+                    typeof(Vector3)
+                );
                 codes.InsertRange(idx, li);
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());
             }
+
             return codes.AsEnumerable();
         }
     }

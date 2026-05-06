@@ -20,18 +20,28 @@ internal static partial class C2CPatches {
                 for (var i = codes.Count - 1; i >= 0; i--) {
                     var ci = codes[i];
                     if (ci.opcode == OpCodes.Stfld && ((FieldInfo)ci.operand).Name == "shinyTarget") {
-                        codes.Insert(i, InstructionHandlers.createMethodCall("ReikaKalseki.SeaToSea.C2CHooks", "getStalkerShinyTarget", false, typeof(GameObject), typeof(CollectShiny)));
+                        codes.Insert(
+                            i,
+                            InstructionHandlers.createMethodCall(
+                                "ReikaKalseki.SeaToSea.C2CHooks",
+                                "getStalkerShinyTarget",
+                                false,
+                                typeof(GameObject),
+                                typeof(CollectShiny)
+                            )
+                        );
                         codes.Insert(i, new CodeInstruction(OpCodes.Ldarg_0));
                     }
                 }
+
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());
             }
+
             return codes.AsEnumerable();
         }
     }

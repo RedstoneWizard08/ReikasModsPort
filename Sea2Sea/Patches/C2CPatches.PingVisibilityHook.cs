@@ -16,36 +16,52 @@ internal static partial class C2CPatches {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try {
-                var refInsn = codes[InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Ldfld, "PingInstance", "visible") - 1];
+                var refInsn = codes[InstructionHandlers.getInstruction(
+                    codes,
+                    0,
+                    0,
+                    OpCodes.Ldfld,
+                    "PingInstance",
+                    "visible"
+                ) - 1];
                 for (var i = codes.Count - 1; i >= 0; i--) {
                     if (codes[i].opcode == OpCodes.Callvirt) {
                         var m = (MethodInfo)codes[i].operand;
                         if (m.Name == "SetIconAlpha" && m.DeclaringType.Name == "uGUI_Ping") {
                             injectHook(codes, i, refInsn, false);
                             i -= 4;
-                        }
-                        else if (m.Name == "SetTextAlpha" && m.DeclaringType.Name == "uGUI_Ping") {
+                        } else if (m.Name == "SetTextAlpha" && m.DeclaringType.Name == "uGUI_Ping") {
                             injectHook(codes, i, refInsn, true);
                             i -= 4;
                         }
                     }
                 }
+
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());
             }
+
             return codes.AsEnumerable();
         }
 
         private static void injectHook(InsnList codes, int idx, CodeInstruction refInsn, bool isText) {
             //int idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Ldfld, "uGUI_Ping", "SetIconAlpha");
-            codes[idx] = InstructionHandlers.createMethodCall("ReikaKalseki.SeaToSea.C2CHooks", "setPingAlpha", false, typeof(uGUI_Ping), typeof(float), typeof(PingInstance), typeof(bool));
-            codes.InsertRange(idx,
+            codes[idx] = InstructionHandlers.createMethodCall(
+                "ReikaKalseki.SeaToSea.C2CHooks",
+                "setPingAlpha",
+                false,
+                typeof(uGUI_Ping),
+                typeof(float),
+                typeof(PingInstance),
+                typeof(bool)
+            );
+            codes.InsertRange(
+                idx,
                 [
                     new(refInsn.opcode, refInsn.operand),
                     new(isText ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0),

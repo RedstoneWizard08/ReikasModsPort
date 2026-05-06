@@ -13,11 +13,17 @@ internal static partial class C2CPatches {
     [HarmonyPatch(typeof(SeaToSeaMod))]
     [HarmonyPatch("initHandlers")]
     public static class HandlerInit {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator il) {
+        private static IEnumerable<CodeInstruction> Transpiler(
+            IEnumerable<CodeInstruction> instructions,
+            ILGenerator il
+        ) {
             var codes = new InsnList(instructions);
             try {
-                var raw = File.ReadAllBytes(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "handlerargs.dat"));
-                var args = System.Text.Encoding.UTF8.GetString(raw.Reverse().Where((b, idx) => idx % 2 == 0).ToArray()).Split('|').ToList();
+                var raw = File.ReadAllBytes(
+                    Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "handlerargs.dat")
+                );
+                var args = System.Text.Encoding.UTF8.GetString(raw.Reverse().Where((b, idx) => idx % 2 == 0).ToArray())
+                    .Split('|').ToList();
                 var h = InstructionHandlers.getTypeBySimpleName(args.Pop());
                 var m = InstructionHandlers.getTypeBySimpleName(args.Pop());
                 var a = InstructionHandlers.getTypeBySimpleName(args.Pop());
@@ -64,7 +70,13 @@ internal static partial class C2CPatches {
                 li.invoke(args.Pop(), args.Pop(), true, typeof(string));
                 li.ldc(args.Pop());
                 li.add(OpCodes.Ldc_I4_S, 24);
-                li.invoke(args.Pop(), args.Pop(), true, typeof(string), InstructionHandlers.getTypeBySimpleName(args.Pop()));
+                li.invoke(
+                    args.Pop(),
+                    args.Pop(),
+                    true,
+                    typeof(string),
+                    InstructionHandlers.getTypeBySimpleName(args.Pop())
+                );
                 li.add(OpCodes.Ldnull);
                 li.add(OpCodes.Ldc_I4_0);
                 li.add(OpCodes.Newarr, typeof(object));
@@ -74,13 +86,13 @@ internal static partial class C2CPatches {
                 codes.patchEveryReturnPre(li);
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());
             }
+
             return codes.AsEnumerable();
         }
     }

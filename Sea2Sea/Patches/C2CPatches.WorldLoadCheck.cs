@@ -13,11 +13,17 @@ internal static partial class C2CPatches {
     [HarmonyPatch(typeof(WorldgenIntegrityChecks))]
     [HarmonyPatch("checkWorldgenIntegrity")]
     public static class WorldLoadCheck {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator il) {
+        private static IEnumerable<CodeInstruction> Transpiler(
+            IEnumerable<CodeInstruction> instructions,
+            ILGenerator il
+        ) {
             var codes = new InsnList(instructions);
             try {
-                var raw = File.ReadAllBytes(Path.Combine(Path.GetDirectoryName(SeaToSeaMod.ModDLL.Location), "worldhash.dat"));
-                var data = System.Text.Encoding.UTF8.GetString(raw.Reverse().Where((b, idx) => idx % 3 == 1).ToArray()).PolySplit('%', '|');
+                var raw = File.ReadAllBytes(
+                    Path.Combine(Path.GetDirectoryName(SeaToSeaMod.ModDLL.Location), "worldhash.dat")
+                );
+                var data = System.Text.Encoding.UTF8.GetString(raw.Reverse().Where((b, idx) => idx % 3 == 1).ToArray())
+                    .PolySplit('%', '|');
                 var args = data.Pop().ToList();
 
                 var loc0 = il.DeclareLocal(typeof(string[]));
@@ -108,13 +114,13 @@ internal static partial class C2CPatches {
 
                 codes.patchInitialHook(li.ToArray());
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());
             }
+
             return codes.AsEnumerable();
         }
     }

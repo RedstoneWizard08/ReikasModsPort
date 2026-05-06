@@ -17,16 +17,21 @@ internal static partial class C2CPatches {
             var codes = new InsnList(instructions);
             try {
                 var idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Ldc_R4, "0.0025");
-                codes[idx] = InstructionHandlers.createMethodCall("ReikaKalseki.SeaToSea.C2CHooks", "getVehicleRechargeAmount", false, typeof(Vehicle));
+                codes[idx] = InstructionHandlers.createMethodCall(
+                    "ReikaKalseki.SeaToSea.C2CHooks",
+                    "getVehicleRechargeAmount",
+                    false,
+                    typeof(Vehicle)
+                );
                 codes.Insert(idx, new CodeInstruction(OpCodes.Ldarg_0));
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());
             }
+
             return codes.AsEnumerable();
         }
     }

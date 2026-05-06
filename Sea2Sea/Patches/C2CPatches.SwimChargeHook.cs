@@ -20,13 +20,13 @@ internal static partial class C2CPatches {
                 codes.invoke("ReikaKalseki.SeaToSea.C2CHooks", "tickSwimCharge", false, typeof(UpdateSwimCharge));
                 codes.add(OpCodes.Ret);
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());
             }
+
             return codes.AsEnumerable();
         }
     }

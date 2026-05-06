@@ -17,16 +17,21 @@ internal static partial class C2CPatches {
             var codes = new InsnList(instructions);
             try {
                 var idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Ldfld, "PingInstance", "origin");
-                codes[idx] = InstructionHandlers.createMethodCall("ReikaKalseki.SeaToSea.C2CHooks", "getApparentPingPosition", false, typeof(PingInstance));
+                codes[idx] = InstructionHandlers.createMethodCall(
+                    "ReikaKalseki.SeaToSea.C2CHooks",
+                    "getApparentPingPosition",
+                    false,
+                    typeof(PingInstance)
+                );
                 codes.RemoveAt(idx + 1);
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());
             }
+
             return codes.AsEnumerable();
         }
     }

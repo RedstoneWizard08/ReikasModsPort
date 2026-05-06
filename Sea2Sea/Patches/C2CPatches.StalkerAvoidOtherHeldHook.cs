@@ -16,19 +16,31 @@ internal static partial class C2CPatches {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try {
-                var idx2 = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Stfld, "CollectShiny", "shinyTarget");
+                var idx2 = InstructionHandlers.getInstruction(
+                    codes,
+                    0,
+                    0,
+                    OpCodes.Stfld,
+                    "CollectShiny",
+                    "shinyTarget"
+                );
                 var idx1 = InstructionHandlers.getLastOpcodeBefore(codes, idx2, OpCodes.Ldc_I4_0);
                 InstructionHandlers.nullInstructions(codes, idx1, idx2);
-                codes[idx1] = InstructionHandlers.createMethodCall("ReikaKalseki.SeaToSea.C2CHooks", "onShinyTargetIsCurrentlyHeldByStalker", false, typeof(CollectShiny));
+                codes[idx1] = InstructionHandlers.createMethodCall(
+                    "ReikaKalseki.SeaToSea.C2CHooks",
+                    "onShinyTargetIsCurrentlyHeldByStalker",
+                    false,
+                    typeof(CollectShiny)
+                );
                 //codes.RemoveRange();
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());
             }
+
             return codes.AsEnumerable();
         }
     }
