@@ -20,7 +20,7 @@ internal static partial class DIPatches {
                     new CodeInstruction(OpCodes.Ldarg_0),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
-                        "getGrowingPlantProgressInTick",
+                        nameof(DIHooks.getGrowingPlantProgressInTick),
                         false,
                         new Type[] { typeof(float), typeof(GrowingPlant) }
                     ),

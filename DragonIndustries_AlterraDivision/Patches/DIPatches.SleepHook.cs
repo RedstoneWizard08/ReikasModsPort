@@ -22,7 +22,7 @@ internal static partial class DIPatches {
                         new CodeInstruction(OpCodes.Ldarg_0),
                         InstructionHandlers.createMethodCall(
                             "ReikaKalseki.DIAlterra.DIHooks",
-                            "onSleep",
+                            nameof(DIHooks.onSleep),
                             false,
                             typeof(Bed)
                         ),

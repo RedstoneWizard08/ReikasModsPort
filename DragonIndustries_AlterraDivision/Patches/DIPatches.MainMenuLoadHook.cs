@@ -17,7 +17,7 @@ internal static partial class DIPatches {
                 codes.patchInitialHook(
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
-                        "onMainMenuLoaded",
+                        nameof(DIHooks.onMainMenuLoaded),
                         false,
                         new Type[0]
                     )

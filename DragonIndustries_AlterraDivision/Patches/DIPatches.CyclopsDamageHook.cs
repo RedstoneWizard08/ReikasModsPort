@@ -20,7 +20,7 @@ internal static partial class DIPatches {
                     new CodeInstruction(OpCodes.Ldarg_1),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
-                        "onCyclopsDamaged",
+                        nameof(DIHooks.onCyclopsDamaged),
                         false,
                         typeof(SubRoot),
                         typeof(DamageInfo)

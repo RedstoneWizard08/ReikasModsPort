@@ -17,7 +17,7 @@ internal static partial class DIPatches {
             try {
                 var ci = InstructionHandlers.createMethodCall(
                     "ReikaKalseki.DIAlterra.DIHooks",
-                    "onVehicleEnter",
+                    nameof(DIHooks.OnVehicleEnter),
                     false,
                     typeof(Vehicle),
                     typeof(Player)

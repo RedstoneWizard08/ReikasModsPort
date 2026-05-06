@@ -19,7 +19,7 @@ internal static partial class DIPatches {
                 //int idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Callvirt, "FMOD_CustomEmitter", "OnPlay", true, new Type[0]);
                 var ci = InstructionHandlers.createMethodCall(
                     "ReikaKalseki.DIAlterra.DIHooks",
-                    "onFModEmitterPlay",
+                    nameof(DIHooks.onFModEmitterPlay),
                     false,
                     typeof(FMOD_CustomEmitter)
                 );

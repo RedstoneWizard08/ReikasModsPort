@@ -30,7 +30,7 @@ internal static partial class DIPatches {
                     idx + 1,
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
-                        "onKnifed",
+                        nameof(DIHooks.onKnifed),
                         false,
                         typeof(GameObject)
                     )

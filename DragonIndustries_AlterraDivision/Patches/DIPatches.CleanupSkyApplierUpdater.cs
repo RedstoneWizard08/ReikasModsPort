@@ -27,7 +27,7 @@ internal static partial class DIPatches {
                 );
                 codes[idx] = InstructionHandlers.createMethodCall(
                     "ReikaKalseki.DIAlterra.DIHooks",
-                    "updateSkyApplier",
+                    nameof(DIHooks.updateSkyApplier),
                     false,
                     typeof(SkyApplier)
                 );

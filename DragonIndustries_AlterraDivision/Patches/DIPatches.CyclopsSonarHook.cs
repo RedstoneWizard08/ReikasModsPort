@@ -29,7 +29,7 @@ internal static partial class DIPatches {
                     idx + 1,
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
-                        "pingCyclopsSonar",
+                        nameof(DIHooks.pingCyclopsSonar),
                         false,
                         typeof(CyclopsSonarButton)
                     )

@@ -20,7 +20,7 @@ internal static partial class DIPatches {
                     new CodeInstruction(OpCodes.Ldarg_1),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
-                        "linkPowerRelayToBase",
+                        nameof(DIHooks.linkPowerRelayToBase),
                         false,
                         typeof(PowerRelay),
                         typeof(IPowerInterface)

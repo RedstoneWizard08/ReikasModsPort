@@ -20,7 +20,7 @@ internal static partial class DIPatches {
                     new CodeInstruction(OpCodes.Ldarg_1),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
-                        "onReaperGrabVehicle",
+                        nameof(DIHooks.onReaperGrabVehicle),
                         false,
                         typeof(ReaperLeviathan),
                         typeof(Vehicle)

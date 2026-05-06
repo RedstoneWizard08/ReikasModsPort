@@ -20,7 +20,7 @@ internal static partial class DIPatches {
                 codes.add(OpCodes.Ldarg_1);
                 codes.invoke(
                     "ReikaKalseki.DIAlterra.DIHooks",
-                    "canSeeObject",
+                    nameof(DIHooks.CanSeeObject),
                     false,
                     new Type[] { typeof(Creature), typeof(GameObject) }
                 );

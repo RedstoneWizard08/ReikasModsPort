@@ -32,7 +32,7 @@ internal static partial class DIPatches {
                 idx,
                 InstructionHandlers.createMethodCall(
                     "ReikaKalseki.DIAlterra.DIHooks",
-                    "getWaterTemperature",
+                    nameof(DIHooks.GetWaterTemperature),
                     false,
                     typeof(float),
                     typeof(WaterTemperatureSimulation),

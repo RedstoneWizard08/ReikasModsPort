@@ -31,7 +31,7 @@ internal static partial class DIPatches {
                         new CodeInstruction(OpCodes.Ldloc_1),
                         InstructionHandlers.createMethodCall(
                             "ReikaKalseki.DIAlterra.DIHooks",
-                            "onPrawnItemPickedUp",
+                            nameof(DIHooks.onPrawnItemPickedUp),
                             false,
                             typeof(Pickupable)
                         ),

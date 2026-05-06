@@ -20,7 +20,7 @@ internal static partial class DIPatches {
                     new CodeInstruction(OpCodes.Ldarg_1),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
-                        "onWaterFilterSpawn",
+                        nameof(DIHooks.onWaterFilterSpawn),
                         false,
                         new Type[] { typeof(FiltrationMachine), typeof(Pickupable) }
                     ),

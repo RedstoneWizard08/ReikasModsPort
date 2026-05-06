@@ -28,7 +28,7 @@ internal static partial class DIPatches {
                 );
                 codes[idx].operand = InstructionHandlers.convertMethodOperand(
                     "ReikaKalseki.DIAlterra.DIHooks",
-                    "tryEat",
+                    nameof(DIHooks.tryEat),
                     false,
                     typeof(Survival),
                     typeof(GameObject)

@@ -18,7 +18,7 @@ internal static partial class DIPatches {
                 codes.patchEveryReturnPre(
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
-                        "getPlayerMovementControl",
+                        nameof(DIHooks.getPlayerMovementControl),
                         false,
                         new Type[] { typeof(Vector3) }
                     )

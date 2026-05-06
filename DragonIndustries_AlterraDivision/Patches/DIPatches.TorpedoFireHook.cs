@@ -28,7 +28,7 @@ internal static partial class DIPatches {
                 );
                 codes[idx] = InstructionHandlers.createMethodCall(
                     "ReikaKalseki.DIAlterra.DIHooks",
-                    "doShootTorpedo",
+                    nameof(DIHooks.doShootTorpedo),
                     false,
                     new Type[] {
                         typeof(Bullet), typeof(Vector3), typeof(Quaternion), typeof(float), typeof(float),

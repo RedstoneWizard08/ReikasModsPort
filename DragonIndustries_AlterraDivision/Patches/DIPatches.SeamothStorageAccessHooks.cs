@@ -20,7 +20,7 @@ internal static partial class DIPatches {
                 codes.add(OpCodes.Ldarg_2);
                 codes.invoke(
                     "ReikaKalseki.DIAlterra.DIHooks",
-                    "getVehicleStorageInSlot",
+                    nameof(DIHooks.getVehicleStorageInSlot),
                     false,
                     typeof(Vehicle),
                     typeof(int),

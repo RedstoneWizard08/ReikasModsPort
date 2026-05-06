@@ -18,7 +18,7 @@ internal static partial class DIPatches {
                 codes.add(OpCodes.Ldarg_0);
                 codes.invoke(
                     "ReikaKalseki.DIAlterra.DIHooks",
-                    "recomputeBaseHullStrength",
+                    nameof(DIHooks.recomputeBaseHullStrength),
                     false,
                     new Type[] { typeof(BaseHullStrength) }
                 );

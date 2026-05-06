@@ -22,7 +22,7 @@ internal static partial class DIPatches {
                     new CodeInstruction(OpCodes.Ldarg_2),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
-                        "onDrillableDrilled",
+                        nameof(DIHooks.onDrillableDrilled),
                         false,
                         typeof(Drillable),
                         typeof(Vector3),

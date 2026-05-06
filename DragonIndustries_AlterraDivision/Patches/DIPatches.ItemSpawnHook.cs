@@ -27,7 +27,7 @@ internal static partial class DIPatches {
                 );
                 codes[idx] = InstructionHandlers.createMethodCall(
                     "ReikaKalseki.DIAlterra.DIHooks",
-                    "createSpawnedItem",
+                    nameof(DIHooks.createSpawnedItem),
                     false,
                     typeof(TechType),
                     typeof(bool)

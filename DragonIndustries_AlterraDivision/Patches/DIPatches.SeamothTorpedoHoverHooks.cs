@@ -19,7 +19,7 @@ internal static partial class DIPatches {
                 codes.add(OpCodes.Ldarg_1);
                 codes.invoke(
                     "ReikaKalseki.DIAlterra.DIHooks",
-                    "hoverSeamothTorpedoStorage",
+                    nameof(DIHooks.hoverSeamothTorpedoStorage),
                     false,
                     typeof(SeaMoth),
                     typeof(HandTargetEventData)

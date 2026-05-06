@@ -33,7 +33,7 @@ internal static partial class DIPatches {
                 idx,
                 InstructionHandlers.createMethodCall(
                     "ReikaKalseki.DIAlterra.DIHooks",
-                    "CanPlayerBreathe",
+                    nameof(DIHooks.CanPlayerBreathe),
                     false,
                     typeof(bool),
                     typeof(Player)

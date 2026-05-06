@@ -21,7 +21,7 @@ internal static partial class DIPatches {
                     idx,
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
-                        "RecalculateDamage",
+                        nameof(DIHooks.RecalculateDamage),
                         false,
                         typeof(float),
                         typeof(DamageType),

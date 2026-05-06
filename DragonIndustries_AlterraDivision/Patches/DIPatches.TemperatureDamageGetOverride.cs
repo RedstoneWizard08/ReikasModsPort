@@ -18,7 +18,7 @@ internal static partial class DIPatches {
                 codes.add(OpCodes.Ldarg_0);
                 codes.invoke(
                     "ReikaKalseki.DIAlterra.DIHooks",
-                    "getTemperatureForDamage",
+                    nameof(DIHooks.getTemperatureForDamage),
                     false,
                     typeof(TemperatureDamage)
                 );

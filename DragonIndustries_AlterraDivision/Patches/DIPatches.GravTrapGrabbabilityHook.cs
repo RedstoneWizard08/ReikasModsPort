@@ -20,7 +20,7 @@ internal static partial class DIPatches {
                 codes.add(OpCodes.Ldarg_1);
                 codes.invoke(
                     "ReikaKalseki.DIAlterra.DIHooks",
-                    "canGravTrapGrab",
+                    nameof(DIHooks.canGravTrapGrab),
                     false,
                     new Type[] { typeof(Gravsphere), typeof(GameObject) }
                 );

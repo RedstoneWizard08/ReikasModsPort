@@ -30,7 +30,7 @@ internal static partial class DIPatches {
                     new CodeInstruction(OpCodes.Ldarg_1),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
-                        "onEMPTouch",
+                        nameof(DIHooks.onEMPTouch),
                         false,
                         typeof(EMPBlast),
                         typeof(Collider)

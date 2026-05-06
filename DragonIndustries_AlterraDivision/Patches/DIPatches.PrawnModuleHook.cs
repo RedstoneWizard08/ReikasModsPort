@@ -33,7 +33,7 @@ internal static partial class DIPatches {
                 idx,
                 InstructionHandlers.createMethodCall(
                     "ReikaKalseki.DIAlterra.DIHooks",
-                    "updatePrawnModules",
+                    nameof(DIHooks.updatePrawnModules),
                     false,
                     typeof(Exosuit),
                     typeof(int),

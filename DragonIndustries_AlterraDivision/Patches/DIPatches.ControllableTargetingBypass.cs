@@ -33,7 +33,7 @@ internal static partial class DIPatches {
                 i,
                 InstructionHandlers.createMethodCall(
                     "ReikaKalseki.DIAlterra.DIHooks",
-                    "checkTargetingSkip",
+                    nameof(DIHooks.checkTargetingSkip),
                     false,
                     typeof(bool),
                     typeof(Transform)

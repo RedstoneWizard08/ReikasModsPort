@@ -18,7 +18,7 @@ internal static partial class DIPatches {
                 codes.add(OpCodes.Ldarg_0);
                 codes.invoke(
                     "ReikaKalseki.DIAlterra.DIHooks",
-                    "tickPilotedVehicleAggression",
+                    nameof(DIHooks.TickPilotedVehicleAggression),
                     false,
                     new Type[] { typeof(AggressiveToPilotingVehicle) }
                 );
