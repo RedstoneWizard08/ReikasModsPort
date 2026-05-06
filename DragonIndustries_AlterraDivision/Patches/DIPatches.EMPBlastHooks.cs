@@ -1,0 +1,50 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
+using HarmonyLib;
+using UnityEngine;
+
+namespace ReikaKalseki.DIAlterra;
+
+internal static partial class DIPatches {
+    [HarmonyPatch(typeof(EMPBlast))]
+    [HarmonyPatch("OnTouch")]
+    public static class EMPBlastHooks {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            var codes = new InsnList(instructions);
+            try {
+                for (var i = codes.Count - 1; i >= 0; i--) {
+                    if (codes[i].opcode == OpCodes.Callvirt) {
+                        var mi = (MethodInfo)codes[i].operand;
+                        if (mi.Name == "DisableElectronicsForTime") {
+                            PatchLib.injectEMPHook(codes, i);
+                        }
+                    }
+                }
+
+                codes.patchInitialHook(
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    new CodeInstruction(OpCodes.Ldarg_1),
+                    InstructionHandlers.createMethodCall(
+                        "ReikaKalseki.DIAlterra.DIHooks",
+                        "onEMPTouch",
+                        false,
+                        typeof(EMPBlast),
+                        typeof(Collider)
+                    )
+                );
+                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+            } catch (Exception e) {
+                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                FileLog.Log(e.Message);
+                FileLog.Log(e.StackTrace);
+                FileLog.Log(e.ToString());
+            }
+
+            return codes.AsEnumerable();
+        }
+    }
+}

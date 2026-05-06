@@ -1,3 +1,8 @@
+# This script is the epitome of boredom and procrastination. I spent way too long on it.
+# Enjoy.
+#
+# - Redstone
+
 import os
 import json
 import shutil
