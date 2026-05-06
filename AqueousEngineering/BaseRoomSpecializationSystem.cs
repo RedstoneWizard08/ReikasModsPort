@@ -352,7 +352,7 @@ public class BaseRoomSpecializationSystem { //TODO 2.0 handle large rooms
     }
 
     public static void debugRoomValues() {
-        var bc = AEHooks.getCurrentPlayerRoom();
+        var bc = AEHooks.GetCurrentPlayerRoom();
         var bb = bc.gameObject.FindAncestor<BaseRoot>();
         instance.getType(bb, bc, ObjectUtil.getBaseObjectsInRoom(bb, bc), out var trash, true);
     }
@@ -709,7 +709,7 @@ public class BaseRoomSpecializationSystem { //TODO 2.0 handle large rooms
     }
 
     public RoomTypes getPlayerRoomType(Player ep, out float deco, out float decoThresh) {
-        var bc = AEHooks.getCurrentPlayerRoom();
+        var bc = AEHooks.GetCurrentPlayerRoom();
         decoThresh = getLeisureDecoThreshold(bc);
         if (!bc) {
             deco = 0;

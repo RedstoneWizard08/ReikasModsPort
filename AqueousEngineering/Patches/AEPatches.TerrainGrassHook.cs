@@ -10,21 +10,29 @@ namespace ReikaKalseki.AqueousEngineering;
 
 public static partial class AEPatches {
     [HarmonyPatch(typeof(VoxelandGrassBuilder))]
-    [HarmonyPatch("CreateUnityMeshes")]
+    [HarmonyPatch(nameof(VoxelandGrassBuilder.CreateUnityMeshes))]
     public static class TerrainGrassHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try {
-                codes.patchEveryReturnPre(new CodeInstruction(OpCodes.Ldarg_1), InstructionHandlers.createMethodCall("ReikaKalseki.AqueousEngineering.AEHooks", "onChunkGenGrass", false, typeof(IVoxelandChunk2)));
+                codes.patchEveryReturnPre(
+                    new CodeInstruction(OpCodes.Ldarg_1),
+                    InstructionHandlers.createMethodCall(
+                        "ReikaKalseki.AqueousEngineering.AEHooks",
+                        nameof(AEHooks.OnChunkGenGrass),
+                        false,
+                        typeof(IVoxelandChunk2)
+                    )
+                );
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());
             }
+
             return codes.AsEnumerable();
         }
     }

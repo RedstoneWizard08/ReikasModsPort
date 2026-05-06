@@ -10,7 +10,7 @@ namespace ReikaKalseki.AqueousEngineering;
 
 public static partial class AEPatches {
     [HarmonyPatch(typeof(FiltrationMachine))]
-    [HarmonyPatch("UpdateFiltering")]
+    [HarmonyPatch(nameof(FiltrationMachine.UpdateFiltering))]
     public static class WaterFilterPowerCostHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -18,19 +18,30 @@ public static partial class AEPatches {
             try {
                 for (var i = codes.Count - 1; i >= 0; i--) {
                     if (codes[i].LoadsConstant(0.85F)) {
-                        codes.InsertRange(i + 1, new InsnList{
-                            new CodeInstruction(OpCodes.Ldarg_0), InstructionHandlers.createMethodCall("ReikaKalseki.AqueousEngineering.AEHooks", "getWaterFilterPowerCost", false, typeof(float), typeof(FiltrationMachine)),
-                        });
+                        codes.InsertRange(
+                            i + 1,
+                            new InsnList {
+                                new CodeInstruction(OpCodes.Ldarg_0),
+                                InstructionHandlers.createMethodCall(
+                                    "ReikaKalseki.AqueousEngineering.AEHooks",
+                                    nameof(AEHooks.GetWaterFilterPowerCost),
+                                    false,
+                                    typeof(float),
+                                    typeof(FiltrationMachine)
+                                ),
+                            }
+                        );
                     }
                 }
+
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());
             }
+
             return codes.AsEnumerable();
         }
     }

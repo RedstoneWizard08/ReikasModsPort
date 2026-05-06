@@ -9,52 +9,52 @@ using UnityEngine;
 namespace ReikaKalseki.AqueousEngineering;
 
 public static class AEHooks {
-    private static readonly Vector3 mountainWreckLaserable = new(684.46F, -359.33F, 1218.44F);
-    private static readonly Vector3 mountainWreckBlock = new(686.81F, -364.29F, 1223.04F);
+    private static readonly Vector3 MountainWreckLaserable = new(684.46F, -359.33F, 1218.44F);
+    private static readonly Vector3 MountainWreckBlock = new(686.81F, -364.29F, 1223.04F);
 
-    private static BaseCell currentPlayerRoom;
-    private static float lastPlayerRoomCheckTime;
+    private static BaseCell _currentPlayerRoom;
+    private static float _lastPlayerRoomCheckTime;
 
     static AEHooks() {
         SNUtil.Log("Initializing AEHooks");
-        DIHooks.OnWorldLoadedEvent += onWorldLoaded;
-        DIHooks.OnConstructedEvent += onConstructionComplete;
-        DIHooks.OnItemPickedUpEvent += onPickup;
-        DIHooks.OnDamageEvent += onTakeDamage;
-        DIHooks.KnifeHarvestEvent += interceptItemHarvest;
-        DIHooks.InventoryClosedEvent += onInvClosed;
-        DIHooks.OnBaseLoadedEvent += onBaseLoaded;
-        DIHooks.ConstructabilityEvent += enforceBuildability;
-        DIHooks.GravTrapAttemptEvent += gravTryAttract;
-        DIHooks.OnSkyApplierSpawnEvent += onSkyApplierSpawn;
-        DIHooks.OnPlayerTickEvent += tickPlayer;
-        DIHooks.CraftTimeEvent += affectCraftTime;
-        DIHooks.OnSleepEvent += onSleep;
-        DIHooks.BaseRebuildEvent += onBaseRebuild;
-        DIHooks.BaseStrengthComputeEvent += onBaseHullCompute;
+        DIHooks.OnWorldLoadedEvent += OnWorldLoaded;
+        DIHooks.OnConstructedEvent += OnConstructionComplete;
+        DIHooks.OnItemPickedUpEvent += OnPickup;
+        DIHooks.OnDamageEvent += OnTakeDamage;
+        DIHooks.KnifeHarvestEvent += InterceptItemHarvest;
+        DIHooks.InventoryClosedEvent += OnInvClosed;
+        DIHooks.OnBaseLoadedEvent += OnBaseLoaded;
+        DIHooks.ConstructabilityEvent += EnforceBuildability;
+        DIHooks.GravTrapAttemptEvent += GravTryAttract;
+        DIHooks.OnSkyApplierSpawnEvent += OnSkyApplierSpawn;
+        DIHooks.OnPlayerTickEvent += TickPlayer;
+        DIHooks.CraftTimeEvent += AffectCraftTime;
+        DIHooks.OnSleepEvent += OnSleep;
+        DIHooks.BaseRebuildEvent += OnBaseRebuild;
+        DIHooks.BaseStrengthComputeEvent += OnBaseHullCompute;
 
         //DIHooks.onRedundantScanEvent += ch => ch.preventNormalDrop = onRedundantScan();
-        CustomMachineLogic.getMachinePowerCostFactorEvent += getCustomMachinePowerCostMultiplier;
+        CustomMachineLogic.getMachinePowerCostFactorEvent += GetCustomMachinePowerCostMultiplier;
     }
 
-    public static void tickPlayer(Player ep) {
+    public static void TickPlayer(Player ep) {
         if (ep.currentSub && ep.currentSub.isBase && ep.currentSub is BaseRoot sub) {
             var time = DayNightCycle.main.timePassedAsFloat;
-            if (time - lastPlayerRoomCheckTime >= 0.5F) {
-                currentPlayerRoom = ObjectUtil.getBaseRoom(sub, ep.transform.position);
-                if (currentPlayerRoom && DIHooks.GetWorldAge() >= 15 &&
-                    currentPlayerRoom.gameObject.getChildObject("BaseRoom"))
+            if (time - _lastPlayerRoomCheckTime >= 0.5F) {
+                _currentPlayerRoom = ObjectUtil.getBaseRoom(sub, ep.transform.position);
+                if (_currentPlayerRoom && DIHooks.GetWorldAge() >= 15 &&
+                    _currentPlayerRoom.gameObject.getChildObject("BaseRoom"))
                     PDAManager.getPage("ROOMTYPESPDAPAGE").unlock();
-                lastPlayerRoomCheckTime = time;
+                _lastPlayerRoomCheckTime = time;
             }
         }
     }
 
-    public static BaseCell getCurrentPlayerRoom() {
-        return currentPlayerRoom;
+    public static BaseCell GetCurrentPlayerRoom() {
+        return _currentPlayerRoom;
     }
 
-    public static void onWorldLoaded() {
+    public static void OnWorldLoaded() {
         OutdoorPot.updateLocale();
 
         var s = AqueousEngineeringMod.machineLocale.getEntry("BaseRepairBeacon").getString("frag");
@@ -63,7 +63,7 @@ public static class AEHooks {
             LanguageHandler.SetLanguageLine(f.GetGadget<ScanningGadget>().ScannerEntryData.blueprint.AsString(), s);
     }
 
-    public static void onSkyApplierSpawn(SkyApplier sk) {
+    public static void OnSkyApplierSpawn(SkyApplier sk) {
         var pi = sk.GetComponent<PrefabIdentifier>();
         MoonpoolRotationSystem.instance.processObject(sk.gameObject);
         if (pi && pi.name.StartsWith("Seamoth", StringComparison.InvariantCultureIgnoreCase) && pi.name.EndsWith(
@@ -71,22 +71,22 @@ public static class AEHooks {
                 StringComparison.InvariantCultureIgnoreCase
             ))
             return;
-        if (sk.GetComponent<StarshipDoor>() && Vector3.Distance(mountainWreckLaserable, sk.transform.position) <= 0.5)
+        if (sk.GetComponent<StarshipDoor>() && Vector3.Distance(MountainWreckLaserable, sk.transform.position) <= 0.5)
             new WreckDoorSwaps.DoorSwap(sk.transform.position, "Laser").applyTo(sk.gameObject);
         else if (pi && pi.ClassId == "055b3160-f57b-46ba-80f5-b708d0c8180e" &&
-                 Vector3.Distance(mountainWreckBlock, sk.transform.position) <= 0.5)
+                 Vector3.Distance(MountainWreckBlock, sk.transform.position) <= 0.5)
             new WreckDoorSwaps.DoorSwap(sk.transform.position, "Blocked").applyTo(sk.gameObject);
     }
 
-    public static void onNuclearReactorSpawn(BaseNuclearReactor reactor) {
+    public static void OnNuclearReactorSpawn(BaseNuclearReactor reactor) {
         reactor.gameObject.EnsureComponent<NuclearReactorFuelSystem.ReactorManager>();
     }
 
-    public static void tickACU(WaterPark acu) {
+    public static void TickACU(WaterPark acu) {
         AcuCallbackSystem.Instance.Tick(acu);
     }
 
-    public static void tryBreedACU(WaterPark acu, WaterParkCreature creature) {
+    public static void TryBreedACU(WaterPark acu, WaterParkCreature creature) {
         if (!acu.items.Contains(creature))
             return;
         var tt = creature.pickupable.GetTechType();
@@ -123,7 +123,7 @@ public static class AEHooks {
             mate.ResetBreedTime();
     }
 
-    public static bool canAddItemToACU(Pickupable item) {
+    public static bool CanAddItemToAcu(Pickupable item) {
         if (!item)
             return false;
         var tt = item.GetTechType();
@@ -136,13 +136,13 @@ public static class AEHooks {
         return !lv || lv.IsAlive();
     }
 
-    public static void onChunkGenGrass(IVoxelandChunk2 chunk) {
+    public static void OnChunkGenGrass(IVoxelandChunk2 chunk) {
         foreach (Renderer r in chunk.grassRenders) {
             AcuTheming.CacheGrassMaterial(r.materials[0]);
         }
     }
 
-    public static float getCameraDistanceForRenderFX(MapRoomCamera cam, MapRoomScreen scr) {
+    public static float GetCameraDistanceForRenderFX(MapRoomCamera cam, MapRoomScreen scr) {
         var sub = cam.dockingPoint ? cam.dockingPoint.gameObject.GetComponentInParent<SubRoot>() : null;
         if (!sub) {
             sub = WorldUtil.getClosest<SubRoot>(cam.gameObject);
@@ -161,7 +161,7 @@ public static class AEHooks {
         return cam.GetScreenDistance(scr);
     }
 
-    private static bool isBuildingACUBuiltBlock() {
+    private static bool IsBuildingAcuBuiltBlock() {
         return (AqueousEngineeringMod.acuBoosterBlock != null &&
                 Builder.constructableTechType == AqueousEngineeringMod.acuBoosterBlock.TechType) ||
                (AqueousEngineeringMod.acuCleanerBlock != null &&
@@ -181,8 +181,8 @@ public static class AEHooks {
         return face && face.gameObject.name.Contains("WaterPark");
     }
     */
-    public static void enforceBuildability(DIHooks.BuildabilityCheck check) {
-        if (isBuildingACUBuiltBlock()) {
+    public static void EnforceBuildability(DIHooks.BuildabilityCheck check) {
+        if (IsBuildingAcuBuiltBlock()) {
             check.Placeable =
                 check.PlaceOn &&
                 check.PlaceOn.gameObject.FindAncestor<WaterParkGeometry>(); //isOnACU(check.placeOn && chec);
@@ -224,7 +224,7 @@ public static class AEHooks {
     }
    }*/
 
-    public static void interceptItemHarvest(DIHooks.KnifeHarvest h) {
+    public static void InterceptItemHarvest(DIHooks.KnifeHarvest h) {
         if (h.Hit && h.Drops.Count > 0) {
             var p = h.Hit.FindAncestor<Planter>();
             if (p && BaseRoomSpecializationSystem.instance.getSavedType(p) ==
@@ -235,7 +235,7 @@ public static class AEHooks {
         }
     }
 
-    public static void onPickup(DIHooks.ItemPickup ip) {
+    public static void OnPickup(DIHooks.ItemPickup ip) {
         var pp = ip.Item;
         if (BaseRoomSpecializationSystem.instance.getPlayerRoomType(Player.main) ==
             BaseRoomSpecializationSystem.RoomTypes.AGRICULTURAL) {
@@ -248,7 +248,7 @@ public static class AEHooks {
         }
     }
 
-    public static float getReactorGeneration(float orig, MonoBehaviour reactor) { //either bio or nuclear
+    public static float GetReactorGeneration(float orig, MonoBehaviour reactor) { //either bio or nuclear
         //SNUtil.writeToChat("Reactor gen "+orig+" in "+BaseRoomSpecializationSystem.instance.getSavedType(reactor));
         return BaseRoomSpecializationSystem.instance.getSavedType(reactor) ==
                BaseRoomSpecializationSystem.RoomTypes.POWER
@@ -256,7 +256,7 @@ public static class AEHooks {
             : orig;
     }
 
-    public static void onSleep(Bed bed) {
+    public static void OnSleep(Bed bed) {
         //SNUtil.writeToChat("Slept in "+BaseRoomSpecializationSystem.instance.getSavedType(bed));
         if (BaseRoomSpecializationSystem.instance.getSavedType(bed, out var deco, out var thresh) ==
             BaseRoomSpecializationSystem.RoomTypes.LEISURE)
@@ -266,7 +266,7 @@ public static class AEHooks {
             ).activate();
     }
 
-    public static void affectFoodRate(DIHooks.FoodRateCalculation calc) {
+    public static void AffectFoodRate(DIHooks.FoodRateCalculation calc) {
         var type = BaseRoomSpecializationSystem.instance.getPlayerRoomType(Player.main, out var deco, out var thresh);
         //SNUtil.writeToChat("Current player room type: "+type);
         if (type == BaseRoomSpecializationSystem.RoomTypes.LEISURE)
@@ -275,13 +275,13 @@ public static class AEHooks {
             calc.Rate *= 0.8F - 0.01F * Mathf.Min(5, deco);
     }
 
-    private static void affectCraftTime(DIHooks.CraftTimeCalculation calc) {
+    private static void AffectCraftTime(DIHooks.CraftTimeCalculation calc) {
         if (BaseRoomSpecializationSystem.instance.getSavedType(calc.Crafter) ==
             BaseRoomSpecializationSystem.RoomTypes.WORK)
             calc.CraftingDuration /= 1.5F;
     }
 
-    public static void onConstructionComplete(Constructable c, bool complete) {
+    public static void OnConstructionComplete(Constructable c, bool complete) {
         if (DIHooks.GetWorldAge() < 1F)
             return;
         if (Player.main.currentSub && Player.main.currentSub.isBase) {
@@ -289,33 +289,33 @@ public static class AEHooks {
         }
     }
 
-    public static void onInvClosed(StorageContainer sc) {
+    public static void OnInvClosed(StorageContainer sc) {
         if (Player.main.currentSub && Player.main.currentSub.isBase &&
             BaseRoomSpecializationSystem.instance.storageHasDecoValue(sc))
             BaseRoomSpecializationSystem.instance.updateRoom(sc.gameObject);
     }
 
-    public static float getWaterFilterPowerCost(float cost, FiltrationMachine c) {
+    public static float GetWaterFilterPowerCost(float cost, FiltrationMachine c) {
         //SNUtil.writeToChat("Waterfilter power cost "+cost+" in "+BaseRoomSpecializationSystem.instance.getSavedType(c));
         if (BaseRoomSpecializationSystem.instance.getSavedType(c) == BaseRoomSpecializationSystem.RoomTypes.MECHANICAL)
             cost *= 0.8F;
         return cost;
     }
 
-    public static float getChargerSpeed(float speed, Charger c) {
+    public static float GetChargerSpeed(float speed, Charger c) {
         //SNUtil.writeToChat("Charger speed "+speed+" in "+BaseRoomSpecializationSystem.instance.getSavedType(c));
         if (BaseRoomSpecializationSystem.instance.getSavedType(c) == BaseRoomSpecializationSystem.RoomTypes.MECHANICAL)
             speed *= 1.5F;
         return speed;
     }
 
-    public static void getCustomMachinePowerCostMultiplier(CustomMachinePowerCostFactorCheck ch) {
+    public static void GetCustomMachinePowerCostMultiplier(CustomMachinePowerCostFactorCheck ch) {
         if (BaseRoomSpecializationSystem.instance.getSavedType(ch.machine) ==
             BaseRoomSpecializationSystem.RoomTypes.MECHANICAL)
             ch.value *= 0.8F;
     }
 
-    public static void onBaseLoaded(BaseRoot root) {
+    public static void OnBaseLoaded(BaseRoot root) {
         BaseRoomSpecializationSystem.instance.recomputeBaseRooms(root, 1F);
     }
     /*
@@ -325,13 +325,13 @@ public static class AEHooks {
         pp.relock();
    }*/
 
-    public static void gravTryAttract(DIHooks.GravTrapGrabAttempt h) {
+    public static void GravTryAttract(DIHooks.GravTrapGrabAttempt h) {
         if (h.Gravtrap.GetComponent<ItemCollector.ItemCollectorLogic>()) {
             h.AllowGrab &= ItemCollector.ItemCollectorLogic.canGrab(h.Target);
         }
     }
 
-    public static void onTakeDamage(DIHooks.DamageToDeal dmg) {
+    public static void OnTakeDamage(DIHooks.DamageToDeal dmg) {
         if (dmg.Type == DamageType.Heat || dmg.Type == DamageType.Fire) {
             var pi = dmg.Target.FindAncestor<PrefabIdentifier>();
             if (pi && pi.ClassId == AqueousEngineeringMod.collector.ClassID)
@@ -339,7 +339,7 @@ public static class AEHooks {
         }
     }
 
-    public static void onEquipmentSlotActivated(uGUI_EquipmentSlot slot, bool active) {
+    public static void OnEquipmentSlotActivated(uGUI_EquipmentSlot slot, bool active) {
         if (active && !slot.active && slot.slot.StartsWith(
                 "NuclearReactor",
                 StringComparison.InvariantCultureIgnoreCase
@@ -348,16 +348,16 @@ public static class AEHooks {
         }
     }
 
-    public static void onPlacedItem(PlaceTool pt) {
+    public static void OnPlacedItem(PlaceTool pt) {
         if (Player.main.currentSub && Player.main.currentSub.isBase)
             BaseRoomSpecializationSystem.instance.updateRoom(pt.gameObject);
     }
 
-    public static void onBaseRebuild(Base b) {
+    public static void OnBaseRebuild(Base b) {
         MoonpoolRotationSystem.instance.rebuildBase(b);
     }
 
-    public static void onBaseHullCompute(DIHooks.BaseStrengthCalculation calc) {
+    public static void OnBaseHullCompute(DIHooks.BaseStrengthCalculation calc) {
         var arr = calc.Component.baseComp.GetComponentsInChildren<BasePillarLogic>();
         var pillarsByRoom = new Dictionary<BaseCell, RoomPillarTracker>();
         var bb = calc.Component.baseComp.GetComponent<BaseRoot>();
@@ -373,13 +373,13 @@ public static class AEHooks {
                 pillarsByRoom[bc] = tr;
             }
 
-            tr.pillars.Add(arr[i]);
+            tr.Pillars.Add(arr[i]);
         }
 
         foreach (var tr in pillarsByRoom.Values) {
             float eff = 1;
             var n = 0;
-            foreach (var lgc in tr.pillars) {
+            foreach (var lgc in tr.Pillars) {
                 n++;
                 calc.AddBonusStrength(
                     lgc.gameObject,
@@ -392,11 +392,11 @@ public static class AEHooks {
     }
 
     private class RoomPillarTracker {
-        internal readonly BaseCell room;
-        internal readonly List<BasePillarLogic> pillars = [];
+        internal readonly BaseCell Room;
+        internal readonly List<BasePillarLogic> Pillars = [];
 
         internal RoomPillarTracker(BaseCell bc) {
-            room = bc;
+            Room = bc;
         }
     }
 }

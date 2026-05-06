@@ -1,7 +1,7 @@
 import os
 import re
 
-ROOT = "../DragonIndustries_AlterraDivision/Patches"
+ROOT = "../AqueousEngineering/Patches"
 SC_ROOT = os.path.dirname(__file__)
 
 root_dir = os.path.join(SC_ROOT, ROOT)

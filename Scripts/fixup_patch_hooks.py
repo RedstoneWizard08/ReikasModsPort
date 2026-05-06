@@ -1,7 +1,7 @@
 import os
 import re
 
-ROOT = "../DragonIndustries_AlterraDivision/Patches"
+ROOT = "../AqueousEngineering/Patches"
 SC_ROOT = os.path.dirname(__file__)
 
 root_dir = os.path.join(SC_ROOT, ROOT)
@@ -19,7 +19,7 @@ for file in os.listdir(root_dir):
     found = False
 
     for line in lines:
-        if line.strip() == '"ReikaKalseki.DIAlterra.DIHooks",' and '"' in lines[pos + 1]:
+        if line.strip() == '"ReikaKalseki.AqueousEngineering.AEHooks",' and '"' in lines[pos + 1]:
             found = True
             break
 

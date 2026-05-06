@@ -10,7 +10,7 @@ namespace ReikaKalseki.AqueousEngineering;
 
 public static partial class AEPatches {
     [HarmonyPatch(typeof(BaseNuclearReactor))]
-    [HarmonyPatch("Update")]
+    [HarmonyPatch(nameof(BaseNuclearReactor.Update))]
     public static class NuclearReactorOverride {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -19,13 +19,13 @@ public static partial class AEPatches {
                 codes.add(OpCodes.Ret);
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());
             }
+
             return codes.AsEnumerable();
         }
     }
