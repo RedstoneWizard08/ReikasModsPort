@@ -341,14 +341,23 @@ public static class C2CIntegration {
         RecipeUtil.addIngredient(C2CItems.treatment.TechType, EcoceanMod.treeMushroomSpores.TechType, 2);
         //RecipeUtil.addIngredient(TechType.Polyaniline, EcoceanMod.planktonItem.TechType, 2);
 
-        C2CRecipes.replaceFiberMeshWithMicroFilter(AqueousEngineeringMod.acuCleanerBlock.TechType);
-        C2CRecipes.replaceFiberMeshWithMicroFilter(AqueousEngineeringMod.acuBoosterBlock.TechType);
-        C2CRecipes.replaceFiberMeshWithMicroFilter(AqueousEngineeringMod.planktonFeederBlock.TechType);
-        C2CRecipes.replaceFiberMeshWithMicroFilter(EcoceanMod.planktonScoop.TechType);
+        if (AqueousEngineeringMod.acuCleanerBlock != null)
+            C2CRecipes.replaceFiberMeshWithMicroFilter(AqueousEngineeringMod.acuCleanerBlock.TechType);
+
+        if (AqueousEngineeringMod.acuBoosterBlock != null)
+            C2CRecipes.replaceFiberMeshWithMicroFilter(AqueousEngineeringMod.acuBoosterBlock.TechType);
+
+        if (AqueousEngineeringMod.planktonFeederBlock != null)
+            C2CRecipes.replaceFiberMeshWithMicroFilter(AqueousEngineeringMod.planktonFeederBlock.TechType);
+
+        if (EcoceanMod.planktonScoop != null)
+            C2CRecipes.replaceFiberMeshWithMicroFilter(EcoceanMod.planktonScoop.TechType);
+
         RecipeUtil.removeIngredient(
             EcoceanMod.planktonScoop.TechType,
             EcoceanMod.mushroomVaseStrand.seed.TechType
         ); //since in the mesh
+
         RecipeUtil.addIngredient(
             CraftingItems.getItem(CraftingItems.Items.MicroFilter).TechType,
             EcoceanMod.mushroomVaseStrand.seed.TechType,
@@ -371,11 +380,14 @@ public static class C2CIntegration {
         //GenUtil.registerWorldgen(new PositionedPrefab(ExscansionMod.alienBase.ClassID, new Vector3())); //step cave
 
         CustomPrefab baseglass = ItemRegistry.instance.getItem("BaseGlass");
-        var amt = RecipeUtil.removeIngredient(
+        var rem = RecipeUtil.removeIngredient(
             TechType.BaseWaterPark,
             baseglass != null ? baseglass.TechType : TechType.Glass
-        ).amount;
-        RecipeUtil.addIngredient(TechType.BaseWaterPark, TechType.EnameledGlass, amt);
+        );
+        if (rem != null) {
+            var amt = rem.amount;
+            RecipeUtil.addIngredient(TechType.BaseWaterPark, TechType.EnameledGlass, amt);
+        }
 
         var ghostRayEgg = CustomEgg.GetEgg(TechType.GhostRayBlue);
         if (ghostRayEgg != null)
@@ -498,12 +510,14 @@ public static class C2CIntegration {
         FoodEffectSystem.instance.addPoisonEffect(C2CItems.purpleBoomerang.TechType, 50, 30);
         FoodEffectSystem.instance.addPoisonEffect(C2CItems.purpleHoopfish.TechType, 80, 30);
 
-        FoodEffectSystem.instance.addVomitingEffect(C2CItems.sanctuaryPlant.seed.TechType, 60, 40, 5, 2, 5);
-        FoodEffectSystem.instance.addEffect(
-            C2CItems.sanctuaryPlant.seed.TechType,
-            (s, go) => PlayerMovementSpeedModifier.add(1.8F, 180),
-            FoodEffectSystem.instance.getLocaleEntry("speed")
-        );
+        if (C2CItems.sanctuaryPlant.seed != null)
+            FoodEffectSystem.instance.addVomitingEffect(C2CItems.sanctuaryPlant.seed.TechType, 60, 40, 5, 2, 5);
+        if (C2CItems.sanctuaryPlant.seed != null)
+            FoodEffectSystem.instance.addEffect(
+                C2CItems.sanctuaryPlant.seed.TechType,
+                (s, go) => PlayerMovementSpeedModifier.add(1.8F, 180),
+                FoodEffectSystem.instance.getLocaleEntry("speed")
+            );
 
         FoodEffectSystem.instance.addVomitingEffect(
             CraftingItems.getItem(CraftingItems.Items.AmoeboidSample).TechType,

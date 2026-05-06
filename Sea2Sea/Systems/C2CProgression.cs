@@ -10,7 +10,11 @@ using UnityEngine;
 namespace ReikaKalseki.SeaToSea;
 
 public class C2CProgression : IStoryGoalListener {
-    public static readonly C2CProgression Instance = new();
+    public static C2CProgression Instance { get; private set; }
+
+    public static void Init() {
+        Instance ??= new C2CProgression();
+    }
 
     internal readonly Vector3 Pod12Location = new(1117, -268, 568);
     internal readonly Vector3 Pod3Location = new(-33, -23, 409);
@@ -132,10 +136,12 @@ public class C2CProgression : IStoryGoalListener {
                 0.00003F
             )
         );
+        
         StoryHandler.instance.registerTrigger(
             new TechTrigger(TechType.PrecursorKey_Orange),
             new DelayedStoryEffect(SeaToSeaMod.CrashMesaRadio, 0.00004F)
         );
+        
         StoryHandler.instance.registerTrigger(
             new ProgressionTrigger(ep => ep.GetVehicle() is SeaMoth),
             new DelayedProgressionEffect(
@@ -185,7 +191,7 @@ public class C2CProgression : IStoryGoalListener {
             new DunesPrompt()
         );
         StoryHandler.instance.registerTrigger(new PdaPromptCondition(new StoryTrigger(MeteorGoal)), new MeteorPrompt());
-
+        
         AddPdaPrompt(PDAMessages.Messages.FollowRadioPrompt, HasMissedRadioSignals);
 
         StoryHandler.instance.registerTrigger(
@@ -210,7 +216,7 @@ public class C2CProgression : IStoryGoalListener {
         foreach (var g in _locationGoals.Values) {
             StoryHandler.instance.registerTickedGoal(g);
         }
-
+        
         _securityNodePdaLine = SoundManager.registerPDASound(
             SeaToSeaMod.ModDLL,
             "pda_pcf_node",

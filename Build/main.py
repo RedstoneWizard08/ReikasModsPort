@@ -57,7 +57,6 @@ projects: dict[str, tuple[str, list[str]]] = {
             "Textures",
             "XML",
             "current-version.txt",
-            "handlerargs.dat",
             "statdump.xml",
             "worldhash.dat",
         ],
@@ -271,19 +270,19 @@ for name, (dir_name, extra_files) in projects.items():
 
     log.step(name, "Creating archive...")
 
-    if os.path.exists(archive_path):
-        os.remove(archive_path)
+    # if os.path.exists(archive_path):
+    #     os.remove(archive_path)
 
-    with zipfile.ZipFile(archive_path, "w") as zip:
-        for root, _, files in os.walk(temp_dir):
-            for file in files:
-                path = os.path.join(root, file)
-                zip_path = dir_name + "/" + os.path.relpath(path, temp_dir)
+    # with zipfile.ZipFile(archive_path, "w") as zip:
+    #     for root, _, files in os.walk(temp_dir):
+    #         for file in files:
+    #             path = os.path.join(root, file)
+    #             zip_path = dir_name + "/" + os.path.relpath(path, temp_dir)
 
-                zip.write(path, zip_path)
+    #             zip.write(path, zip_path)
 
-    with open(archive_path, "rb") as f:
-        archive_hash = hashlib.sha256(f.read()).hexdigest()
+    # with open(archive_path, "rb") as f:
+    #     archive_hash = hashlib.sha256(f.read()).hexdigest()
 
     log.step(name, "Saving cache...")
 

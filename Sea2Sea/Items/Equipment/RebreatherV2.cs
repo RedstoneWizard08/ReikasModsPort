@@ -15,7 +15,7 @@ public sealed class RebreatherV2 : CustomEquipable {
 
     public override CraftTree.Type FabricatorType => CraftTree.Type.Workbench;
 
-    public override string[] StepsToFabricatorTab => ["TankMenu"];
+    public override string[] StepsToFabricatorTab => [];
 
     public override void prepareGameObject(GameObject go, Renderer[] r) {
     }

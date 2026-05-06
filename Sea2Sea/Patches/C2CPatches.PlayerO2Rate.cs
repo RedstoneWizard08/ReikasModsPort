@@ -17,7 +17,7 @@ internal static partial class C2CPatches {
             InsnList codes = [];
             try {
                 codes.add(OpCodes.Ldarg_0);
-                codes.invoke("ReikaKalseki.SeaToSea.C2CHooks", "getPlayerO2Rate", false, typeof(Player));
+                codes.invoke("ReikaKalseki.SeaToSea.C2CHooks", nameof(C2CHooks.GetPlayerO2Rate), false, typeof(Player));
                 codes.add(OpCodes.Ret);
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {

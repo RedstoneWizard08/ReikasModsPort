@@ -22,7 +22,7 @@ public sealed class LiquidTank : CustomEquipable {
 
     public override CraftTree.Type FabricatorType => CraftTree.Type.Workbench;
 
-    public override string[] StepsToFabricatorTab => ["TankMenu"];
+    public override string[] StepsToFabricatorTab => [];
 
     public override void prepareGameObject(GameObject go, Renderer[] r) {
         var o2 = go.EnsureComponent<Oxygen>();

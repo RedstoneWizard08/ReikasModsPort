@@ -1097,11 +1097,15 @@ public static class C2CRecipes {
     }
 
     public static void replaceFiberMeshWithMicroFilter(TechType tt) {
-        RecipeUtil.addIngredient(
-            tt,
-            CraftingItems.getItem(CraftingItems.Items.MicroFilter).TechType,
-            RecipeUtil.removeIngredient(tt, TechType.FiberMesh).amount
-        );
+        var add = CraftingItems.getItem(CraftingItems.Items.MicroFilter);
+        var rem = RecipeUtil.removeIngredient(tt, TechType.FiberMesh);
+
+        if (add != null && rem != null)
+            RecipeUtil.addIngredient(
+                tt,
+                add.TechType,
+                rem.amount
+            );
     }
 
     private static void addItemToRecipe(TechType tt, TechType add, int amt = 1) {

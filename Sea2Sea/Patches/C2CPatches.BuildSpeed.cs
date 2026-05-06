@@ -16,7 +16,12 @@ internal static partial class C2CPatches {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
             InsnList codes = [];
             try {
-                codes.invoke("ReikaKalseki.SeaToSea.C2CHooks", "getConstructableSpeed", false, new Type[0]);
+                codes.invoke(
+                    "ReikaKalseki.SeaToSea.C2CHooks",
+                    nameof(C2CHooks.GetConstructableSpeed),
+                    false,
+                    new Type[0]
+                );
                 codes.add(OpCodes.Ret);
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Xml;
 using Nautilus.Assets;
+using Nautilus.Utility;
 using UnityEngine;
 
 namespace ReikaKalseki.DIAlterra;
@@ -22,9 +23,8 @@ public static class SaveSystem {
     public static bool debugSave = false;
 
     static SaveSystem() {
-        // TODO
-        // IngameMenuHandler.Main.RegisterOnLoadEvent(handleLoad);
-        // IngameMenuHandler.Main.RegisterOnSaveEvent(handleSave);
+        SaveUtils.RegisterOnSaveEvent(handleSave);
+        SaveUtils.RegisterOnStartLoadingEvent(handleLoad);
 
         oldSaveDir = Path.Combine(Path.GetDirectoryName(SNUtil.DiDLL.Location), "persistentData");
         SNUtil.MigrateSaveDataFolder(oldSaveDir, ".dat", saveFileName);

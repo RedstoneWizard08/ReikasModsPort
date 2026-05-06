@@ -361,8 +361,8 @@ public sealed class VoidSpike : WorldGenerator {
         internal readonly LargeWorldEntity.CellLevel level;
 
         [SetsRequiredMembers]
-        internal LargeWorldLevelPrefab(string template, LargeWorldEntity.CellLevel lvl) : base(
-            "void_" + template,
+        internal LargeWorldLevelPrefab(string template, LargeWorldEntity.CellLevel lvl, string add = "") : base(
+            "void_" + template + add,
             template
         ) {
             level = lvl;
@@ -571,7 +571,10 @@ public sealed class VoidSpike : WorldGenerator {
         internal readonly bool isCenter;
 
         [SetsRequiredMembers]
-        internal SpikePrefab(string template, bool c) : base(template, LargeWorldEntity.CellLevel.VeryFar) {
+        internal SpikePrefab(string template, bool c) : base(
+            template + (c ? "_center" : ""),
+            LargeWorldEntity.CellLevel.VeryFar
+        ) {
             isCenter = c;
         }
 

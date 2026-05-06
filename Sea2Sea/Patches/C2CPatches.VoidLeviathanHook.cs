@@ -18,7 +18,7 @@ internal static partial class C2CPatches {
             try {
                 codes.Clear();
                 codes.add(OpCodes.Ldarg_1);
-                codes.invoke("ReikaKalseki.SeaToSea.C2CHooks", "isSpawnableVoid", false, typeof(string));
+                codes.invoke("ReikaKalseki.SeaToSea.C2CHooks", "IsSpawnableVoid", false, typeof(string));
                 codes.add(OpCodes.Ret);
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);

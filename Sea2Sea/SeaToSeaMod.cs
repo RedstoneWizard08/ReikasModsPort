@@ -707,9 +707,10 @@ public static SoundManager.SoundData voidspikeLeviAmbient;
             () => EnvironmentalDamageSystem.Instance
         );
 
+        C2CProgression.Init();
         POITeleportSystem.instance.populate();
         System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(C2CUnlocks).TypeHandle);
-        System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(C2CProgression).TypeHandle);
+        // System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(C2CProgression).TypeHandle);
         DataCollectionTracker.instance.register();
         MoraleSystem.instance.register();
 

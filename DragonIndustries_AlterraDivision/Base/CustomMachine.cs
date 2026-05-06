@@ -108,7 +108,8 @@ public abstract class CustomMachine<M> : CustomPrefab, DIPrefab<CustomMachine<M>
                 e.destroyAfterScan = shouldDeleteFragments();
                 e.isFragment = true;
                 e.totalFragments = needed;
-                e.key = GenUtil.getFragment(Info.TechType, 0).Info.TechType;
+                var frag = GenUtil.getFragment(Info.TechType, 0);
+                if (frag != null) e.key = frag.Info.TechType;
                 if (page != null)
                     e.encyclopedia = page.id;
             }

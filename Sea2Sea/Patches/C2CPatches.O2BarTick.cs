@@ -30,7 +30,7 @@ internal static partial class C2CPatches {
                     idx,
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.SeaToSea.C2CHooks",
-                        "getO2RedPulseTime",
+                        nameof(C2CHooks.GetO2RedPulseTime),
                         false,
                         typeof(float)
                     )

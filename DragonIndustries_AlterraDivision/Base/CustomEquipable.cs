@@ -44,13 +44,6 @@ public abstract class CustomEquipable : CustomPrefab, DIPrefab<CustomEquipable, 
 
         AddOnRegister(() => {
                 ItemRegistry.instance.addItem(this);
-                if (page != null)
-                    TechnologyUnlockSystem.instance.registerPage(Info.TechType, page);
-
-                if (!UnlockedAtStart) {
-                    this.SetUnlock(RequiredForUnlock);
-                }
-
                 var craft = this.SetRecipe(GetBlueprintRecipe());
 
                 craft.FabricatorType = FabricatorType;
@@ -62,6 +55,13 @@ public abstract class CustomEquipable : CustomPrefab, DIPrefab<CustomEquipable, 
                 var equip = this.SetEquipment(EquipmentType);
 
                 equip.QuickSlotType = QuickSlotType;
+
+                if (!UnlockedAtStart) {
+                    this.SetUnlock(RequiredForUnlock);
+                }
+
+                if (page != null)
+                    TechnologyUnlockSystem.instance.registerPage(Info.TechType, page);
             }
         );
     }

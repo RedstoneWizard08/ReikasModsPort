@@ -23,6 +23,6 @@ public sealed class SealedSuit : CustomEquipable {
     public override sealed EquipmentType EquipmentType => EquipmentType.Body;
 
     public override List<TechType> getAuxCrafted() {
-        return [C2CItems.sealGloves.Info.TechType];
+        return C2CItems.sealGloves != null ? [C2CItems.sealGloves.Info.TechType] : [];
     }
 }

@@ -231,7 +231,7 @@ public static class PDAManager {
         public StringPrefabContainer baseTemplate { get; set; }
 
         [SetsRequiredMembers]
-        internal PDAPrefab(PDAPage p) : base(p.id, p.name, "PDA page " + p.name) {
+        internal PDAPrefab(PDAPage p) : base(p.id + "_pdaPage", p.name, "PDA page " + p.name) {
             page = p;
             baseTemplate = new StringPrefabContainer("0f1dd54e-b36e-40ca-aa85-d01df1e3e426"); //blood kelp PDA
             SetGameObject(GetGameObject);

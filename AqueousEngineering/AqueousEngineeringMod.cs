@@ -246,11 +246,13 @@ public class AqueousEngineeringMod : BaseUnityPlugin {
         distributorBlock = createMachine<ItemDistributor, ItemDistributorLogic>("ItemDistributor");
         pillarBlock = createMachine<BasePillar, BasePillarLogic>("BasePillar");
         wirelessChargerBlock = createMachine<WirelessCharger, WirelessChargerLogic>("WirelessCharger");
+
         var li = VanillaFlora.MUSHROOM_BUMP.getPrefabs(true, true)?.ToArray();
 
-        if (li != null && li.Length > 0) {
-            repairBeaconFragments = new CustomPrefab[li.Length - 2];
+        repairBlock = createMachine<RepairBeacon, RepairBeaconLogic>("BaseRepairBeacon");
+        repairBeaconFragments = new CustomPrefab[li == null ? 0 : li.Length - 2];
 
+        if (li is { Length: > 0 }) {
             for (var i = 1; i < li.Length - 1; i++) {
                 //only idx 1,2,3 since 0 is rotated and tall and 4 has a light and is just 3 anyway
                 var frag = new CustomPrefab(li[i], "", "");
@@ -266,22 +268,25 @@ public class AqueousEngineeringMod : BaseUnityPlugin {
                         go.removeComponent<FMOD_StudioEventEmitter>();
                         go.removeComponent<Pickupable>();
                         go.EnsureComponent<NaniteFragment>();
-                        foreach (Renderer r in go.GetComponentsInChildren<Renderer>()) {
+                        foreach (var r in go.GetComponentsInChildren<Renderer>()) {
                             RenderUtil.swapTextures(modDLL, r, "Textures/RepairFragment");
                             RenderUtil.setGlossiness(r, 1.5F, 0, 0.85F);
                             RenderUtil.setEmissivity(r, 10);
                         }
 
-                        foreach (Collider c in go.GetComponentsInChildren<Collider>()) {
-                            if (c is BoxCollider collider)
-                                collider.size *= 1.5F;
-                            if (c is SphereCollider s) {
-                                s.radius *= 1.5F;
-                                s.radius = Mathf.Max(0.225F, s.radius);
+                        foreach (var c in go.GetComponentsInChildren<Collider>()) {
+                            switch (c) {
+                                case BoxCollider collider:
+                                    collider.size *= 1.5F;
+                                    break;
+                                case SphereCollider s:
+                                    s.radius *= 1.5F;
+                                    s.radius = Mathf.Max(0.225F, s.radius);
+                                    break;
+                                case CapsuleCollider capsuleCollider:
+                                    capsuleCollider.radius *= 1.5F;
+                                    break;
                             }
-
-                            if (c is CapsuleCollider capsuleCollider)
-                                capsuleCollider.radius *= 1.5F;
                         }
 
                         return go;
@@ -292,20 +297,16 @@ public class AqueousEngineeringMod : BaseUnityPlugin {
             }
         }
 
-        repairBlock = createMachine<RepairBeacon, RepairBeaconLogic>("BaseRepairBeacon");
         repairBlock.addFragments(1, 6F, repairBeaconFragments);
-
         worldgen.load();
 
-        var count = 0;
-        foreach (var f in repairBeaconFragments) {
-            count += worldgen.getCount(f.Info.ClassID);
-            // TODO
-            // f.setDisplayName(machineLocale.getEntry("BaseRepairBeacon").getString("frag"));
-        }
+        var count = repairBeaconFragments.Sum(f => worldgen.getCount(f.Info.ClassID));
 
         SNUtil.Log("Found " + count + " " + repairBlock.ClassID + " fragments to use", modDLL);
-        PDAHandler.EditFragmentsToScan(GenUtil.getFragment(repairBlock.TechType, 0).TechType, count);
+
+        var repairBlockFrag = GenUtil.getFragment(repairBlock.TechType, 0);
+        
+        if (repairBlockFrag != null) PDAHandler.EditFragmentsToScan(repairBlockFrag.TechType, count);
 
         outdoorBasicPot = new OutdoorPot(TechType.PlanterPot);
         outdoorCompositePot = new OutdoorPot(TechType.PlanterPot2);
