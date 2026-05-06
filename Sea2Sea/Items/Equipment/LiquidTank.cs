@@ -27,9 +27,9 @@ public sealed class LiquidTank : CustomEquipable {
     public override void prepareGameObject(GameObject go, Renderer[] r) {
         var o2 = go.EnsureComponent<Oxygen>();
         o2.oxygenAvailable = 0;
-        o2.oxygenCapacity = LiquidBreathingSystem.TANK_CAPACITY;
+        o2.oxygenCapacity = LiquidBreathingSystem.TankCapacity;
         var b = go.EnsureComponent<Battery>();
-        b._capacity = LiquidBreathingSystem.ITEM_VALUE;
+        b._capacity = LiquidBreathingSystem.ItemValue;
     }
 
     public override EquipmentType EquipmentType => EquipmentType.Tank;

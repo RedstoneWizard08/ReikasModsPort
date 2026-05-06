@@ -246,9 +246,9 @@ public class AqueousEngineeringMod : BaseUnityPlugin {
         distributorBlock = createMachine<ItemDistributor, ItemDistributorLogic>("ItemDistributor");
         pillarBlock = createMachine<BasePillar, BasePillarLogic>("BasePillar");
         wirelessChargerBlock = createMachine<WirelessCharger, WirelessChargerLogic>("WirelessCharger");
-        var li = VanillaFlora.MUSHROOM_BUMP.getPrefabs(true, true).ToArray();
+        var li = VanillaFlora.MUSHROOM_BUMP.getPrefabs(true, true)?.ToArray();
 
-        if (li.Length > 0) {
+        if (li != null && li.Length > 0) {
             repairBeaconFragments = new CustomPrefab[li.Length - 2];
 
             for (var i = 1; i < li.Length - 1; i++) {

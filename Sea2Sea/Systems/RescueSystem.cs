@@ -102,7 +102,7 @@ public class RescueSystem {
         float dur = 60 * 20; //20 min
         Drunk.add(dur).intensity = 0.5F; //only slow player and make them woozy at 50% power
         HealthModifier.add(2.5F, dur); //2.5x damage for the 20 min
-        EnvironmentalDamageSystem.instance.setRecoveryWarning(dur);
+        EnvironmentalDamageSystem.Instance.SetRecoveryWarning(dur);
         //O2ConsumptionRateModifier.add(1.5F, dur); //x1.5 O2 use for the 20 min
 
         uGUI_PlayerDeath.main.SendMessage(

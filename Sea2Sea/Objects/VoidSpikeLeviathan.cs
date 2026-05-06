@@ -11,12 +11,12 @@ namespace ReikaKalseki.SeaToSea;
 
 public class VoidSpikeLeviathan : CreatureAsset {
     private static readonly int Fresnel = Shader.PropertyToID("_Fresnel");
-    private readonly XMLLocale.LocaleEntry locale;
+    private readonly XMLLocale.LocaleEntry _locale;
 
     internal VoidSpikeLeviathan(XMLLocale.LocaleEntry e) : base(
         PrefabInfo.WithTechType("voidspikelevi", e.name, e.desc)
     ) {
-        locale = e;
+        _locale = e;
 
         // const string path = "Lifeforms/Fauna/Leviathans";
         //
@@ -34,12 +34,12 @@ public class VoidSpikeLeviathan : CreatureAsset {
         // PDAHandler.AddEncyclopediaEntry(encyEntryData);
     }
 
-    protected override CreatureTemplate CreateTemplate() {
+    public override CreatureTemplate CreateTemplate() {
         var liveMixinData = ScriptableObject.CreateInstance<LiveMixinData>();
 
         liveMixinData.maxHealth = 75000f; //15x reaper
 
-        var template = new CreatureTemplate(loadAsset(), BehaviourType.Leviathan, EcoTargetType.Leviathan, 600f) {
+        var template = new CreatureTemplate(LoadAsset(), BehaviourType.Leviathan, EcoTargetType.Leviathan, 600f) {
             CellLevel = LargeWorldEntity.CellLevel.VeryFar,
             SwimRandomData = new SwimRandomData(0.1F, 10F, Vector3.one * 150, 5F, 1f, true),
             StayAtLeashData = new StayAtLeashData(0.5F, 10f, 150),
@@ -54,6 +54,7 @@ public class VoidSpikeLeviathan : CreatureAsset {
             BehaviourLODData = new BehaviourLODData(600, 999, 999),
             TraitsData = new CreatureTraitsData(0.1f, 0.02f, 0.25f),
             LiveMixinData = liveMixinData,
+            LocomotionData = new LocomotionData(forwardRotationSpeed: 0.5f, upRotationSpeed: 0.8f),
         };
 
         template.AddAggressiveWhenSeeTargetData(
@@ -71,11 +72,7 @@ public class VoidSpikeLeviathan : CreatureAsset {
         return template;
     }
 
-    protected override IEnumerator ModifyPrefab(GameObject prefab, CreatureComponents cc) {
-        // //if you have special components you want to add here (like your own custom CreatureActions) then add them here
-        // if (cc.renderer)
-        //     cc.renderer.materials[0].SetFloat("_Fresnel", 0.8F);
-
+    public override IEnumerator ModifyPrefab(GameObject prefab, CreatureComponents cc) {
         if (cc.InfectedMixin) cc.InfectedMixin.RemoveInfection();
         if (cc.Locomotion) cc.Locomotion.maxVelocity = 30f;
 
@@ -101,21 +98,18 @@ public class VoidSpikeLeviathan : CreatureAsset {
         yield break;
     }
 
-    protected override void ApplyMaterials(GameObject prefab) {
+    public override void ApplyMaterials(GameObject prefab) {
         MaterialUtils.ApplySNShaders(prefab, 1f, 3f, 2f, new VoidSpikeMaterialMods());
     }
 
-    // public override float TurnSpeedHorizontal => 0.5F;
-    // public override float TurnSpeedVertical => 0.8F;
-
-    private static GameObject loadAsset() {
+    private static GameObject LoadAsset() {
         var ab = ReikaKalseki.DIAlterra.AssetBundleManager.getBundle(SeaToSeaMod.ModDLL, "voidlevi");
         return ab.LoadAsset<GameObject>("VoidSpikeLevi_FixedRig");
     }
 
     public void register() {
         Register();
-        SNUtil.AddPdaEntry(CustomPrefab, 20, "Lifeforms/Fauna/Leviathans", locale.pda, locale.getString("header"));
+        SNUtil.AddPdaEntry(CustomPrefab, 20, "Lifeforms/Fauna/Leviathans", _locale.pda, _locale.getString("header"));
     }
 
     public static void MakeReefbackTest() {

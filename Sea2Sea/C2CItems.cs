@@ -545,20 +545,20 @@ public static class C2CItems {
             treatment.Info.TechType,
             (s, go) => {
                 var time = DayNightCycle.main.timePassedAsFloat;
-                return LiquidBreathingSystem.instance.useKharaaTreatment();
+                return LiquidBreathingSystem.Instance.UseKharaaTreatment();
             }
         );
         UsableItemRegistry.instance.addUsableItem(
             CraftingItems.getItem(CraftingItems.Items.WeakEnzyme42).Info.TechType,
             (s, go) => {
                 var time = DayNightCycle.main.timePassedAsFloat;
-                return LiquidBreathingSystem.instance.applyTemporaryKharaaTreatment();
+                return LiquidBreathingSystem.Instance.ApplyTemporaryKharaaTreatment();
             }
         );
         UsableItemRegistry.instance.addUsableItem(
             oxygeniteCharge.Info.TechType,
             (s, go) => {
-                if (LiquidBreathingSystem.instance.hasLiquidBreathing())
+                if (LiquidBreathingSystem.Instance.HasLiquidBreathing())
                     return false;
                 var ii = Inventory.main.equipment.GetItemInSlot("Tank");
                 if (ii == null || !ii.item)

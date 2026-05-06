@@ -113,10 +113,10 @@ public class RebreatherRechargerLogic : CustomMachineLogic {
             var p = Player.main;
             if (p.currentSub != null && seabase.gameObject == p.currentSub.gameObject) {
                 //SNUtil.writeToChat("Player in base with recharger, has "+available);
-                LiquidBreathingSystem.instance.refillFrom(this, seconds);
+                LiquidBreathingSystem.Instance.RefillFrom(this, seconds);
             }
 
-            LiquidBreathingSystem.instance.applyToBasePipes(this, seabase);
+            LiquidBreathingSystem.Instance.ApplyToBasePipes(this, seabase);
         }
 
         var cost = _inUse ? RebreatherRecharger.PowerCostActive : RebreatherRecharger.PowerCostIdle;
@@ -126,7 +126,7 @@ public class RebreatherRechargerLogic : CustomMachineLogic {
             _secsNoPwr = 0;
             Sound.Play();
             if (_available < 6000 && storage.container.GetCount(C2CItems.breathingFluid.TechType) > 0) {
-                _available += LiquidBreathingSystem.ITEM_VALUE;
+                _available += LiquidBreathingSystem.ItemValue;
                 storage.container.DestroyItem(C2CItems.breathingFluid.TechType);
             }
         } else {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using BepInEx;
+using ECCLibrary;
 using HarmonyLib;
 using JetBrains.Annotations;
 using Nautilus.Assets;
@@ -26,6 +27,7 @@ namespace ReikaKalseki.SeaToSea;
 [BepInDependency(EcoceanMod.MOD_KEY)]
 [BepInDependency(ExscansionMod.MOD_KEY)]
 [BepInDependency(ReefbalanceMod.ModKey)]
+[BepInDependency(ECCLibrary.PluginInfo.GUID)]
 public class SeaToSeaMod : BaseUnityPlugin {
     public const string ModKey = "ReikaKalseki.SeaToSea";
 
@@ -694,16 +696,15 @@ public static SoundManager.SoundData voidspikeLeviAmbient;
     }
 
     internal static void InitHandlers() {
-        var h = Harmony;
         SaveSystem.addPlayerSaveCallback(
             typeof(LiquidBreathingSystem),
-            "kharaaTreatmentRemainingTime",
-            () => LiquidBreathingSystem.instance
+            "KharaaTreatmentRemainingTime",
+            () => LiquidBreathingSystem.Instance
         );
         SaveSystem.addPlayerSaveCallback(
             typeof(EnvironmentalDamageSystem),
-            "recoveryWarningEndTime",
-            () => EnvironmentalDamageSystem.instance
+            "_recoveryWarningEndTime",
+            () => EnvironmentalDamageSystem.Instance
         );
 
         POITeleportSystem.instance.populate();
@@ -1133,7 +1134,7 @@ public static SoundManager.SoundData voidspikeLeviAmbient;
             "c2cENVHEAT",
             b => {
                 if (SNUtil.CanUseDebug())
-                    EnvironmentalDamageSystem.instance.TEMPERATURE_OVERRIDE = b;
+                    EnvironmentalDamageSystem.Instance.TemperatureOverride = b;
             }
         );
         ConsoleCommandsHandler.RegisterConsoleCommand<Action<bool>>(

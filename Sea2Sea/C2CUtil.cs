@@ -62,9 +62,9 @@ public static class C2CUtil {
 
     public static bool playerCanHeal() {
         var ep = Player.main;
-        return !EnvironmentalDamageSystem.instance.isPlayerRecoveringFromPressure() && (!ep.IsSwimming() ||
-            ep.GetDepth() < EnvironmentalDamageSystem.depthDamageStart ||
-            LiquidBreathingSystem.instance.hasLiquidBreathing());
+        return !EnvironmentalDamageSystem.Instance.IsPlayerRecoveringFromPressure() && (!ep.IsSwimming() ||
+            ep.GetDepth() < EnvironmentalDamageSystem.DepthDamageStart ||
+            LiquidBreathingSystem.Instance.HasLiquidBreathing());
     }
     /*
     public static GameObject createMergedPropGun(bool toInv = false) {

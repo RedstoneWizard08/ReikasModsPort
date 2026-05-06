@@ -144,7 +144,7 @@ internal class MountainGlowTag : MonoBehaviour {
     }
 
     private void OnTriggerStay(Collider other) {
-        if (EnvironmentalDamageSystem.instance.isPlayerInOcean() &&
+        if (EnvironmentalDamageSystem.Instance.IsPlayerInOcean() &&
             DayNightCycle.main.timePassedAsFloat - lastDamageTime >= 0.05F && !other.isTrigger && other.isPlayer()) {
             C2CItems.hasSealedOrReinforcedSuit(out var trash, out var suit);
             if (!suit) {

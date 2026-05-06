@@ -9,3 +9,4 @@ Prebuilt
 cache.json
 __pycache__
 .build
+Scripts/check

@@ -31,7 +31,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Reference Include="ECCLibrary">
+      <Reference Include="ECCLibrary" Publicize="true">
         <HintPath>..\Dependencies\ECCLibrary\ECCLibrary.dll</HintPath>
       </Reference>
     </ItemGroup>

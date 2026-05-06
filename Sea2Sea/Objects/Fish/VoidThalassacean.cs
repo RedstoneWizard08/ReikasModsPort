@@ -25,7 +25,7 @@ public class VoidThalassacean : CreatureAsset {
         );
     }
 
-    protected override CreatureTemplate CreateTemplate() {
+    public override CreatureTemplate CreateTemplate() {
         var liveMixinData = ScriptableObject.CreateInstance<LiveMixinData>();
 
         liveMixinData.maxHealth = 1800f;
@@ -51,7 +51,7 @@ public class VoidThalassacean : CreatureAsset {
         return template;
     }
 
-    protected override IEnumerator ModifyPrefab(GameObject prefab, CreatureComponents cc) {
+    public override IEnumerator ModifyPrefab(GameObject prefab, CreatureComponents cc) {
         if (cc.Locomotion) cc.Locomotion.maxVelocity = 6f;
 
         var trailManagerBuilder = new TrailManagerBuilder(cc, prefab.transform.SearchChild("root")) {

@@ -404,7 +404,7 @@ internal class C2CMoth : MonoBehaviour {
             useSeamothVehicleTemperature = false;
             var Tamb = temperatureDamage.GetTemperature(); // this will call WaterTempSim, after the lava checks in DI
             if (seamoth.docked || seamoth.IsInsideAquarium() ||
-                EnvironmentalDamageSystem.instance.isInPrecursor(gameObject))
+                EnvironmentalDamageSystem.Instance.IsInPrecursor(gameObject))
                 Tamb = 25;
             else if (kooshCave)
                 Tamb = 95;

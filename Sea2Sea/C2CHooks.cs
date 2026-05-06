@@ -443,7 +443,7 @@ public static class C2CHooks {
 
     public static void TickBase(BaseRoot sub) {
         if (sub.IsLeaking()) {
-            var leak = EnvironmentalDamageSystem.instance.getLRPowerLeakage(sub.gameObject); //ranges from 1 to 1.75
+            var leak = EnvironmentalDamageSystem.Instance.GetLrPowerLeakage(sub.gameObject); //ranges from 1 to 1.75
             var f = 1 + leak * 4; //1/s base, LR 5-8/s
             var arr = sub.flood.cellWaterLevel;
             float sum = 0;
@@ -523,34 +523,34 @@ public static class C2CHooks {
         if (Time.deltaTime > 0)
             BKelpBumpWormSpawner.tickSpawnValidation(ep);
 
-        if (LiquidBreathingSystem.instance.hasTankButNoMask()) {
+        if (LiquidBreathingSystem.Instance.HasTankButNoMask()) {
             var ox = Inventory.main.equipment.GetItemInSlot("Tank").item.gameObject.GetComponent<Oxygen>();
             ep.oxygenMgr.UnregisterSource(ox);
             ep.oxygenMgr.UnregisterSource(_playerBaseO2);
-        } else if (LiquidBreathingSystem.instance.hasLiquidBreathing()) {
+        } else if (LiquidBreathingSystem.Instance.HasLiquidBreathing()) {
             //SNUtil.writeToChat("Tick liquid breathing: "+LiquidBreathingSystem.instance.isLiquidBreathingActive(ep));
             var ox = Inventory.main.equipment.GetItemInSlot("Tank").item.gameObject.GetComponent<Oxygen>();
-            if (LiquidBreathingSystem.instance.isLiquidBreathingActive(ep)) {
-                LiquidBreathingSystem.instance.tickLiquidBreathing(true, true);
+            if (LiquidBreathingSystem.Instance.IsLiquidBreathingActive(ep)) {
+                LiquidBreathingSystem.Instance.TickLiquidBreathing(true, true);
                 ep.oxygenMgr.UnregisterSource(_playerBaseO2);
                 ep.oxygenMgr.RegisterSource(ox);
             } else {
-                LiquidBreathingSystem.instance.tickLiquidBreathing(true, false);
+                LiquidBreathingSystem.Instance.TickLiquidBreathing(true, false);
                 ep.oxygenMgr.UnregisterSource(ox);
                 ep.oxygenMgr.RegisterSource(_playerBaseO2);
                 var add = Mathf.Min(ep.oxygenMgr.oxygenUnitsPerSecondSurface, ox.oxygenCapacity - ox.oxygenAvailable) *
                           Time.deltaTime;
                 if (add > 0.01) {
-                    if (LiquidBreathingSystem.instance.tryFillPlayerO2Bar(ep, ref add)) {
+                    if (LiquidBreathingSystem.Instance.TryFillPlayerO2Bar(ep, ref add)) {
                         ox.AddOxygen(add);
                         //LiquidBreathingSystem.instance.onAddO2ToBar(add);
                     }
                 }
             }
         } else {
-            LiquidBreathingSystem.instance.tickLiquidBreathing(false, false);
+            LiquidBreathingSystem.Instance.TickLiquidBreathing(false, false);
             ep.oxygenMgr.RegisterSource(_playerBaseO2);
-            if (time - LiquidBreathingSystem.instance.getLastUnequippedTime() < 0.5)
+            if (time - LiquidBreathingSystem.Instance.GetLastUnequippedTime() < 0.5)
                 ep.oxygenMgr.RemoveOxygen(ep.oxygenMgr.GetOxygenAvailable());
         }
 
@@ -655,36 +655,36 @@ public static class C2CHooks {
 
     public static void OnEquipmentAdded(string slot, InventoryItem item) {
         if (item.item.GetTechType() == C2CItems.liquidTank.TechType)
-            LiquidBreathingSystem.instance.onEquip();
+            LiquidBreathingSystem.Instance.OnEquip();
     }
 
     public static void OnEquipmentRemoved(string slot, InventoryItem item) {
         if (item.item.GetTechType() == C2CItems.liquidTank.TechType)
-            LiquidBreathingSystem.instance.onUnequip();
+            LiquidBreathingSystem.Instance.OnUnequip();
     }
 
     public static void TickO2Bar(uGUI_OxygenBar gui) {
         if (SkipO2)
             return;
-        LiquidBreathingSystem.instance.updateOxygenGUI(gui);
+        LiquidBreathingSystem.Instance.UpdateOxygenGUI(gui);
     }
 
     public static float GetO2RedPulseTime(float orig) {
-        return SkipO2 ? orig : LiquidBreathingSystem.instance.isO2BarFlashingRed() ? 6 : orig;
+        return SkipO2 ? orig : LiquidBreathingSystem.Instance.IsO2BarFlashingRed() ? 6 : orig;
     }
 
     public static void CanPlayerBreathe(DIHooks.BreathabilityCheck ch) {
         if (SkipO2)
             return;
         //SNUtil.writeToChat(orig+": "+p.IsUnderwater()+" > "+Inventory.main.equipment.GetCount(SeaToSeaMod.rebreatherV2.TechType));
-        if (!LiquidBreathingSystem.instance.isO2BarAbleToFill(ch.Player))
+        if (!LiquidBreathingSystem.Instance.IsO2BarAbleToFill(ch.Player))
             ch.Breathable = false;
     }
 
     public static float AddO2ToPlayer(OxygenManager mgr, float f) {
         if (SkipO2)
             return f;
-        if (!LiquidBreathingSystem.instance.isO2BarAbleToFill(Player.main))
+        if (!LiquidBreathingSystem.Instance.IsO2BarAbleToFill(Player.main))
             f = 0;
         return f;
     }
@@ -692,7 +692,7 @@ public static class C2CHooks {
     public static void AddOxygenAtSurfaceMaybe(OxygenManager mgr, float time) {
         if (SkipO2)
             return;
-        if (LiquidBreathingSystem.instance.isO2BarAbleToFill(Player.main)) {
+        if (LiquidBreathingSystem.Instance.IsO2BarAbleToFill(Player.main)) {
             //SNUtil.writeToChat("Add surface O2");
             mgr.AddOxygenAtSurface(time);
         }
@@ -737,7 +737,7 @@ public static class C2CHooks {
         if (Player.main.motorMode != Player.MotorMode.Dive)
             return;
         //SNUtil.writeToChat("Get swim speed, was "+f+", has="+LiquidBreathingSystem.instance.hasLiquidBreathing());
-        if (LiquidBreathingSystem.instance.hasLiquidBreathing())
+        if (LiquidBreathingSystem.Instance.HasLiquidBreathing())
             ch.SetValue(ch.GetValue() - 0.1F); //was 0.25
         if (WorldUtil.isInDRF(Player.main.transform.position))
             ch.SetValue(ch.GetValue() * 0.5F);
@@ -974,9 +974,9 @@ public static class C2CHooks {
                 Player.main.GetOxygenCapacity() - Player.main.GetOxygenAvailable()
             );
             if (o2ToAdd > 0)
-                LiquidBreathingSystem.instance.tryFillPlayerO2Bar(Player.main, ref o2ToAdd, true);
-            if (LiquidBreathingSystem.instance.hasLiquidBreathing()) {
-                LiquidBreathingSystem.instance.checkLiquidBreathingSupport(a);
+                LiquidBreathingSystem.Instance.TryFillPlayerO2Bar(Player.main, ref o2ToAdd, true);
+            if (LiquidBreathingSystem.Instance.HasLiquidBreathing()) {
+                LiquidBreathingSystem.Instance.CheckLiquidBreathingSupport(a);
             }
         }
     }
@@ -1187,19 +1187,19 @@ public static class C2CHooks {
     }
 
     public static float GetPlayerO2Rate(Player ep) {
-        return EnvironmentalDamageSystem.instance.getPlayerO2Rate(ep);
+        return EnvironmentalDamageSystem.Instance.GetPlayerO2Rate(ep);
     }
 
     public static float GetPlayerO2Use(Player ep, float breathingInterval, int depthClass) {
-        return EnvironmentalDamageSystem.instance.getPlayerO2Use(ep, breathingInterval, depthClass);
+        return EnvironmentalDamageSystem.Instance.GetPlayerO2Use(ep, breathingInterval, depthClass);
     }
 
     public static void TickPlayerEnviroAlerts(RebreatherDepthWarnings warn) {
-        EnvironmentalDamageSystem.instance.tickPlayerEnviroAlerts(warn);
+        EnvironmentalDamageSystem.Instance.TickPlayerEnviroAlerts(warn);
     }
 
     public static void DoEnvironmentalDamage(TemperatureDamage dmg) {
-        EnvironmentalDamageSystem.instance.tickTemperatureDamages(dmg);
+        EnvironmentalDamageSystem.Instance.TickTemperatureDamages(dmg);
     }
 
     public static void OnSetPlayerACU(Player ep, WaterPark w) {
@@ -1442,14 +1442,14 @@ public static class C2CHooks {
     }
 
     public static void DoEnviroVehicleDamage(CrushDamage dmg) {
-        EnvironmentalDamageSystem.instance.tickCyclopsDamage(dmg);
+        EnvironmentalDamageSystem.Instance.TickCyclopsDamage(dmg);
     }
 
     public static void GetWaterTemperature(DIHooks.WaterTemperatureCalculation calc) {
         if (SkipTemperatureCheck)
             return;
-        if (EnvironmentalDamageSystem.instance.TEMPERATURE_OVERRIDE >= 0) {
-            calc.SetValue(EnvironmentalDamageSystem.instance.TEMPERATURE_OVERRIDE);
+        if (EnvironmentalDamageSystem.Instance.TemperatureOverride >= 0) {
+            calc.SetValue(EnvironmentalDamageSystem.Instance.TemperatureOverride);
             calc.LockValue();
             return;
         }
@@ -1463,8 +1463,8 @@ public static class C2CHooks {
                 calc.SetValue(Mathf.Max(calc.GetTemperature(), 90 - bdist * 6F));
         }
 
-        var biome = EnvironmentalDamageSystem.instance.getBiome(calc.Position);
-        var poison = EnvironmentalDamageSystem.instance.getLRPoison(biome);
+        var biome = EnvironmentalDamageSystem.Instance.GetBiome(calc.Position);
+        var poison = EnvironmentalDamageSystem.Instance.GetLrPoison(biome);
         if (poison > 0) {
             //make LR cold, down to -10C (4C is max water density point, but not for saltwater), except around vents
             var temp = calc.GetTemperature();
@@ -1511,7 +1511,7 @@ public static class C2CHooks {
                 UnderwaterIslandsFloorBiome.instance.getTemperatureBoost(calc.GetTemperature(), calc.Position)
             );
         calc.SetValue(
-            Mathf.Max(calc.GetTemperature(), EnvironmentalDamageSystem.instance.getWaterTemperature(calc.Position))
+            Mathf.Max(calc.GetTemperature(), EnvironmentalDamageSystem.Instance.GetWaterTemperature(calc.Position))
         );
         EjectedHeatSink.iterateHeatSinks(h => {
                     if (h) {
@@ -1780,7 +1780,7 @@ public static class C2CHooks {
         else if (SNUtil.match(pi, VanillaCreatures.GHOST_LEVIATHAN && pi.GetComponentInChildren<GhostLeviatanVoid>()) {
             ***
         }*/ else if (pi && AuroraFires.Contains(pi.ClassId) &&
-                     EnvironmentalDamageSystem.instance.isPositionInAuroraPrawnBay(pi.transform.position)) {
+                     EnvironmentalDamageSystem.Instance.IsPositionInAuroraPrawnBay(pi.transform.position)) {
             BlueAuroraPrawnFire(go);
         } else if (SNUtil.Match(pi, "b86d345e-0517-4f6e-bea4-2c5b40f623b4") && pi.transform.parent &&
                    pi.transform.parent.name.Contains("ExoRoom_Weldable")) {
@@ -2021,7 +2021,7 @@ public static class C2CHooks {
             var pi = gameObject.FindAncestor<PrefabIdentifier>();
             if (pi) {
                 if (AuroraFires.Contains(pi.ClassId) &&
-                    EnvironmentalDamageSystem.instance.isPositionInAuroraPrawnBay(pi.transform.position)) {
+                    EnvironmentalDamageSystem.Instance.IsPositionInAuroraPrawnBay(pi.transform.position)) {
                     pi.gameObject.EnsureComponent<AuroraFireBluer>();
                 }
 
@@ -2133,7 +2133,7 @@ public static class C2CHooks {
         private void Update() {
             if (Door && Door.doorOpen && !_wasOpen) {
                 _wasOpen = true;
-                EnvironmentalDamageSystem.instance.triggerAuroraPrawnBayWarning();
+                EnvironmentalDamageSystem.Instance.TriggerAuroraPrawnBayWarning();
                 Player.main.liveMixin.TakeDamage(5, Player.main.transform.position, DamageType.Heat, gameObject);
             }
         }
@@ -2421,7 +2421,7 @@ public static class C2CHooks {
     }
 
     public static void TryEat(DIHooks.EatAttempt ea) {
-        if (LiquidBreathingSystem.instance.hasLiquidBreathing())
+        if (LiquidBreathingSystem.Instance.HasLiquidBreathing())
             ea.AllowEat = false;
     }
 
@@ -2648,14 +2648,14 @@ public static class C2CHooks {
             }
         }
 
-        var temp = EnvironmentalDamageSystem.instance.getWaterTemperature(campos);
+        var temp = EnvironmentalDamageSystem.Instance.GetWaterTemperature(campos);
         if (temp >= 100) {
             var amt = 5 * (1 + (temp - 100) / 100F);
             cam.liveMixin.TakeDamage(amt * Time.deltaTime, campos, DamageType.Heat);
         }
 
         if (!cam.dockingPoint) {
-            var leak = EnvironmentalDamageSystem.instance.getLRPowerLeakage(cam.gameObject);
+            var leak = EnvironmentalDamageSystem.Instance.GetLrPowerLeakage(cam.gameObject);
             if (leak >= 0) {
                 cam.energyMixin.ConsumeEnergy(leak * Time.deltaTime * 0.5F);
             }
@@ -2769,7 +2769,7 @@ public static class C2CHooks {
         } else {
             _waterToRestore = s.water;
             _foodToRestore = s.food;
-            EnvironmentalDamageSystem.instance.resetCooldowns();
+            EnvironmentalDamageSystem.Instance.ResetCooldowns();
         }
     }
 
