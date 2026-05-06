@@ -221,7 +221,7 @@ public class LiquidBreathingSystem {
 
     public void UpdateOxygenGUI(uGUI_OxygenBar gui) {
         var bar = gui.bar;
-        var t = GetO2Label(gui).GetComponent<TextMeshProUGUI>();
+        // var t = GetO2Label(gui).GetComponent<TextMeshProUGUI>();
         var tn = gui.text;
         if (_baseO2BarTexture == null) {
             _baseO2BarTexture = bar.texture;
@@ -229,7 +229,7 @@ public class LiquidBreathingSystem {
             _baseO2BubbleTexture = bar.overlay;
             _baseOverlayAlpha1 = gui.overlay1Alpha;
             _baseOverlayAlpha2 = gui.overlay2Alpha;
-            _baseLabel = t.text; //O<size=30>2</size>
+            // _baseLabel = t.text; //O<size=30>2</size>
             //RenderUtil.dumpTexture("o2bar_core", baseO2BarTexture);
             //RenderUtil.dumpTexture("o2bar_bubble", baseO2BubbleTexture);
         }
@@ -247,7 +247,8 @@ public class LiquidBreathingSystem {
             : _baseO2BubbleTexture;
         bar.overlay1Alpha = pink ? Math.Min(1, _baseOverlayAlpha1 * 2) : _baseOverlayAlpha1;
         bar.overlay2Alpha = pink ? Math.Min(1, _baseOverlayAlpha2 * 2) : _baseOverlayAlpha2;
-        t.text = pink ? CustomHUDText /*"O<size=30>2</size><size=20>(aq)</size>"*/ : _baseLabel;
+        // TODO: This is an icon now
+        // t.text = pink ? CustomHUDText /*"O<size=30>2</size><size=20>(aq)</size>"*/ : _baseLabel;
         var inactive = !IsLiquidBreathingActive(Player.main);
         var tc = Color.white;
         if (pink) {
@@ -476,7 +477,7 @@ public class LiquidBreathingSystem {
 
             if (!Timer) {
                 var lbl = GetO2Label(gameObject.FindAncestor<uGUI_OxygenBar>()).clone().setName("SideBarText");
-                Timer = lbl.GetComponent<Text>();
+                Timer = lbl.GetComponent<TextMeshProUGUI>();
                 Timer.transform.SetParent(transform, false);
                 Timer.transform.localPosition = Vector3.zero;
                 Timer.transform.rotation = Quaternion.identity;
