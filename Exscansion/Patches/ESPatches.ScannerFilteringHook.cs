@@ -10,8 +10,8 @@ namespace ReikaKalseki.Exscansion;
 
 internal static partial class ESPatches {
     [HarmonyPatch(typeof(ResourceTracker))]
-    [HarmonyPatch(nameof(ResourceTracker.Start))]
-    public static class ScannerFilteringHook2 {
+    [HarmonyPatch(nameof(ResourceTracker.Register))]
+    public static class ScannerFilteringHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
@@ -19,14 +19,16 @@ internal static partial class ESPatches {
             codes.add(OpCodes.Ldarg_0);
             codes.invoke("ReikaKalseki.Exscansion.ESHooks", "registerResourceTracker", false, typeof(ResourceTracker));
             codes.add(OpCodes.Ret);*/
+                var br = codes[2];
                 codes.patchInitialHook(
                     new CodeInstruction(OpCodes.Ldarg_0),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.Exscansion.ESHooks",
-                        "initializeResourceTracker",
+                        nameof(ESHooks.IsObjectVisibleToScannerRoom),
                         false,
                         typeof(ResourceTracker)
-                    )
+                    ),
+                    new CodeInstruction(OpCodes.Brfalse, br.operand)
                 );
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {

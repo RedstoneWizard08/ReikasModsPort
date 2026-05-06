@@ -9,26 +9,27 @@ using ReikaKalseki.DIAlterra;
 namespace ReikaKalseki.Exscansion;
 
 internal static partial class ESPatches {
-    [HarmonyPatch(typeof(ResourceTracker))]
-    [HarmonyPatch(nameof(ResourceTracker.Register))]
-    public static class ScannerFilteringHook {
+    [HarmonyPatch(typeof(uGUI_ResourceTracker))]
+    [HarmonyPatch(nameof(uGUI_ResourceTracker.UpdateBlips))]
+    public static class PingHUDGenerationHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
-            try { /*
-            codes.add(OpCodes.Ldarg_0);
-            codes.invoke("ReikaKalseki.Exscansion.ESHooks", "registerResourceTracker", false, typeof(ResourceTracker));
-            codes.add(OpCodes.Ret);*/
-                var br = codes[2];
-                codes.patchInitialHook(
-                    new CodeInstruction(OpCodes.Ldarg_0),
-                    InstructionHandlers.createMethodCall(
-                        "ReikaKalseki.Exscansion.ESHooks",
-                        "isObjectVisibleToScannerRoom",
-                        false,
-                        typeof(ResourceTracker)
-                    ),
-                    new CodeInstruction(OpCodes.Brfalse, br.operand)
+            try {
+                var idx = InstructionHandlers.getInstruction(
+                    codes,
+                    0,
+                    1,
+                    OpCodes.Stfld,
+                    "uGUI_ResourceTracker+Blip",
+                    "techType"
+                );
+                codes[idx] = InstructionHandlers.createMethodCall(
+                    "ReikaKalseki.Exscansion.ESHooks",
+                    nameof(ESHooks.SetResourcePingType),
+                    false,
+                    typeof(uGUI_ResourceTracker.Blip),
+                    typeof(TechType)
                 );
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {

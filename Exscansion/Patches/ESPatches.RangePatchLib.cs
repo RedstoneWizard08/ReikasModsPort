@@ -8,7 +8,7 @@ internal static partial class ESPatches {
             InsnList li = [
                 InstructionHandlers.createMethodCall(
                     "ReikaKalseki.Exscansion.ESHooks",
-                    "getScannerMaxRange",
+                    nameof(ESHooks.GetScannerMaxRange),
                     false,
                     new string[0]
                 ),
@@ -20,7 +20,7 @@ internal static partial class ESPatches {
             InsnList li = [
                 InstructionHandlers.createMethodCall(
                     "ReikaKalseki.Exscansion.ESHooks",
-                    "getScannerBaseRange",
+                    nameof(ESHooks.GetScannerBaseRange),
                     false,
                     new string[0]
                 ),
@@ -32,7 +32,7 @@ internal static partial class ESPatches {
             InsnList li = [
                 InstructionHandlers.createMethodCall(
                     "ReikaKalseki.Exscansion.ESHooks",
-                    "getRangeUpgradeValue",
+                    nameof(ESHooks.GetRangeUpgradeValue),
                     false,
                     new string[0]
                 ),
@@ -44,7 +44,7 @@ internal static partial class ESPatches {
             InsnList li = [
                 InstructionHandlers.createMethodCall(
                     "ReikaKalseki.Exscansion.ESHooks",
-                    "getScannerBaseSpeed",
+                    nameof(ESHooks.GetScannerBaseSpeed),
                     false,
                     new string[0]
                 ),
@@ -56,7 +56,7 @@ internal static partial class ESPatches {
             InsnList li = [
                 InstructionHandlers.createMethodCall(
                     "ReikaKalseki.Exscansion.ESHooks",
-                    "getSpeedUpgradeValue",
+                    nameof(ESHooks.GetSpeedUpgradeValue),
                     false,
                     new string[0]
                 ),

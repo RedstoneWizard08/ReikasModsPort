@@ -9,27 +9,24 @@ using ReikaKalseki.DIAlterra;
 namespace ReikaKalseki.Exscansion;
 
 internal static partial class ESPatches {
-    [HarmonyPatch(typeof(uGUI_ResourceTracker))]
-    [HarmonyPatch(nameof(uGUI_ResourceTracker.UpdateBlips))]
-    public static class PingHUDGenerationHook {
+    [HarmonyPatch(typeof(ResourceTracker))]
+    [HarmonyPatch(nameof(ResourceTracker.Start))]
+    public static class ScannerFilteringHook2 {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
-            try {
-                var idx = InstructionHandlers.getInstruction(
-                    codes,
-                    0,
-                    1,
-                    OpCodes.Stfld,
-                    "uGUI_ResourceTracker+Blip",
-                    "techType"
-                );
-                codes[idx] = InstructionHandlers.createMethodCall(
-                    "ReikaKalseki.Exscansion.ESHooks",
-                    "setResourcePingType",
-                    false,
-                    typeof(uGUI_ResourceTracker.Blip),
-                    typeof(TechType)
+            try { /*
+            codes.add(OpCodes.Ldarg_0);
+            codes.invoke("ReikaKalseki.Exscansion.ESHooks", "registerResourceTracker", false, typeof(ResourceTracker));
+            codes.add(OpCodes.Ret);*/
+                codes.patchInitialHook(
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    InstructionHandlers.createMethodCall(
+                        "ReikaKalseki.Exscansion.ESHooks",
+                        nameof(ESHooks.InitializeResourceTracker),
+                        false,
+                        typeof(ResourceTracker)
+                    )
                 );
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {

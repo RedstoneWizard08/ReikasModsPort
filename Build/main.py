@@ -46,7 +46,7 @@ projects: dict[str, tuple[str, list[str]]] = {
             "mountain-flow-vectors-2D.csv",
         ],
     ),
-    "Excansion": ("Excansion", ["Textures", "current-version.txt"]),
+    "Exscansion": ("Exscansion", ["Textures", "current-version.txt"]),
     "Reefbalance": ("Reefbalance", ["Textures", "current-version.txt"]),
     "Sea2Sea": (
         "Sea2Sea",

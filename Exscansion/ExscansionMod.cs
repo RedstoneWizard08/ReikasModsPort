@@ -85,7 +85,7 @@ public class ExscansionMod : BaseUnityPlugin {
         TechTypeMappingConfig<Color>.loadInline(
             "scanner_ping_colors",
             TechTypeMappingConfig<Color>.ColorParser.instance,
-            TechTypeMappingConfig<Color>.dictionaryAssign(ESHooks.pingColors)
+            TechTypeMappingConfig<Color>.dictionaryAssign(ESHooks.PingColors)
         );
     }
 }

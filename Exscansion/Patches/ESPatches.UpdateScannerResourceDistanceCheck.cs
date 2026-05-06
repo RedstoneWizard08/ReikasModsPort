@@ -18,7 +18,7 @@ internal static partial class ESPatches {
                 InsnList li = [
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.Exscansion.ESHooks",
-                        "getScannerMaxRangeSq",
+                        nameof(ESHooks.GetScannerMaxRangeSq),
                         false,
                         new string[0]
                     ),

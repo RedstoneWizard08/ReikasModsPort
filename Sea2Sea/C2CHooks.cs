@@ -2682,26 +2682,26 @@ public static class C2CHooks {
     }
 
     internal static void isItemMapRoomDetectable(ESHooks.ResourceScanCheck rt) {
-        if (rt.resource.techType == CustomMaterials.getItem(CustomMaterials.Materials.IRIDIUM).TechType) {
-            rt.isDetectable = PDAScanner.complete.Contains(rt.resource.techType) ||
+        if (rt.Resource.techType == CustomMaterials.getItem(CustomMaterials.Materials.IRIDIUM).TechType) {
+            rt.IsDetectable = PDAScanner.complete.Contains(rt.Resource.techType) ||
                               StoryGoalManager.main.completedGoals.Contains(
                                   "Precursor_LavaCastle_Log2"
                               ); //mentions lava castle
-        } else if (rt.resource.techType == CustomMaterials.getItem(CustomMaterials.Materials.PHASE_CRYSTAL).TechType) {
-            rt.isDetectable = PDAScanner.complete.Contains(rt.resource.techType) ||
+        } else if (rt.Resource.techType == CustomMaterials.getItem(CustomMaterials.Materials.PHASE_CRYSTAL).TechType) {
+            rt.IsDetectable = PDAScanner.complete.Contains(rt.Resource.techType) ||
                               PDAManager.getPage("sunbeamdebrishint").isUnlocked();
-        } else if (scanToScannerRoom.Contains(rt.resource.techType)) {
-            rt.isDetectable = PDAScanner.complete.Contains(rt.resource.techType);
-        } else if (rt.resource.techType == SeaToSeaMod.MushroomBioFragment.TechType) {
-            rt.isDetectable = SNUtil.GetFragmentScanCount(rt.resource.techType) >
+        } else if (scanToScannerRoom.Contains(rt.Resource.techType)) {
+            rt.IsDetectable = PDAScanner.complete.Contains(rt.Resource.techType);
+        } else if (rt.Resource.techType == SeaToSeaMod.MushroomBioFragment.TechType) {
+            rt.IsDetectable = SNUtil.GetFragmentScanCount(rt.Resource.techType) >
                               SeaToSeaMod.MushroomBioFragment.fragmentCount - 2;
-        } else if (rt.resource.techType == SeaToSeaMod.GeyserCoral.TechType) {
-            rt.isDetectable = SNUtil.GetFragmentScanCount(rt.resource.techType) >
+        } else if (rt.Resource.techType == SeaToSeaMod.GeyserCoral.TechType) {
+            rt.IsDetectable = SNUtil.GetFragmentScanCount(rt.Resource.techType) >
                               SeaToSeaMod.GeyserCoral.fragmentCount - 4;
         }
 
-        if (rt.resource.GetComponent<Drillable>()) {
-            rt.isDetectable = StoryGoalManager.main.completedGoals.Contains("OnConstructExosuit") ||
+        if (rt.Resource.GetComponent<Drillable>()) {
+            rt.IsDetectable = StoryGoalManager.main.completedGoals.Contains("OnConstructExosuit") ||
                               KnownTech.knownTech.Contains(AqueousEngineeringMod.grinderBlock.TechType);
         }
     }

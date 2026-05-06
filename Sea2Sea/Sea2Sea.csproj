@@ -26,7 +26,7 @@
       <ProjectReference Include="..\Auroresource\Auroresource.csproj" />
       <ProjectReference Include="..\DragonIndustries_AlterraDivision\DragonIndustries_AlterraDivision.csproj" />
       <ProjectReference Include="..\Ecocean\Ecocean.csproj" />
-      <ProjectReference Include="..\Excansion\Excansion.csproj" />
+      <ProjectReference Include="..\Exscansion\Exscansion.csproj" />
       <ProjectReference Include="..\Reefbalance\Reefbalance.csproj" />
     </ItemGroup>
 

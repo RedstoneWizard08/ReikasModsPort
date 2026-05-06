@@ -94,7 +94,7 @@ public class AvoliteSpawner {
     }
 
     public void PostRegister() {
-        ESHooks.scannabilityEvent += IsItemMapRoomDetectable;
+        ESHooks.ScannabilityEvent += IsItemMapRoomDetectable;
     }
 
     private void LoadSave() {
@@ -233,8 +233,8 @@ public class AvoliteSpawner {
     }
 
     private void IsItemMapRoomDetectable(ESHooks.ResourceScanCheck rt) {
-        if (rt.resource.techType == _spawnerObject.TechType || rt.resource.overrideTechType == _spawnerObject.TechType)
-            rt.isDetectable = PDAManager.getPage("sunbeamdebrishint").isUnlocked();
+        if (rt.Resource.techType == _spawnerObject.TechType || rt.Resource.overrideTechType == _spawnerObject.TechType)
+            rt.IsDetectable = PDAManager.getPage("sunbeamdebrishint").isUnlocked();
     }
 
     internal void CleanPickedUp(Pickupable pp) {

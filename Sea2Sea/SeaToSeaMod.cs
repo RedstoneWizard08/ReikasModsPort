@@ -669,8 +669,8 @@ public static SoundManager.SoundData voidspikeLeviAmbient;
         DataboxTypingMap.instance.addValue(-483.55, -504.69, 1326.64, C2CItems.tetherModule.Info.TechType);
         DataboxTypingMap.instance.addValue(-317.05, -438.69, -1742.80, TechType.BaseReinforcement);
 
-        ESHooks.addLeviathan(C2CItems.voidSpikeLevi.TechType);
-        ESHooks.scannabilityEvent += C2CHooks.isItemMapRoomDetectable;
+        ESHooks.AddLeviathan(C2CItems.voidSpikeLevi.TechType);
+        ESHooks.ScannabilityEvent += C2CHooks.isItemMapRoomDetectable;
 
         foreach (BiomeType bb in Enum.GetValues(typeof(BiomeType))) {
             LootDistributionHandler.EditLootDistributionData(VanillaResources.SULFUR.prefab, bb, 0, 1);

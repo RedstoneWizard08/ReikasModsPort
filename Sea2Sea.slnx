@@ -3,7 +3,7 @@
   <Project Path="Auroresource/Auroresource.csproj" />
   <Project Path="DragonIndustries_AlterraDivision/DragonIndustries_AlterraDivision.csproj" />
   <Project Path="Ecocean/Ecocean.csproj" />
-  <Project Path="Excansion/Excansion.csproj" />
+  <Project Path="Exscansion\Exscansion.csproj" />
   <Project Path="Reefbalance/Reefbalance.csproj" />
   <Project Path="Sea2Sea/Sea2Sea.csproj" />
 </Solution>

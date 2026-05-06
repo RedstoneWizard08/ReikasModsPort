@@ -25,7 +25,7 @@ public static partial class AEPatches {
                     new CodeInstruction(OpCodes.Ldarg_0),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.AqueousEngineering.AEHooks",
-                        "getReactorGeneration",
+                        nameof(AEHooks.GetReactorGeneration),
                         false,
                         typeof(float),
                         typeof(MonoBehaviour)
