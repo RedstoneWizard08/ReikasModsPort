@@ -10,7 +10,7 @@ namespace ReikaKalseki.Ecocean;
 
 internal static partial class ECPatches {
     [HarmonyPatch(typeof(FiltrationMachine))]
-    [HarmonyPatch("UpdateFiltering")]
+    [HarmonyPatch(nameof(FiltrationMachine.UpdateFiltering))]
     public static class WaterFilterSaltRateHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -31,7 +31,7 @@ internal static partial class ECPatches {
                         new CodeInstruction(OpCodes.Ldarg_0),
                         InstructionHandlers.createMethodCall(
                             "ReikaKalseki.Ecocean.ECHooks",
-                            "getWaterFilterSaltTickTime",
+                            nameof(ECHooks.GetWaterFilterSaltTickTime),
                             false,
                             typeof(float),
                             typeof(FiltrationMachine)

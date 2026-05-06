@@ -11,7 +11,7 @@ namespace ReikaKalseki.Ecocean;
 
 internal static partial class ECPatches {
     [HarmonyPatch(typeof(MeleeAttack))]
-    [HarmonyPatch("OnTouch")]
+    [HarmonyPatch(nameof(MeleeAttack.OnTouch))]
     public static class MeleeBiteabilityHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -29,7 +29,7 @@ internal static partial class ECPatches {
                 );
                 codes[idx].operand = InstructionHandlers.convertMethodOperand(
                     "ReikaKalseki.Ecocean.ECHooks",
-                    "canMeleeBite",
+                    nameof(ECHooks.CanMeleeBite),
                     false,
                     typeof(MeleeAttack),
                     typeof(GameObject)

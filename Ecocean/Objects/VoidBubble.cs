@@ -93,7 +93,7 @@ public class VoidBubble : InteractableSpawnable {
         Vector3 pos = MathUtil.getRandomVectorAround(ctr, 90).SetY(ctr.y - 140 + UnityEngine.Random.Range(0F, 30F));
         if (VanillaBiomes.Void.IsInBiome(pos) &&
             (pos.y >= -50 || VanillaBiomes.Void.IsInBiome(pos + Vector3.up * 50)) &&
-            !ECHooks.isVoidHeatColumn(pos, out var trash)) {
+            !ECHooks.IsVoidHeatColumn(pos, out var trash)) {
             GameObject go = ObjectUtil.createWorldObject(Info.ClassID);
             go.transform.position = pos;
             //go.transform.localScale = new Vector3(UnityEngine.Random.Range(2F, 3F), UnityEngine.Random.Range(2F, 3F), UnityEngine.Random.Range(2F, 3F));

@@ -274,7 +274,7 @@ public class EcoceanMod : BaseUnityPlugin {
         ConsoleCommandsHandler.RegisterConsoleCommand<Action<float>>(
             "attackBase",
             r => {
-                ECHooks.attractCreaturesToBase(
+                ECHooks.AttractCreaturesToBase(
                     Player.main.currentSub,
                     r,
                     c => c is GhostLeviathan || c is GhostLeviatanVoid || c is ReaperLeviathan || c is SeaDragon ||
@@ -315,7 +315,7 @@ public class EcoceanMod : BaseUnityPlugin {
         if (InstructionHandlers.getTypeBySimpleName("ReikaKalseki.AqueousEngineering.BaseSonarPinger") != null) {
             //AE is loaded
             BaseSonarPinger.onBaseSonarPingedEvent += go =>
-                ECHooks.pingSonarFromObject(go.gameObject.FindAncestor<SubRoot>(), 0.67F);
+                ECHooks.PingSonarFromObject(go.gameObject.FindAncestor<SubRoot>(), 0.67F);
 
             BaseRoomSpecializationSystem.instance.registerModdedObject(glowOil, 0.25F);
             BaseRoomSpecializationSystem.instance.registerModdedObject(glowShroom, 0.4F); //jellyshroom is 0.4

@@ -11,7 +11,7 @@ namespace ReikaKalseki.Ecocean;
 
 internal static partial class ECPatches {
     [HarmonyPatch(typeof(MeleeAttack))]
-    [HarmonyPatch("GetTarget")]
+    [HarmonyPatch(nameof(MeleeAttack.GetTarget))]
     public static class MeleeBaseTargetHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -21,7 +21,7 @@ internal static partial class ECPatches {
                 codes.add(OpCodes.Ldarg_1);
                 codes.invoke(
                     "ReikaKalseki.Ecocean.ECHooks",
-                    "getMeleeTarget",
+                    nameof(ECHooks.GetMeleeTarget),
                     false,
                     typeof(MeleeAttack),
                     typeof(Collider)

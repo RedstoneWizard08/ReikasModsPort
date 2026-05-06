@@ -1,2 +1,2 @@
-ROOT = "../Auroresource/Patches"
-HOOK_CLASS = "ReikaKalseki.Auroresource.ARHooks"
+ROOT = "../Ecocean/Patches"
+HOOK_CLASS = "ReikaKalseki.Ecocean.ECHooks"

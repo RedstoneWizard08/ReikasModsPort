@@ -10,7 +10,7 @@ namespace ReikaKalseki.Ecocean;
 
 internal static partial class ECPatches {
     [HarmonyPatch(typeof(uGUI_DepthCompass))]
-    [HarmonyPatch("UpdateCompass")]
+    [HarmonyPatch(nameof(uGUI_DepthCompass.UpdateCompass))]
     public static class OverrideHUDCompass {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -28,7 +28,7 @@ internal static partial class ECPatches {
                 );
                 codes[idx].operand = InstructionHandlers.convertMethodOperand(
                     "ReikaKalseki.Ecocean.ECHooks",
-                    "setHUDCompassDirection",
+                    nameof(ECHooks.SetHUDCompassDirection),
                     false,
                     typeof(uGUI_Compass),
                     typeof(float)

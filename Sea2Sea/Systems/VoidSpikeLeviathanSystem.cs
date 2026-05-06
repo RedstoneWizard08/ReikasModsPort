@@ -208,7 +208,7 @@ public class VoidSpikeLeviathanSystem {
             time - lastVehicleCheck > 1) {
             lastVehicleCheck = time;
             if (WorldUtil.getObjectsNearWithComponent<C2CMoth>(ep.transform.position, 400).Count == 0) {
-                ECHooks.attemptTongueGrab();
+                ECHooks.AttemptTongueGrab();
             }
         }
 
@@ -536,7 +536,7 @@ public class VoidSpikeLeviathanSystem {
 
     public bool isSpawnableVoid(string biome) {
         var ep = Player.main;
-        if (Ecocean.ECHooks.isVoidHeatColumn(ep.transform.position, out var trash))
+        if (Ecocean.ECHooks.IsVoidHeatColumn(ep.transform.position, out var trash))
             return false;
         if (VoidSpikesBiome.instance.isPlayerInLeviathanZone(ep.transform.position) && isLeviathanEnabled() &&
             voidLeviathan && voidLeviathan.activeInHierarchy) {

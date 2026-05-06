@@ -263,7 +263,7 @@ internal class C2CMoth : MonoBehaviour {
         seamoth.ConsumeEnergy(5);
         boostSoundEvent = SoundManager.playSoundAt(boostSound, transform.position, false, -1, 1);
         seamoth.screenEffectModel.SetActive(true);
-        ECHooks.attractToSoundPing(seamoth, false, 0.33F);
+        ECHooks.AttractToSoundPing(seamoth, false, 0.33F);
         if (ecocean.holdingBloodKelp)
             ecocean.holdingBloodKelp.release();
         if (seamoth.liveMixin.GetHealthFraction() < 0.67F)

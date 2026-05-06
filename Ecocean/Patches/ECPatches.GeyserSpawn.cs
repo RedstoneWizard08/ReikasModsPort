@@ -10,7 +10,7 @@ namespace ReikaKalseki.Ecocean;
 
 internal static partial class ECPatches {
     [HarmonyPatch(typeof(Geyser))]
-    [HarmonyPatch("Start")]
+    [HarmonyPatch(nameof(Geyser.Start))]
     public static class GeyserSpawn {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -20,7 +20,7 @@ internal static partial class ECPatches {
                     new CodeInstruction(OpCodes.Ldarg_0),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.Ecocean.ECHooks",
-                        "onGeyserSpawn",
+                        nameof(ECHooks.OnGeyserSpawn),
                         false,
                         typeof(Geyser)
                     )

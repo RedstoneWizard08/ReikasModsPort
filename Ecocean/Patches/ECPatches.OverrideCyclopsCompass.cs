@@ -11,7 +11,7 @@ namespace ReikaKalseki.Ecocean;
 
 internal static partial class ECPatches {
     [HarmonyPatch(typeof(CyclopsCompassHUD))]
-    [HarmonyPatch("Update")]
+    [HarmonyPatch(nameof(CyclopsCompassHUD.Update))]
     public static class OverrideCyclopsCompass {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -29,7 +29,7 @@ internal static partial class ECPatches {
                 );
                 codes[idx].operand = InstructionHandlers.convertMethodOperand(
                     "ReikaKalseki.Ecocean.ECHooks",
-                    "setCyclopsCompassDirection",
+                    nameof(ECHooks.SetCyclopsCompassDirection),
                     false,
                     typeof(Transform),
                     typeof(Quaternion)

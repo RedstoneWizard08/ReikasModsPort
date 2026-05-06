@@ -11,7 +11,7 @@ namespace ReikaKalseki.Ecocean;
 
 internal static partial class ECPatches {
     [HarmonyPatch(typeof(Geyser))]
-    [HarmonyPatch("OnTriggerStay")]
+    [HarmonyPatch(nameof(Geyser.OnTriggerStay))]
     public static class GeyserDamageTick {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -22,7 +22,7 @@ internal static partial class ECPatches {
                     new CodeInstruction(OpCodes.Ldarg_1),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.Ecocean.ECHooks",
-                        "tickObjectInGeyser",
+                        nameof(ECHooks.TickObjectInGeyser),
                         false,
                         typeof(Geyser),
                         typeof(Collider)

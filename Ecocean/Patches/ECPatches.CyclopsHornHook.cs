@@ -10,7 +10,7 @@ namespace ReikaKalseki.Ecocean;
 
 internal static partial class ECPatches {
     [HarmonyPatch(typeof(CyclopsHornButton))]
-    [HarmonyPatch("OnPress")]
+    [HarmonyPatch(nameof(CyclopsHornButton.OnPress))]
     public static class CyclopsHornHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -30,7 +30,7 @@ internal static partial class ECPatches {
                     idx,
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.Ecocean.ECHooks",
-                        "honkCyclopsHorn",
+                        nameof(ECHooks.HonkCyclopsHorn),
                         false,
                         typeof(CyclopsHornButton)
                     )

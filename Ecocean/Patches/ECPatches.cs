@@ -10,7 +10,7 @@ namespace ReikaKalseki.Ecocean;
 internal static partial class ECPatches {
     /*
     [HarmonyPatch(typeof(SeamothTorpedoWhirlpool))]
-    [HarmonyPatch("Update")]
+    [HarmonyPatch(nameof(SeamothTorpedoWhirlpool.Update))]
     public static class TickVortexTorpedo {
 
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {

@@ -11,7 +11,7 @@ namespace ReikaKalseki.Ecocean;
 
 internal static partial class ECPatches {
     [HarmonyPatch(typeof(Current))]
-    [HarmonyPatch("Update")]
+    [HarmonyPatch(nameof(Current.Update))]
     public static class CurrentTick {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -29,7 +29,7 @@ internal static partial class ECPatches {
                 );
                 codes[idx].operand = InstructionHandlers.convertMethodOperand(
                     "ReikaKalseki.Ecocean.ECHooks",
-                    "applyCurrentForce",
+                    nameof(ECHooks.ApplyCurrentForce),
                     false,
                     typeof(Rigidbody),
                     typeof(Vector3),

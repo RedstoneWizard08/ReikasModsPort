@@ -247,7 +247,7 @@ public class VoidTongueTag : MonoBehaviour {
             else */
             if (length > 600 || (tt && tip.transform.position.y >= tt.transform.position.y + 100)) {
                 isGrabbing = false;
-                ECHooks.nextVoidTongueGrab = time + 1.5F;
+                ECHooks.NextVoidTongueGrab = time + 1.5F;
             } else if (tt && !Util.GetComponentInHierarchy<SubRoot>(tt.gameObject)) {
                 var targetRotation = Quaternion.LookRotation(
                     transform.up,
@@ -287,7 +287,7 @@ public class VoidTongueTag : MonoBehaviour {
             delay = UnityEngine.Random.Range(1F, 3F);
         }
 
-        ECHooks.nextVoidTongueGrab = Mathf.Max(ECHooks.nextVoidTongueGrab, time + delay);
+        ECHooks.NextVoidTongueGrab = Mathf.Max(ECHooks.NextVoidTongueGrab, time + delay);
     }
 
     private void doKill() {

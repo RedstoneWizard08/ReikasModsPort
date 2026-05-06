@@ -73,7 +73,7 @@ public class ECMoth : MonoBehaviour {
         if (lightsOn) {
             GlowOil.handleLightTick(transform);
             if (UnityEngine.Random.Range(0F, 1F) <= 0.02F)
-                ECHooks.attractToLight(seamoth);
+                ECHooks.AttractToLight(seamoth);
         }
 
         if (time - lastCellCheckTime >= 1) {
@@ -86,7 +86,7 @@ public class ECMoth : MonoBehaviour {
             }
         }
 
-        heatColumn = ECHooks.isVoidHeatColumn(
+        heatColumn = ECHooks.IsVoidHeatColumn(
             transform.position,
             out var trash
         ); // time-ecocean.lastTouchHeatBubble <= 0.5F;

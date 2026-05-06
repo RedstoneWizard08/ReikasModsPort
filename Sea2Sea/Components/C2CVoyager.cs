@@ -72,7 +72,7 @@ internal class C2CVoyager : MonoBehaviour {
 	}
 
 	internal void slowTick() {
-		Ecocean.ECHooks.attractToSoundPing(this, true, 1);
+		Ecocean.ECHooks.AttractToSoundPing(this, true, 1);
 	}
 
 	private bool shouldSink() {

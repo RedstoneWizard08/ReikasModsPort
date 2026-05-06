@@ -22,6 +22,6 @@ public class CameraLeviathanAttractor : MonoBehaviour, AggroAttractor {
     }
 
     private void doLeviCheck() {
-        ECHooks.attractToSoundPing(this, false, 0.375F); //150m
+        ECHooks.AttractToSoundPing(this, false, 0.375F); //150m
     }
 }

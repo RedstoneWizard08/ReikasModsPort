@@ -7,92 +7,92 @@ using UnityEngine;
 namespace ReikaKalseki.Ecocean;
 
 public static partial class ECHooks {
-    private static readonly HashSet<string> bloodVine = [];
+    private static readonly HashSet<string> BloodVine = [];
 
-    private static float lastPiezoEMPDamage = -1;
+    private static float _lastPiezoEmpDamage = -1;
 
-    private static float lastSonarUsed = -1;
-    private static float lastHornUsed = -1;
+    private static float _lastSonarUsed = -1;
+    private static float _lastHornUsed = -1;
 
-    internal static float nextVoidTongueGrab = -1;
+    internal static float NextVoidTongueGrab = -1;
 
-    internal static readonly SimplexNoiseGenerator tongueDepthNoise =
+    internal static readonly SimplexNoiseGenerator TongueDepthNoise =
         (SimplexNoiseGenerator)new SimplexNoiseGenerator(587129).setFrequency(0.08);
     //internal static readonly SimplexNoiseGenerator heatColumnNoise = (SimplexNoiseGenerator)new SimplexNoiseGenerator(2176328).setFrequency(0.1);
 
-    internal static List<Vector3> heatColumns = [];
+    internal static List<Vector3> HeatColumns = [];
 
     static ECHooks() {
         SNUtil.Log("Initializing ECHooks");
-        DIHooks.OnWorldLoadedEvent += onWorldLoaded;
+        DIHooks.OnWorldLoadedEvent += OnWorldLoaded;
 
-        DIHooks.OnSkyApplierSpawnEvent += onSkyApplierSpawn;
-        DIHooks.OnDamageEvent += onTakeDamage;
-        DIHooks.OnKnifedEvent += onKnifed;
-        DIHooks.KnifeAttemptEvent += tryKnife;
-        DIHooks.KnifeHarvestEvent += getKnifeHarvest;
-        DIHooks.OnItemPickedUpEvent += onPickup;
+        DIHooks.OnSkyApplierSpawnEvent += OnSkyApplierSpawn;
+        DIHooks.OnDamageEvent += OnTakeDamage;
+        DIHooks.OnKnifedEvent += OnKnifed;
+        DIHooks.KnifeAttemptEvent += TryKnife;
+        DIHooks.KnifeHarvestEvent += GetKnifeHarvest;
+        DIHooks.OnItemPickedUpEvent += OnPickup;
 
         DIHooks.ItemTooltipEvent += FoodEffectSystem.instance.applyTooltip;
         DIHooks.OnEatEvent += FoodEffectSystem.instance.onEaten;
 
-        DIHooks.OnPlayerTickEvent += tickPlayer;
-        DIHooks.OnPrawnTickEvent += tickPrawn;
-        DIHooks.OnCyclopsTickEvent += tickCyclops;
+        DIHooks.OnPlayerTickEvent += TickPlayer;
+        DIHooks.OnPrawnTickEvent += TickPrawn;
+        DIHooks.OnCyclopsTickEvent += TickCyclops;
 
-        DIHooks.OnSeamothModulesChangedEvent += updateSeamothModules;
+        DIHooks.OnSeamothModulesChangedEvent += UpdateSeamothModules;
 
-        DIHooks.OnEmpHitEvent += onEMPHit;
-        DIHooks.OnEmpTouchEvent += onEMPTouch;
+        DIHooks.OnEmpHitEvent += OnEmpHit;
+        DIHooks.OnEmpTouchEvent += OnEmpTouch;
 
-        DIHooks.GetTemperatureEvent += getWaterTemperature;
+        DIHooks.GetTemperatureEvent += GetWaterTemperature;
 
-        DIHooks.OnSeamothSonarUsedEvent += pingSeamothSonar;
-        DIHooks.OnCyclopsSonarUsedEvent += pingCyclopsSonar;
+        DIHooks.OnSeamothSonarUsedEvent += PingSeamothSonar;
+        DIHooks.OnCyclopsSonarUsedEvent += PingCyclopsSonar;
 
-        DIHooks.DrillableDrillTickEvent += onDrillableTick;
+        DIHooks.DrillableDrillTickEvent += OnDrillableTick;
 
-        DIHooks.OnTorpedoExplodeEvent += onTorpedoExploded;
+        DIHooks.OnTorpedoExplodeEvent += OnTorpedoExploded;
 
-        DIHooks.CanCreatureSeeObjectEvent += checkCreatureCanSee;
-        DIHooks.AggressiveToPilotingEvent += checkCreaturePilotedAggression;
+        DIHooks.CanCreatureSeeObjectEvent += CheckCreatureCanSee;
+        DIHooks.AggressiveToPilotingEvent += CheckCreaturePilotedAggression;
 
-        DIHooks.BaseRebuildEvent += onBaseRebuild;
+        DIHooks.BaseRebuildEvent += OnBaseRebuild;
 
-        DIHooks.GrowingPlantTickEvent += tickGrowingPlant;
+        DIHooks.GrowingPlantTickEvent += TickGrowingPlant;
 
-        DIHooks.TargetabilityEvent += checkTargetingSkip;
+        DIHooks.TargetabilityEvent += CheckTargetingSkip;
 
-        bloodVine.AddRange(VanillaFlora.BLOOD_KELP.getPrefabs(true, true));
+        BloodVine.AddRange(VanillaFlora.BLOOD_KELP.getPrefabs(true, true));
     }
 
-    public static void onWorldLoaded() {
-        heatColumns.Clear();
+    public static void OnWorldLoaded() {
+        HeatColumns.Clear();
         UnityEngine.Random.InitState(SNUtil.GetWorldSeedInt());
         for (var i = 0; i < 100; i++) {
             var vec = new Vector3(UnityEngine.Random.Range(0F, 1000F), 0, UnityEngine.Random.Range(0F, 1000F));
-            if (heatColumns.Any(v => (v - vec).sqrMagnitude <= 40000))
+            if (HeatColumns.Any(v => (v - vec).sqrMagnitude <= 40000))
                 continue;
-            heatColumns.Add(vec);
+            HeatColumns.Add(vec);
         }
 
-        SNUtil.Log("Computed heat columns: " + heatColumns.ToDebugString());
+        SNUtil.Log("Computed heat columns: " + HeatColumns.ToDebugString());
     }
 
-    public static void tickPrawn(Exosuit e) {
+    public static void TickPrawn(Exosuit e) {
         if (true) //lights always on
             GlowOil.handleLightTick(e.transform);
     }
 
-    public static void tickCyclops(SubRoot sub) {
+    public static void TickCyclops(SubRoot sub) {
         if (sub.subLightsOn) {
             GlowOil.handleLightTick(sub.transform);
             if (UnityEngine.Random.Range(0F, 1F) <= 0.04F)
-                attractToLight(sub);
+                AttractToLight(sub);
         }
     }
 
-    public static void tickPlayer(Player ep) {
+    public static void TickPlayer(Player ep) {
         var time = DayNightCycle.main.timePassedAsFloat;
         GlowOil.checkPlayerLightTick(time, ep);
 
@@ -115,10 +115,10 @@ public static partial class ECHooks {
             EcoceanMod.voidBubble.tickSpawner(ep, time, dT);
             Vector3 mod = pos.Modulo(1000);
             var offset = pos - mod;
-            foreach (var col in heatColumns) {
+            foreach (var col in HeatColumns) {
                 var dist = (col.SetY(mod.y) - mod).magnitude;
                 var at = col + offset;
-                if (dist > 200 || !isVoidHeatColumn(at, out var trash, true))
+                if (dist > 200 || !IsVoidHeatColumn(at, out var trash, true))
                     continue;
                 var inCol = dist <= 18;
                 inColumn |= inCol;
@@ -181,7 +181,7 @@ public static partial class ECHooks {
 
         float minDepth = vv ? 800 : 1000;
         var maxDepth = minDepth + 300;
-        minDepth += 50F * (float)tongueDepthNoise.getValue(ep.transform.position);
+        minDepth += 50F * (float)TongueDepthNoise.getValue(ep.transform.position);
         HashSet<BiomeBase> biomes = [VanillaBiomes.Void];
         if (ep.currentSub) {
             minDepth = 600;
@@ -189,7 +189,7 @@ public static partial class ECHooks {
             biomes.Add(BiomeBase.GetBiome("Void Spikes"));
         }
 
-        if (time - getLastSonarUse() <= 5 || time - getLastHornUse() <= 5) {
+        if (time - GetLastSonarUse() <= 5 || time - GetLastHornUse() <= 5) {
             minDepth = 675;
             maxDepth = 900;
         }
@@ -207,16 +207,16 @@ public static partial class ECHooks {
         if (pos.y <= -UnityEngine.Random.Range(minDepth, maxDepth) && biomes.Contains(BiomeBase.GetBiome(pos))) {
             //if (UnityEngine.Object.FindObjectsOfType<VoidTongueTag>().Length == 0)
             //	SNUtil.writeToChat("Check void grab time = "+time.ToString("000.0")+"/"+nextVoidTongueGrab.ToString("000.0"));
-            attemptTongueGrab();
+            AttemptTongueGrab();
         }
     }
 
-    public static void attemptTongueGrab() {
+    public static void AttemptTongueGrab() {
         var time = DayNightCycle.main.timePassedAsFloat;
-        if (time >= nextVoidTongueGrab) {
+        if (time >= NextVoidTongueGrab) {
             var ep = Player.main;
             var pos = ep.transform.position;
-            nextVoidTongueGrab = time + 10;
+            NextVoidTongueGrab = time + 10;
             GameObject go = ObjectUtil.createWorldObject(EcoceanMod.tongue.ClassID);
             go.fullyEnable();
             var depth = Mathf.Min(pos.y - UnityEngine.Random.Range(400F, 500F) * (ep.currentSub ? 2 : 1));
@@ -234,7 +234,7 @@ public static partial class ECHooks {
         }
     }
 
-    public static bool isVoidHeatColumn(Vector3 vec, out Vector3 colCenter, bool biomeOnly = false) {
+    public static bool IsVoidHeatColumn(Vector3 vec, out Vector3 colCenter, bool biomeOnly = false) {
         //2200 is significantly offshore
         colCenter = Vector3.zero;
         if (!(VanillaBiomes.Void.IsInBiome(vec) && vec.SetY(0).magnitude >= 2200))
@@ -242,7 +242,7 @@ public static partial class ECHooks {
         if (biomeOnly)
             return true;
         Vector3 mod = vec.Modulo(1000);
-        foreach (var v in heatColumns) {
+        foreach (var v in HeatColumns) {
             if ((v - mod).SetY(0).sqrMagnitude <= 500) {
                 colCenter = v;
                 return true;
@@ -253,31 +253,31 @@ public static partial class ECHooks {
         //return heatColumnNoise.getValue(vec) > 0.8 && VanillaBiomes.VOID.isInBiome(vec) && vec.setY(0).magnitude >= 2200;
     }
 
-    public static void onEMPTouch(EMPBlast e, Collider c) {
+    public static void OnEmpTouch(EMPBlast e, Collider c) {
         if (c.isPlayer()) {
             CompassDistortionSystem.instance.onHitByEMP(
                 e,
-                isPiezo(e) ? 10 : 1
+                IsPiezo(e) ? 10 : 1
             ); //piezo is only the 15s base since electrionicsDisableTime is zero for piezo
         }
     }
 
-    public static void onEMPHit(EMPBlast e, GameObject go) { //might be called many times
-        if (isPiezo(e)) {
+    public static void OnEmpHit(EMPBlast e, GameObject go) { //might be called many times
+        if (IsPiezo(e)) {
             //SNUtil.writeToChat("Match");
             var time = DayNightCycle.main.timePassedAsFloat;
             var sub = go.gameObject.FindAncestor<SubRoot>();
             var amt = UnityEngine.Random.Range(1F, 4F);
             var v = go.gameObject.FindAncestor<Vehicle>();
             if (v) {
-                if (time >= lastPiezoEMPDamage + 1F) {
+                if (time >= _lastPiezoEmpDamage + 1F) {
                     go.GetComponent<LiveMixin>().TakeDamage(
                         UnityEngine.Random.Range(10F, 20F),
                         v.transform.position,
                         DamageType.Electrical,
                         e.gameObject
                     );
-                    lastPiezoEMPDamage = time;
+                    _lastPiezoEmpDamage = time;
                 }
 
                 v.ConsumeEnergy(amt * 3); //must be first as will no-op if electronics is disabled
@@ -293,19 +293,19 @@ public static partial class ECHooks {
         }
     }
 
-    private static bool isPiezo(EMPBlast e) {
+    private static bool IsPiezo(EMPBlast e) {
         return e.gameObject.name.StartsWith("PiezoCrystal_EMPulse", StringComparison.InvariantCultureIgnoreCase);
     }
 
-    public static float getLastSonarUse() {
-        return lastSonarUsed;
+    public static float GetLastSonarUse() {
+        return _lastSonarUsed;
     }
 
-    public static float getLastHornUse() {
-        return lastHornUsed;
+    public static float GetLastHornUse() {
+        return _lastHornUsed;
     }
 
-    public static void updateSeamothModules(SeaMoth sm, int slotID, TechType tt, bool added) { /*
+    public static void UpdateSeamothModules(SeaMoth sm, int slotID, TechType tt, bool added) { /*
         if (added && sm.storageInputs != null && slotID < sm.storageInputs.Length) {
             if (tt == EcoceanMod.planktonScoop.TechType) {
                 sm.storageInputs[slotID].gameObject.SetActive(true);
@@ -328,7 +328,7 @@ public static partial class ECHooks {
 
     }
     */
-    public static void onTakeDamage(DIHooks.DamageToDeal dmg) {
+    public static void OnTakeDamage(DIHooks.DamageToDeal dmg) {
         BaseRoot bb = dmg.Target.gameObject.FindAncestor<BaseRoot>();
         if (bb && !dmg.Target.gameObject.FindAncestor<Planter>()) { //bases but NOT farmed plants
             var str = bb.GetComponent<BaseHullStrength>();
@@ -407,10 +407,10 @@ public static partial class ECHooks {
         if (pi && pi.ClassId == DecoPlants.PINK_BULB_STACK.prefab)
             dmg.SetValue(0.1F);
         if (pi && pi.ClassId == VanillaCreatures.PRECURSORCRAB.prefab && dmg.Type == DamageType.Drill) //player prawn
-            precursorCrabRetaliate(dmg.Target, false);
+            PrecursorCrabRetaliate(dmg.Target, false);
     }
 
-    public static void tryKnife(DIHooks.KnifeAttempt k) {
+    public static void TryKnife(DIHooks.KnifeAttempt k) {
         if (CraftData.GetTechType(k.Target.gameObject) == EcoceanMod.pinkBulbStack.TechType) {
             k.AllowKnife = true;
             return;
@@ -423,7 +423,7 @@ public static partial class ECHooks {
         }
     }
 
-    public static void onKnifed(GameObject go) {
+    public static void OnKnifed(GameObject go) {
         var tt = CraftData.GetTechType(go);
         if (tt == TechType.LargeFloater) {
             DIHooks.FireKnifeHarvest(go, new Dictionary<TechType, int> { { TechType.Floater, 1 } });
@@ -439,7 +439,7 @@ public static partial class ECHooks {
         }
 
         if (tt == TechType.PrecursorDroid) {
-            precursorCrabRetaliate(go, true);
+            PrecursorCrabRetaliate(go, true);
             return;
         }
 
@@ -470,7 +470,7 @@ public static partial class ECHooks {
         }
     }
 
-    public static void precursorCrabRetaliate(GameObject go, bool single) {
+    public static void PrecursorCrabRetaliate(GameObject go, bool single) {
         var tgt = Player.main.gameObject;
         var v = Player.main.GetVehicle();
         if (v)
@@ -490,13 +490,13 @@ public static partial class ECHooks {
         );
     }
 
-    public static void getKnifeHarvest(DIHooks.KnifeHarvest h) {
+    public static void GetKnifeHarvest(DIHooks.KnifeHarvest h) {
         if (h.ObjectType == EcoceanMod.mushroomVaseStrand.TechType && h.Hit.isFarmedPlant()) {
             h.Hit.FindAncestor<MushroomVaseStrand.MushroomVaseStrandTag>().tryHarvest();
         }
     }
 
-    public static void onPickup(DIHooks.ItemPickup ip) {
+    public static void OnPickup(DIHooks.ItemPickup ip) {
         Pickupable pp = ip.Item;
         FoodEffectSystem.instance.ensureEatable(pp);
         var g = pp.GetComponent<GlowOilTag>();
@@ -505,7 +505,7 @@ public static partial class ECHooks {
         }
     }
 
-    public static void getWaterTemperature(DIHooks.WaterTemperatureCalculation calc) {
+    public static void GetWaterTemperature(DIHooks.WaterTemperatureCalculation calc) {
         //SNUtil.writeToChat("EC: Checking water temp @ "+calc.position+" def="+calc.originalValue);
         LavaBomb.iterateLavaBombs(lb => {
                 var dist = Vector3.Distance(lb.transform.position, calc.Position);
@@ -517,13 +517,13 @@ public static partial class ECHooks {
                 }
             }
         );
-        if (isVoidHeatColumn(calc.Position, out var trash)) {
+        if (IsVoidHeatColumn(calc.Position, out var trash)) {
             //SNUtil.writeToChat("Computing water temp @ " + calc.position + " in heat column " + trash);
             calc.SetValue(Mathf.Max(calc.GetTemperature(), 60));
         }
     }
 
-    public static void onSkyApplierSpawn(SkyApplier pk) {
+    public static void OnSkyApplierSpawn(SkyApplier pk) {
         var go = pk.gameObject;
         if (go.name.StartsWith("Seamoth", StringComparison.InvariantCultureIgnoreCase) && go.name.EndsWith(
                 "Arm(Clone)",
@@ -536,9 +536,9 @@ public static partial class ECHooks {
 
         var pi = go.FindAncestor<PrefabIdentifier>();
         if (pi) {
-            if (go.isAnchorPod() && !isSeaTreaderCave(go))
+            if (go.isAnchorPod() && !IsSeaTreaderCave(go))
                 go.EnsureComponent<ExplodingAnchorPod>();
-            else if (bloodVine.Contains(pi.ClassId))
+            else if (BloodVine.Contains(pi.ClassId))
                 go.EnsureComponent<PredatoryBloodvine>();
             else if (pi.ClassId == VanillaCreatures.REEFBACK.prefab) {
                 go.EnsureComponent<ECReefback>();
@@ -655,18 +655,18 @@ public static partial class ECHooks {
         }
     }
 
-    private static bool isSeaTreaderCave(GameObject go) { //skip the c2c prop ones
+    private static bool IsSeaTreaderCave(GameObject go) { //skip the c2c prop ones
         return Vector3.Distance(go.transform.position, new Vector3(-1264, -281, -728)) <= 30;
     }
 
-    public static void onGeyserSpawn(Geyser g) {
+    public static void OnGeyserSpawn(Geyser g) {
         g.gameObject.EnsureComponent<GeyserSonarSignal>();
         var cc = g.GetComponent<CapsuleCollider>();
         cc.center += Vector3.down * 1.5F;
         cc.height += 3.5F;
     }
 
-    public static void tickObjectInGeyser(Geyser g, Collider c) {
+    public static void TickObjectInGeyser(Geyser g, Collider c) {
         if (g.erupting) {
             //SNUtil.writeToChat(c.gameObject.name);
             var v = c.gameObject.FindAncestor<Vehicle>();
@@ -709,8 +709,8 @@ public static partial class ECHooks {
                     rb.AddForce(vec, ForceMode.Force);
                     if (!v && !rb.isPlayer()) {
                         var obj = rb.gameObject.EnsureComponent<GeyserDisplacement>();
-                        obj.geyser = g;
-                        obj.destroyIn = DayNightCycle.main.timePassedAsFloat + 1.5F;
+                        obj.Geyser = g;
+                        obj.DestroyIn = DayNightCycle.main.timePassedAsFloat + 1.5F;
                     }
                 }
             }
@@ -718,32 +718,32 @@ public static partial class ECHooks {
     }
 
     private class GeyserDisplacement : MonoBehaviour {
-        internal Geyser geyser;
-        internal float destroyIn;
+        internal Geyser Geyser;
+        internal float DestroyIn;
 
-        private Rigidbody body;
+        private Rigidbody _body;
 
         private void Update() {
-            if (!body)
-                body = GetComponent<Rigidbody>();
-            if (DayNightCycle.main.timePassedAsFloat >= destroyIn) {
+            if (!_body)
+                _body = GetComponent<Rigidbody>();
+            if (DayNightCycle.main.timePassedAsFloat >= DestroyIn) {
                 this.destroy();
                 return;
             }
 
-            if (geyser && geyser.erupting) {
-                var dh = transform.position.y - geyser.transform.position.y;
-                Vector3 vec = transform.position.SetY(0) - geyser.transform.position.SetY(0);
+            if (Geyser && Geyser.erupting) {
+                var dh = transform.position.y - Geyser.transform.position.y;
+                Vector3 vec = transform.position.SetY(0) - Geyser.transform.position.SetY(0);
                 if (vec.sqrMagnitude >= 1600) {
                     this.destroy();
                 } else {
                     //float f2 = (dh/40F)+1;
                     //vec *= f2*f2*f2*f2*Time.deltaTime;
                     vec *= Time.deltaTime;
-                    body.AddForce(vec.normalized * 20, ForceMode.Force);
-                    var vel = body.velocity;
+                    _body.AddForce(vec.normalized * 20, ForceMode.Force);
+                    var vel = _body.velocity;
                     vel.y *= 0.99F;
-                    body.velocity = vel;
+                    _body.velocity = vel;
                 }
             }
         }
@@ -764,7 +764,7 @@ public static partial class ECHooks {
 
     }*/
 
-    public static void onTorpedoExploded(SeamothTorpedo sm, Transform result) {
+    public static void OnTorpedoExploded(SeamothTorpedo sm, Transform result) {
         var vortex = result.GetComponent<SeamothTorpedoWhirlpool>();
         //SNUtil.writeToChat(sm+" makes "+result);
         WorldUtil.getGameObjectsNear(
@@ -787,22 +787,22 @@ public static partial class ECHooks {
         );
     }
 
-    public static void honkCyclopsHorn(CyclopsHornButton b) {
-        attractToSoundPing(b.gameObject.FindAncestor<SubRoot>(), true, 1);
-        lastHornUsed = DayNightCycle.main.timePassedAsFloat;
+    public static void HonkCyclopsHorn(CyclopsHornButton b) {
+        AttractToSoundPing(b.gameObject.FindAncestor<SubRoot>(), true, 1);
+        _lastHornUsed = DayNightCycle.main.timePassedAsFloat;
     }
 
-    public static void pingSeamothSonar(SeaMoth sm) {
-        pingSonarFromObject(sm);
+    public static void PingSeamothSonar(SeaMoth sm) {
+        PingSonarFromObject(sm);
     }
 
-    public static void pingCyclopsSonar(SubRoot sb) {
-        pingSonarFromObject(sb);
+    public static void PingCyclopsSonar(SubRoot sb) {
+        PingSonarFromObject(sb);
     }
 
-    public static void pingSonarFromObject(MonoBehaviour mb, float strength = 1) {
-        attractToSoundPing(mb, false, strength);
-        lastSonarUsed = DayNightCycle.main.timePassedAsFloat;
+    public static void PingSonarFromObject(MonoBehaviour mb, float strength = 1) {
+        AttractToSoundPing(mb, false, strength);
+        _lastSonarUsed = DayNightCycle.main.timePassedAsFloat;
         float r = 120;
         WorldUtil.getGameObjectsNear(
             mb.transform.position,
@@ -820,7 +820,7 @@ public static partial class ECHooks {
         );
     }
 
-    public static void attractToSoundPing(MonoBehaviour obj, bool isHorn, float strength) {
+    public static void AttractToSoundPing(MonoBehaviour obj, bool isHorn, float strength) {
         if (obj is SubRoot sub && sub.isCyclops) {
             var noise = obj.gameObject.GetComponentInChildren<CyclopsNoiseManager>();
             if (noise) {
@@ -833,13 +833,13 @@ public static partial class ECHooks {
         WorldUtil.getGameObjectsNear(
             obj.transform.position,
             range,
-            go => tryAttractToSound(go, obj, isHorn, strength, range)
+            go => TryAttractToSound(go, obj, isHorn, strength, range)
         );
     }
 
-    private static void tryAttractToSound(GameObject go, MonoBehaviour obj, bool isHorn, float strength, float range) {
+    private static void TryAttractToSound(GameObject go, MonoBehaviour obj, bool isHorn, float strength, float range) {
         var c = go.GetComponent<Creature>();
-        if (c && attractedToSound(c, isHorn) && !c.GetComponent<WaterParkCreature>()) {
+        if (c && AttractedToSound(c, isHorn) && !c.GetComponent<WaterParkCreature>()) {
             var chance = 0.5F *
                          Mathf.Clamp01(1F - Vector3.Distance(c.transform.position, obj.transform.position) / range);
             if (!Mathf.Approximately(strength, 1))
@@ -864,24 +864,24 @@ public static partial class ECHooks {
         }
     }
 
-    internal static bool attractedToSound(Creature c, bool horn) {
+    internal static bool AttractedToSound(Creature c, bool horn) {
         return c is GhostLeviathan || c is GhostLeviatanVoid || c is ReaperLeviathan || c is SeaDragon ||
                c.gameObject.FindAncestor<PrefabIdentifier>().ClassId == "GulperLeviathan" ||
                (c is Reefback || c is BoneShark ? horn : (c is CrabSnake || c is CrabSquid) && !horn);
     }
 
-    internal static bool attractedToLight(Creature c, MonoBehaviour obj) {
+    internal static bool AttractedToLight(Creature c, MonoBehaviour obj) {
         return c is SeaDragon || (c is BoneShark && !(obj is SubRoot));
     }
 
-    public static void attractToLight(MonoBehaviour obj) {
+    public static void AttractToLight(MonoBehaviour obj) {
         float range = obj is SubRoot ? 150 : 80;
-        WorldUtil.getGameObjectsNear(obj.transform.position, range, go => tryAttractToLight(go, obj, range));
+        WorldUtil.getGameObjectsNear(obj.transform.position, range, go => TryAttractToLight(go, obj, range));
     }
 
-    private static bool tryAttractToLight(GameObject go, MonoBehaviour obj, float range) {
+    private static bool TryAttractToLight(GameObject go, MonoBehaviour obj, float range) {
         var c = go.GetComponent<Creature>();
-        if (c && attractedToLight(c, obj) && !c.GetComponent<WaterParkCreature>() &&
+        if (c && AttractedToLight(c, obj) && !c.GetComponent<WaterParkCreature>() &&
             (obj is SubRoot || ObjectUtil.isLookingAt(obj.transform, c.transform.position, 45))) {
             var chance = Mathf.Clamp01(1F - Vector3.Distance(c.transform.position, obj.transform.position) / range);
             if (obj is SeaMoth)
@@ -895,7 +895,7 @@ public static partial class ECHooks {
         return false;
     }
 
-    internal static void attractCreaturesToBase(SubRoot sub, float range, Predicate<Creature> rule = null) {
+    internal static void AttractCreaturesToBase(SubRoot sub, float range, Predicate<Creature> rule = null) {
         WorldUtil.getGameObjectsNear(
             sub.transform.position,
             range,
@@ -907,24 +907,24 @@ public static partial class ECHooks {
         );
     }
 
-    public static void applyCurrentForce(Rigidbody rb, Vector3 force, ForceMode mode, Current c) {
+    public static void ApplyCurrentForce(Rigidbody rb, Vector3 force, ForceMode mode, Current c) {
         var wc = c.GetComponent<WaterCurrentTag>();
         var str = wc ? wc.getCurrentStrength(rb.transform.position) : 1;
         if (str > 0)
             rb.AddForce(force * str, mode);
     }
 
-    public static void setHUDCompassDirection(uGUI_Compass compass, float dir) { /* 0-1 for 360 */
+    public static void SetHUDCompassDirection(uGUI_Compass compass, float dir) { /* 0-1 for 360 */
         compass.direction =
             (dir + CompassDistortionSystem.instance.getTotalDisplacement(Player.main.transform.position) / 360F) % 1F;
     }
 
-    public static void setCyclopsCompassDirection(Transform obj, Quaternion dir) {
+    public static void SetCyclopsCompassDirection(Transform obj, Quaternion dir) {
         obj.rotation = dir;
         obj.Rotate(0, CompassDistortionSystem.instance.getTotalDisplacement(obj.position), 0);
     }
 
-    public static void onDrillableTick(Drillable d, Vector3 vec, Exosuit s) {
+    public static void OnDrillableTick(Drillable d, Vector3 vec, Exosuit s) {
         var pt = d.GetComponent<PiezoCrystalTag>();
         if (pt)
             pt.onDrilled(vec);
@@ -934,12 +934,12 @@ public static partial class ECHooks {
 
     }*/
 
-    public static bool canMeleeBite(MeleeAttack me, GameObject go) {
+    public static bool CanMeleeBite(MeleeAttack me, GameObject go) {
         var bc = go.GetComponent<BaseCell>();
-        return (bc && canCreatureAttackBase(bc, me)) || me.CanBite(go);
+        return (bc && CanCreatureAttackBase(bc, me)) || me.CanBite(go);
     }
 
-    private static bool canCreatureAttackBase(BaseCell bc, MeleeAttack me) {
+    private static bool CanCreatureAttackBase(BaseCell bc, MeleeAttack me) {
         AttractToTarget att = me.GetComponent<AttractToTarget>();
         if (att && att.isTargeting(bc.gameObject))
             return true;
@@ -947,7 +947,7 @@ public static partial class ECHooks {
         return c is GhostLeviatanVoid || c is GhostLeviathan || c is SeaDragon || c is CrabSquid || c is Shocker;
     }
 
-    public static GameObject getMeleeTarget(MeleeAttack me, Collider c) {
+    public static GameObject GetMeleeTarget(MeleeAttack me, Collider c) {
         var ret = c.gameObject;
         var bc = ret.FindAncestor<BaseCell>();
         if (bc)
@@ -957,25 +957,25 @@ public static partial class ECHooks {
         return ret;
     }
 
-    public static float getWaterFilterSaltTickTime(float val, FiltrationMachine machine) {
+    public static float GetWaterFilterSaltTickTime(float val, FiltrationMachine machine) {
         if (VanillaBiomes.Lostriver.IsInBiome(machine.transform.position))
             val *= 3;
         return val;
     }
 
-    public static void checkCreatureCanSee(DIHooks.CreatureSeeObjectCheck ch) {
+    public static void CheckCreatureCanSee(DIHooks.CreatureSeeObjectCheck ch) {
         PlantHidingTracker ph = ch.Target.GetComponent<PlantHidingTracker>();
         if (ph && ph.isActive())
             ch.CanSee = false;
     }
 
-    public static void checkCreaturePilotedAggression(DIHooks.AggressiveToPilotingVehicleCheck ch) {
+    public static void CheckCreaturePilotedAggression(DIHooks.AggressiveToPilotingVehicleCheck ch) {
         PlantHidingTracker ph = ch.Vehicle.GetComponent<PlantHidingTracker>();
         if (ph && ph.isActive())
             ch.CanTarget = false;
     }
 
-    public static void onBaseRebuild(Base b) {
+    public static void OnBaseRebuild(Base b) {
         b.gameObject.removeComponent<BaseCellEnviroHandler>();
         foreach (var bc in b.GetComponentsInChildren<BaseCell>()) {
             var ce = bc.gameObject.EnsureComponent<BaseCellEnviroHandler>();
@@ -985,11 +985,11 @@ public static partial class ECHooks {
         }
     }
 
-    public static void tickGrowingPlant(GrowingPlant g, float prog) {
+    public static void TickGrowingPlant(GrowingPlant g, float prog) {
         //g.gameObject.EnsureComponent<GrowingPlantViabilityTracker>().plant = g;
     }
 
-    public static void checkTargetingSkip(DIHooks.TargetabilityCheck ch) {
+    public static void CheckTargetingSkip(DIHooks.TargetabilityCheck ch) {
         if (ch.Prefab.ClassId == EcoceanMod.plankton.ClassID) {
             PlanktonCloudTag tag = ch.Prefab.GetComponentInChildren<PlanktonCloudTag>();
             ch.AllowTargeting = tag && !tag.isBaseBound && !Player.main.currentSub && !Player.main.GetVehicle();

@@ -348,7 +348,7 @@ public class PlanktonCloudTag : PlanktonCloudClearableContactZone {
             leviSphere.entity.SetActive(touchable);
         }*/
 
-        if (time - ECHooks.getLastSonarUse() <= 10 || time - ECHooks.getLastHornUse() <= 10) {
+        if (time - ECHooks.GetLastSonarUse() <= 10 || time - ECHooks.GetLastHornUse() <= 10) {
             touchIntensity = Mathf.Max(1, touchIntensity);
         }
 
