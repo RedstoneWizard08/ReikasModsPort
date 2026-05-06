@@ -10,7 +10,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(Creature))]
-    [HarmonyPatch("GetCanSeeObject")]
+    [HarmonyPatch(nameof(Creature.GetCanSeeObject))]
     public static class VisibilityToCreatureHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

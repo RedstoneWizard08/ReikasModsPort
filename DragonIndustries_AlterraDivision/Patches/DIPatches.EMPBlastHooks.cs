@@ -10,7 +10,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(EMPBlast))]
-    [HarmonyPatch("OnTouch")]
+    [HarmonyPatch(nameof(EMPBlast.OnTouch))]
     public static class EMPBlastHooks {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

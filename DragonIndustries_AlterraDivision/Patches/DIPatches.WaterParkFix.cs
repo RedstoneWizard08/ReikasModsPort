@@ -10,7 +10,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(WaterParkCreature))]
-    [HarmonyPatch("Born")]
+    [HarmonyPatch(nameof(WaterParkCreature.Born))]
     public static class WaterParkFix {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -30,7 +30,7 @@ internal static partial class DIPatches {
                     idx + 1,
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
-                        "onEggHatched",
+                        nameof(DIHooks.OnEggHatched),
                         false,
                         typeof(GameObject)
                     )

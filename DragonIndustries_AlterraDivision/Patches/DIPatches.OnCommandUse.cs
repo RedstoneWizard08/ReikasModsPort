@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(DevConsole))]
-    [HarmonyPatch("Submit")]
+    [HarmonyPatch(nameof(DevConsole.Submit))]
     public static class OnCommandUse {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

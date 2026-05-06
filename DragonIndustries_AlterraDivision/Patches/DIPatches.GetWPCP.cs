@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(WaterParkCreature))]
-    [HarmonyPatch("GetParameters")]
+    [HarmonyPatch(nameof(WaterParkCreature.GetParameters))]
     public static class GetWPCP {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

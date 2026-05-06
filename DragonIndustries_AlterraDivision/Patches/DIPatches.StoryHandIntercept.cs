@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(StoryHandTarget))]
-    [HarmonyPatch("OnHandClick")]
+    [HarmonyPatch(nameof(StoryHandTarget.OnHandClick))]
     public static class StoryHandIntercept {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

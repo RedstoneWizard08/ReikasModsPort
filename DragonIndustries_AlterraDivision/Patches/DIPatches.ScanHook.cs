@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(PDAScanner))]
-    [HarmonyPatch("Unlock")]
+    [HarmonyPatch(nameof(PDAScanner.Unlock))]
     public static class ScanHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

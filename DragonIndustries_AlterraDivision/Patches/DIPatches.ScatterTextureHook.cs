@@ -10,7 +10,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(WaterBiomeManager))]
-    [HarmonyPatch("GetScatteringTextureValue")]
+    [HarmonyPatch(nameof(WaterBiomeManager.GetScatteringTextureValue))]
     public static class ScatterTextureHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

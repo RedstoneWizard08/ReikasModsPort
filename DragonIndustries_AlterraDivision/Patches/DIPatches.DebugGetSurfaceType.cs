@@ -10,7 +10,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(Builder))]
-    [HarmonyPatch("GetSurfaceType")]
+    [HarmonyPatch(nameof(Builder.GetSurfaceType))]
     public static class DebugGetSurfaceType {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

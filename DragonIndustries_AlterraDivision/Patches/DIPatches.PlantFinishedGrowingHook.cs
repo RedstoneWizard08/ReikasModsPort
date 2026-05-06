@@ -10,7 +10,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(GrowingPlant))]
-    [HarmonyPatch("SpawnGrownModel")]
+    [HarmonyPatch(nameof(GrowingPlant.SpawnGrownModel))]
     public static class PlantFinishedGrowingHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

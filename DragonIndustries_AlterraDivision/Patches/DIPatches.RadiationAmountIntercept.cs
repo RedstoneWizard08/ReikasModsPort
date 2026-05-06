@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(Player))]
-    [HarmonyPatch("SetRadiationAmount")]
+    [HarmonyPatch(nameof(Player.SetRadiationAmount))]
     public static class RadiationAmountIntercept {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

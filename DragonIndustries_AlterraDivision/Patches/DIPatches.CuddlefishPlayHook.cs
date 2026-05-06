@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(CuteFishHandTarget))]
-    [HarmonyPatch("PrepareCinematicMode")]
+    [HarmonyPatch(nameof(CuteFishHandTarget.PrepareCinematicMode))]
     public static class CuddlefishPlayHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

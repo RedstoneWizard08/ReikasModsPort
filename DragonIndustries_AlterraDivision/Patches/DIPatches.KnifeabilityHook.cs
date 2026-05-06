@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(Knife))]
-    [HarmonyPatch("IsValidTarget")]
+    [HarmonyPatch(nameof(Knife.IsValidTarget))]
     public static class KnifeabilityHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

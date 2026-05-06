@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(Vehicle))]
-    [HarmonyPatch("EnterVehicle")]
+    [HarmonyPatch(nameof(Vehicle.EnterVehicle))]
     public static class VehicleEnterHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

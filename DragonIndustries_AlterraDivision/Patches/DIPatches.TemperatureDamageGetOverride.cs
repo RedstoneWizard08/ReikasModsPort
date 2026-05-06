@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(TemperatureDamage))]
-    [HarmonyPatch("GetTemperature")]
+    [HarmonyPatch(nameof(TemperatureDamage.GetTemperature))]
     public static class TemperatureDamageGetOverride {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

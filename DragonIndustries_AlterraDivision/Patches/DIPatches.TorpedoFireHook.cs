@@ -10,7 +10,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(Vehicle))]
-    [HarmonyPatch("TorpedoShot")]
+    [HarmonyPatch(nameof(Vehicle.TorpedoShot))]
     public static class TorpedoFireHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

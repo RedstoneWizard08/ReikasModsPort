@@ -11,7 +11,7 @@ namespace ReikaKalseki.DIAlterra;
 internal static partial class DIPatches {
     /*
     [HarmonyPatch(typeof(uGUI_PopupNotification))]
-    [HarmonyPatch("Set")]
+    [HarmonyPatch(nameof(uGUI_PopupNotification.Set))]
     public static class DebugTechPopup {
 
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {

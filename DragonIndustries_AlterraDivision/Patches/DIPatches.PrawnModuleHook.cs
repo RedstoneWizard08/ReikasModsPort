@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(Exosuit))]
-    [HarmonyPatch("OnUpgradeModuleChange")]
+    [HarmonyPatch(nameof(Exosuit.OnUpgradeModuleChange))]
     public static class PrawnModuleHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

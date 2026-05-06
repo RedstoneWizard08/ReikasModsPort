@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(SNCameraRoot))]
-    [HarmonyPatch("SonarPing")]
+    [HarmonyPatch(nameof(SNCameraRoot.SonarPing))]
     public static class SonarHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

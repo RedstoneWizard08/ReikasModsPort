@@ -10,7 +10,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(VehicleDockingBay))]
-    [HarmonyPatch("OnTriggerEnter")]
+    [HarmonyPatch(nameof(VehicleDockingBay.OnTriggerEnter))]
     public static class MoonpoolGrabDetection {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

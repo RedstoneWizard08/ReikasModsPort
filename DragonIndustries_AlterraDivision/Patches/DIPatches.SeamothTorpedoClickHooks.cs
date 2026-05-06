@@ -10,7 +10,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(SeaMoth))]
-    [HarmonyPatch("OpenTorpedoStorage")]
+    [HarmonyPatch(nameof(SeaMoth.OpenTorpedoStorage))]
     public static class SeamothTorpedoClickHooks {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

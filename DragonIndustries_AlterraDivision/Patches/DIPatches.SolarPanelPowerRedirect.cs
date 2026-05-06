@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(SolarPanel))]
-    [HarmonyPatch("Update")]
+    [HarmonyPatch(nameof(SolarPanel.Update))]
     public static class SolarPanelPowerRedirect {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

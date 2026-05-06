@@ -10,7 +10,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(WaterBiomeManager))]
-    [HarmonyPatch("GetExtinctionTextureValue")]
+    [HarmonyPatch(nameof(WaterBiomeManager.GetExtinctionTextureValue))]
     public static class ExtinctionTextureHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

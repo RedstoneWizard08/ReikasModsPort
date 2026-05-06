@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(Survival))]
-    [HarmonyPatch("UpdateStats")]
+    [HarmonyPatch(nameof(Survival.UpdateStats))]
     public static class AffectFoodWaterRate {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

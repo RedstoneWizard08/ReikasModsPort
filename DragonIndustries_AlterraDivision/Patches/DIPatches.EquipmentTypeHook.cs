@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(CraftData))]
-    [HarmonyPatch("GetEquipmentType")]
+    [HarmonyPatch(nameof(CraftData.GetEquipmentType))]
     public static class EquipmentTypeHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

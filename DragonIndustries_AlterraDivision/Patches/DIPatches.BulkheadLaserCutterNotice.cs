@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(BulkheadDoor))]
-    [HarmonyPatch("OnHandHover")]
+    [HarmonyPatch(nameof(BulkheadDoor.OnHandHover))]
     public static class BulkheadLaserCutterNotice {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(Vehicle))]
-    [HarmonyPatch("GetStorageInSlot")]
+    [HarmonyPatch(nameof(Vehicle.GetStorageInSlot))]
     public static class SeamothStorageAccessHooks {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(BaseNuclearReactor))]
-    [HarmonyPatch("Update")]
+    [HarmonyPatch(nameof(BaseNuclearReactor.Update))]
     public static class NucReactorPowerRedirect {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

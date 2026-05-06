@@ -10,7 +10,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(TooltipFactory))]
-    [HarmonyPatch("ItemCommons")]
+    [HarmonyPatch(nameof(TooltipFactory.ItemCommons))]
     public static class CustomTooltipHooks {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

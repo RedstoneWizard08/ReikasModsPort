@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(Inventory))]
-    [HarmonyPatch("InternalDropItem")]
+    [HarmonyPatch(nameof(Inventory.InternalDropItem))]
     public static class ItemDroppabilityHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

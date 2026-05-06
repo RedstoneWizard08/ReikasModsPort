@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(StoryGoalCustomEventHandler))]
-    [HarmonyPatch("NotifyGoalComplete")]
+    [HarmonyPatch(nameof(StoryGoalCustomEventHandler.NotifyGoalComplete))]
     public static class StoryHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

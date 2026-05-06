@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(BulkheadDoor))]
-    [HarmonyPatch("OnHandClick")]
+    [HarmonyPatch(nameof(BulkheadDoor.OnHandClick))]
     public static class BulkheadDoorClickIntercept {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

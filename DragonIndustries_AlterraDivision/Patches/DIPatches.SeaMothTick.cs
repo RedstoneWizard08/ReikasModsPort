@@ -8,7 +8,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(SeaMoth))]
-    [HarmonyPatch("Update")]
+    [HarmonyPatch(nameof(SeaMoth.Update))]
     public static class SeaMothTick {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

@@ -8,7 +8,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(ThermalPlant))]
-    [HarmonyPatch("AddPower")]
+    [HarmonyPatch(nameof(ThermalPlant.AddPower))]
     public static class ThermalPlantPowerRedirect {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

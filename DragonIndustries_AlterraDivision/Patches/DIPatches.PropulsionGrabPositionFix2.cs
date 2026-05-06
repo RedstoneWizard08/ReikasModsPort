@@ -10,7 +10,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(PropulsionCannon))]
-    [HarmonyPatch("GetObjectPosition")]
+    [HarmonyPatch(nameof(PropulsionCannon.GetObjectPosition))]
     public static class PropulsionGrabPositionFix2 {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

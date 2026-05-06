@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(AggressiveToPilotingVehicle))]
-    [HarmonyPatch("UpdateAggression")]
+    [HarmonyPatch(nameof(AggressiveToPilotingVehicle.UpdateAggression))]
     public static class VehicleVisibilityToCreatureHook1 {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

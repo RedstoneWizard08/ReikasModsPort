@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(VehicleDockingBay))]
-    [HarmonyPatch("Start")]
+    [HarmonyPatch(nameof(VehicleDockingBay.Start))]
     public static class VehicleDockingBaySpawnHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

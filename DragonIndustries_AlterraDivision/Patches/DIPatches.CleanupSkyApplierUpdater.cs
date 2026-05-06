@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(SkyApplierUpdater))]
-    [HarmonyPatch("Update")]
+    [HarmonyPatch(nameof(SkyApplierUpdater.Update))]
     public static class CleanupSkyApplierUpdater {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

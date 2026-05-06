@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(SubRoot))]
-    [HarmonyPatch("UpdateSubModules")]
+    [HarmonyPatch(nameof(SubRoot.UpdateSubModules))]
     public static class CyclopsModuleHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

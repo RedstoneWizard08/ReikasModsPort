@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(ToggleLights))]
-    [HarmonyPatch("CheckLightToggle")]
+    [HarmonyPatch(nameof(ToggleLights.CheckLightToggle))]
     public static class LightToggleRework {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

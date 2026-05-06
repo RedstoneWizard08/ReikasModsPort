@@ -8,7 +8,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(BaseBioReactor))]
-    [HarmonyPatch("Update")]
+    [HarmonyPatch(nameof(BaseBioReactor.Update))]
     public static class BioreactorPowerRedirect {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

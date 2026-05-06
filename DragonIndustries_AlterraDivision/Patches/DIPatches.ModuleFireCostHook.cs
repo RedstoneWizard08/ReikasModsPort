@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(Vehicle))]
-    [HarmonyPatch("ConsumeEnergy", typeof(TechType))]
+    [HarmonyPatch(nameof(Vehicle.ConsumeEnergy), typeof(TechType))]
     public static class ModuleFireCostHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(FMOD_CustomEmitter))]
-    [HarmonyPatch("OnPlay")]
+    [HarmonyPatch(nameof(FMOD_CustomEmitter.OnPlay))]
     public static class SoundHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

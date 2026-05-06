@@ -10,7 +10,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(Inventory))]
-    [HarmonyPatch("ExecuteItemAction")]
+    [HarmonyPatch(nameof(Inventory.ExecuteItemAction))]
     public static class EatInterception {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

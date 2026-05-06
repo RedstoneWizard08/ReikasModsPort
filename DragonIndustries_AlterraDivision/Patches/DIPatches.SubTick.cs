@@ -8,7 +8,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(SubRoot))]
-    [HarmonyPatch("Update")]
+    [HarmonyPatch(nameof(SubRoot.Update))]
     public static class SubTick {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(GrowingPlant))]
-    [HarmonyPatch("Update")]
+    [HarmonyPatch(nameof(GrowingPlant.Update))]
     public static class TickGrowingPlant {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

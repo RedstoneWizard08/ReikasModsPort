@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(uGUI_MapRoomScanner))]
-    [HarmonyPatch("RebuildResourceList")]
+    [HarmonyPatch(nameof(uGUI_MapRoomScanner.RebuildResourceList))]
     public static class ScannerTypeFilteringHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

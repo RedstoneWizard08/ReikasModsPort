@@ -10,7 +10,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(PrecursorDoorMotorModeSetter))]
-    [HarmonyPatch("OnTriggerEnter")]
+    [HarmonyPatch(nameof(PrecursorDoorMotorModeSetter.OnTriggerEnter))]
     public static class AirlockTouchDetection {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(FiltrationMachine))]
-    [HarmonyPatch("Spawn")]
+    [HarmonyPatch(nameof(FiltrationMachine.Spawn))]
     public static class OnWaterFilterSpawn {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

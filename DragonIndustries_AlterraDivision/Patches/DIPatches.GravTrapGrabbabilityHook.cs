@@ -10,7 +10,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(Gravsphere))]
-    [HarmonyPatch("IsValidTarget")]
+    [HarmonyPatch(nameof(Gravsphere.IsValidTarget))]
     public static class GravTrapGrabbabilityHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(CrashedShipExploder))]
-    [HarmonyPatch("Start")]
+    [HarmonyPatch(nameof(CrashedShipExploder.Start))]
     public static class AuroraSpawnHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

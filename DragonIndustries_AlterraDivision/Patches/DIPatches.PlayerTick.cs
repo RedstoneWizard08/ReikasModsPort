@@ -8,7 +8,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(Player))]
-    [HarmonyPatch("Update")]
+    [HarmonyPatch(nameof(Player.Update))]
     public static class PlayerTick {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

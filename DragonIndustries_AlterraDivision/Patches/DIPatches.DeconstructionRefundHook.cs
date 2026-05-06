@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(Constructable))]
-    [HarmonyPatch("Deconstruct")]
+    [HarmonyPatch(nameof(Constructable.Deconstruct))]
     public static class DeconstructionRefundHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -22,7 +22,7 @@ internal static partial class DIPatches {
                         new(OpCodes.Ldarg_0),
                         InstructionHandlers.createMethodCall(
                             "ReikaKalseki.DIAlterra.DIHooks",
-                            "onRefundConstructableIngredient",
+                            nameof(DIHooks.OnRefundConstructableIngredient),
                             false,
                             typeof(Pickupable),
                             typeof(Constructable)

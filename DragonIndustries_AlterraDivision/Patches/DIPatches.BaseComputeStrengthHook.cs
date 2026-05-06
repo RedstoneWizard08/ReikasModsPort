@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(BaseHullStrength))]
-    [HarmonyPatch("OnPostRebuildGeometry")]
+    [HarmonyPatch(nameof(BaseHullStrength.OnPostRebuildGeometry))]
     public static class BaseComputeStrengthHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

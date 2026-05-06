@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(CellManager))]
-    [HarmonyPatch("RegisterEntity", typeof(LargeWorldEntity))]
+    [HarmonyPatch(nameof(CellManager.RegisterEntity), typeof(LargeWorldEntity))]
     public static class EntityRegisterBypass {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(PropulsionCannon))]
-    [HarmonyPatch("ValidateObject")]
+    [HarmonyPatch(nameof(PropulsionCannon.ValidateObject))]
     public static class PropulsabilityHookMass {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

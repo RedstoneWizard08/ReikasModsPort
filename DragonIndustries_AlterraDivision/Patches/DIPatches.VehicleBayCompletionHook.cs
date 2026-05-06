@@ -10,7 +10,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(Constructor))]
-    [HarmonyPatch("OnConstructionDone")]
+    [HarmonyPatch(nameof(Constructor.OnConstructionDone))]
     public static class VehicleBayCompletionHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

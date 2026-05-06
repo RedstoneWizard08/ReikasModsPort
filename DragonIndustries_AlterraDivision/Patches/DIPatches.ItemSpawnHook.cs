@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(InventoryConsoleCommands))]
-    [HarmonyPatch("OnConsoleCommand_item")]
+    [HarmonyPatch(nameof(InventoryConsoleCommands.OnConsoleCommand_item))]
     public static class ItemSpawnHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

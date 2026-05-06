@@ -10,7 +10,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(StasisSphere))]
-    [HarmonyPatch("LateUpdate")]
+    [HarmonyPatch(nameof(StasisSphere.LateUpdate))]
     public static class StasisRifleHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(CraftData))]
-    [HarmonyPatch("IsInvUseable")]
+    [HarmonyPatch(nameof(CraftData.IsInvUseable))]
     public static class ItemUsabilityHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(PowerRelay))]
-    [HarmonyPatch("AddInboundPower")]
+    [HarmonyPatch(nameof(PowerRelay.AddInboundPower))]
     public static class SeabasePowerReferenceHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(MapRoomFunctionality))]
-    [HarmonyPatch("UpdateBlips")]
+    [HarmonyPatch(nameof(MapRoomFunctionality.UpdateBlips))]
     public static class MapRoomUpdateHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

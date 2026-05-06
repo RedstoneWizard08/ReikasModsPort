@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(GameInput))]
-    [HarmonyPatch("GetMoveDirection")]
+    [HarmonyPatch(nameof(GameInput.GetMoveDirection))]
     public static class InputDirectionOverrideHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

@@ -10,7 +10,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(AcidicBrineDamageTrigger))]
-    [HarmonyPatch("OnTriggerEnter")]
+    [HarmonyPatch(nameof(AcidicBrineDamageTrigger.OnTriggerEnter))]
     public static class BrineTouchDetection {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

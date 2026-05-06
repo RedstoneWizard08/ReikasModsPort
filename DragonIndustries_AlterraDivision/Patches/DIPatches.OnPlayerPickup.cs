@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(Pickupable))]
-    [HarmonyPatch("Pickup")]
+    [HarmonyPatch(nameof(Pickupable.Pickup))]
     public static class OnPlayerPickup {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

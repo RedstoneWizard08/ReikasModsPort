@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(ReaperLeviathan))]
-    [HarmonyPatch("GrabVehicle")]
+    [HarmonyPatch(nameof(ReaperLeviathan.GrabVehicle))]
     public static class ReaperGrabHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

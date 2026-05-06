@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(WorldForcesManager))]
-    [HarmonyPatch("FixedUpdate")]
+    [HarmonyPatch(nameof(WorldForcesManager.FixedUpdate))]
     public static class CleanupWorldForcesManager {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

@@ -10,7 +10,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(StasisSphere))]
-    [HarmonyPatch("UnfreezeAll")]
+    [HarmonyPatch(nameof(StasisSphere.UnfreezeAll))]
     public static class StasisRifleHook2 {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

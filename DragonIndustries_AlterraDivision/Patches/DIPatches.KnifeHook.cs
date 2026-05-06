@@ -10,7 +10,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(Knife))]
-    [HarmonyPatch("OnToolUseAnim")]
+    [HarmonyPatch(nameof(Knife.OnToolUseAnim))]
     public static class KnifeHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

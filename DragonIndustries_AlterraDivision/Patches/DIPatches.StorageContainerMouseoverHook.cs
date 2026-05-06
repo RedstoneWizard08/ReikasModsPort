@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(StorageContainer))]
-    [HarmonyPatch("OnHandHover")]
+    [HarmonyPatch(nameof(StorageContainer.OnHandHover))]
     public static class StorageContainerMouseoverHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

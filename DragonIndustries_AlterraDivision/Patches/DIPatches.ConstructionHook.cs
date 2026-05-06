@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(Constructable))]
-    [HarmonyPatch("NotifyConstructedChanged")]
+    [HarmonyPatch(nameof(Constructable.NotifyConstructedChanged))]
     public static class ConstructionHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

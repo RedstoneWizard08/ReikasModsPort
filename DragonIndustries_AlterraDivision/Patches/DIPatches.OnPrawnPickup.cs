@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(ExosuitClawArm))]
-    [HarmonyPatch("OnPickup")]
+    [HarmonyPatch(nameof(ExosuitClawArm.OnPickup))]
     public static class OnPrawnPickup {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

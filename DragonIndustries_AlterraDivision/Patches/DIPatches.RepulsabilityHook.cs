@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(RepulsionCannon))]
-    [HarmonyPatch("OnToolUseAnim")]
+    [HarmonyPatch(nameof(RepulsionCannon.OnToolUseAnim))]
     public static class RepulsabilityHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

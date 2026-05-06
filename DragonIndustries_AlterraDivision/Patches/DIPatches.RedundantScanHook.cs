@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(PDAScanner))]
-    [HarmonyPatch("Scan")]
+    [HarmonyPatch(nameof(PDAScanner.Scan))]
     [HarmonyPriority(Priority.Last)]
     public static class RedundantScanHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {

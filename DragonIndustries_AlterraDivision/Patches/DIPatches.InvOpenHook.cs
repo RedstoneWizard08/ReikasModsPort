@@ -10,7 +10,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(StorageContainer))]
-    [HarmonyPatch("Open", typeof(Transform))]
+    [HarmonyPatch(nameof(StorageContainer.Open), typeof(Transform))]
     public static class InvOpenHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

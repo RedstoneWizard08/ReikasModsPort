@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(SinkingGroundChunk))]
-    [HarmonyPatch("Start")]
+    [HarmonyPatch(nameof(SinkingGroundChunk.Start))]
     public static class TreaderChunkHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

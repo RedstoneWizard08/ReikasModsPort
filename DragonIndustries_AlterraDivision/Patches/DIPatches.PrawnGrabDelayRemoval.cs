@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(ExosuitClawArm))]
-    [HarmonyPatch("TryUse")]
+    [HarmonyPatch(nameof(ExosuitClawArm.TryUse))]
     public static class PrawnGrabDelayRemoval {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

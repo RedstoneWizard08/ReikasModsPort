@@ -10,7 +10,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(SeamothTorpedo))]
-    [HarmonyPatch("Explode")]
+    [HarmonyPatch(nameof(SeamothTorpedo.Explode))]
     public static class TorpedoExplodeHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

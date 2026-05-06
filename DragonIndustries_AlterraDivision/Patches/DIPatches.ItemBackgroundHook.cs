@@ -10,7 +10,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(uGUI_ItemsContainer))]
-    [HarmonyPatch("OnAddItem")]
+    [HarmonyPatch(nameof(uGUI_ItemsContainer.OnAddItem))]
     public static class ItemBackgroundHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
