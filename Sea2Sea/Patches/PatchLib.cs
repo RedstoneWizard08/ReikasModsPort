@@ -36,7 +36,7 @@ internal static class PatchLib {
         var idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Ldfld, "PrecursorKeyTerminal", "slotted");
         codes[idx] = InstructionHandlers.createMethodCall(
             "ReikaKalseki.SeaToSea.C2CHooks",
-            "cannotClickKeyTerminal",
+            nameof(C2CHooks.CannotClickKeyTerminal),
             false,
             typeof(PrecursorKeyTerminal)
         );
