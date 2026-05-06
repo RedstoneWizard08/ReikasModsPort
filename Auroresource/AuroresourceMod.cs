@@ -12,6 +12,7 @@ namespace ReikaKalseki.Auroresource;
 
 [BepInPlugin(ModKey, "Auroresource", Nautilus.PluginInfo.PLUGIN_VERSION)]
 [BepInDependency("com.snmodding.nautilus")]
+[BepInDependency(DIMod.MOD_KEY)]
 public class AuroresourceMod : BaseUnityPlugin {
     public const string ModKey = "ReikaKalseki.Auroresource";
 
@@ -42,7 +43,6 @@ public class AuroresourceMod : BaseUnityPlugin {
         harmony.apply();
 
         ModVersionCheck.getFromGitVsInstall("Auroresource", ModDLL, "Auroresource").register();
-        SNUtil.checkModHash(ModDLL);
 
         Locale.load();
         PdaLocale.load();
@@ -72,7 +72,7 @@ public class AuroresourceMod : BaseUnityPlugin {
         System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(ARHooks).TypeHandle);
 
         DIHooks.OnWorldLoadedEvent += () => {
-            SNUtil.log("Adding resource data to motherlode PDA pages.", ModDLL);
+            SNUtil.Log("Adding resource data to motherlode PDA pages.", ModDLL);
             DunesMeteor.updateLocale();
             LavaPitCenter.updateLocale();
         };

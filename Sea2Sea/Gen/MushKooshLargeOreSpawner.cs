@@ -29,12 +29,12 @@ public class MushKooshLargeOreSpawner : WorldGenerator {
 
 	public override void saveToXML(XmlElement e) {
 		PositionedPrefab.saveRotation(e, rotation);
-		e.addProperty("isKoosh", isKoosh);
+		e.AddProperty("isKoosh", isKoosh);
 	}
 
 	public override void loadFromXML(XmlElement e) {
 		rotation = PositionedPrefab.readRotation(e);
-		isKoosh = e.getBoolean("isKoosh");
+		isKoosh = e.GetBoolean("isKoosh");
 	}
 
 	public override bool generate(List<GameObject> li) {

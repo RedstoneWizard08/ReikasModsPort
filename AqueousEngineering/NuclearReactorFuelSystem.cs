@@ -264,7 +264,7 @@ public class NuclearReactorFuelSystem : SaveSystem.SaveHandler {
         }
 
         private InventoryItem createDepletedRod(NuclearFuel from) {
-            var it = Instantiate(CraftData.GetPrefabForTechTypeAsync(from.depletedFuel).GetResult())
+            var it = Instantiate(PrefabUtil.GetPrefabForTechType(from.depletedFuel))
                 .GetComponent<Pickupable>();
             it.Pickup(false);
             return new InventoryItem(it);
@@ -281,7 +281,7 @@ public class NuclearReactorFuelSystem : SaveSystem.SaveHandler {
 
         internal void save(XmlElement data) {
             foreach (var kvp in usedEnergy) {
-                data.addProperty(kvp.Key, kvp.Value);
+                data.AddProperty(kvp.Key, kvp.Value);
             }
         }
     }

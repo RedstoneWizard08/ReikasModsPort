@@ -21,7 +21,7 @@ internal class BuilderPlaced : MonoBehaviour {
 	internal PlacedObject placement;
 
 	private void Start() {
-		SNUtil.log("Initialized builderplaced of " + placement, SNUtil.diDLL);
+		SNUtil.Log("Initialized builderplaced of " + placement, SNUtil.DiDLL);
 	}
 
 	private void Update() {

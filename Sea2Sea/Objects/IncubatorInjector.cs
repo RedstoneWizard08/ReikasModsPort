@@ -95,7 +95,7 @@ public class IncubatorInjectorLogic : CustomMachineLogic, IHandTarget {
     private IncubatorComputerTerminal terminal;
 
     private void Start() {
-        SNUtil.log("Reinitializing incubator injector");
+        SNUtil.Log("Reinitializing incubator injector");
         //C2CItems.incubatorInjector.initializeMachine(gameObject);
     }
 

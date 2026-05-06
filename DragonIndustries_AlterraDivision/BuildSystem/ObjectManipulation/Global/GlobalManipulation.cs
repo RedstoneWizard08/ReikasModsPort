@@ -35,9 +35,9 @@ internal abstract class GlobalManipulation : ManipulationBase {
 	internal abstract void applyToGlobalObject(GameObject go);
 
 	public override void loadFromXML(XmlElement e) {
-		var li = e.getDirectElementsByTagName("local");
+		var li = e.GetDirectElementsByTagName("local");
 		if (li.Count == 1) {
-			var typeName = "ReikaKalseki.SeaToSea."+li[0].getProperty("type");
+			var typeName = "ReikaKalseki.SeaToSea."+li[0].GetProperty("type");
 			var tt = InstructionHandlers.getTypeBySimpleName(typeName);
 			if (tt == null)
 				throw new Exception("No class found for '" + typeName + "'!");

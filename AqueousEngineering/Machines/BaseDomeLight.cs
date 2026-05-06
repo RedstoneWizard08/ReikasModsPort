@@ -57,7 +57,7 @@ public class BaseDomeLightLogic : CustomMachineLogic {
     private Light light;
 
     private void Start() {
-        SNUtil.log("Reinitializing base dome light");
+        SNUtil.Log("Reinitializing base dome light");
         AqueousEngineeringMod.domeLightBlock.initializeMachine(gameObject);
     }
 

@@ -39,7 +39,7 @@ public static class C2CRecipes {
     private static readonly List<TechType> specialRecipes = [];
 
     internal static void addItemsAndRecipes() {
-        SNUtil.log("Applying recipe changes");
+        SNUtil.Log("Applying recipe changes");
 
         var hard = SeaToSeaMod.ModConfig.getBoolean(C2CConfig.ConfigEntries.HARDMODE);
 
@@ -1011,14 +1011,14 @@ public static class C2CRecipes {
         Base.FaceHullStrength[(int)Base.FaceType.BulkheadClosed] = hard ? 8 : 12; //from 3
         Base.CellHullStrength[(int)Base.CellType.Foundation] = hard ? 5 : 6; //from 2
 
-        TechType.VehicleHullModule1.removeUnlockTrigger(new StoryTrigger("seamothdepthchit3"));
-        TechType.VehicleHullModule2.removeUnlockTrigger();
-        TechType.VehicleHullModule3.removeUnlockTrigger();
-        TechType.BaseReinforcement.removeUnlockTrigger(new StoryTrigger(SeaToSeaMod.ReinfDBGoal));
-        TechType.HeatBlade.removeUnlockTrigger(); //force you to learn it from the mountain cave base
+        TechType.VehicleHullModule1.RemoveUnlockTrigger(new StoryTrigger("seamothdepthchit3"));
+        TechType.VehicleHullModule2.RemoveUnlockTrigger();
+        TechType.VehicleHullModule3.RemoveUnlockTrigger();
+        TechType.BaseReinforcement.RemoveUnlockTrigger(new StoryTrigger(SeaToSeaMod.ReinfDBGoal));
+        TechType.HeatBlade.RemoveUnlockTrigger(); //force you to learn it from the mountain cave base
         if (hard)
-            TechType.AdvancedWiringKit.removeUnlockTrigger(new StoryTrigger(SeaToSeaMod.AdvWiringGoal));
-        TechType.ExoHullModule1.removeUnlockTrigger();
+            TechType.AdvancedWiringKit.RemoveUnlockTrigger(new StoryTrigger(SeaToSeaMod.AdvWiringGoal));
+        TechType.ExoHullModule1.RemoveUnlockTrigger();
 
         addItemToRecipe(
             TechType.PrecursorKey_Purple,
@@ -1043,7 +1043,7 @@ public static class C2CRecipes {
 
         if (hard) {
             RecipeUtil.removeRecipe(TechType.SeamothSolarCharge, true);
-            TechType.SeamothElectricalDefense.removeUnlockTrigger(new StoryTrigger("ReaperGrab"));
+            TechType.SeamothElectricalDefense.RemoveUnlockTrigger(new StoryTrigger("ReaperGrab"));
             RecipeUtil.clearIngredients(TechType.SeamothElectricalDefense);
             addItemToRecipe(TechType.SeamothElectricalDefense, C2CItems.t2Battery.TechType, 1);
             addItemToRecipe(TechType.SeamothElectricalDefense, TechType.AdvancedWiringKit, 1);
@@ -1228,7 +1228,7 @@ public static class C2CRecipes {
         };
         //ingot.ownerMod = modDLL;
         ingot.Register();
-        SNUtil.log(
+        SNUtil.Log(
             "Added compressed ingot for " + refName + ": " + ingot.TechType + " @ " + ingot.FabricatorType + " > " +
             string.Join("/", ingot.StepsToFabricatorTab)
         );
@@ -1257,7 +1257,7 @@ public static class C2CRecipes {
             while (tt == CraftingItems.getItem(CraftingItems.Items.Tungsten).TechType &&
                    !Story.StoryGoalManager.main.IsGoalComplete(C2CProgression.TungstenGoal))
                 tt = Ecocean.MushroomVaseStrand.filterDrops.getRandomEntry();
-            return ObjectUtil.lookupPrefab(tt).GetResult();
+            return ObjectUtil.lookupPrefab(tt);
         }
     }
 

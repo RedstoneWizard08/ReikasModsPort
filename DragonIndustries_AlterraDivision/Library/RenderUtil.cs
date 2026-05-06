@@ -209,7 +209,7 @@ public static class RenderUtil {
             dict = prefab.getTextureLayers(r);
         if (!swapTextures(pfb.getOwnerMod(), r, path, dict)) {
             if (!warnNoTextures.Contains(pfb.ClassID)) {
-                SNUtil.log("NO CUSTOM TEXTURES FOUND in " + path + ": " + pfb, pfb.getOwnerMod());
+                SNUtil.Log("NO CUSTOM TEXTURES FOUND in " + path + ": " + pfb, pfb.getOwnerMod());
                 warnNoTextures.Add(pfb.ClassID);
             }
         }
@@ -233,7 +233,7 @@ public static class RenderUtil {
         r.materials[0].DisableKeyword("MARMO_EMISSION");
         r.materials[2].DisableKeyword("MARMO_EMISSION");
         setEmissivity(m, glow);
-        swapTextures(SNUtil.diDLL, r, "Textures/WhiteAniline", new Dictionary<int, string>() { { 1, "" } });
+        swapTextures(SNUtil.DiDLL, r, "Textures/WhiteAniline", new Dictionary<int, string>() { { 1, "" } });
         r.gameObject.FindAncestor<SkyApplier>().SetSky(Skies.Auto);
     }
 
@@ -267,9 +267,9 @@ public static class RenderUtil {
         var arr = go.GetComponentsInChildren<Renderer>();
         if (arr.Length == 0)
             return null;
-        var li = arr.Where(r => !r.name.contains(LODPattern)).ToList();
+        var li = arr.Where(r => !r.name.Contains(LODPattern)).ToList();
         if (li.Count == 0)
-            li = arr.Where(r => !r.name.contains(LODPatternExcept0)).ToList();
+            li = arr.Where(r => !r.name.Contains(LODPatternExcept0)).ToList();
         return (li.Count == 0 ? arr[0] : li[0]).gameObject;
     }
 
@@ -287,7 +287,7 @@ public static class RenderUtil {
 
     public static void setMesh(this GameObject go, Mesh m) {
         if (m == null) {
-            SNUtil.writeToChat("Cannot set a GO mesh to null!");
+            SNUtil.WriteToChat("Cannot set a GO mesh to null!");
             return;
         }
 
@@ -329,7 +329,7 @@ public static class RenderUtil {
             source.width,
             source.height,
             0,
-            source.format.convertEnum(RenderTextureFormat.Default),
+            source.format.ConvertEnum(RenderTextureFormat.Default),
             RenderTextureReadWrite.sRGB
         );
         Graphics.Blit(source, renderTex);

@@ -15,7 +15,7 @@ public class MountainCurrentSystem {
         var t = MainCamera.camera.transform;
         if (Player.main.GetVehicle())
             t = Player.main.GetVehicle().transform;
-        Vector3 vec = t.forward.setLength(amt);
+        Vector3 vec = t.forward.SetLength(amt);
         var flat = vec.XZ().normalized * amt;
         var posf = t.transform.position.XZ();
         var s = $"{vec.x},{vec.y},{vec.z},{t.position.x},{t.position.y},{t.position.z}" + Environment.NewLine;

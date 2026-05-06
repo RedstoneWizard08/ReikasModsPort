@@ -159,7 +159,7 @@ public class BaseDrillableGrinder : CustomMachine<BaseDrillableGrinderLogic> {
             }
 
             isFinalized = true;
-            SNUtil.log("Finalized uncrafting recipe " + this);
+            SNUtil.Log("Finalized uncrafting recipe " + this);
         }
 
         private void addYield(TechType tt, float amt) {
@@ -198,7 +198,7 @@ public class BaseDrillableGrinder : CustomMachine<BaseDrillableGrinderLogic> {
         }
 
         public override string ToString() {
-            return $"Uncrafting of {item}, Yields={yields.toDebugString()} via {directYields.toDebugString()}";
+            return $"Uncrafting of {item}, Yields={yields.ToDebugString()} via {directYields.ToDebugString()}";
         }
     }
 
@@ -260,12 +260,12 @@ public class BaseDrillableGrinderLogic : CustomMachineLogic, DIHooks.IStasisReac
     );
 
     private void Start() {
-        SNUtil.log("Reinitializing base drillable grinder");
+        SNUtil.Log("Reinitializing base drillable grinder");
         AqueousEngineeringMod.grinderBlock.initializeMachine(gameObject);
     }
 
     public void OnStasisHit(StasisSphere s) {
-        freeze(s.getLifespan() + 0.5F);
+        freeze(s.GetLifespan() + 0.5F);
     }
 
     public void freeze(float duration) {
@@ -339,7 +339,7 @@ public class BaseDrillableGrinderLogic : CustomMachineLogic, DIHooks.IStasisReac
 
                 var r = d.GetComponent<ReactsOnDrilled>();
                 if (r != null)
-                    r.onDrilled(aoe.getWorldCenter());
+                    r.onDrilled(aoe.GetWorldCenter());
             } else {
                 var cg = other.gameObject.FindAncestor<CustomGrindable>();
                 Pickupable pp = null;
@@ -364,7 +364,7 @@ public class BaseDrillableGrinderLogic : CustomMachineLogic, DIHooks.IStasisReac
 
                     var r = cg.GetComponent<ReactsOnDrilled>();
                     if (r != null)
-                        r.onDrilled(aoe.getWorldCenter());
+                        r.onDrilled(aoe.GetWorldCenter());
                     if (flag)
                         cg.gameObject.destroy(false);
                 } else if (BaseDrillableGrinder.canUncraft(other.gameObject, ref pp)) {
@@ -378,7 +378,7 @@ public class BaseDrillableGrinderLogic : CustomMachineLogic, DIHooks.IStasisReac
                     }
 
                     foreach (var kvp in r.yields) {
-                        GameObject drop = ObjectUtil.lookupPrefab(kvp.Key).GetResult();
+                        GameObject drop = ObjectUtil.lookupPrefab(kvp.Key);
                         if (drop) {
                             var res = new DrillableGrindingResult(this, tt, pp, drop);
                             var n = (int)kvp.Value;

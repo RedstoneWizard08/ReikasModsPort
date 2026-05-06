@@ -26,16 +26,16 @@ public sealed class ModifyLight : ModifyComponent<Light> {
 	}
 
 	public override void loadFromXML(XmlElement e) {
-		range = e.getFloat("range", double.NaN);
-		intensity = e.getFloat("intensity", double.NaN);
-		color = e.getColor("color", true, true);
+		range = e.GetFloat("range", double.NaN);
+		intensity = e.GetFloat("intensity", double.NaN);
+		color = e.GetColor("color", true, true);
 	}
 
 	public override void saveToXML(XmlElement e) {
-		e.addProperty("intensity", intensity);
-		e.addProperty("range", range);
+		e.AddProperty("intensity", intensity);
+		e.AddProperty("range", range);
 		if (color != null && color.HasValue)
-			e.addProperty("color", color.Value);
+			e.AddProperty("color", color.Value);
 	}
 
 }

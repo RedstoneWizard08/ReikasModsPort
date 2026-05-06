@@ -24,7 +24,7 @@ public abstract class ManipulationBase {
 		var doc = new XmlDocument();
 		var e = doc.CreateElement(GetType().Name);
 		saveToXML(e);
-		return GetType() + " : " + e.format();
+		return GetType() + " : " + e.Format();
 	}
 
 	public virtual bool needsReapplication() {

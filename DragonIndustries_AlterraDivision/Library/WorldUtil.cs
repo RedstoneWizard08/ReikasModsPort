@@ -81,7 +81,7 @@ public static class WorldUtil {
     //private static readonly Dictionary<string, string> biomeNames = new Dictionary<string, string>();
 
     static WorldUtil() {
-        var file = Path.Combine(Path.GetDirectoryName(SNUtil.diDLL.Location), "geysers.xml");
+        var file = Path.Combine(Path.GetDirectoryName(SNUtil.DiDLL.Location), "geysers.xml");
         if (File.Exists(file)) {
             var doc = new XmlDocument();
             doc.Load(file);
@@ -90,9 +90,9 @@ public static class WorldUtil {
                     var pfb = (PositionedPrefab)ObjectTemplate.construct(e);
                     geysers.Add(pfb.position);
                 } catch (Exception ex) {
-                    SNUtil.log(ex.ToString());
-                    SNUtil.writeToChat(
-                        "Could not load XML block, threw exception: " + ex.ToString() + " from " + e.format()
+                    SNUtil.Log(ex.ToString());
+                    SNUtil.WriteToChat(
+                        "Could not load XML block, threw exception: " + ex.ToString() + " from " + e.Format()
                     );
                 }
             }
@@ -113,7 +113,7 @@ public static class WorldUtil {
 
     public static Int3 getBatch(Vector3 pos) {
         //"Therefore e.g. batch (12, 18, 12) covers the voxels from (-128, -160, -128) to (32, 0, 32)."
-        var coord = pos.roundToInt3();
+        var coord = pos.RoundToInt3();
         coord -= batchOffsetM;
         coord.x = (int)Math.Floor(coord.x / (float)batchSize);
         coord.y = (int)Math.Floor(coord.y / (float)batchSize);
@@ -142,7 +142,7 @@ batch_id = (19, 17, 16)
                 go.transform.position = pos;
             return go;
         } else {
-            SNUtil.log("NO SUCH ITEM TO DROP: " + item);
+            SNUtil.Log("NO SUCH ITEM TO DROP: " + item);
             return null;
         }
     }
@@ -154,8 +154,8 @@ batch_id = (19, 17, 16)
         var idx = WaterBiomeManager.main.GetBiomeIndex(biome);
         if (idx < 0) {
             if (allowNotFoundError) {
-                SNUtil.writeToChat("Biome '" + biome + "' had no sky lookup. See log for biome table.");
-                SNUtil.log(WaterBiomeManager.main.biomeLookup.toDebugString());
+                SNUtil.WriteToChat("Biome '" + biome + "' had no sky lookup. See log for biome table.");
+                SNUtil.Log(WaterBiomeManager.main.biomeLookup.ToDebugString());
             }
 
             return null;
@@ -354,8 +354,8 @@ batch_id = (19, 17, 16)
         for (var i = 0; i < num; i++) {
             var diff =
                 new Vector3(UnityEngine.Random.Range(-range, range), 0, UnityEngine.Random.Range(-range, range))
-                    .setLength(UnityEngine.Random.Range(0.01F, range));
-            var pos2 = (pos + diff).setY(pos.y + 15);
+                    .SetLength(UnityEngine.Random.Range(0.01F, range));
+            var pos2 = (pos + diff).SetY(pos.y + 15);
             var hit = getTerrainVectorAt(pos2, 25);
             if (hit.HasValue)
                 ret.Add(hit.Value);
@@ -570,7 +570,7 @@ batch_id = (19, 17, 16)
     }
 
     public static StasisSphere createStasisSphere(Vector3 pos, float r, float pwr = 1) {
-        var sph = ObjectUtil.lookupPrefab(TechType.StasisRifle).GetResult().GetComponent<StasisRifle>()
+        var sph = ObjectUtil.lookupPrefab(TechType.StasisRifle).GetComponent<StasisRifle>()
             .effectSpherePrefab;
         sph = sph.clone();
         sph.SetActive(true);
@@ -582,7 +582,7 @@ batch_id = (19, 17, 16)
         ss.radius = r;
         ss.EnableField();
         ss.soundActivate.Stop(true);
-        SNUtil.log(
+        SNUtil.Log(
             "Created stasis sphere of radius " + ss.radius + ", duration " + ss.time + ", energy " + ss.fieldEnergy
         );
         return ss;

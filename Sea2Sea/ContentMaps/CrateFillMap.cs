@@ -28,24 +28,24 @@ public class CrateFillMap {
 	public void load() {
 		var xml = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "XML/crates.xml");
 		if (File.Exists(xml)) {
-			SNUtil.log("Loading crate map from XML @ " + xml);
+			SNUtil.Log("Loading crate map from XML @ " + xml);
 			var doc = new XmlDocument();
 			doc.Load(xml);
 			foreach (XmlElement e in doc.DocumentElement.ChildNodes) {
 				try {
-					var pos = e.getVector("position").Value;
-					var tech = e.getProperty("item");
+					var pos = e.GetVector("position").Value;
+					var tech = e.GetProperty("item");
 					var techt = (TechType)Enum.Parse(typeof(TechType), tech);
 					addValue(pos, techt);
 				}
 				catch (Exception ex) {
-					SNUtil.log("Could not load element " + e.InnerText);
-					SNUtil.log(ex.ToString());
+					SNUtil.Log("Could not load element " + e.InnerText);
+					SNUtil.Log(ex.ToString());
 				}
 			}
 		}
 		else {
-			SNUtil.log("Crate XML not found!");
+			SNUtil.Log("Crate XML not found!");
 		}
 	}
 
@@ -59,7 +59,7 @@ public class CrateFillMap {
 			data[rnd] = new Dictionary<Vector3, TechType>();
 		}
 		data[rnd][pos] = type;
-		SNUtil.log("Registered crate mapping " + type + " @ " + pos);
+		SNUtil.Log("Registered crate mapping " + type + " @ " + pos);
 	}
 
 	public TechType getOverride(SupplyCrate bpt) {

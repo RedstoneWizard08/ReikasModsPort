@@ -31,7 +31,7 @@ public class PrecursorStoryConsole : CustomPrefab {
     }
 
     public PrecursorStoryConsole setPopup(TechType spr) {
-        return setPopup(() => SNUtil.getTechPopupSprite(spr)); //use callback, not direct!
+        return setPopup(() => SNUtil.GetTechPopupSprite(spr)); //use callback, not direct!
     }
 
     public PrecursorStoryConsole setPopup(Sprite spr) {
@@ -40,7 +40,7 @@ public class PrecursorStoryConsole : CustomPrefab {
 
     public PrecursorStoryConsole setPopup(Func<Sprite> spr) {
         popup = new SNUtil.PopupData(locale.getString("popupTitle"), locale.getString("popupSubtitle"))
-            { controlText = locale.getString("popupDescription"), graphic = spr };
+            { ControlText = locale.getString("popupDescription"), Graphic = spr };
         return this;
     }
 
@@ -100,6 +100,6 @@ public class StoryConsoleTag : MonoBehaviour {
 
     private void OnStoryHandTarget() {
         if (prefab != null && prefab.popup != null)
-            SNUtil.triggerUnlockPopup(prefab.popup);
+            SNUtil.TriggerUnlockPopup(prefab.popup);
     }
 }

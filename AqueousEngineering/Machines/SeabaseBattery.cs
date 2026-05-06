@@ -64,7 +64,7 @@ public class BaseBatteryLogic : CustomMachineLogic {
     private Renderer render;
 
     private void Start() {
-        SNUtil.log("Reinitializing base battery");
+        SNUtil.Log("Reinitializing base battery");
         AqueousEngineeringMod.batteryBlock.initializeMachine(gameObject);
     }
 

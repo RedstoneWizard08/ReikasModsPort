@@ -21,12 +21,12 @@ public class PhysicsSettlingProp : MonoBehaviour {
 
 	public static void export(string key) {
 		if (!locations.ContainsKey(key)) {
-			SNUtil.writeToChat("No physprops with key '" + key + "'");
+			SNUtil.WriteToChat("No physprops with key '" + key + "'");
 			return;
 		}
 		var li = locations[key];
 		var file = BuildingHandler.instance.dumpPrefabs(key, li);
-		SNUtil.writeToChat("Exported " + li.Count + " physprops of key '" + key + "' to " + file);
+		SNUtil.WriteToChat("Exported " + li.Count + " physprops of key '" + key + "' to " + file);
 	}
 
 	private static void addPrefab(string key, PositionedPrefab pfb) {

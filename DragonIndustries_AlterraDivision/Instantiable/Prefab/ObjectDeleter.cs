@@ -9,7 +9,7 @@ public sealed class ObjectDeleter : CustomPrefab {
 
     [SetsRequiredMembers]
     public ObjectDeleter() : base("ObjectDeleter", "", "") {
-        ownerMod = SNUtil.tryGetModDLL(true);
+        ownerMod = SNUtil.TryGetModDLL(true);
         SetGameObject(GetGameObject);
     }
 

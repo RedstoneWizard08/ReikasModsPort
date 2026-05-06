@@ -58,7 +58,7 @@ internal class TabletFragmentTag : MonoBehaviour {
 
 	private void OnScanned() {
 		var tt = CraftData.GetTechType(gameObject);
-		SNUtil.log("Scanned tablet fragment " + gameObject + " @ " + transform.position + ", TT=" + tt);
+		SNUtil.Log("Scanned tablet fragment " + gameObject + " @ " + transform.position + ", TT=" + tt);
 		if (tt == TechType.PrecursorKey_PurpleFragment) {
 			if (Vector3.Distance(transform.position, WorldUtil.DEGASI_FLOATING_BASE) <= 20) {
 				Story.StoryGoal.Execute("ScanFloatingIslandTablet", Story.GoalType.Story);

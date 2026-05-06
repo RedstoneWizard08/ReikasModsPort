@@ -32,7 +32,7 @@ public class DamagedDataboxSystem {
 			lv.health = Mathf.Max(0.01F, db.initialRepairFraction * lv.data.maxHealth);
 			go.EnsureComponent<BrokenDatabox>();
 			go.EnsureComponent<ImmuneToPropulsioncannon>();
-			SNUtil.log("Damaging databox " + go + " @ " + go.transform.position + ": " + db);
+			SNUtil.Log("Damaging databox " + go + " @ " + go.transform.position + ": " + db);
 		}
 	}
 

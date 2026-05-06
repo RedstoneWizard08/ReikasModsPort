@@ -234,7 +234,7 @@ public class LiquidBreathingSystem {
 				tc = Color.gray;
 			}
 			else {
-				tc = SNUtil.isPlayerCured()
+				tc = SNUtil.IsPlayerCured()
 					? Color.green
 					: isKharaaTreatmentActive()
 						? kharaaTreatmentRemainingTime > 0 ? Color.white : Color.yellow
@@ -329,7 +329,7 @@ public class LiquidBreathingSystem {
 			}
 			if (hasTemporaryKharaaTreatment && !startedUsingTemporaryKharaaTreatment && !isInPoweredArea(ep) && hasLiquidBreathing()) {
 				startedUsingTemporaryKharaaTreatment = true;
-				SNUtil.writeToChat("Kharaa treatment engaged");
+				SNUtil.WriteToChat("Kharaa treatment engaged");
 			}
 			if (ep.infectedMixin.IsInfected() && kharaaTreatmentRemainingTime > 0) {
 				kharaaTreatmentRemainingTime = Mathf.Max(0, kharaaTreatmentRemainingTime - Time.deltaTime);
@@ -344,12 +344,12 @@ public class LiquidBreathingSystem {
 		if (hasTemporaryKharaaTreatment) {
 			hasTemporaryKharaaTreatment = false;
 			startedUsingTemporaryKharaaTreatment = false;
-			SNUtil.writeToChat("Weak kharaa treatment cleared");
+			SNUtil.WriteToChat("Weak kharaa treatment cleared");
 		}
 	}
 
 	public bool hasReducedCapacity() {
-		return !isKharaaTreatmentActive() && !SNUtil.isPlayerCured() && hasLiquidBreathing();
+		return !isKharaaTreatmentActive() && !SNUtil.IsPlayerCured() && hasLiquidBreathing();
 	}
 
 	private class OxygenAreaWithLiquidSupport : MonoBehaviour {
@@ -372,7 +372,7 @@ public class LiquidBreathingSystem {
 			if (!treatmentBar) {
 				treatmentBar = createBar("Treatment");
 			}
-			treatmentBar.gameObject.SetActive(!SNUtil.isPlayerCured());
+			treatmentBar.gameObject.SetActive(!SNUtil.IsPlayerCured());
 		}
 
 		private LiquidBreathingHUDMeterUnit createBar(string name) {

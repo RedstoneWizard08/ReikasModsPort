@@ -83,14 +83,14 @@ public class GeyserMaterialSpawner : MonoBehaviour {
     private bool TrySpawnMineral() {
         if (WorldUtil.getObjectsNearMatching(transform.position, 25, IsEjectedMineral).Count > 6)
             return false;
-        var go = ObjectUtil.lookupPrefab(GetRandomMineral(_cachedBiome)).GetResult();
+        var go = ObjectUtil.lookupPrefab(GetRandomMineral(_cachedBiome));
         if (!go) return false;
         go = go.clone(transform.position + Vector3.up * 3.5F, Random.rotationUniform);
         var rb = go.GetComponent<Rigidbody>();
         if (!rb) return true;
         rb.isKinematic = false;
         rb.constraints = RigidbodyConstraints.None;
-        rb.velocity = MathUtil.getRandomVectorAround(Vector3.zero, 6).setY(Random.Range(5F, 18F));
+        rb.velocity = MathUtil.getRandomVectorAround(Vector3.zero, 6).SetY(Random.Range(5F, 18F));
         rb.angularVelocity = MathUtil.getRandomVectorAround(Vector3.zero, 8);
 
         return true;

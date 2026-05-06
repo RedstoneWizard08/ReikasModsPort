@@ -32,10 +32,10 @@ internal class SeamothTetherController : MonoBehaviour {
                 tetherRoot.transform.localRotation = Quaternion.identity;
                 tetherRoot.transform.localPosition = Vector3.zero;
 
-                var template = ObjectUtil.lookupPrefab(TechType.PropulsionCannon).GetResult()
+                var template = ObjectUtil.lookupPrefab(TechType.PropulsionCannon)
                     .GetComponent<PropulsionCannon>();
                 grabSound = tetherRoot.EnsureComponent<FMOD_CustomLoopingEmitter>();
-                grabSound.copyObject(template.grabbingSound);
+                grabSound.CopyObject(template.grabbingSound);
             }
         }
 
@@ -148,7 +148,7 @@ internal class Tether {
     private VFXElectricLine effect;
 
     public Tether() {
-        var template = ObjectUtil.lookupPrefab(TechType.PropulsionCannon).GetResult()
+        var template = ObjectUtil.lookupPrefab(TechType.PropulsionCannon)
             .GetComponent<PropulsionCannon>();
         for (var i = 0; i < 4; i++) {
             var go = template.grabbedEffect.clone();
@@ -210,7 +210,7 @@ internal class Tether {
         var distance = tgt - target.transform.position;
         var magnitude = distance.magnitude;
         if (magnitude > SeamothTetherController.RANGE * 2.5F) {
-            SNUtil.writeToChat(
+            SNUtil.WriteToChat(
                 "Lost grip of " + Language.main.Get(CraftData.GetTechType(target.gameObject).AsString())
             );
             drop();

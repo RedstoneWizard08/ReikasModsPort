@@ -338,7 +338,7 @@ internal class VoidThalassaceanTag : MonoBehaviour, IOnTakeDamage {
         _attack.currentTarget = null;
         if (_currentAggroToken != 0) {
             if (AggroTokens.Contains(_currentAggroToken))
-                SNUtil.writeToChat("Two voidthala with same aggro token: " + _currentAggroToken);
+                SNUtil.WriteToChat("Two voidthala with same aggro token: " + _currentAggroToken);
             AggroTokens.Add(_currentAggroToken);
             _currentAggroToken = 0;
         }
@@ -347,12 +347,12 @@ internal class VoidThalassaceanTag : MonoBehaviour, IOnTakeDamage {
 
     public void ResetAggro(bool deflect) {
         _aggressionLevel = -1;
-        var offset = Body.velocity.setLength(120);
-        offset = MathUtil.getRandomVectorAround(offset, deflect ? 90 : 50).setLength(120);
+        var offset = Body.velocity.SetLength(120);
+        offset = MathUtil.getRandomVectorAround(offset, deflect ? 90 : 50).SetLength(120);
         _runAwayTarget =
             Player.main.transform.position + offset; //MathUtil.getRandomPointAtSetDistance(transform.position, 100);
         if (_runAwayTarget.y > -20)
-            _runAwayTarget = _runAwayTarget.setY(-20);
+            _runAwayTarget = _runAwayTarget.SetY(-20);
         //SNUtil.writeToChat("Resetting aggro");
         Invoke(nameof(PlayFleeSound), 0.8F);
     }
@@ -396,7 +396,7 @@ internal class VoidThalaHitDetection : MonoBehaviour {
                 v.liveMixin.TakeDamage(2, c.contacts[0].point, DamageType.Normal, Owner.gameObject);
             }
 
-            c.rigidbody.AddForce(Owner.Body.velocity.setLength(15), ForceMode.VelocityChange);
+            c.rigidbody.AddForce(Owner.Body.velocity.SetLength(15), ForceMode.VelocityChange);
             c.gameObject.EnsureComponent<VoidThalaImpactImmunity>().elapseWhen =
                 DayNightCycle.main.timePassedAsFloat + 0.5F;
         }

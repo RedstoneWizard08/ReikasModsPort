@@ -119,16 +119,16 @@ public static class AcuTheming {
             foreach (var folder in Directory.EnumerateDirectories(RootCachePath)) {
                 var name = Path.GetFileName(folder);
                 try {
-                    SNUtil.log("Loading cached grass material '" + name + "' from " + folder);
+                    SNUtil.Log("Loading cached grass material '" + name + "' from " + folder);
                     var m = new MaterialPropertyDefinition(name);
                     m.readFromFile(AqueousEngineeringMod.modDLL, folder);
                     TerrainGrassTextures[m.name] = m;
                 } catch (Exception ex) {
-                    SNUtil.log("Could not load cached grass material '" + name + "': " + ex);
+                    SNUtil.Log("Could not load cached grass material '" + name + "': " + ex);
                 }
             }
         } else {
-            SNUtil.log("Grass material cache does not exist at " + RootCachePath + ".");
+            SNUtil.Log("Grass material cache does not exist at " + RootCachePath + ".");
             Directory.CreateDirectory(RootCachePath);
         }
     }
@@ -145,7 +145,7 @@ public static class AcuTheming {
             TerrainGrassTextures[n] = def;
             var path = Path.Combine(RootCachePath, n);
             def.writeToFile(path);
-            SNUtil.log("Saved grass material '" + n + "' to " + path);
+            SNUtil.Log("Saved grass material '" + n + "' to " + path);
         }
     }
 
@@ -305,13 +305,13 @@ public static class AcuTheming {
                 glass.setSky(biomeSky);
                 var r = glass.GetComponentInChildren<Renderer>();
                 if (!r) {
-                    SNUtil.writeToChat("No glass renderer");
+                    SNUtil.WriteToChat("No glass renderer");
                     return;
                 }
 
                 var m = r.materials[0];
                 if (!m) {
-                    SNUtil.writeToChat("No glass material");
+                    SNUtil.WriteToChat("No glass material");
                     return;
                 }
 
@@ -379,7 +379,7 @@ public static class AcuTheming {
         internal GameObject Spawn() {
             var go = ObjectUtil.createWorldObject(_prefab, true, false);
             if (go == null) {
-                SNUtil.writeToChat("Could not spawn GO for " + this);
+                SNUtil.WriteToChat("Could not spawn GO for " + this);
                 return null;
             }
 

@@ -51,7 +51,7 @@ public class ItemDistributorLogic : CustomMachineLogic {
     private readonly Dictionary<TechType, List<StorageContainer>> targets = new();
 
     private void Start() {
-        SNUtil.log("Reinitializing base item distributor");
+        SNUtil.Log("Reinitializing base item distributor");
         //AqueousEngineeringMod.ionCubeBlock.initializeMachine(gameObject);
     }
 
@@ -93,7 +93,7 @@ public class ItemDistributorLogic : CustomMachineLogic {
     }
 
     private IEnumerable<TechType> getRelevantTypes(StorageContainer sc) {
-        if (SNUtil.match(sc.GetComponent<PrefabIdentifier>(), "5fc7744b-5a2c-4572-8e53-eebf990de434")) { //small locker
+        if (SNUtil.Match(sc.GetComponent<PrefabIdentifier>(), "5fc7744b-5a2c-4572-8e53-eebf990de434")) { //small locker
             var lbl = sc.gameObject.getChildObject("Label");
             var text = lbl.GetComponent<uGUI_SignInput>().inputField.text;
         }

@@ -628,7 +628,7 @@ if (!prawnBayHeatRippleCylinder) {/*
                 lavaPitEntranceDepthStart,
                 lavaPitEntranceDepthMaxTemp,
                 WaterTemperatureSimulation.main.GetTemperature(
-                    lavaPitEntranceCenter.setY(-lavaPitEntranceDepthStart + 5)
+                    lavaPitEntranceCenter.SetY(-lavaPitEntranceDepthStart + 5)
                 ),
                 temperatures["LavaPitEntrance"].temperature
             );
@@ -836,7 +836,7 @@ if (!prawnBayHeatRippleCylinder) {/*
         );
         extremeHeatHUDWarning.showWhenNotSwimming = (ep) => true;
         lrLeakHUDWarning.showWhenNotSwimming = (ep) =>
-            ep.GetVehicle() || SNUtil.getControllingCamera(ep) ||
+            ep.GetVehicle() || SNUtil.GetControllingCamera(ep) ||
             (ep.currentSub && ep.currentSub.isCyclops && ep.isPiloting);
         teleportRecoveryHUDWarning = createHUDWarning(
             hudTemplate,
@@ -852,7 +852,7 @@ if (!prawnBayHeatRippleCylinder) {/*
         var ep = Player.main;
         if (!ep)
             return false;
-        MapRoomCamera cam = SNUtil.getControllingCamera(ep);
+        MapRoomCamera cam = SNUtil.GetControllingCamera(ep);
         //SNUtil.writeToChat(cam+"");
         if (cam && getLRPowerLeakage(cam.gameObject) > 0)
             return true;
@@ -903,7 +903,7 @@ if (!prawnBayHeatRippleCylinder) {/*
         warn.transform.SetParent(template.transform.parent, false);
         warn.priority = pri;
         go.removeComponent<uGUI_RadiationWarning>();
-        SNUtil.log("Created custom hud warning " + go);
+        SNUtil.Log("Created custom hud warning " + go);
         go.SetActive(true);
         warnings.Add(warn);
         return warn;
@@ -929,7 +929,7 @@ public class CustomHUDWarning : MonoBehaviour, IComparable {
 
     internal void setTexture(Texture2D tex) {
         var img = overlay.GetComponentInChildren<Image>();
-        img.sprite = img.sprite.setTexture(tex);
+        img.sprite = img.sprite.SetTexture(tex);
     }
 
     internal void setText(string s, Color? c = null) {

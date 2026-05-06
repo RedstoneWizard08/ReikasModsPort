@@ -40,10 +40,10 @@ public class BrokenTablet : CustomPrefab {
                 "Tooltip_" + d.Info.TechType.AsString(),
                 "A shattered " + Language.main.Get(d.tablet) + ". Not very useful directly."
             );
-            SNUtil.log(
+            SNUtil.Log(
                 "Relocalized broken tablet " + d + " > " + d.tablet.AsString() + " > " +
                 Language.main.Get(d.Info.TechType),
-                SNUtil.diDLL
+                SNUtil.DiDLL
             );
         }
     }
@@ -144,7 +144,7 @@ public class BrokenTablet : CustomPrefab {
 
             return world;
         } else {
-            SNUtil.writeToChat("Could not fetch template GO for " + this);
+            SNUtil.WriteToChat("Could not fetch template GO for " + this);
             return null;
         }
     }

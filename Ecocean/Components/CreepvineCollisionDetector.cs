@@ -36,7 +36,7 @@ internal class CreepvineCollisionDetector : MonoBehaviour {
                         foreach (var pp in gameObject.FindAncestor<PrefabIdentifier>()
                                      .GetComponentsInChildren<PickPrefab>()) {
                             if (!pp.GetPickedState() && Random.Range(0F, 1F) < 0.5F + f) {
-                                GameObject go = CraftData.GetPrefabForTechTypeAsync(pp.pickTech).GetResult();
+                                GameObject go = PrefabUtil.GetPrefabForTechType(pp.pickTech);
                                 pp.SetPickedUp();
                                 if (go) {
                                     GameObject go2 = go.clone();

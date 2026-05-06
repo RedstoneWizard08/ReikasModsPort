@@ -78,7 +78,7 @@ public class BuildingHandler {
             try {
                 go.fx.SetActive(go.isSelected);
             } catch (Exception ex) {
-                SNUtil.writeToChat("Could not set enabled state of " + go + " due to GO error: " + ex.ToString());
+                SNUtil.WriteToChat("Could not set enabled state of " + go + " due to GO error: " + ex.ToString());
             }
         }
 
@@ -92,7 +92,7 @@ public class BuildingHandler {
     public void selectedInfo() {
         foreach (var go in items.Values) {
             if (go.isSelected) {
-                SNUtil.writeToChat(go.ToString());
+                SNUtil.WriteToChat(go.ToString());
             }
         }
     }
@@ -129,7 +129,7 @@ public class BuildingHandler {
         foreach (var go in items.Values) {
             if (go.isSelected) {
                 foreach (var r in go.obj.GetComponentsInChildren<Renderer>())
-                    RenderUtil.dumpTextures(SNUtil.diDLL, r);
+                    RenderUtil.dumpTextures(SNUtil.DiDLL, r);
             }
         }
     }
@@ -181,7 +181,7 @@ public class BuildingHandler {
         Targeting.GetTarget(Player.main.gameObject, 40, out var found, out var dist);
         Targeting.Reset();
         if (found == null) {
-            SNUtil.writeToChat("Raytrace found nothing.");
+            SNUtil.WriteToChat("Raytrace found nothing.");
         }
 
         var has = getPlacement(found);
@@ -229,7 +229,7 @@ public class BuildingHandler {
             n++;
         }
 
-        SNUtil.writeToChat("Cached " + n + " objects");
+        SNUtil.WriteToChat("Cached " + n + " objects");
     }
 
     public void loadCache() {
@@ -246,7 +246,7 @@ public class BuildingHandler {
 
     public void saveCache(string id) {
         var file = dumpPrefabs(id, objectCache);
-        SNUtil.writeToChat("Exported " + objectCache.Count + " cached prefabs to " + file);
+        SNUtil.WriteToChat("Exported " + objectCache.Count + " cached prefabs to " + file);
         //objectCache.Clear();
     }
 
@@ -264,12 +264,12 @@ public class BuildingHandler {
         var rootnode = doc.CreateElement("Root");
         var added = 0;
         doc.AppendChild(rootnode);
-        SNUtil.log("=================================");
-        SNUtil.log("Building Handler has " + items.Count + " items: ");
+        SNUtil.Log("=================================");
+        SNUtil.Log("Building Handler has " + items.Count + " items: ");
         foreach (var go in items.Values) {
             try {
                 var use = flag(go);
-                SNUtil.log(go.ToString() + " dump = " + use);
+                SNUtil.Log(go.ToString() + " dump = " + use);
                 if (use) {
                     var e = doc.CreateElement(go.getTagName());
                     go.saveToXML(e);
@@ -281,9 +281,9 @@ public class BuildingHandler {
             }
         }
 
-        SNUtil.log("=================================");
+        SNUtil.Log("=================================");
         doc.Save(path);
-        SNUtil.writeToChat("Saved " + added + " objects to " + path);
+        SNUtil.WriteToChat("Saved " + added + " objects to " + path);
         return path;
     }
 
@@ -311,8 +311,8 @@ public class BuildingHandler {
         var doc = new XmlDocument();
         var rootnode = doc.CreateElement("Root");
         doc.AppendChild(rootnode);
-        SNUtil.log("=================================");
-        SNUtil.log("Exporting " + li.Count() + " PositionedPrefabs: ");
+        SNUtil.Log("=================================");
+        SNUtil.Log("Exporting " + li.Count() + " PositionedPrefabs: ");
         foreach (var pfb in li) {
             try {
                 var e = doc.CreateElement(pfb.getTagName());
@@ -323,7 +323,7 @@ public class BuildingHandler {
             }
         }
 
-        SNUtil.log("=================================");
+        SNUtil.Log("=================================");
         doc.Save(path);
         return path;
     }
@@ -333,16 +333,16 @@ public class BuildingHandler {
         doc.Load(getDumpFile(file));
         var rootnode = doc.DocumentElement;
         globalTransforms.Clear();
-        DICustomPrefab.loadManipulations(rootnode.getAllChildrenIn("transforms"), globalTransforms);
+        DICustomPrefab.loadManipulations(rootnode.GetAllChildrenIn("transforms"), globalTransforms);
         foreach (XmlElement e in rootnode.ChildNodes) {
             if (e.Name == "transforms")
                 continue;
             try {
                 buildElement(e);
             } catch (Exception ex) {
-                SNUtil.log(ex.ToString());
-                SNUtil.writeToChat(
-                    "Could not load XML block, threw exception: " + ex.ToString() + " from " + e.format()
+                SNUtil.Log(ex.ToString());
+                SNUtil.WriteToChat(
+                    "Could not load XML block, threw exception: " + ex.ToString() + " from " + e.Format()
                 );
             }
         }
@@ -354,7 +354,7 @@ public class BuildingHandler {
         for (var i = 0; i < amt; i++) {
             var ot = ObjectTemplate.construct(e);
             if (ot == null) {
-                throw new Exception("Could not load XML block, null result from '" + e.Name + "': " + e.format());
+                throw new Exception("Could not load XML block, null result from '" + e.Name + "': " + e.Format());
             }
 
             switch (e.Name) {
@@ -362,9 +362,9 @@ public class BuildingHandler {
                     var b = (PlacedObject)ot;
                     addObject(b);
                     foreach (var mb in globalTransforms) {
-                        SNUtil.log("Applying global " + mb + " to " + b);
+                        SNUtil.Log("Applying global " + mb + " to " + b);
                         mb.applyToObject(b);
-                        SNUtil.log("Is now " + b.ToString());
+                        SNUtil.Log("Is now " + b.ToString());
                     }
 
                     break;
@@ -377,9 +377,9 @@ public class BuildingHandler {
                     var sel0 = go0.AddComponent<BuilderPlaced>();
                     sel0.placement = p2;
                     foreach (var mb in globalTransforms) {
-                        SNUtil.log("Applying global " + mb + " to " + p2);
+                        SNUtil.Log("Applying global " + mb + " to " + p2);
                         mb.applyToObject(p2);
-                        SNUtil.log("Is now " + p2.ToString());
+                        SNUtil.Log("Is now " + p2.ToString());
                     }
 
                     break;
@@ -387,10 +387,10 @@ public class BuildingHandler {
                     var gen = (WorldGenerator)ot;
                     List<GameObject> li = [];
                     gen.generate(li);
-                    SNUtil.writeToChat("Ran generator " + gen + " which produced " + li.Count + " objects");
+                    SNUtil.WriteToChat("Ran generator " + gen + " which produced " + li.Count + " objects");
                     foreach (var go in li) {
                         if (go == null) {
-                            SNUtil.writeToChat("Generator " + gen + " produced a null object!");
+                            SNUtil.WriteToChat("Generator " + gen + " produced a null object!");
                             continue;
                         }
 
@@ -406,7 +406,7 @@ public class BuildingHandler {
     }
 
     private void addObject(PlacedObject b) {
-        SNUtil.log("Loaded a " + b);
+        SNUtil.Log("Loaded a " + b);
         items[b.referenceID] = b;
         lastPlaced = b;
         selectLastPlaced();
@@ -470,7 +470,7 @@ public class BuildingHandler {
         if (pre != null) {
             return pre.placement;
         } else {
-            SNUtil.writeToChat(
+            SNUtil.WriteToChat(
                 "Game object " + go + " (" + genID(go) + ") was not was not placed by the builder system."
             );
             return null;
@@ -584,8 +584,8 @@ public class BuildingHandler {
         if (b != null) {
             b.obj.transform.SetPositionAndRotation(pos, Quaternion.identity);
             registerObject(b);
-            SNUtil.writeToChat("Spawned a " + b);
-            SNUtil.log("Spawned a " + b);
+            SNUtil.WriteToChat("Spawned a " + b);
+            SNUtil.Log("Spawned a " + b);
         }
 
         return b;
@@ -630,8 +630,8 @@ public class BuildingHandler {
         var b = PlacedObject.createNewObject(go);
         if (b != null) {
             registerObject(b);
-            SNUtil.writeToChat("Registered a pre-existing " + b);
-            SNUtil.log("Registered a pre-existing " + b, SNUtil.diDLL);
+            SNUtil.WriteToChat("Registered a pre-existing " + b);
+            SNUtil.Log("Registered a pre-existing " + b, SNUtil.DiDLL);
             if (withChildren) {
                 foreach (Transform t in go.transform) {
                     if (t.gameObject != go && t.gameObject != null) {
@@ -672,7 +672,7 @@ public class BuildingHandler {
                 return ((VanillaResources)typeof(VanillaResources).GetField(id.Substring(4).ToUpper()).GetValue(null))
                     .prefab;
             } catch (Exception ex) {
-                SNUtil.log("Unable to fetch vanilla resource field '" + id + "': " + ex);
+                SNUtil.Log("Unable to fetch vanilla resource field '" + id + "': " + ex);
                 return null;
             }
         }
@@ -682,7 +682,7 @@ public class BuildingHandler {
                 return ((VanillaFlora)typeof(VanillaFlora).GetField(id.Substring(6).ToUpper()).GetValue(null))
                     .getRandomPrefab(false);
             } catch (Exception ex) {
-                SNUtil.log("Unable to fetch vanilla flora field '" + id + "': " + ex);
+                SNUtil.Log("Unable to fetch vanilla flora field '" + id + "': " + ex);
                 return null;
             }
         }
@@ -691,7 +691,7 @@ public class BuildingHandler {
             try {
                 return ((DecoPlants)typeof(DecoPlants).GetField(id.Substring(5).ToUpper()).GetValue(null)).prefab;
             } catch (Exception ex) {
-                SNUtil.log("Unable to fetch deco flora field '" + id + "': " + ex);
+                SNUtil.Log("Unable to fetch deco flora field '" + id + "': " + ex);
                 return null;
             }
         }
@@ -701,7 +701,7 @@ public class BuildingHandler {
                 return ((VanillaCreatures)typeof(VanillaCreatures).GetField(id.Substring(6).ToUpper()).GetValue(null))
                     .prefab;
             } catch (Exception ex) {
-                SNUtil.log("Unable to fetch vanilla creature field '" + id + "': " + ex);
+                SNUtil.Log("Unable to fetch vanilla creature field '" + id + "': " + ex);
                 return null;
             }
         }
@@ -711,12 +711,12 @@ public class BuildingHandler {
                 var idx1 = id.IndexOf('_');
                 var idx2 = id.IndexOf('_', idx1 + 1);
                 var index = int.Parse(id.Substring(idx1 + 1, idx2 - idx1 - 1));
-                var tt = SNUtil.getTechType(id.Substring(idx2 + 1));
+                var tt = SNUtil.GetTechType(id.Substring(idx2 + 1));
                 return tt == TechType.None
                     ? throw new Exception("No techtype found")
                     : GenUtil.getFragment(tt, index).ClassID;
             } catch (Exception ex) {
-                SNUtil.log("Unable to fetch tech fragment '" + id + "': " + ex);
+                SNUtil.Log("Unable to fetch tech fragment '" + id + "': " + ex);
                 return null;
             }
         }
@@ -726,7 +726,7 @@ public class BuildingHandler {
                 var page = PDAManager.getPage(id.Substring(4));
                 return page == null ? throw new Exception("No page found") : page.getPDAClassID();
             } catch (Exception ex) {
-                SNUtil.log("Unable to fetch pda '" + id + "': " + ex);
+                SNUtil.Log("Unable to fetch pda '" + id + "': " + ex);
                 return null;
             }
         }

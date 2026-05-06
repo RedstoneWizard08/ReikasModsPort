@@ -109,7 +109,7 @@ public class GeyserFilterLogic : DiscreteOperationalMachineLogic {
 	private bool showedFullMessage;
 
 	private void Start() {
-		SNUtil.log("Reinitializing geyser filter");
+		SNUtil.Log("Reinitializing geyser filter");
 		C2CItems.geyserFilter.initializeMachine(gameObject);
 	}
 
@@ -126,13 +126,13 @@ public class GeyserFilterLogic : DiscreteOperationalMachineLogic {
 	}
 
 	protected override void load(System.Xml.XmlElement data) {
-		collectionTime = (float)data.getFloat("collectionTime", 0);
-		geyserDutyCycle = (float)data.getFloat("geyserActivity", 0.2);
+		collectionTime = (float)data.GetFloat("collectionTime", 0);
+		geyserDutyCycle = (float)data.GetFloat("geyserActivity", 0.2);
 	}
 
 	protected override void save(System.Xml.XmlElement data) {
-		data.addProperty("collectionTime", collectionTime);
-		data.addProperty("geyserActivity", geyserDutyCycle);
+		data.AddProperty("collectionTime", collectionTime);
+		data.AddProperty("geyserActivity", geyserDutyCycle);
 	}
 
 	protected override void updateEntity(float seconds) {
@@ -170,7 +170,7 @@ public class GeyserFilterLogic : DiscreteOperationalMachineLogic {
 					showedFullMessage = false;
 				}
 				else if (!showedFullMessage) {
-					SNUtil.writeToChat(Language.main.Get(C2CItems.geyserFilter.TechType) + " in " + WorldUtil.getRegionalDescription(transform.position, true) + " is full");
+					SNUtil.WriteToChat(Language.main.Get(C2CItems.geyserFilter.TechType) + " in " + WorldUtil.getRegionalDescription(transform.position, true) + " is full");
 					showedFullMessage = true;
 				}
 			}
@@ -191,7 +191,7 @@ public class GeyserFilterLogic : DiscreteOperationalMachineLogic {
 		var nearest = WorldUtil.getNearestGeyserPosition(position);
 		foreach (var g in WorldUtil.getObjectsNearWithComponent<Geyser>(nearest, 5)) {
 			if (g.transform.position.y < position.y && position.y - g.transform.position.y <= 25) {
-				if ((g.transform.position.setY(0) - position.setY(0)).sqrMagnitude < 225)
+				if ((g.transform.position.SetY(0) - position.SetY(0)).sqrMagnitude < 225)
 					return g;
 			}
 		}

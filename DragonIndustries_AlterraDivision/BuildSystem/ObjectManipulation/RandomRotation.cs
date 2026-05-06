@@ -51,15 +51,15 @@ public class RandomRotation : ManipulationBase {
 	}
 
 	public override void loadFromXML(XmlElement e) {
-		randomX = e.getBoolean("x");
-		randomY = e.getBoolean("y");
-		randomZ = e.getBoolean("z");
+		randomX = e.GetBoolean("x");
+		randomY = e.GetBoolean("y");
+		randomZ = e.GetBoolean("z");
 	}
 
 	public override void saveToXML(XmlElement e) {
-		e.addProperty("x", randomX);
-		e.addProperty("y", randomY);
-		e.addProperty("z", randomZ);
+		e.AddProperty("x", randomX);
+		e.AddProperty("y", randomY);
+		e.AddProperty("z", randomZ);
 	}
 
 	public override bool needsReapplication() {

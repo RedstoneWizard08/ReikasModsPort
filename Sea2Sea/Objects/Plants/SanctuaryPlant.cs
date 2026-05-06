@@ -57,13 +57,13 @@ public class SanctuaryPlant : BasicCustomPlant, CustomHarvestBehavior {
         go.removeComponent<Collider>();
         go.removeChildObject("Generic_plant_seed");
 
-        var pfb = ObjectUtil.lookupPrefab(TechType.SeaTreaderPoop).GetResult();
+        var pfb = ObjectUtil.lookupPrefab(TechType.SeaTreaderPoop);
         var collider = pfb.getChildObject("Sphere").clone();
         var render = pfb.getChildObject("sea_treader_poop_01").clone();
         render.transform.SetParent(go.transform);
         collider.transform.SetParent(go.transform);
 
-        go.GetComponent<Rigidbody>().copyObject(pfb.GetComponent<Rigidbody>());
+        go.GetComponent<Rigidbody>().CopyObject(pfb.GetComponent<Rigidbody>());
 
         var r = render.GetComponentInChildren<Renderer>();
         RenderUtil.swapTextures(SeaToSeaMod.ModDLL, r, "Textures/Plants/Sanctuary_Seed");

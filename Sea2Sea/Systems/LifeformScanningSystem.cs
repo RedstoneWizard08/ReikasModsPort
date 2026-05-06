@@ -40,7 +40,7 @@ public class LifeformScanningSystem {
             Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location),
             "lifeform_scans"
         );
-        if (Directory.Exists(oldSaveDir) && Directory.Exists(SNUtil.savesDir)) {
+        if (Directory.Exists(oldSaveDir) && Directory.Exists(SNUtil.SavesDir)) {
             migrateSaveData();
         }
     }
@@ -77,48 +77,48 @@ public class LifeformScanningSystem {
     }
 
     private void migrateSaveData() {
-        SNUtil.log("Migrating lifeform scan data from " + oldSaveDir + " to " + SNUtil.savesDir);
+        SNUtil.Log("Migrating lifeform scan data from " + oldSaveDir + " to " + SNUtil.SavesDir);
         var all = true;
         foreach (var xml in Directory.GetFiles(oldSaveDir)) {
             if (xml.EndsWith(".xml", StringComparison.InvariantCultureIgnoreCase)) {
-                var save = Path.Combine(SNUtil.savesDir, Path.GetFileNameWithoutExtension(xml));
+                var save = Path.Combine(SNUtil.SavesDir, Path.GetFileNameWithoutExtension(xml));
                 if (Directory.Exists(save)) {
-                    SNUtil.log("Moving lifeform scan data " + xml + " to " + save);
+                    SNUtil.Log("Moving lifeform scan data " + xml + " to " + save);
                     File.Move(xml, Path.Combine(save, saveFileName));
                 } else {
-                    SNUtil.log("No save found for '" + xml + ", skipping");
+                    SNUtil.Log("No save found for '" + xml + ", skipping");
                     all = false;
                 }
             }
         }
 
-        SNUtil.log("Migration complete.");
+        SNUtil.Log("Migration complete.");
         if (all) {
-            SNUtil.log("All files moved, deleting old folder.");
+            SNUtil.Log("All files moved, deleting old folder.");
             Directory.Delete(oldSaveDir);
         } else {
-            SNUtil.log("Some files could not be moved so the old folder will not be deleted.");
+            SNUtil.Log("Some files could not be moved so the old folder will not be deleted.");
         }
     }
 
     private void loadSave() {
-        var path = Path.Combine(SNUtil.getCurrentSaveDir(), saveFileName);
+        var path = Path.Combine(SNUtil.GetCurrentSaveDir(), saveFileName);
         if (File.Exists(path)) {
             var doc = new XmlDocument();
             doc.Load(path);
             foreach (XmlElement e in doc.DocumentElement.ChildNodes) {
-                var tt = SNUtil.getTechType(e.getProperty("techtype"));
+                var tt = SNUtil.GetTechType(e.GetProperty("techtype"));
                 if (tt != TechType.None && requiredLifeforms.ContainsKey(tt))
                     requiredLifeforms[tt].loadFromXML(e);
             }
         }
 
-        SNUtil.log("Loaded lifeform scan cache: ");
-        SNUtil.log(requiredLifeforms.toDebugString());
+        SNUtil.Log("Loaded lifeform scan cache: ");
+        SNUtil.Log(requiredLifeforms.ToDebugString());
     }
 
     private void save() {
-        var path = Path.Combine(SNUtil.getCurrentSaveDir(), saveFileName);
+        var path = Path.Combine(SNUtil.GetCurrentSaveDir(), saveFileName);
         var doc = new XmlDocument();
         var rootnode = doc.CreateElement("Root");
         doc.AppendChild(rootnode);
@@ -225,7 +225,7 @@ public class LifeformScanningSystem {
             return true;
         if (hard && additionalScans.Contains(tt))
             return true;
-        GameObject prefab = ObjectUtil.lookupPrefab(tt).GetResult();
+        GameObject prefab = ObjectUtil.lookupPrefab(tt);
         if (prefab) {
             if (prefab.GetComponent<Creature>())
                 return true;
@@ -302,7 +302,7 @@ public class LifeformScanningSystem {
             objectType = tt;
 
             pdaPage = getEncyData();
-            category = pdaPage == null ? "General" : SNUtil.getDescriptiveEncyPageCategoryName(pdaPage);
+            category = pdaPage == null ? "General" : SNUtil.GetDescriptiveEncyPageCategoryName(pdaPage);
             if (tt == TechType.PrecursorDroid)
                 category = Language.main.Get("EncyPath_Lifeforms/Fauna");
             else if (tt == TechType.PrecursorIonCrystal)
@@ -311,7 +311,7 @@ public class LifeformScanningSystem {
                 category = "Fauna Eggs";
 
             hint = getHint(false);
-            GameObject pfb = ObjectUtil.lookupPrefab(tt).GetResult();
+            GameObject pfb = ObjectUtil.lookupPrefab(tt);
             if (pfb) {
                 var c = pfb.GetComponent<Creature>();
                 var leviA = c is ReaperLeviathan || c is GhostLeviatanVoid || c is GhostLeviathan || c is SeaDragon;
@@ -398,14 +398,14 @@ public class LifeformScanningSystem {
         }
 
         internal void saveToXML(XmlElement n) {
-            n.addProperty("techtype", objectType.AsString());
-            n.addProperty("seen", seenAt);
-            n.addProperty("known", identityKnown);
+            n.AddProperty("techtype", objectType.AsString());
+            n.AddProperty("seen", seenAt);
+            n.AddProperty("known", identityKnown);
         }
 
         internal void loadFromXML(XmlElement e) {
-            seenAt = e.getVector("seen").Value;
-            identityKnown = e.getBoolean("known");
+            seenAt = e.GetVector("seen").Value;
+            identityKnown = e.GetBoolean("known");
         }
 
         public override string ToString() {

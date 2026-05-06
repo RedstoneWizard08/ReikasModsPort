@@ -9,11 +9,11 @@ public abstract class ToggleableMachineBase : CustomMachineLogic {
 	internal bool isEnabled;
 
 	protected override void load(System.Xml.XmlElement data) {
-		isEnabled = data.getBoolean("toggled");
+		isEnabled = data.GetBoolean("toggled");
 	}
 
 	protected override void save(System.Xml.XmlElement data) {
-		data.addProperty("toggled", isEnabled);
+		data.AddProperty("toggled", isEnabled);
 	}
 
 	internal void toggle() {

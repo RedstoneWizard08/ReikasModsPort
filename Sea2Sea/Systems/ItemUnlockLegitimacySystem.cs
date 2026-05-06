@@ -80,7 +80,7 @@ public class ItemUnlockLegitimacySystem {
         ((IItemsContainer)modules).RemoveItem(ii, true, false); //cast is necessary to hit the right method
         //((IItemsContainer)modules).UpdateContainer();
         ii.item.gameObject.destroy(false);
-        SNUtil.writeToChat(
+        SNUtil.WriteToChat(
             "Destroying cheated module: " + Language.main.Get(tt) + " in " + modules.owner.name + " slot " + slot
         );
         SoundManager.playSoundAt(
@@ -117,9 +117,9 @@ public class ItemUnlockLegitimacySystem {
             var tt = TechType.None;
             if (!EnumHandler.TryGetValue(techTypeName, out tt))
                 if (!EnumHandler.TryGetValue(techTypeName.ToLowerInvariant(), out tt))
-                    EnumHandler.TryGetValue(techTypeName.setLeadingCase(false), out tt);
+                    EnumHandler.TryGetValue(techTypeName.SetLeadingCase(false), out tt);
             if (tt == TechType.None && isModLoaded)
-                SNUtil.log("Could not find TechType for '" + techTypeName + "' in mod '" + sourceMod + "'");
+                SNUtil.Log("Could not find TechType for '" + techTypeName + "' in mod '" + sourceMod + "'");
             return tt;
         }
     }

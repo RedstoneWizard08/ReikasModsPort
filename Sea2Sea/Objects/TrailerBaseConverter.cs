@@ -111,7 +111,7 @@ public class TrailerBaseConverter : CustomPrefab {
                                     break;
                             }
 
-                            SNUtil.log("Set glass ref tex to " + refName);
+                            SNUtil.Log("Set glass ref tex to " + refName);
                             if (a > 0) {
                                 var c = m.GetColor("_Color");
                                 m.SetColor("_Color", new Color(c.r, c.g, c.b, a));
@@ -131,10 +131,10 @@ public class TrailerBaseConverter : CustomPrefab {
                                 }
 
                                 if (found.Count == 0)
-                                    SNUtil.log("Found no decayed textures of " + refName + ", even with mappings");
+                                    SNUtil.Log("Found no decayed textures of " + refName + ", even with mappings");
                                 //SNUtil.log("Decayed textures of "+refName+" in "+r.gameObject.GetFullHierarchyPath()+": "+found.toDebugString());
                             } else {
-                                SNUtil.log("Found no decayed textures of " + refName);
+                                SNUtil.Log("Found no decayed textures of " + refName);
                             }
                         }
                     }

@@ -64,13 +64,13 @@ public class BaseStasisTurretLogic : CustomMachineLogic {
     private Renderer mainRenderer;
 
     private void Start() {
-        SNUtil.log("Reinitializing base stasis turret");
+        SNUtil.Log("Reinitializing base stasis turret");
         AqueousEngineeringMod.stasisBlock.initializeMachine(gameObject);
     }
 
     private void addButton() {
         if (!sub) {
-            SNUtil.log("Could not add button for stasis turret, no sub");
+            SNUtil.Log("Could not add button for stasis turret, no sub");
             return;
         }
 

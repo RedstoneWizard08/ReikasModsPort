@@ -13,13 +13,13 @@ public class PlayerMovementSpeedModifier : SelfRemovingComponent, CustomSerializ
 	}
 
 	public virtual void saveToXML(XmlElement e) {
-		e.addProperty("endTime", elapseWhen);
-		e.addProperty("modifier", speedModifier);
+		e.AddProperty("endTime", elapseWhen);
+		e.AddProperty("modifier", speedModifier);
 	}
 
 	public virtual void readFromXML(XmlElement e) {
-		elapseWhen = (float)e.getFloat("endTime", 0);
-		speedModifier = (float)e.getFloat("modifier", 0);
+		elapseWhen = (float)e.GetFloat("endTime", 0);
+		speedModifier = (float)e.GetFloat("modifier", 0);
 	}
 
 }

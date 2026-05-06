@@ -41,7 +41,7 @@ public class TechnologyUnlockSystem {
 		var li = directUnlocks[tt];
 		if (li == null || li.Count == 0)
 			return;
-		SNUtil.log("Triggering direct unlock via " + tt + " of " + li.Count + ":[" + string.Join(", ", li.Select(tc => "" + tc)) + "]", SNUtil.diDLL);
+		SNUtil.Log("Triggering direct unlock via " + tt + " of " + li.Count + ":[" + string.Join(", ", li.Select(tc => "" + tc)) + "]", SNUtil.DiDLL);
 
 		if (DIHooks.GetWorldAge() > 0.25F) {
 			List<TechType> li2 = [];
@@ -50,14 +50,14 @@ public class TechnologyUnlockSystem {
 					continue;
 				if (DuplicateRecipeDelegate.isDelegateItem(tt2) && !DuplicateRecipeDelegate.getDelegateFromTech(tt2).allowTechUnlockPopups())
 					continue;
-				SNUtil.log("Raising progression popup for " + tt2, SNUtil.diDLL);
+				SNUtil.Log("Raising progression popup for " + tt2, SNUtil.DiDLL);
 				li2.Add(tt2);
 			}
 			if (allowPopups) {
 				if (li2.Count > 1)
-					SNUtil.triggerMultiTechPopup(li2);
+					SNUtil.TriggerMultiTechPopup(li2);
 				else if (li2.Count == 1)
-					SNUtil.triggerTechPopup(li2[0]);
+					SNUtil.TriggerTechPopup(li2[0]);
 			}
 		}
 

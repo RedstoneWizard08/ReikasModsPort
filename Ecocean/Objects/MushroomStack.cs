@@ -263,7 +263,7 @@ internal class MushroomStackTag : MonoBehaviour {
             }
             gameObject.destroy();*/
             gameObject.GetComponentInParent<LiveMixin>().TakeDamage(99999F);
-            SNUtil.log("Killing incomplete/killed mushroom stack @ " + transform.position);
+            SNUtil.Log("Killing incomplete/killed mushroom stack @ " + transform.position);
         }
     }
 }

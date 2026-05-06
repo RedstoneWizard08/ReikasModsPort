@@ -31,7 +31,7 @@ public static class C2CIntegration {
         ExscansionMod.config.load();
         EcoceanMod.config.load();
 
-        SNUtil.log("Overriding config entries in support mods", SeaToSeaMod.ModDLL);
+        SNUtil.Log("Overriding config entries in support mods", SeaToSeaMod.ModDLL);
         var hard = SeaToSeaMod.ModConfig.getBoolean(C2CConfig.ConfigEntries.HARDMODE);
 
         ReefbalanceMod.config.attachOverride(RBConfig.ConfigEntries.CHEAP_GLASS, false);
@@ -377,14 +377,14 @@ public static class C2CIntegration {
         ).amount;
         RecipeUtil.addIngredient(TechType.BaseWaterPark, TechType.EnameledGlass, amt);
 
-        var ghostRayEgg = CustomEgg.getEgg(TechType.GhostRayBlue);
+        var ghostRayEgg = CustomEgg.GetEgg(TechType.GhostRayBlue);
         if (ghostRayEgg != null)
             FinalLaunchAdditionalRequirementSystem.instance.addRequiredItem(
                 TechType.GhostRayBlue,
                 1,
                 "A large poisonous herbivore adapted to deep water"
             );
-        var blighterEgg = CustomEgg.getEgg(TechType.Blighter);
+        var blighterEgg = CustomEgg.GetEgg(TechType.Blighter);
         if (blighterEgg != null)
             FinalLaunchAdditionalRequirementSystem.instance.addRequiredItem(
                 TechType.Blighter,
@@ -392,9 +392,9 @@ public static class C2CIntegration {
                 "A small but aggressive carrion feeder, with limited visual sensation"
             );
 
-        EcoceanMod.planktonScoop.TechType.removeUnlockTrigger();
-        AqueousEngineeringMod.wirelessChargerBlock.TechType.removeUnlockTrigger();
-        AuroresourceMod.MeteorDetector.TechType.removeUnlockTrigger();
+        EcoceanMod.planktonScoop.TechType.RemoveUnlockTrigger();
+        AqueousEngineeringMod.wirelessChargerBlock.TechType.RemoveUnlockTrigger();
+        AuroresourceMod.MeteorDetector.TechType.RemoveUnlockTrigger();
         GenUtil.getOrCreateDatabox(
             AqueousEngineeringMod.wirelessChargerBlock.TechType
         ); //needs to be created to be used at runtime

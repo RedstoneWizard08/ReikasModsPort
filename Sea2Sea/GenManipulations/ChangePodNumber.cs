@@ -39,7 +39,7 @@ internal class ChangePodNumber : ManipulationBase {
 							var path = "Textures/"+newTexBase+targetNumber;
 							var tex2 = TextureManager.getTexture(SeaToSeaMod.ModDLL, path);
 							if (tex2 == null) {
-								SNUtil.writeToChat("Could not find desired pod number texture @ " + path);
+								SNUtil.WriteToChat("Could not find desired pod number texture @ " + path);
 								continue;
 							}
 							//SNUtil.writeToChat("Replacing tex @ "+n+" >> "+file+" > "+tex2.name);

@@ -8,7 +8,7 @@ namespace ReikaKalseki.Auroresource;
 
 public static class ARHooks {
     static ARHooks() {
-        SNUtil.log("Initializing ARHooks");
+        SNUtil.Log("Initializing ARHooks");
         DIHooks.OnPlayerTickEvent += TickPlayer;
         DIHooks.ItemTooltipEvent += GenerateItemTooltips;
         DIHooks.OnItemPickedUpEvent += OnItemPickedUp;
@@ -51,7 +51,7 @@ public static class ARHooks {
     public static void OnMapRoomSpawn(MapRoomFunctionality map) {
         if (Array.IndexOf(map.allowedUpgrades, AuroresourceMod.MeteorDetector.TechType) < 0)
             typeof(MapRoomFunctionality).GetField("allowedUpgrades", BindingFlags.Instance | BindingFlags.NonPublic)
-                .SetValue(map, map.allowedUpgrades.addToArray(AuroresourceMod.MeteorDetector.TechType));
+                .SetValue(map, map.allowedUpgrades.AddToArray(AuroresourceMod.MeteorDetector.TechType));
     }
 
     public static void OnAuroraSpawn(CrashedShipExploder ex) {
@@ -103,11 +103,7 @@ public static class ARHooks {
             }
         }
 
-        var output = new TaskResult<GameObject>();
-        var enumerator = d.ChooseRandomResourceAsync(output);
-
-        // TODO: find a way to await the enumerator, this prob won't work
-        return output.Get();
+        return d.ChooseRandomResource();
     }
 
     public static void OnBreakableResourceSpawn(BreakableResource src) {

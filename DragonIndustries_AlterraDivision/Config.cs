@@ -75,7 +75,7 @@ public class Config<E> {
 		Directory.CreateDirectory(folder);
 		var path = Path.Combine(folder, filename);
 		if (File.Exists(path)) {
-			SNUtil.log("Loading config file at " + path, owner);
+			SNUtil.Log("Loading config file at " + path, owner);
 			try {
 				var doc = new XmlDocument();
 				doc.Load(path);
@@ -92,35 +92,35 @@ public class Config<E> {
 						var raw = entry.parse(val.InnerText);
 						var get = raw;
 						if (!entry.validate(ref get)) {
-							SNUtil.log("Chosen " + name + " value (" + raw + ") was out of bounds, clamped to " + get, owner);
+							SNUtil.Log("Chosen " + name + " value (" + raw + ") was out of bounds, clamped to " + get, owner);
 						}
 						data[name] = get;
 						dataString[name] = val.InnerText;
 						missing.Remove(name);
 					}
 					catch (Exception ex) {
-						SNUtil.log("Config entry " + name + " failed to load: " + ex.ToString(), owner);
+						SNUtil.Log("Config entry " + name + " failed to load: " + ex.ToString(), owner);
 					}
 				}
 				var vals = string.Join(";", data.Select(x => x.Key + "=" + x.Value).ToArray());
-				SNUtil.log("Config successfully loaded: " + vals, owner);
+				SNUtil.Log("Config successfully loaded: " + vals, owner);
 				if (missing.Count > 0) {
 					var keys = string.Join(";", missing.ToArray());
-					SNUtil.log("Note: " + missing.Count + " entries were missing from the config and so stayed the default values.", owner);
-					SNUtil.log("Missing keys: " + keys, owner);
+					SNUtil.Log("Note: " + missing.Count + " entries were missing from the config and so stayed the default values.", owner);
+					SNUtil.Log("Missing keys: " + keys, owner);
 					//SNUtil.log("It is recommended that you regenerate your config by renaming your current config file, letting a new one generate," +
 					// "then copying your changes into the new one.", owner);
-					SNUtil.log("Your config will be regenerated (keeping your changes) to add them to the file.", owner);
+					SNUtil.Log("Your config will be regenerated (keeping your changes) to add them to the file.", owner);
 					File.Delete(path);
 					generateFile(path, e => getFloat(getEnum(e)));
 				}
 			}
 			catch (Exception ex) {
-				SNUtil.log("Config failed to load: " + ex.ToString(), owner);
+				SNUtil.Log("Config failed to load: " + ex.ToString(), owner);
 			}
 		}
 		else {
-			SNUtil.log("Config file does not exist at " + path + "; generating.", owner);
+			SNUtil.Log("Config file does not exist at " + path + "; generating.", owner);
 			generateFile(path, e => e.defaultValue);
 		}
 		//applyOverrides();
@@ -137,14 +137,14 @@ public class Config<E> {
 					createNode(doc, root, key, valGetter);
 				}
 				catch (Exception e) {
-					SNUtil.log("Could not generate XML node for " + key + ": " + e.ToString(), owner);
+					SNUtil.Log("Could not generate XML node for " + key + ": " + e.ToString(), owner);
 				}
 			}
 			doc.Save(path);
-			SNUtil.log("Config successfully generated at " + path, owner);
+			SNUtil.Log("Config successfully generated at " + path, owner);
 		}
 		catch (Exception ex) {
-			SNUtil.log("Config failed to generate: " + ex.ToString(), owner);
+			SNUtil.Log("Config failed to generate: " + ex.ToString(), owner);
 		}
 	}
 

@@ -116,9 +116,9 @@ public class MushroomTendril : CustomPrefab {
 				var e = Player.main.gameObject.EnsureComponent<FoodEffectSystem.VisualDistortionEffect>();
 				e.intensity = 2;
 				e.timeRemaining = 10;
-				e.effectColor = renderColor.toVectorA().exponent(4F);
+				e.effectColor = renderColor.ToVectorA().Exponent(4F);
 				e.tintIntensity = 0.32F; //0.28
-				e.tintColor = (renderColor.exponent(2) * 4).WithAlpha(1);
+				e.tintColor = (renderColor.Exponent(2) * 4).WithAlpha(1);
 			}
 		}
 

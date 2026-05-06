@@ -303,7 +303,7 @@ public class C2CProgression : IStoryGoalListener {
         return
             (PDAMessagePrompts.instance.isTriggered(PDAMessages.getAttr(PDAMessages.Messages.KelpCavePromptLate).key) &&
              Vector3.Distance(ep.transform.position, Pod3Location) <= 80) ||
-            MathUtil.isPointInCylinder(DronePdaCaveEntrance.setY(-40), ep.transform.position, 60, 40) ||
+            MathUtil.isPointInCylinder(DronePdaCaveEntrance.SetY(-40), ep.transform.position, 60, 40) ||
             (PDAMessagePrompts.instance.isTriggered(PDAMessages.getAttr(PDAMessages.Messages.FollowRadioPrompt).key) &&
              Vector3.Distance(Pod3Location, ep.transform.position) <= 60);
     }
@@ -463,17 +463,17 @@ public class C2CProgression : IStoryGoalListener {
     public static void OnSeamothDepthChit() {
         if (StoryGoalManager.main.IsGoalComplete("seamothdepthchit2")) {
             StoryGoal.Execute("seamothdepthchit3", Story.GoalType.Story);
-            SNUtil.setBlueprintUnlockProgress(SeaToSeaMod.SeamothDepthUnlockTracker, 3);
+            SNUtil.SetBlueprintUnlockProgress(SeaToSeaMod.SeamothDepthUnlockTracker, 3);
             KnownTech.Add(TechType.VehicleHullModule1);
-            SNUtil.triggerTechPopup(TechType.VehicleHullModule1);
+            SNUtil.TriggerTechPopup(TechType.VehicleHullModule1);
         } else if (StoryGoalManager.main.IsGoalComplete("seamothdepthchit1")) {
             StoryGoal.Execute("seamothdepthchit2", Story.GoalType.Story);
-            SNUtil.writeToChat("2/3 Data Entries Recovered");
-            SNUtil.setBlueprintUnlockProgress(SeaToSeaMod.SeamothDepthUnlockTracker, 2);
+            SNUtil.WriteToChat("2/3 Data Entries Recovered");
+            SNUtil.SetBlueprintUnlockProgress(SeaToSeaMod.SeamothDepthUnlockTracker, 2);
         } else {
             StoryGoal.Execute("seamothdepthchit1", Story.GoalType.Story);
-            SNUtil.writeToChat("1/3 Data Entries Recovered");
-            SNUtil.setBlueprintUnlockProgress(SeaToSeaMod.SeamothDepthUnlockTracker, 1);
+            SNUtil.WriteToChat("1/3 Data Entries Recovered");
+            SNUtil.SetBlueprintUnlockProgress(SeaToSeaMod.SeamothDepthUnlockTracker, 1);
         }
     }
 

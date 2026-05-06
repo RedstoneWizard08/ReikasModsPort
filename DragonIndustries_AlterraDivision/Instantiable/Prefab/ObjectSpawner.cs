@@ -34,7 +34,7 @@ public sealed class ObjectSpawner : CustomPrefab {
                 var id = GetComponent<PrefabIdentifier>().classId;
                 spawns = spawnSets.ContainsKey(id) ? spawnSets[id] : null;
                 if (spawns == null)
-                    SNUtil.log("No spawn IDs for prefab " + id + " @ " + transform.position);
+                    SNUtil.Log("No spawn IDs for prefab " + id + " @ " + transform.position);
                 return;
             }
 

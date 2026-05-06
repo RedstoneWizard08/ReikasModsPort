@@ -86,7 +86,7 @@ public class ATPTapLogic : CustomMachineLogic {
     private static readonly Vector3 drfLocation = new(-248, -800, 281);
 
     private void Start() {
-        SNUtil.log("Reinitializing ATP tap");
+        SNUtil.Log("Reinitializing ATP tap");
         AqueousEngineeringMod.atpTapBlock.initializeMachine(gameObject);
         InvokeRepeating(nameof(tryFindCable), Random.value, 4f);
         InvokeRepeating(nameof(AddPower), Random.value, 1f);

@@ -14,6 +14,7 @@ namespace ReikaKalseki.AqueousEngineering;
 
 [BepInPlugin(MOD_KEY, "AqueousEngineering", Nautilus.PluginInfo.PLUGIN_VERSION)]
 [BepInDependency("com.snmodding.nautilus")]
+[BepInDependency(DIMod.MOD_KEY)]
 public class AqueousEngineeringMod : BaseUnityPlugin {
     public const string MOD_KEY = "ReikaKalseki.AqueousEngineering";
 
@@ -104,8 +105,6 @@ public class AqueousEngineeringMod : BaseUnityPlugin {
         harmony.apply();
 
         ModVersionCheck.getFromGitVsInstall("Aqueous Engineering", modDLL, "AqueousEngineering").register();
-        SNUtil.checkModHash(modDLL);
-
         DICustomPrefab.addPrefabNamespace("ReikaKalseki.AqueousEngineering");
 
         itemLocale.load();
@@ -248,45 +247,49 @@ public class AqueousEngineeringMod : BaseUnityPlugin {
         pillarBlock = createMachine<BasePillar, BasePillarLogic>("BasePillar");
         wirelessChargerBlock = createMachine<WirelessCharger, WirelessChargerLogic>("WirelessCharger");
         var li = VanillaFlora.MUSHROOM_BUMP.getPrefabs(true, true).ToArray();
-        repairBeaconFragments = new CustomPrefab[li.Length - 2];
-        for (var i = 1; i < li.Length - 1; i++) {
-            //only idx 1,2,3 since 0 is rotated and tall and 4 has a light and is just 3 anyway
-            var frag = new CustomPrefab(li[i], "", "");
 
-            frag.CreateFragment(repairBlock.TechType, 1, li.Length - 2, li[i]);
-            var idx = i;
-            frag.SetGameObject(() => {
-                    UWE.PrefabDatabase.GetPrefabAsync(li[idx]).TryGetPrefab(out var go);
+        if (li.Length > 0) {
+            repairBeaconFragments = new CustomPrefab[li.Length - 2];
 
-                    go.removeComponent<CoralBlendWhite>();
-                    go.removeComponent<PlantBehaviour>();
-                    go.removeComponent<LiveMixin>();
-                    go.removeComponent<FMOD_StudioEventEmitter>();
-                    go.removeComponent<Pickupable>();
-                    go.EnsureComponent<NaniteFragment>();
-                    foreach (Renderer r in go.GetComponentsInChildren<Renderer>()) {
-                        RenderUtil.swapTextures(modDLL, r, "Textures/RepairFragment");
-                        RenderUtil.setGlossiness(r, 1.5F, 0, 0.85F);
-                        RenderUtil.setEmissivity(r, 10);
-                    }
+            for (var i = 1; i < li.Length - 1; i++) {
+                //only idx 1,2,3 since 0 is rotated and tall and 4 has a light and is just 3 anyway
+                var frag = new CustomPrefab(li[i], "", "");
 
-                    foreach (Collider c in go.GetComponentsInChildren<Collider>()) {
-                        if (c is BoxCollider collider)
-                            collider.size *= 1.5F;
-                        if (c is SphereCollider s) {
-                            s.radius *= 1.5F;
-                            s.radius = Mathf.Max(0.225F, s.radius);
+                frag.CreateFragment(repairBlock.TechType, 1, li.Length - 2, li[i]);
+                var idx = i;
+                frag.SetGameObject(() => {
+                        UWE.PrefabDatabase.GetPrefabAsync(li[idx]).TryGetPrefab(out var go);
+
+                        go.removeComponent<CoralBlendWhite>();
+                        go.removeComponent<PlantBehaviour>();
+                        go.removeComponent<LiveMixin>();
+                        go.removeComponent<FMOD_StudioEventEmitter>();
+                        go.removeComponent<Pickupable>();
+                        go.EnsureComponent<NaniteFragment>();
+                        foreach (Renderer r in go.GetComponentsInChildren<Renderer>()) {
+                            RenderUtil.swapTextures(modDLL, r, "Textures/RepairFragment");
+                            RenderUtil.setGlossiness(r, 1.5F, 0, 0.85F);
+                            RenderUtil.setEmissivity(r, 10);
                         }
 
-                        if (c is CapsuleCollider capsuleCollider)
-                            capsuleCollider.radius *= 1.5F;
+                        foreach (Collider c in go.GetComponentsInChildren<Collider>()) {
+                            if (c is BoxCollider collider)
+                                collider.size *= 1.5F;
+                            if (c is SphereCollider s) {
+                                s.radius *= 1.5F;
+                                s.radius = Mathf.Max(0.225F, s.radius);
+                            }
+
+                            if (c is CapsuleCollider capsuleCollider)
+                                capsuleCollider.radius *= 1.5F;
+                        }
+
+                        return go;
                     }
+                );
 
-                    return go;
-                }
-            );
-
-            repairBeaconFragments[i - 1] = frag;
+                repairBeaconFragments[i - 1] = frag;
+            }
         }
 
         repairBlock = createMachine<RepairBeacon, RepairBeaconLogic>("BaseRepairBeacon");
@@ -301,7 +304,7 @@ public class AqueousEngineeringMod : BaseUnityPlugin {
             // f.setDisplayName(machineLocale.getEntry("BaseRepairBeacon").getString("frag"));
         }
 
-        SNUtil.log("Found " + count + " " + repairBlock.ClassID + " fragments to use", modDLL);
+        SNUtil.Log("Found " + count + " " + repairBlock.ClassID + " fragments to use", modDLL);
         PDAHandler.EditFragmentsToScan(GenUtil.getFragment(repairBlock.TechType, 0).TechType, count);
 
         outdoorBasicPot = new OutdoorPot(TechType.PlanterPot);
@@ -513,7 +516,7 @@ public class AqueousEngineeringMod : BaseUnityPlugin {
         */
         CustomPrefab plankton = ItemRegistry.instance.getItem("planktonItem");
         if (plankton != null) {
-            SNUtil.log("Found plankton item. Adding compat machinery.");
+            SNUtil.Log("Found plankton item. Adding compat machinery.");
             PlanktonFeeder.fuel = (WorldCollectedItem)plankton;
             ACUBooster.fuels[PlanktonFeeder.fuel.ClassID] = new ACUFuel(PlanktonFeeder.fuel, 1, 1);
             acuBoosterBlock = createMachine<ACUBooster, ACUBoosterLogic>("BaseACUBooster");
@@ -526,15 +529,15 @@ public class AqueousEngineeringMod : BaseUnityPlugin {
             TechnologyUnlockSystem.instance.addDirectUnlock(TechType.BaseWaterPark, acuBoosterBlock.TechType);
             TechnologyUnlockSystem.instance.addDirectUnlock(plankton.TechType, planktonFeederBlock.TechType);
         } else {
-            SNUtil.log("Plankton item not found.");
+            SNUtil.Log("Plankton item not found.");
         }
 
         CustomPrefab mushdisk = ItemRegistry.instance.getItem("treeMushroomSpores");
         if (mushdisk != null) {
-            SNUtil.log("Found mushroom disk spore item. Adding compat.");
+            SNUtil.Log("Found mushroom disk spore item. Adding compat.");
             ACUBooster.fuels[mushdisk.ClassID] = new ACUFuel((WorldCollectedItem)mushdisk, 5, 2);
         } else {
-            SNUtil.log("Plankton item not found.");
+            SNUtil.Log("Plankton item not found.");
         }
 
         ACUEcosystems.addPost();
@@ -582,20 +585,20 @@ public class AqueousEngineeringMod : BaseUnityPlugin {
                 wirelessChargerBlock.TechType
             );
 
-        var refuel = SNUtil.getTechType("ReplenishReactorRod");
+        var refuel = SNUtil.GetTechType("ReplenishReactorRod");
         if (refuel != TechType.None) {
-            SNUtil.log("Moving reactor rod recharge to nuclear tab");
+            SNUtil.Log("Moving reactor rod recharge to nuclear tab");
             CraftTreeHandler.RemoveNode(CraftTree.Type.Fabricator, "Resources", "Electronics", "ReplenishReactorRod");
-            refuel.preventCraftNodeAddition();
+            refuel.PreventCraftNodeAddition();
             CraftTreeHandler.AddCraftingNode(CraftTree.Type.Fabricator, refuel, "Resources", "Nuclear");
             RecipeUtil.setItemCategory(refuel, TechGroup.Resources, nuclearCategory);
             //KnownTechHandler.SetCompoundUnlock(refuel, TechType.Unobtanium);
             KnownTechHandler.SetAnalysisTechEntry(TechType.Unobtanium, new TechType[] { refuel });
-            refuel.removeUnlockTrigger(new TechTrigger(TechType.BaseNuclearReactor));
+            refuel.RemoveUnlockTrigger(new TechTrigger(TechType.BaseNuclearReactor));
             TechnologyUnlockSystem.instance.addDirectUnlock(TechType.ReactorRod, refuel);
         }
 
-        var baseglass = SNUtil.getTechType("BaseGlass");
+        var baseglass = SNUtil.GetTechType("BaseGlass");
         if (baseglass != TechType.None) {
             RecipeUtil.addIngredient(shieldedRod.TechType, baseglass, 1);
         }
@@ -631,7 +634,7 @@ public class AqueousEngineeringMod : BaseUnityPlugin {
 
     private class NaniteFragment : MonoBehaviour {
         private void OnScanned() {
-            SNUtil.addBlueprintNotification(repairBlock.TechType);
+            SNUtil.AddBlueprintNotification(repairBlock.TechType);
         }
     }
 
@@ -668,7 +671,7 @@ public class AqueousEngineeringMod : BaseUnityPlugin {
         m.Register();
         if (!string.IsNullOrEmpty(e.pda))
             m.addPDAPage(e.pda, lck);
-        SNUtil.log("Registered custom machine " + m);
+        SNUtil.Log("Registered custom machine " + m);
         return m;
     }
 }

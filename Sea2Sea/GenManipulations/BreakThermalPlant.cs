@@ -50,23 +50,23 @@ internal class BreakThermalPlant : ManipulationBase {
 	}
 
 	public override void loadFromXML(XmlElement e) {
-		disablePowergen = e.getBoolean("RemovePower");
-		deleteHead = e.getBoolean("DeleteHead");
-		disableBar = e.getBoolean("DisableBar");
-		deleteBar = e.getBoolean("DeleteBar");
-		textOverride = e.getProperty("SetText", true);
-		textColor = e.getColor("TextColor", false, true);
+		disablePowergen = e.GetBoolean("RemovePower");
+		deleteHead = e.GetBoolean("DeleteHead");
+		disableBar = e.GetBoolean("DisableBar");
+		deleteBar = e.GetBoolean("DeleteBar");
+		textOverride = e.GetProperty("SetText", true);
+		textColor = e.GetColor("TextColor", false, true);
 	}
 
 	public override void saveToXML(XmlElement e) {
-		e.addProperty("RemovePower", disablePowergen);
-		e.addProperty("DeleteHead", deleteHead);
-		e.addProperty("DisableBar", disableBar);
-		e.addProperty("DeleteBar", deleteBar);
+		e.AddProperty("RemovePower", disablePowergen);
+		e.AddProperty("DeleteHead", deleteHead);
+		e.AddProperty("DisableBar", disableBar);
+		e.AddProperty("DeleteBar", deleteBar);
 		if (!string.IsNullOrEmpty(textOverride))
-			e.addProperty("SetText", textOverride);
+			e.AddProperty("SetText", textOverride);
 		if (textColor != null && textColor.HasValue)
-			e.addProperty("TextColor", textColor.Value);
+			e.AddProperty("TextColor", textColor.Value);
 	}
 
 }

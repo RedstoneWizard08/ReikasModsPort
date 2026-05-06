@@ -42,7 +42,7 @@ public class UsableItemRegistry {
 
 	public bool use(TechType tt, Survival s, GameObject go) {
 		if (DayNightCycle.main.timePassedAsFloat - lastUse < 0.5) {
-			SNUtil.writeToChat("Prevented duplicate use of item " + tt);
+			SNUtil.WriteToChat("Prevented duplicate use of item " + tt);
 			return false;
 		}
 		lastUse = DayNightCycle.main.timePassedAsFloat;

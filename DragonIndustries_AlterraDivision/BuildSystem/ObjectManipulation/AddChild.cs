@@ -39,16 +39,16 @@ internal sealed class AddChild : ManipulationBase {
 	}
 
 	public override void loadFromXML(XmlElement e) {
-		objName = e.getProperty("name", true);
-		prefab = new DICustomPrefab(e.getProperty("prefab"));
+		objName = e.GetProperty("name", true);
+		prefab = new DICustomPrefab(e.GetProperty("prefab"));
 		prefab.loadFromXML(e);
 	}
 
 	public override void saveToXML(XmlElement e) {
-		e.addProperty("prefab", prefab.prefabName);
+		e.AddProperty("prefab", prefab.prefabName);
 		prefab.saveToXML(e);
 		if (!string.IsNullOrEmpty(objName))
-			e.addProperty("name", objName);
+			e.AddProperty("name", objName);
 	}
 
 	public override bool needsReapplication() {

@@ -65,18 +65,18 @@ public class BaseSonarPingerLogic : ToggleableMachineBase {
     private Renderer mainRenderer;
 
     private void Start() {
-        SNUtil.log("Reinitializing base sonar");
+        SNUtil.Log("Reinitializing base sonar");
         AqueousEngineeringMod.sonarBlock.initializeMachine(gameObject);
     }
 
     protected override void load(System.Xml.XmlElement data) {
         base.load(data);
-        lastPing = (float)data.getFloat("last", float.NaN);
+        lastPing = (float)data.GetFloat("last", float.NaN);
     }
 
     protected override void save(System.Xml.XmlElement data) {
         base.save(data);
-        data.addProperty("last", lastPing);
+        data.AddProperty("last", lastPing);
     }
 
     private void ping(float time) {

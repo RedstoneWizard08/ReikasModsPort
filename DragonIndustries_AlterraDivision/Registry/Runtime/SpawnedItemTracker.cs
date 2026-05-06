@@ -18,7 +18,7 @@ public class SpawnedItemTracker : SerializedTracker<SpawnedItemTracker.SpawnedIt
 	}
 
 	private static SpawnedItemEvent parse(XmlElement s) {
-		var e = new SpawnedItemEvent(SNUtil.getTechType(s.getProperty("item")), s.getFloat("eventTime", -1));
+		var e = new SpawnedItemEvent(SNUtil.GetTechType(s.GetProperty("item")), s.GetFloat("eventTime", -1));
 		e.setObject(s);
 		return e;
 	}
@@ -47,7 +47,7 @@ public class SpawnedItemTracker : SerializedTracker<SpawnedItemTracker.SpawnedIt
 	}
 
 	public string getDataMap() {
-		return spawnedIDs.toDebugString();
+		return spawnedIDs.ToDebugString();
 	}
 
 	protected override void add(SpawnedItemEvent e) {
@@ -104,28 +104,28 @@ public class SpawnedItemTracker : SerializedTracker<SpawnedItemTracker.SpawnedIt
 
 		internal bool register() {
 			if (!prefab || string.IsNullOrEmpty(prefab.Id)) {
-				SNUtil.log("Skipping spawn tag callback for nulled ID: " + prefab + "; entry = " + entry, SNUtil.diDLL);
+				SNUtil.Log("Skipping spawn tag callback for nulled ID: " + prefab + "; entry = " + entry, SNUtil.DiDLL);
 				needsSearch = true;
 				return false;
 			}
 			entry.attach(prefab);
-			SNUtil.log("Attached spawn tag callback " + entry, SNUtil.diDLL);
+			SNUtil.Log("Attached spawn tag callback " + entry, SNUtil.DiDLL);
 			return true;
 		}
 
 		public void search() {
 			var li = Inventory.main.container.GetItems(entry.itemType);
 			if (li == null || li.Count == 0) {
-				SNUtil.log("Skipping spawn search tag callback, no matching items for " + entry, SNUtil.diDLL);
+				SNUtil.Log("Skipping spawn search tag callback, no matching items for " + entry, SNUtil.DiDLL);
 				return;
 			}
 			var prefab = li[li.Count - 1].item.GetComponent<PrefabIdentifier>();
 			if (!prefab || string.IsNullOrEmpty(prefab.Id)) {
-				SNUtil.log("Skipping spawn search tag callback for nulled ID: " + prefab + "; entry = " + entry, SNUtil.diDLL);
+				SNUtil.Log("Skipping spawn search tag callback for nulled ID: " + prefab + "; entry = " + entry, SNUtil.DiDLL);
 				return;
 			}
 			entry.attach(prefab);
-			SNUtil.log("Attached spawn search tag callback " + entry, SNUtil.diDLL);
+			SNUtil.Log("Attached spawn search tag callback " + entry, SNUtil.DiDLL);
 		}
 
 	}
@@ -146,23 +146,23 @@ public class SpawnedItemTracker : SerializedTracker<SpawnedItemTracker.SpawnedIt
 		}
 
 		public override void saveToXML(XmlElement e) {
-			e.addProperty("item", itemType.AsString());
+			e.AddProperty("item", itemType.AsString());
 			if (!string.IsNullOrEmpty(objectID)) {
-				e.addProperty("class", classID);
-				e.addProperty("object", objectID);
+				e.AddProperty("class", classID);
+				e.AddProperty("object", objectID);
 			}
 		}
 
 		public void setObject(PrefabIdentifier pi) {
 			var s = new SpawnTagCallback(this, pi);
 			instance.callbacks.Add(s);
-			SNUtil.log("Registered callback for spawn event " + this, SNUtil.diDLL);
+			SNUtil.Log("Registered callback for spawn event " + this, SNUtil.DiDLL);
 		}
 
 		internal void setObject(XmlElement s) {
-			if (s.hasProperty("object")) {
-				classID = s.getProperty("class");
-				objectID = s.getProperty("object");
+			if (s.HasProperty("object")) {
+				classID = s.GetProperty("class");
+				objectID = s.GetProperty("object");
 			}
 		}
 
@@ -175,10 +175,10 @@ public class SpawnedItemTracker : SerializedTracker<SpawnedItemTracker.SpawnedIt
 		internal static SpawnedItemEvent parseLegacy(string s) {
 			var parts = s.Split(',');
 			if (parts.Length != 2) {
-				SNUtil.log("Error parsing legacy item spawn event '" + s + "'");
+				SNUtil.Log("Error parsing legacy item spawn event '" + s + "'");
 				return null;
 			}
-			var e = new SpawnedItemEvent(SNUtil.getTechType(parts[0]), int.Parse(parts[1]));
+			var e = new SpawnedItemEvent(SNUtil.GetTechType(parts[0]), int.Parse(parts[1]));
 			if (parts.Length >= 4) {
 				e.classID = parts[2];
 				e.objectID = parts[3];

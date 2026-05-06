@@ -37,7 +37,7 @@ public class ChangePrecursorDoor : ManipulationBase {
 		var pk = go.GetComponentInChildren<PrecursorKeyTerminal>();
 		if (pk == null) {
 			foreach (var c in go.GetComponentsInChildren<Component>()) {
-				SNUtil.log("extra Component " + c + "/" + c.GetType() + " in " + c.gameObject);
+				SNUtil.Log("extra Component " + c + "/" + c.GetType() + " in " + c.gameObject);
 			}
 		}
 		applyToObject(pk);

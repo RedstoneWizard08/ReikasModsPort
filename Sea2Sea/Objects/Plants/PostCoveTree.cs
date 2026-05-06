@@ -60,7 +60,7 @@ public class PostCoveTree : CustomPrefab {
             FRAGMENT_COUNT += SeaToSeaMod.worldgen.getCount(pc.ClassID);
         }*/
         e.totalFragments = FRAGMENT_COUNT;
-        SNUtil.log("Found " + e.totalFragments + " of post-cove-tree to use as fragments", SeaToSeaMod.ModDLL);
+        SNUtil.Log("Found " + e.totalFragments + " of post-cove-tree to use as fragments", SeaToSeaMod.ModDLL);
         e.isFragment = true;
         e.scanTime = 5;
         PDAHandler.AddCustomScannerEntry(e);

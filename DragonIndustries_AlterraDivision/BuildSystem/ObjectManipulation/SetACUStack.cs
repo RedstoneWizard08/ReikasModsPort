@@ -36,15 +36,15 @@ internal class SetACUStack : ManipulationBase {
 	}
 
 	public override void loadFromXML(XmlElement e) {
-		isBottomOfStack = e.getBoolean("Bottom");
-		isTopOfStack = e.getBoolean("Top");
-		glassTop = e.getBoolean("GlassTop");
+		isBottomOfStack = e.GetBoolean("Bottom");
+		isTopOfStack = e.GetBoolean("Top");
+		glassTop = e.GetBoolean("GlassTop");
 	}
 
 	public override void saveToXML(XmlElement e) {
-		e.addProperty("Bottom", isBottomOfStack);
-		e.addProperty("Top", isTopOfStack);
-		e.addProperty("GlassTop", glassTop);
+		e.AddProperty("Bottom", isBottomOfStack);
+		e.AddProperty("Top", isTopOfStack);
+		e.AddProperty("GlassTop", glassTop);
 	}
 
 }

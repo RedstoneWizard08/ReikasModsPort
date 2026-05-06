@@ -54,7 +54,7 @@ public class RemoteCameraAntennaLogic : CustomMachineLogic {
     private bool ready;
 
     private void Start() {
-        SNUtil.log("Reinitializing base camera antenna");
+        SNUtil.Log("Reinitializing base camera antenna");
         AqueousEngineeringMod.cameraAntennaBlock.initializeMachine(gameObject);
     }
 

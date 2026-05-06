@@ -78,7 +78,7 @@ public class BaseBeaconLogic : CustomMachineLogic {
     private int colorIndexToUse = -1;
 
     private void Start() {
-        SNUtil.log("Reinitializing base beacon");
+        SNUtil.Log("Reinitializing base beacon");
         AqueousEngineeringMod.beaconBlock.initializeMachine(gameObject);
     }
 
@@ -87,12 +87,12 @@ public class BaseBeaconLogic : CustomMachineLogic {
     }
 
     protected override void load(XmlElement data) {
-        colorIndexToUse = data.getInt("color", -1);
+        colorIndexToUse = data.GetInt("color", -1);
     }
 
     protected override void save(XmlElement data) {
         if (ping)
-            data.addProperty("color", ping.colorIndex);
+            data.AddProperty("color", ping.colorIndex);
     }
 
     protected override void updateEntity(float seconds) {

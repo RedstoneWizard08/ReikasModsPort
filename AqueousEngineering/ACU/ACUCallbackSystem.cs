@@ -48,7 +48,7 @@ public class AcuCallbackSystem {
         // TODO
         // IngameMenuHandler.Main.RegisterOnLoadEvent(loadSave);
         // IngameMenuHandler.Main.RegisterOnSaveEvent(save);
-        SNUtil.migrateSaveDataFolder(_oldSaveDir, ".xml", SaveFileName);
+        SNUtil.MigrateSaveDataFolder(_oldSaveDir, ".xml", SaveFileName);
     }
 
     internal class CreatureCache {
@@ -62,14 +62,14 @@ public class AcuCallbackSystem {
         }
 
         internal void LoadFromXML(XmlElement e) {
-            Hunger = (float)e.getFloat("hunger", double.NaN);
-            Happy = (float)e.getFloat("happy", double.NaN);
+            Hunger = (float)e.GetFloat("hunger", double.NaN);
+            Happy = (float)e.GetFloat("happy", double.NaN);
         }
 
         internal void SaveToXML(XmlElement e) {
-            e.addProperty("hunger", Hunger);
-            e.addProperty("happy", Happy);
-            e.addProperty("entityID", EntityID);
+            e.AddProperty("hunger", Hunger);
+            e.AddProperty("happy", Happy);
+            e.AddProperty("entityID", EntityID);
         }
 
         internal void Apply(Creature c) {
@@ -97,21 +97,21 @@ public class AcuCallbackSystem {
         }
 
         internal void LoadFromXML(XmlElement e) {
-            LastPlanktonBoost = (float)e.getFloat("plankton", double.NaN);
-            BoostStrength = (float)e.getFloat("boost", double.NaN);
-            LastTick = (float)e.getFloat("tick", double.NaN);
+            LastPlanktonBoost = (float)e.GetFloat("plankton", double.NaN);
+            BoostStrength = (float)e.GetFloat("boost", double.NaN);
+            LastTick = (float)e.GetFloat("tick", double.NaN);
 
-            foreach (var e2 in e.getDirectElementsByTagName("creatureStatus")) {
-                var c = new CreatureCache(e2.getProperty("entityID"));
+            foreach (var e2 in e.GetDirectElementsByTagName("creatureStatus")) {
+                var c = new CreatureCache(e2.GetProperty("entityID"));
                 c.LoadFromXML(e2);
             }
         }
 
         internal void SaveToXML(XmlElement e) {
-            e.addProperty("position", AcuRoot);
-            e.addProperty("plankton", LastPlanktonBoost);
-            e.addProperty("boost", BoostStrength);
-            e.addProperty("tick", LastTick);
+            e.AddProperty("position", AcuRoot);
+            e.AddProperty("plankton", LastPlanktonBoost);
+            e.AddProperty("boost", BoostStrength);
+            e.AddProperty("tick", LastTick);
 
             foreach (var go in CreatureData.Values) {
                 var e2 = e.OwnerDocument.CreateElement("creatureStatus");
@@ -126,33 +126,33 @@ public class AcuCallbackSystem {
                 AcuRoot,
                 LastPlanktonBoost,
                 LastTick,
-                CreatureData.toDebugString()
+                CreatureData.ToDebugString()
             );
         }
     }
 
     private void LoadSave() {
-        var path = Path.Combine(SNUtil.getCurrentSaveDir(), SaveFileName);
+        var path = Path.Combine(SNUtil.GetCurrentSaveDir(), SaveFileName);
         if (File.Exists(path)) {
             var doc = new XmlDocument();
             doc.Load(path);
             foreach (XmlElement e in doc.DocumentElement.ChildNodes) {
                 try {
-                    var pfb = new CachedAcuData(e.getVector("position").Value);
+                    var pfb = new CachedAcuData(e.GetVector("position").Value);
                     pfb.LoadFromXML(e);
                     _cache[pfb.AcuRoot] = pfb;
                 } catch (Exception ex) {
-                    SNUtil.log("Error parsing entry '" + e.InnerXml + "': " + ex.ToString());
+                    SNUtil.Log("Error parsing entry '" + e.InnerXml + "': " + ex.ToString());
                 }
             }
         }
 
-        SNUtil.log("Loaded ACU data cache: ");
-        SNUtil.log(_cache.toDebugString());
+        SNUtil.Log("Loaded ACU data cache: ");
+        SNUtil.Log(_cache.ToDebugString());
     }
 
     private void Save() {
-        var path = Path.Combine(SNUtil.getCurrentSaveDir(), SaveFileName);
+        var path = Path.Combine(SNUtil.GetCurrentSaveDir(), SaveFileName);
         var doc = new XmlDocument();
         var rootnode = doc.CreateElement("Root");
         doc.AppendChild(rootnode);
@@ -184,15 +184,15 @@ public class AcuCallbackSystem {
     public void DebugAcu() {
         var wp = Player.main.currentWaterPark;
         if (wp) {
-            SNUtil.writeToChat("ACU @ " + wp.transform.position + ": ");
+            SNUtil.WriteToChat("ACU @ " + wp.transform.position + ": ");
             var call = wp.GetComponent<AcuCallback>();
             if (!call)
-                SNUtil.writeToChat("No hook");
-            SNUtil.writeToChat("Biome set: [" + string.Join(", ", call.PotentialBiomes) + "]");
-            SNUtil.writeToChat("Plant count: " + call.PlantCount);
-            SNUtil.writeToChat("Prey count: " + call.HerbivoreCount);
-            SNUtil.writeToChat("Predator count: " + call.CarnivoreCount);
-            SNUtil.writeToChat("Sparkle count: " + call.SparkleCount);
+                SNUtil.WriteToChat("No hook");
+            SNUtil.WriteToChat("Biome set: [" + string.Join(", ", call.PotentialBiomes) + "]");
+            SNUtil.WriteToChat("Plant count: " + call.PlantCount);
+            SNUtil.WriteToChat("Prey count: " + call.HerbivoreCount);
+            SNUtil.WriteToChat("Predator count: " + call.CarnivoreCount);
+            SNUtil.WriteToChat("Sparkle count: " + call.SparkleCount);
             call.NextIsDebug = true;
         }
     }
@@ -338,7 +338,7 @@ public class AcuCallbackSystem {
 
                 if (Acu) {
                     //SNUtil.writeToChat("Setup ACU Hook");
-                    SNUtil.log("Switching ACU " + Acu + " @ " + Acu.transform.position + " to " + this);
+                    SNUtil.Log("Switching ACU " + Acu + " @ " + Acu.transform.position + " to " + this);
                     InvokeRepeating(nameof(Tick), 0, 1);
                     Seabase = Acu.GetComponentInParent<BaseRoot>();
                     Planter = Acu.planter.GetComponentInChildren<StorageContainer>();
@@ -350,10 +350,10 @@ public class AcuCallbackSystem {
                         DecoHolders = LowestSegment.getChildObjects(AcuTheming.AcuDecoSlotName);
                         _bubbleVents = LowestSegment.getChildObject("Bubbles");
                     } else {
-                        SNUtil.log(
+                        SNUtil.Log(
                             "ACU " + Acu.transform.position + " had no lowest segment??? C=" + Column
                                 .Select<WaterParkGeometry, string>(wpp => wpp.transform.position.ToString())
-                                .toDebugString()
+                                .ToDebugString()
                         );
                     }
 
@@ -375,7 +375,7 @@ public class AcuCallbackSystem {
                     var c = wp.GetComponent<Creature>();
                     if (c) {
                         cc.Apply(c);
-                        SNUtil.log("Deserializing cached ACU creature status " + cc);
+                        SNUtil.Log("Deserializing cached ACU creature status " + cc);
                     }
                 }
             }
@@ -642,7 +642,7 @@ public class AcuCallbackSystem {
             if (SparkleCount > 0)
                 CurrentBonus *= 1 + SparkleCount * 0.5F;
             if (NextIsDebug)
-                SNUtil.writeToChat(
+                SNUtil.WriteToChat(
                     PlantCount + "/" + HerbivoreCount + "/" + CarnivoreCount + "$" + SparkleCount + " & " +
                     string.Join(", ", PotentialBiomes) + " > " + healthy + " & " + consistent + " > " + CurrentBonus
                 );
@@ -728,7 +728,7 @@ public class AcuCallbackSystem {
             }
 
             if (NextIsDebug)
-                SNUtil.writeToChat("Final biome set: [" + string.Join(", ", PotentialBiomes) + "]");
+                SNUtil.WriteToChat("Final biome set: [" + string.Join(", ", PotentialBiomes) + "]");
             if (PotentialBiomes.Count == 1) {
                 var theme = PotentialBiomes.First();
                 if (theme == BiomeRegions.Other)

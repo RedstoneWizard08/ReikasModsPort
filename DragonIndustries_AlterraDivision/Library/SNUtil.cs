@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography;
 using Nautilus.Assets;
 using Nautilus.Handlers;
 using Nautilus.Utility;
@@ -15,34 +14,34 @@ using UnityEngine;
 namespace ReikaKalseki.DIAlterra;
 
 public static class SNUtil {
-    private static FMODAsset unlockSound;
+    private static FMODAsset _unlockSound;
 
-    public static readonly Assembly diDLL = Assembly.GetExecutingAssembly();
-    public static readonly Assembly smlDLL = Assembly.GetAssembly(typeof(CustomPrefab));
-    public static readonly Assembly gameDLL = Assembly.GetAssembly(typeof(BoneShark));
-    public static readonly Assembly gameDLL2 = Assembly.GetAssembly(typeof(FMODAsset));
+    public static readonly Assembly DiDLL = Assembly.GetExecutingAssembly();
+    public static readonly Assembly NautilusDLL = Assembly.GetAssembly(typeof(CustomPrefab));
+    public static readonly Assembly GameDLL = Assembly.GetAssembly(typeof(BoneShark));
+    public static readonly Assembly GameDLL2 = Assembly.GetAssembly(typeof(FMODAsset));
 
     public static readonly string
-        gameDir = Directory.GetParent(gameDLL.Location).Parent.Parent.FullName; //managed -> _Data -> root
+        GameDir = Directory.GetParent(GameDLL.Location)!.Parent!.Parent!.FullName; //managed -> _Data -> root
 
-    public static readonly string savesDir = Path.Combine(gameDir, "SNAppData/SavedGames");
+    public static readonly string SavesDir = Path.Combine(GameDir, "SNAppData/SavedGames");
 
-    public static bool allowDIDLL = false;
+    public static bool AllowDidll = false;
 
-    private static bool checkedReikaPC;
-    private static bool savedIsReikaPC;
+    private static bool _checkedReikaPC;
+    private static bool _savedIsReikaPC;
 
-    private static readonly HashSet<Assembly> assembliesToSkip = [
-        diDLL,
-        smlDLL,
-        gameDLL,
-        gameDLL2,
+    private static readonly HashSet<Assembly> AssembliesToSkip = [
+        DiDLL,
+        NautilusDLL,
+        GameDLL,
+        GameDLL2,
     ];
 
     static SNUtil() {
     }
 
-    private static bool evaluateReikaPC() {
+    private static bool EvaluateReikaPC() {
         return false; // TODO
         // try {
         //     OperatingSystem os = Environment.OSVersion;
@@ -59,71 +58,57 @@ public static class SNUtil {
         // }
     }
 
-    public static bool isReikaPC() {
-        if (!checkedReikaPC)
-            savedIsReikaPC = evaluateReikaPC();
-        checkedReikaPC = true;
-        return savedIsReikaPC;
+    public static bool IsReikaPC() {
+        if (!_checkedReikaPC)
+            _savedIsReikaPC = EvaluateReikaPC();
+        _checkedReikaPC = true;
+        return _savedIsReikaPC;
     }
 
-    public static void checkModHash(Assembly mod) {
-        using (var md5 = MD5.Create()) {
-            using (var stream = File.OpenRead(mod.Location)) {
-                var hash = md5.ComputeHash(stream);
-                var hashfile = Path.Combine(Path.GetDirectoryName(mod.Location), "mod.hash");
-                //if (!File.Exists(hashfile))
-                //	File.WriteAllBytes(hashfile, hash);
-                var stored = File.ReadAllBytes(hashfile);
-                if (stored.SequenceEqual(hash))
-                    log("Mod " + mod.Location + " hash check passed with hash " + hash.toDebugString(), mod);
-                else
-                    throw new Exception(
-                        "Your mod assembly has been modified! Redownload it.\nExpected: " + stored.toDebugString() +
-                        "\nActual: " + hash.toDebugString()
-                    );
-            }
-        }
-    }
+    public static string GetStacktrace(StackFrame[] sf = null) {
+        sf ??= new StackTrace().GetFrames();
 
-    public static string getStacktrace(StackFrame[] sf = null) {
-        if (sf == null)
-            sf = new StackTrace().GetFrames();
         return string.Join(
             "\n",
-            sf.Skip(1).Select(s => s.GetMethod() + " in " + s.GetMethod().DeclaringType)
+            sf?.Skip(1).Select(s => s.GetMethod() + " in " + s.GetMethod().DeclaringType) ?? []
         );
     }
 
-    internal static Assembly tryGetModDLL(bool acceptDI = false) {
+    internal static Assembly TryGetModDLL(bool acceptDi = false) {
         try {
             var di = Assembly.GetExecutingAssembly();
-            var sf = new StackTrace().GetFrames();
-            if (sf == null || sf.Length == 0)
+            var frames = new StackTrace().GetFrames();
+            
+            if (frames == null || frames.Length == 0)
                 return Assembly.GetCallingAssembly();
-            foreach (var f in sf) {
-                var a = f.GetMethod().DeclaringType.Assembly;
-                if ((a != di || acceptDI || allowDIDLL) && a != smlDLL && a != gameDLL && a != gameDLL2 &&
-                    a.Location.Contains("QMods"))
-                    return a;
+
+            foreach (var frame in frames) {
+                var asm = frame.GetMethod().DeclaringType?.Assembly;
+                var diCheck = asm != di || acceptDi || AllowDidll;
+                var libCheck = asm != NautilusDLL && asm != GameDLL && asm != GameDLL2;
+                var loc = (asm?.Location ?? "").ToLower();
+                
+                if (diCheck && libCheck && loc.Contains("bepinex") && loc.Contains("plugins"))
+                    return asm;
             }
 
-            log("Could not find valid mod assembly: " + getStacktrace(sf), diDLL);
+            Log("Could not find valid mod assembly: " + GetStacktrace(frames), DiDLL);
         } catch (Exception e) {
-            log("Failed to find a DLL due to an exception: " + e, diDLL);
-            return diDLL;
+            Log("Failed to find a DLL due to an exception: " + e, DiDLL);
+            return DiDLL;
         }
 
         return Assembly.GetCallingAssembly();
     }
 
-    public static void log(string s, Assembly a = null, int indent = 0) {
+    public static void Log(string s, Assembly a = null, int indent = 0) {
         while (s.Length > 4096) {
-            var part = s.Substring(0, 4096);
-            log(part, a);
-            s = s.Substring(4096);
+            var part = s[..4096];
+            Log(part, a);
+            s = s[4096..];
         }
 
-        var id = (a != null ? a : tryGetModDLL()).GetName().Name.ToUpperInvariant().Replace("PLUGIN_", "");
+        var id = (a != null ? a : TryGetModDLL(true)).GetName().Name.ToUpperInvariant().Replace("PLUGIN_", "");
         if (indent > 0) {
             s = s.PadLeft(s.Length + indent, ' ');
         }
@@ -131,63 +116,61 @@ public static class SNUtil {
         UnityEngine.Debug.Log(id + ": " + s);
     }
 
-    public static bool canUseDebug() {
-        return GameModeUtils.currentGameMode == GameModeOption.Creative || isReikaPC();
+    public static bool CanUseDebug() {
+        return GameModeUtils.currentGameMode == GameModeOption.Creative || IsReikaPC();
     }
 
-    public static string getCurrentSaveDir() {
-        return Path.Combine(savesDir, SaveLoadManager.main.currentSlot);
+    public static string GetCurrentSaveDir() {
+        return Path.Combine(SavesDir, SaveLoadManager.main.currentSlot);
     }
 
-    public static int getInstallSeed() {
-        var seed = diDLL.Location.GetHashCode();
+    public static int GetInstallSeed() {
+        var seed = DiDLL.Location.GetHashCode();
         seed &= ~(1 << Environment.ProcessorCount);
         var n = Environment.MachineName;
         if (string.IsNullOrEmpty(n))
             n = Environment.UserName;
-        seed ^= n != null ? n.GetHashCode() : 0;
+        seed ^= n.GetHashCode();
         seed ^= Environment.OSVersion.VersionString.GetHashCode();
         return seed;
     }
 
-    public static int getWorldSeedInt() {
-        var seed = getWorldSeed();
+    public static int GetWorldSeedInt() {
+        var seed = GetWorldSeed();
         return unchecked((int)((seed & 0xFFFFFFFFL) ^ (seed >> 32)));
     }
 
-    public static long getWorldSeed() {
+    public static long GetWorldSeed() {
         var path = SaveUtils.GetCurrentSaveDataDir();
         var seed = SaveLoadManager._main.firstStart;
         seed ^= path.GetHashCode();
-        seed ^= unchecked((long)diDLL.Location.GetHashCode() << 32);
+        seed ^= (long)DiDLL.Location.GetHashCode() << 32;
         return seed;
     }
 
-    public static TechType getTechType(string tech) {
-        if (!Enum.TryParse<TechType>(tech, false, out var ret)) {
-            if (EnumHandler.TryGetValue(tech, out ret)) {
-                return ret;
-            } else {
-                log("TechType '" + tech + "' not found!");
-                //log("Tech list: "+string.Join(", ", Enum.GetNames(typeof(TechType))));
-                return TechType.None;
-            }
+    public static TechType GetTechType(string tech) {
+        if (Enum.TryParse<TechType>(tech, false, out var ret)) return ret;
+        if (EnumHandler.TryGetValue(tech, out ret)) {
+        } else {
+            Log("TechType '" + tech + "' not found!");
+            //log("Tech list: "+string.Join(", ", Enum.GetNames(typeof(TechType))));
+            return TechType.None;
         }
 
         return ret;
     }
 
-    public static void writeToChat(string s) {
+    public static void WriteToChat(string s) {
         while (s.Length >= 4096) {
-            var part = s.Substring(0, 4096);
+            var part = s[..4096];
             ErrorMessage.AddMessage(part);
-            s = s.Substring(4096);
+            s = s[4096..];
         }
 
         ErrorMessage.AddMessage(s);
     }
 
-    public static void showPDANotification(string text, string soundPath) {
+    public static void ShowPdaNotification(string text, string soundPath) {
         var pda = Player.main.gameObject.AddComponent<PDANotification>();
         pda.enabled = true;
         pda.text = text;
@@ -196,7 +179,7 @@ public static class SNUtil {
         pda.destroy(false, 15);
     }
 
-    public static void addSelfUnlock(TechType tech, PDAManager.PDAPage page = null) {
+    public static void AddSelfUnlock(TechType tech, PDAManager.PDAPage page = null) {
         KnownTechHandler.SetAnalysisTechEntry(tech, new List<TechType>() { tech });
         if (page != null) {
             var e = new PDAScanner.EntryData {
@@ -210,30 +193,30 @@ public static class SNUtil {
         }
     }
 
-    public static StoryGoal addRadioMessage(string key, string text, string soundPath) {
-        return addRadioMessage(
+    public static StoryGoal AddRadioMessage(string key, string text, string soundPath) {
+        return AddRadioMessage(
             key,
             text,
-            SoundManager.registerPDASound(tryGetModDLL(), "radio_" + key, soundPath).asset
+            SoundManager.registerPDASound(TryGetModDLL(), "radio_" + key, soundPath).asset
         );
     }
 
-    public static StoryGoal addRadioMessage(string key, string text, FMODAsset sound) {
+    public static StoryGoal AddRadioMessage(string key, string text, FMODAsset sound) {
         var sg = new StoryGoal(key, Story.GoalType.Radio, 0);
-        addVOLine(sg, text, sound);
+        AddVoLine(sg, text, sound);
         return sg;
     }
 
-    public static void addVOLine(StoryGoal type, string text, FMODAsset sound) {
-        addVOLine<StoryGoal>(type, text, sound);
+    public static void AddVoLine(StoryGoal type, string text, FMODAsset sound) {
+        AddVoLine<StoryGoal>(type, text, sound);
     }
 
-    public static void addVOLine<G>(G goal, string text, FMODAsset sound) where G : StoryGoal {
+    public static void AddVoLine<TG>(TG goal, string text, FMODAsset sound) where TG : StoryGoal {
         PDAHandler.AddLogEntry(goal.key, goal.key, sound);
         CustomLocaleKeyDatabase.registerKey(goal.key, text);
     }
 
-    public static void teleportPlayer(Player ep, Vector3 to) {
+    public static void TeleportPlayer(Player ep, Vector3 to) {
         if (ep.currentMountedVehicle != null) {
             ep.currentMountedVehicle.transform.position =
                 to + (ep.currentMountedVehicle.transform.position - ep.transform.position);
@@ -242,7 +225,7 @@ public static class SNUtil {
         ep.transform.position = to;
     }
 
-    public static PDAManager.PDAPage addPDAEntry(
+    public static PDAManager.PDAPage AddPdaEntry(
         ICustomPrefab pfb,
         float scanTime,
         string pageCategory = null,
@@ -250,7 +233,7 @@ public static class SNUtil {
         string pageHeader = null,
         Action<PDAScanner.EntryData> modify = null
     ) {
-        return addPDAEntry(
+        return AddPdaEntry(
             pfb.Info.TechType,
             pfb.Info.ClassID,
             pfb.Info.PrefabFileName,
@@ -262,7 +245,7 @@ public static class SNUtil {
         );
     }
 
-    public static PDAManager.PDAPage addPDAEntry(
+    public static PDAManager.PDAPage AddPdaEntry(
         TechType pfb,
         string id,
         string desc,
@@ -276,16 +259,16 @@ public static class SNUtil {
         if (pageCategory != null && !string.IsNullOrEmpty(pageText)) {
             page = PDAManager.createPage("ency_" + id, desc, pageText, pageCategory);
             if (pageHeader != null)
-                page.setHeaderImage(TextureManager.getTexture(tryGetModDLL(), "Textures/PDA/" + pageHeader));
+                page.setHeaderImage(TextureManager.getTexture(TryGetModDLL(), "Textures/PDA/" + pageHeader));
             page.register();
         }
 
         if (scanTime >= 0 && pfb != TechType.None)
-            addScanUnlock(pfb, desc, scanTime, page, modify);
+            AddScanUnlock(pfb, desc, scanTime, page, modify);
         return page;
     }
 
-    public static void addScanUnlock(
+    public static void AddScanUnlock(
         TechType pfb,
         string desc,
         float scanTime,
@@ -301,15 +284,15 @@ public static class SNUtil {
 
         if (page != null) {
             e.encyclopedia = page.id;
-            log("Bound scanner entry for " + desc + " to " + page.id);
+            Log("Bound scanner entry for " + desc + " to " + page.id);
         } else {
-            log("Scanner entry for " + desc + " had no ency page.");
+            Log("Scanner entry for " + desc + " had no ency page.");
         }
 
         PDAHandler.AddCustomScannerEntry(e);
     }
 
-    public static void addMultiScanUnlock(
+    public static void AddMultiScanUnlock(
         TechType toScan,
         float scanTime,
         TechType unlock,
@@ -328,20 +311,20 @@ public static class SNUtil {
         PDAHandler.AddCustomScannerEntry(e);
     }
 
-    public static void triggerTechPopup(TechType tt, Sprite spr = null) {
+    public static void TriggerTechPopup(TechType tt, Sprite spr = null) {
         var at = new KnownTech.AnalysisTech {
             techType = tt,
             unlockMessage = "NotificationBlueprintUnlocked",
-            unlockSound = getUnlockSound(),
+            unlockSound = GetUnlockSound(),
         };
         if (spr == null)
-            spr = getTechPopupSprite(tt);
+            spr = GetTechPopupSprite(tt);
         if (spr != null)
             at.unlockPopup = spr;
         uGUI_PopupNotification.main.OnAnalyze(at, true);
     }
 
-    public static void triggerMultiTechPopup(IEnumerable<TechType> tt) {
+    public static void TriggerMultiTechPopup(IEnumerable<TechType> tt) {
         var pd = new PopupData(
             "New Blueprints Unlocked",
             "<color=#74C8F8FF>" + string.Join(
@@ -349,77 +332,63 @@ public static class SNUtil {
                 tt.Select(tc => Language.main.Get(tc.AsString()))
             ) + "</color>"
         ) {
-            sound = getUnlockSound().path,
+            Sound = GetUnlockSound().path,
         };
-        triggerUnlockPopup(pd);
+        TriggerUnlockPopup(pd);
     }
 
-    public static FMODAsset getUnlockSound() {
-        if (unlockSound == null) {
-            foreach (var kt in KnownTech.analysisTech) {
-                if (kt.unlockMessage == "NotificationBlueprintUnlocked") {
-                    unlockSound = kt.unlockSound;
-                    break;
-                }
-            }
+    public static FMODAsset GetUnlockSound() {
+        if (_unlockSound != null) return _unlockSound;
+        foreach (var kt in KnownTech.analysisTech.Where(kt => kt.unlockMessage == "NotificationBlueprintUnlocked")) {
+            _unlockSound = kt.unlockSound;
+            break;
         }
 
-        return unlockSound;
+        return _unlockSound;
     }
 
-    public static Sprite getTechPopupSprite(TechType tt) {
-        foreach (var kt in KnownTech.analysisTech) {
-            if (kt.techType == tt) {
-                return kt.unlockPopup;
-            }
-        }
-
-        return null;
+    public static Sprite GetTechPopupSprite(TechType tt) {
+        return (from kt in KnownTech.analysisTech where kt.techType == tt select kt.unlockPopup).FirstOrDefault();
     }
 
-    public static void triggerUnlockPopup(PopupData data) {
+    public static void TriggerUnlockPopup(PopupData data) {
         var entry = new uGUI_PopupNotification.Entry() {
             id = string.Empty,
             sound = null,
-            controls = data.controlText == null ? null : data.controlText.Replace("\\n", "\n"),
-            text = data.text.Replace("\\n", "\n"),
+            controls = data.ControlText?.Replace("\\n", "\n"),
+            text = data.Text.Replace("\\n", "\n"),
             skin = PopupNotificationSkin.Unlock,
-            sprite = data.graphic != null ? data.graphic() : null,
-            title = data.title.Replace("\\n", "\n"),
+            sprite = data.Graphic?.Invoke(),
+            title = data.Title.Replace("\\n", "\n"),
         };
         uGUI_PopupNotification.main.Show(entry);
-        log("Showing progression popup " + data, diDLL);
-        if (!string.IsNullOrEmpty(data.sound))
-            SoundManager.playSound(data.sound);
+        Log("Showing progression popup " + data, DiDLL);
+        if (!string.IsNullOrEmpty(data.Sound))
+            SoundManager.playSound(data.Sound);
     }
 
-    public class PopupData {
-        public readonly string title;
-        public readonly string text;
+    public class PopupData(string t, string d) {
+        public readonly string Title = t;
+        public readonly string Text = d;
 
-        public string controlText = null;
-        public Func<Sprite> graphic = null;
-        public string sound = "event:/tools/scanner/scan_complete";
-        public Action onUnlock;
-
-        public PopupData(string t, string d) {
-            title = t;
-            text = d;
-        }
+        public string ControlText = null;
+        public Func<Sprite> Graphic = null;
+        public string Sound = "event:/tools/scanner/scan_complete";
+        public Action OnUnlock;
 
         public override string ToString() {
             return string.Format(
                 "[PopupData Title='{0}'; Text='{1}'; ControlText='{2}'; Graphic={3}; Sound={4}]",
-                title,
-                text,
-                controlText,
-                graphic,
-                sound
+                Title,
+                Text,
+                ControlText,
+                Graphic,
+                Sound
             );
         }
     }
 
-    public static void shakeCamera(float duration, float intensity, float frequency = 1) {
+    public static void ShakeCamera(float duration, float intensity, float frequency = 1) {
         //Camera.main.gameObject.EnsureComponent<CameraShake>().fire(intensity, duration, falloff);
         var cam = Player.main.GetComponentInChildren<MainCameraControl>();
         cam.ShakeCamera(intensity, duration, MainCameraControl.ShakeMode.BuildUp, frequency);
@@ -455,21 +424,21 @@ public static class SNUtil {
         }
     }*/
 
-    public static int getFragmentScanCount(TechType tt) {
+    public static int GetFragmentScanCount(TechType tt) {
         return PDAScanner.GetPartialEntryByKey(tt, out var entry)
-            ? entry == null ? 0 : entry.unlocked
+            ? entry?.unlocked ?? 0
             : 0;
     }
 
-    public static void addEncyNotification(string id, float duration = 3) {
+    public static void AddEncyNotification(string id, float duration = 3) {
         NotificationManager.main.Add(NotificationManager.Group.Encyclopedia, id, duration);
     }
 
-    public static void addBlueprintNotification(TechType recipe, float duration = 3) {
+    public static void AddBlueprintNotification(TechType recipe, float duration = 3) {
         NotificationManager.main.Add(NotificationManager.Group.Blueprints, recipe.EncodeKey(), duration);
     }
 
-    public static void addInventoryNotification(Pickupable item, float duration = 3) {
+    public static void AddInventoryNotification(Pickupable item, float duration = 3) {
         NotificationManager.main.Add(
             NotificationManager.Group.Inventory,
             item.GetComponent<UniqueIdentifier>().Id,
@@ -477,7 +446,7 @@ public static class SNUtil {
         );
     }
 
-    public static void createPopupWarning(string msg, bool makeBlue) {
+    public static void CreatePopupWarning(string msg, bool makeBlue) {
         /*
                         QModManager.Patching.Patcher.Dialogs.Add(new Dialog
                         {
@@ -491,37 +460,34 @@ public static class SNUtil {
         var dlgType = InstructionHandlers.getTypeBySimpleName("QModManager.Utility.Dialog");
         var btnType = dlgType.GetNestedType("Button", BindingFlags.NonPublic);
         var dialogs = (IList)patcher.GetProperty("Dialogs", BindingFlags.Static | BindingFlags.NonPublic)
-            .GetValue(null);
+            ?.GetValue(null);
         var dlg = Activator.CreateInstance(dlgType);
-        dlgType.GetField("message", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(dlg, msg);
-        dlgType.GetField("color", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(dlg, makeBlue ? 1 : 0);
-        dlgType.GetField("leftButton", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(
-            dlg,
-            btnType.GetField("SeeLog", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null)
-        );
-        dlgType.GetField("rightButton", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(
-            dlg,
-            btnType.GetField("Close", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null)
-        );
-        dialogs.Add(dlg);
+        dlgType.GetField("message", BindingFlags.Instance | BindingFlags.NonPublic)?.SetValue(dlg, msg);
+        dlgType.GetField("color", BindingFlags.Instance | BindingFlags.NonPublic)?.SetValue(dlg, makeBlue ? 1 : 0);
+        dlgType.GetField("leftButton", BindingFlags.Instance | BindingFlags.NonPublic)
+            ?.SetValue(
+                dlg,
+                btnType.GetField("SeeLog", BindingFlags.Static | BindingFlags.NonPublic)?.GetValue(null)
+            );
+        dlgType.GetField("rightButton", BindingFlags.Instance | BindingFlags.NonPublic)
+            ?.SetValue(
+                dlg,
+                btnType.GetField("Close", BindingFlags.Static | BindingFlags.NonPublic)?.GetValue(null)
+            );
+        dialogs?.Add(dlg);
     }
 
-    public static bool checkPiracy() {
+    public static bool CheckPiracy() {
         HashSet<string> files = [
             "steam_api64.cdx", "steam_api64.ini", "steam_emu.ini", "valve.ini", "chuj.cdx", "SteamUserID.cfg",
             "Achievements.bin", "steam_settings", "user_steam_id.txt", "account_name.txt", "ScreamAPI.dll",
             "ScreamAPI32.dll", "ScreamAPI64.dll", "SmokeAPI.dll", "SmokeAPI32.dll", "SmokeAPI64.dll",
             "Free Steam Games Pre-installed for PC.url", "Torrent-Igruha.Org.URL", "oalinst.exe",
         ];
-        foreach (var file in files) {
-            if (File.Exists(Path.Combine(Environment.CurrentDirectory, file)))
-                return true;
-        }
-
-        return false;
+        return files.Any(file => File.Exists(Path.Combine(Environment.CurrentDirectory, file)));
     }
 
-    public static void vomit(Survival s, float food, float water) {
+    public static void Vomit(Survival s, float food, float water) {
         s.food = Mathf.Max(1, s.food - food);
         s.water = Mathf.Max(1, s.water - water);
         SoundManager.playSoundAt(
@@ -561,14 +527,14 @@ public static class SNUtil {
     //         ).Invoke(mod, BindingFlags.Default, null, new object[0], null);
     // }
 
-    public static WaterParkCreatureData getModifiedACUParams(
+    public static WaterParkCreatureData GetModifiedAcuParams(
         TechType basis,
         float initSizeScale,
         float maxSizeScale,
         float outsideSizeScale,
         float growTimeScale
     ) {
-        var prefab = CraftData.GetPrefabForTechTypeAsync(basis).GetResult();
+        var prefab = PrefabUtil.GetPrefabForTechType(basis);
         var creature = prefab.GetComponent<WaterParkCreature>();
         var baseP = creature.data;
 
@@ -583,14 +549,14 @@ public static class SNUtil {
         return mod;
     }
 
-    public static string getDescriptiveEncyPageCategoryName(PDAEncyclopedia.EntryData data) {
+    public static string GetDescriptiveEncyPageCategoryName(PDAEncyclopedia.EntryData data) {
         var lifeform = data.nodes.Length >= 2 && data.nodes[0] == "Lifeforms";
         return lifeform
             ? Language.main.Get("EncyPath_" + data.nodes[0] + "/" + data.nodes[1])
             : Language.main.Get("EncyPath_" + data.nodes[0]);
     }
 
-    public static MapRoomCamera getControllingCamera(Player ep) {
+    public static MapRoomCamera GetControllingCamera(Player ep) {
         foreach (MapRoomCamera cam in MapRoomCamera.cameras) {
             // if (cam && cam.controllingPlayer == ep)
             //     return cam;
@@ -602,11 +568,11 @@ public static class SNUtil {
         return null;
     }
 
-    public static TechType addTechTypeToVanillaPrefabs(XMLLocale.LocaleEntry e, params string[] prefabs) {
-        return addTechTypeToVanillaPrefabs(e.key, e.name, e.desc, prefabs);
+    public static TechType AddTechTypeToVanillaPrefabs(XMLLocale.LocaleEntry e, params string[] prefabs) {
+        return AddTechTypeToVanillaPrefabs(e.key, e.name, e.desc, prefabs);
     }
 
-    public static TechType addTechTypeToVanillaPrefabs(
+    public static TechType AddTechTypeToVanillaPrefabs(
         string key,
         string name,
         string desc,
@@ -618,7 +584,7 @@ public static class SNUtil {
         return ret;
     }
 
-    public static void setBlueprintUnlockProgress(PDAScanner.EntryData entryData, int steps) {
+    public static void SetBlueprintUnlockProgress(PDAScanner.EntryData entryData, int steps) {
         if (!PDAScanner.GetPartialEntryByKey(entryData.key, out var entry)) {
             entry = PDAScanner.Add(entryData.key, 0);
         }
@@ -635,26 +601,26 @@ public static class SNUtil {
         }
     }
 
-    public static bool match(string s, string seek) {
+    public static bool Match(string s, string seek) {
         return s == seek ||
                (!string.IsNullOrEmpty(s) && !string.IsNullOrEmpty(seek) && seek[0] == '*' && s.EndsWith(
-                   seek.Substring(1),
+                   seek[1..],
                    StringComparison.InvariantCulture
-               )) || (seek[seek.Length - 1] == '*' && s.StartsWith(
-                   seek.Substring(0, seek.Length - 1),
+               )) || (seek[^1] == '*' && s.StartsWith(
+                   seek[..^1],
                    StringComparison.InvariantCulture
                ));
     }
 
-    public static bool match(PrefabIdentifier pi, string id) {
-        return pi && match(pi.ClassId, id);
+    public static bool Match(PrefabIdentifier pi, string id) {
+        return pi && Match(pi.ClassId, id);
     }
 
-    public static bool match(GameObject go, TechType tt) {
+    public static bool Match(GameObject go, TechType tt) {
         return CraftData.GetTechType(go) == tt;
     }
 
-    public static bool match(GameObject go, params TechType[] tts) {
+    public static bool Match(GameObject go, params TechType[] tts) {
         var has = CraftData.GetTechType(go);
         foreach (var tt in tts)
             if (has == tt)
@@ -662,12 +628,12 @@ public static class SNUtil {
         return false;
     }
 
-    public static UnityEngine.UI.Button createPDAUIButtonUnderTab<T>(Texture2D ico, Action onClick)
+    public static UnityEngine.UI.Button CreatePdauiButtonUnderTab<T>(Texture2D ico, Action onClick)
         where T : uGUI_PDATab {
-        return createPDAUIButton(ico, onClick, uGUI_PDA.main ? uGUI_PDA.main.GetComponentInChildren<T>() : null);
+        return CreatePdauiButton(ico, onClick, uGUI_PDA.main ? uGUI_PDA.main.GetComponentInChildren<T>() : null);
     }
 
-    public static UnityEngine.UI.Button createPDAUIButton(Texture2D ico, Action onClick, uGUI_PDATab tab = null) {
+    public static UnityEngine.UI.Button CreatePdauiButton(Texture2D ico, Action onClick, uGUI_PDATab tab = null) {
         if (!uGUI_PDA.main)
             return null;
         var go = uGUI_PDA.main.gameObject.getChildObject("Content/PingManagerTab/Content/ButtonAll");
@@ -690,7 +656,7 @@ public static class SNUtil {
             icon.sprite = Sprite.Create(ico, new Rect(0, 0, ico.width, ico.height), Vector2.zero);
         var b = go2.EnsureComponent<UnityEngine.UI.Button>();
         b.image = img;
-        b.onClick.AddListener(() => onClick.Invoke());
+        b.onClick.AddListener(onClick.Invoke);
         var sprs2 = b.spriteState;
         sprs2.highlightedSprite = hover;
         sprs2.selectedSprite = hover;
@@ -703,39 +669,39 @@ public static class SNUtil {
         return b;
     }
 
-    public static bool isPlayerCured() {
+    public static bool IsPlayerCured() {
         return StoryGoalManager.main.completedGoals.Contains(StoryGoals.CURED);
     }
 
-    public static bool isSunbeamExpected() {
+    public static bool IsSunbeamExpected() {
         return StoryGoalManager.main.IsGoalComplete(StoryGoals.getRadioPlayGoal(StoryGoals.SUNBEAM_TIMER_START)) &&
                !StoryGoalManager.main.IsGoalComplete(StoryGoals.SUNBEAM_DESTROY_FAR) &&
                !StoryGoalManager.main.IsGoalComplete(StoryGoals.SUNBEAM_DESTROY_NEAR);
     }
 
-    public static void migrateSaveDataFolder(string oldSaveDir, string ext, string saveFileName) {
-        if (Directory.Exists(oldSaveDir) && Directory.Exists(savesDir)) {
-            log("Migrating save data from " + oldSaveDir + " to " + savesDir);
+    public static void MigrateSaveDataFolder(string oldSaveDir, string ext, string saveFileName) {
+        if (Directory.Exists(oldSaveDir) && Directory.Exists(SavesDir)) {
+            Log("Migrating save data from " + oldSaveDir + " to " + SavesDir);
             var all = true;
             foreach (var dat in Directory.GetFiles(oldSaveDir)) {
                 if (dat.EndsWith(ext, StringComparison.InvariantCultureIgnoreCase)) {
-                    var save = Path.Combine(savesDir, Path.GetFileNameWithoutExtension(dat));
+                    var save = Path.Combine(SavesDir, Path.GetFileNameWithoutExtension(dat));
                     if (Directory.Exists(save)) {
-                        log("Moving save data " + dat + " to " + save);
+                        Log("Moving save data " + dat + " to " + save);
                         File.Move(dat, Path.Combine(save, saveFileName));
                     } else {
-                        log("No save found for '" + dat + ", skipping");
+                        Log("No save found for '" + dat + ", skipping");
                         all = false;
                     }
                 }
             }
 
-            log("Migration complete.");
+            Log("Migration complete.");
             if (all) {
-                log("All files moved, deleting old folder.");
+                Log("All files moved, deleting old folder.");
                 Directory.Delete(oldSaveDir);
             } else {
-                log("Some files could not be moved so the old folder will not be deleted.");
+                Log("Some files could not be moved so the old folder will not be deleted.");
             }
         }
     }

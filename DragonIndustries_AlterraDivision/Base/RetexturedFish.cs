@@ -43,7 +43,7 @@ public abstract class RetexturedFish : CustomPrefab, DIPrefab<StringPrefabContai
     [SetsRequiredMembers]
     protected RetexturedFish(string id, string name, string desc, string pfb) : base(id, name, desc) {
         baseTemplate = new StringPrefabContainer(pfb);
-        _ownerMod = SNUtil.tryGetModDLL();
+        _ownerMod = SNUtil.TryGetModDLL();
         Info.WithIcon(GetSprite());
         SetGameObject(GetGameObject);
         // TODO
@@ -56,7 +56,7 @@ public abstract class RetexturedFish : CustomPrefab, DIPrefab<StringPrefabContai
                 CreatureIDs[Info.ClassID] = this;
 
                 if (_locale != null && !string.IsNullOrEmpty(_locale.pda))
-                    SNUtil.addPDAEntry(
+                    SNUtil.AddPdaEntry(
                         this,
                         ScanTime,
                         _locale.getString("category"),
@@ -66,19 +66,19 @@ public abstract class RetexturedFish : CustomPrefab, DIPrefab<StringPrefabContai
                     );
 
                 if (EggBase != TechType.None) {
-                    SNUtil.log("Creating egg for " + this + " from " + EggBase.AsString());
+                    SNUtil.Log("Creating egg for " + this + " from " + EggBase.AsString());
                     if (EggBase.AsString().EndsWith("egg", StringComparison.InvariantCultureIgnoreCase))
                         throw new Exception("Egg base is invalid - choose the creature not the egg");
-                    CustomEgg.createAndRegisterEgg(
+                    CustomEgg.CreateAndRegisterEgg(
                         this,
                         EggBase,
                         EggScale,
                         "", // Description
                         BigEgg,
                         e => {
-                            e.eggProperties.daysToGrow = EggMaturationTime / 1200;
-                            e.eggProperties.initialSize *= AcuSizeScale;
-                            e.eggProperties.maxSize *= AcuSizeScale;
+                            e.EggProperties.daysToGrow = EggMaturationTime / 1200;
+                            e.EggProperties.initialSize *= AcuSizeScale;
+                            e.EggProperties.maxSize *= AcuSizeScale;
                         },
                         EggSpawnRate,
                         EggSpawns.ToArray()
@@ -102,9 +102,9 @@ public abstract class RetexturedFish : CustomPrefab, DIPrefab<StringPrefabContai
 
                 if (basis == TechType.None || CookableIntoBase <= 0 || TechData.GetProcessed(basis) == null) return;
                 var cooked = TechData.GetProcessed(basis);
-                var cured = SNUtil.getTechType(("Cured" + cooked).Replace("Cooked", ""));
+                var cured = SNUtil.GetTechType(("Cured" + cooked).Replace("Cooked", ""));
                 CraftDataHandler.SetCookedVariant(Info.TechType, cooked);
-                SNUtil.log("Adding delegate cooking/curing of " + this + " into " + cooked + " & " + cured);
+                SNUtil.Log("Adding delegate cooking/curing of " + this + " into " + cooked + " & " + cured);
 
                 var rec = new RecipeData();
                 rec.Ingredients.Add(new Ingredient(Info.TechType, 1));

@@ -26,7 +26,7 @@ public static class ESHooks {
     internal static readonly Dictionary<TechType, Color> pingColors = new();
 
     static ESHooks() {
-        SNUtil.log("Initializing ESHooks");
+        SNUtil.Log("Initializing ESHooks");
         DIHooks.OnSkyApplierSpawnEvent += onSkyApplierSpawn;
         DIHooks.OnWorldLoadedEvent += onWorldLoaded;
         DIHooks.ScannerRoomTechTypeListingEvent +=
@@ -278,7 +278,7 @@ public static class ESHooks {
             return;
         var render = blip.gameObject.GetComponent<CanvasRenderer>();
         var img = blip.gameObject.GetComponent<Image>();
-        img.sprite = img.sprite.setTexture(TextureManager.getTexture(ExscansionMod.modDLL, "Textures/blip"));
+        img.sprite = img.sprite.SetTexture(TextureManager.getTexture(ExscansionMod.modDLL, "Textures/blip"));
         var c = DEFAULT_PING_COLOR;
         if (pingColors.ContainsKey(type))
             c = pingColors[type];

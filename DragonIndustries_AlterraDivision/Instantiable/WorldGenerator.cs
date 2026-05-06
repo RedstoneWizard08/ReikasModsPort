@@ -29,9 +29,9 @@ public abstract class WorldGenerator : ObjectTemplate {
 
 	static WorldGenerator() {
 		registerType(TAGNAME, e => {
-			var typeName = e.getProperty("type");
-			var pos = e.getVector("position").Value;
-			var scatt = e.getVector("scatter", true);
+			var typeName = e.GetProperty("type");
+			var pos = e.GetVector("position").Value;
+			var scatt = e.GetVector("scatter", true);
 			if (scatt != null && scatt.HasValue)
 				pos += MathUtil.getRandomVectorBetween(-scatt.Value, scatt.Value);
 			var tt = InstructionHandlers.getTypeBySimpleName(typeName);

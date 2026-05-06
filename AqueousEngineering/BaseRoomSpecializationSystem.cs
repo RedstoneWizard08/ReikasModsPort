@@ -431,8 +431,8 @@ public class BaseRoomSpecializationSystem { //TODO 2.0 handle large rooms
 
         decoRating = deco.totalRating;
         if (debug)
-            SNUtil.writeToChat(
-                "Room at " + bc.transform.position + " has options " + options.toDebugString() + " & deco value " +
+            SNUtil.WriteToChat(
+                "Room at " + bc.transform.position + " has options " + options.ToDebugString() + " & deco value " +
                 decoRating + " (" + plantPanels + "/" + windows + "*" +
                 getWindowDecoValue(bb, bc, hasGlassRoof, debug) + ")"
             );
@@ -454,9 +454,9 @@ public class BaseRoomSpecializationSystem { //TODO 2.0 handle large rooms
             options.Contains(RoomTypes.UNSPECIALIZED)) //if unspecialized + one thing, choose that one thing
             options.Remove(RoomTypes.UNSPECIALIZED);
         if (debug) {
-            var msg = "Net options " + options.toDebugString() + " from " + lockerCount + "/" + agriCount;
-            SNUtil.writeToChat(msg);
-            SNUtil.log(msg);
+            var msg = "Net options " + options.ToDebugString() + " from " + lockerCount + "/" + agriCount;
+            SNUtil.WriteToChat(msg);
+            SNUtil.Log(msg);
         }
 
         return options.Count == 1 ? options.First() : RoomTypes.UNSPECIALIZED;
@@ -491,7 +491,7 @@ public class BaseRoomSpecializationSystem { //TODO 2.0 handle large rooms
         }
 
         if (debug)
-            SNUtil.log("Biome " + b.DisplayName + " scenery value is " + scenery);
+            SNUtil.Log("Biome " + b.DisplayName + " scenery value is " + scenery);
         if (scenery > 0) {
             var objectsFound = 0;
             var totalFound = 0;
@@ -517,13 +517,13 @@ public class BaseRoomSpecializationSystem { //TODO 2.0 handle large rooms
                  200) //terrain only, or terrain plus only a handful of things, still many because of things like grass
                 scenery *= 0.33F;
             if (debug)
-                SNUtil.log("Found near-room outdoor objects: " + objectsFound + "/" + totalFound);
+                SNUtil.Log("Found near-room outdoor objects: " + objectsFound + "/" + totalFound);
         }
 
         var ret = 0.75F * scenery;
         var tgt = EcoRegionManager.main.FindNearestTarget(EcoTargetType.Leviathan, pos, null, 8);
         if (debug)
-            SNUtil.log("Nearby leviathan: " + (tgt != null ? tgt.GetGameObject().name : "None"));
+            SNUtil.Log("Nearby leviathan: " + (tgt != null ? tgt.GetGameObject().name : "None"));
         if (tgt != null) {
             var dist = Vector3.Distance(tgt.GetPosition(), pos);
             if (dist <= 250) {
@@ -537,7 +537,7 @@ public class BaseRoomSpecializationSystem { //TODO 2.0 handle large rooms
 
         tgt = EcoRegionManager.main.FindNearestTarget(EcoTargetType.HeatArea, pos, null, 4);
         if (debug)
-            SNUtil.log("Nearby heat area: " + (tgt != null ? tgt.GetGameObject().name : "None"));
+            SNUtil.Log("Nearby heat area: " + (tgt != null ? tgt.GetGameObject().name : "None"));
         if (tgt != null) {
             var dist = Vector3.Distance(tgt.GetPosition(), pos);
             if (dist <= 80) {
@@ -733,7 +733,7 @@ public class BaseRoomSpecializationSystem { //TODO 2.0 handle large rooms
 
     public void updateRoom(GameObject go, bool notify = true) {
         if (debugRoomCompute)
-            SNUtil.log("Recomputing room " + go.transform.GetChild(0).name + " via " + SNUtil.getStacktrace());
+            SNUtil.Log("Recomputing room " + go.transform.GetChild(0).name + " via " + SNUtil.GetStacktrace());
         var bb = go.FindAncestor<BaseRoot>();
         if (!bb) {
             //SNUtil.writeToChat("No base for "+go+", not attempting room type update");
@@ -743,7 +743,7 @@ public class BaseRoomSpecializationSystem { //TODO 2.0 handle large rooms
         var cell = ObjectUtil.getBaseRoom(bb, go);
         if (!cell) {
             if (debugRoomCompute)
-                SNUtil.log("No room for " + go.transform.GetChild(0).name + ", queuing update for later");
+                SNUtil.Log("No room for " + go.transform.GetChild(0).name + ", queuing update for later");
             queueRoomUpdate(go);
             return;
         }
@@ -767,9 +767,9 @@ public class BaseRoomSpecializationSystem { //TODO 2.0 handle large rooms
             var msg = "This room is now " + name + ", with a decoration rating of " + deco.ToString("0.00");
             if (deco > 0)
                 msg += " (" + (deco * 100F / getLeisureDecoThreshold(cell)).ToString("0.00") + "%)";
-            SNUtil.writeToChat(msg);
+            SNUtil.WriteToChat(msg);
             if (debugRoomCompute)
-                SNUtil.log(cell.transform.GetChild(0).gameObject.name + ": " + msg);
+                SNUtil.Log(cell.transform.GetChild(0).gameObject.name + ": " + msg);
         }
 
         cell.gameObject.EnsureComponent<RoomTypeTracker>().setType(type, cell, null, deco);
@@ -790,7 +790,7 @@ public class BaseRoomSpecializationSystem { //TODO 2.0 handle large rooms
         } else {
             var bc = root.GetComponentsInChildren<BaseCell>();
             if (debugRoomCompute)
-                SNUtil.log(
+                SNUtil.Log(
                     "Recomputing deco in base @ " + WorldUtil.getRegionalDescription(root.transform.position, true) +
                     " (" + root.transform.position + ") with " + bc.Length + " rooms"
                 );
@@ -868,8 +868,8 @@ public class BaseRoomSpecializationSystem { //TODO 2.0 handle large rooms
             totalContribution[id] = has + deco;
             objectCount.add(id);
             if (debug)
-                SNUtil.log(
-                    "Processed room data for " + go.name + ": " + instance.getObjectType(go, id).toDebugString() +
+                SNUtil.Log(
+                    "Processed room data for " + go.name + ": " + instance.getObjectType(go, id).ToDebugString() +
                     ", deco value = " + deco
                 );
         }

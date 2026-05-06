@@ -22,12 +22,12 @@ public class HarmonySystem {
     public void apply() {
         var msg = "Ran " + harmonyInstance.Id + " mod register, started harmony";
         FileLog.Log(msg + " (harmony log)");
-        SNUtil.log(msg);
+        SNUtil.Log(msg);
         try {
             if (File.Exists(FileLog.logPath))
                 File.Delete(FileLog.logPath);
         } catch (Exception ex) {
-            SNUtil.log("Could not clean up harmony log: " + ex);
+            SNUtil.Log("Could not clean up harmony log: " + ex);
         }
 
         try {

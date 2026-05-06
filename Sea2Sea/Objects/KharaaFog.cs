@@ -45,7 +45,7 @@ internal class KharaaFogComponent : MonoBehaviour {
     private void Update() {
         if (!(_timeLastDamageTick + DamageInterval <= Time.time)) return;
         foreach (var go in Tracker.Get().Where(go => go)) {
-            SNUtil.writeToChat("" + go);
+            SNUtil.WriteToChat("" + go);
             var live = gameObject.GetComponent<LiveMixin>();
             if (live == null || !live.IsAlive()) continue;
             if (gameObject.GetComponent<Player>() == null && gameObject.GetComponent<Living>() == null) continue;
@@ -54,7 +54,7 @@ internal class KharaaFogComponent : MonoBehaviour {
                 gameObject.transform.position,
                 DamageType.Starve
             );
-            SNUtil.writeToChat("" + DamagePerSecond * DamageInterval);
+            SNUtil.WriteToChat("" + DamagePerSecond * DamageInterval);
         }
 
         _timeLastDamageTick = Time.time;

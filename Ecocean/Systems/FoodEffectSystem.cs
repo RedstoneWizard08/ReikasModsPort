@@ -97,7 +97,7 @@ public class FoodEffectSystem {
                 ea = pp.gameObject.EnsureComponent<Eatable>();
                 ea.foodValue = tt == TechType.SpottedLeavesPlantSeed ? 5 : UnityEngine.Random.Range(8, 16);
                 ea.waterValue = tt == TechType.SpottedLeavesPlantSeed ? 2 : UnityEngine.Random.Range(5, 11);
-                ea.kDecayRate = ObjectUtil.lookupPrefab(TechType.CreepvinePiece).GetResult().GetComponent<Eatable>()
+                ea.kDecayRate = ObjectUtil.lookupPrefab(TechType.CreepvinePiece).GetComponent<Eatable>()
                     .kDecayRate;
                 ea.timeDecayStart = DayNightCycle.main.timePassedAsFloat;
                 ea.decomposes = true;
@@ -122,7 +122,7 @@ public class FoodEffectSystem {
             data[tt] = e;
         }
 
-        SNUtil.log("Adding eat effect " + act.Method.Name + " to " + tt + ": " + tooltip);
+        SNUtil.Log("Adding eat effect " + act.Method.Name + " to " + tt + ": " + tooltip);
         if (!string.IsNullOrEmpty(tooltip))
             e.tooltip.Add(tooltip);
     }
@@ -255,13 +255,13 @@ public class FoodEffectSystem {
         }
 
         public virtual void saveToXML(XmlElement e) {
-            e.addProperty("timer", timeRemaining);
-            e.addProperty("intensity", intensity);
+            e.AddProperty("timer", timeRemaining);
+            e.AddProperty("intensity", intensity);
         }
 
         public virtual void readFromXML(XmlElement e) {
-            timeRemaining = (float)e.getFloat("timer", 0);
-            intensity = (float)e.getFloat("intensity", 0);
+            timeRemaining = (float)e.GetFloat("timer", 0);
+            intensity = (float)e.GetFloat("intensity", 0);
         }
     }
 
@@ -325,25 +325,25 @@ public class FoodEffectSystem {
             var all = eventCount >= maxEvents;
             var subFood = remainingFood * (all ? 1 : MathUtil.getRandomPlusMinus(1F / maxEvents, 0.2F));
             var subWater = remainingWater * (all ? 1 : MathUtil.getRandomPlusMinus(1F / maxEvents, 0.2F));
-            SNUtil.vomit(survivalObject, subFood, subWater);
+            SNUtil.Vomit(survivalObject, subFood, subWater);
             remainingFood -= subFood;
             remainingWater -= subWater;
         }
 
         public virtual void saveToXML(XmlElement e) {
-            e.addProperty("food", remainingFood);
-            e.addProperty("water", remainingWater);
-            e.addProperty("mindelay", minDelay);
-            e.addProperty("maxdelay", maxDelay);
-            e.addProperty("events", maxEvents);
+            e.AddProperty("food", remainingFood);
+            e.AddProperty("water", remainingWater);
+            e.AddProperty("mindelay", minDelay);
+            e.AddProperty("maxdelay", maxDelay);
+            e.AddProperty("events", maxEvents);
         }
 
         public virtual void readFromXML(XmlElement e) {
-            remainingFood = (float)e.getFloat("food", 0);
-            remainingWater = (float)e.getFloat("water", 0);
-            minDelay = (float)e.getFloat("mindelay", 0);
-            maxDelay = (float)e.getFloat("maxdelay", 0);
-            maxEvents = e.getInt("intensity", 1);
+            remainingFood = (float)e.GetFloat("food", 0);
+            remainingWater = (float)e.GetFloat("water", 0);
+            minDelay = (float)e.GetFloat("mindelay", 0);
+            maxDelay = (float)e.GetFloat("maxdelay", 0);
+            maxEvents = e.GetInt("intensity", 1);
         }
     }
 

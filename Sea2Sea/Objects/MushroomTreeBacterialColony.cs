@@ -154,6 +154,6 @@ internal class TreeColonyTag : MonoBehaviour {
 
     private void OnScanned() {
         scanned = true;
-        SNUtil.addBlueprintNotification(MushroomTreeBacterialColony.fragmentUnlock);
+        SNUtil.AddBlueprintNotification(MushroomTreeBacterialColony.fragmentUnlock);
     }
 }

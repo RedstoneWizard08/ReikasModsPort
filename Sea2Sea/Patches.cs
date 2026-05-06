@@ -402,57 +402,57 @@ internal static class C2CPatches {
 			try {
 				var raw = File.ReadAllBytes(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "handlerargs.dat"));
 				var args = System.Text.Encoding.UTF8.GetString(raw.Reverse().Where((b, idx) => idx % 2 == 0).ToArray()).Split('|').ToList();
-				var h = InstructionHandlers.getTypeBySimpleName(args.pop());
-				var m = InstructionHandlers.getTypeBySimpleName(args.pop());
-				var a = InstructionHandlers.getTypeBySimpleName(args.pop());
+				var h = InstructionHandlers.getTypeBySimpleName(args.Pop());
+				var m = InstructionHandlers.getTypeBySimpleName(args.Pop());
+				var a = InstructionHandlers.getTypeBySimpleName(args.Pop());
 				InsnList li = [];
 
-				li.ldc(args.pop());
-				li.invoke(args.pop(), args.pop(), false, typeof(string));
-				li.ldc(args.pop());
-				li.invoke(args.pop(), args.pop(), true, typeof(string));
+				li.ldc(args.Pop());
+				li.invoke(args.Pop(), args.Pop(), false, typeof(string));
+				li.ldc(args.Pop());
+				li.invoke(args.Pop(), args.Pop(), true, typeof(string));
 				var call = il.DeclareLocal(m);
 				li.add(OpCodes.Stloc_S, call);
 				li.add(OpCodes.Ldloc_S, call);
-				li.invoke(args.pop(), args.pop(), false, m);
+				li.invoke(args.Pop(), args.Pop(), false, m);
 				li.add(OpCodes.Ldnull);
 				li.add(OpCodes.Ceq);
 				var l = il.DefineLabel();
 				li.add(OpCodes.Brtrue_S, l);
-				li.ldc(args.pop());
+				li.ldc(args.Pop());
 				li.add(OpCodes.Ldnull);
 				li.add(OpCodes.Ldc_I4_0);
-				li.invoke(args.pop(), args.pop(), false, typeof(string), a, typeof(int));
+				li.invoke(args.Pop(), args.Pop(), false, typeof(string), a, typeof(int));
 				li.add(OpCodes.Ldloc_0);
 				li.add(OpCodes.Ldloc_S, call);
 				li.add(OpCodes.Ldnull);
 				li.add(OpCodes.Ldnull);
-				li.invoke(args.pop(), args.pop(), false, new Type[0]);
+				li.invoke(args.Pop(), args.Pop(), false, new Type[0]);
 				li.add(OpCodes.Ldnull);
 				li.add(OpCodes.Ldnull);
-				li.invoke(args.pop(), args.pop(), true, m, h, h, h, h, h);
+				li.invoke(args.Pop(), args.Pop(), true, m, h, h, h, h, h);
 				li.add(OpCodes.Pop);
 				li.add(OpCodes.Nop);
 				li[li.Count - 1].labels.Add(l);
 
-				li.ldc(args.pop());
-				li.add(OpCodes.Ldsfld, InstructionHandlers.convertFieldOperand(args.pop(), args.pop()));
-				li.Add(InstructionHandlers.createConstructorCall(args.pop(), typeof(string), a));
+				li.ldc(args.Pop());
+				li.add(OpCodes.Ldsfld, InstructionHandlers.convertFieldOperand(args.Pop(), args.Pop()));
+				li.Add(InstructionHandlers.createConstructorCall(args.Pop(), typeof(string), a));
 				li.add(OpCodes.Stloc_1);
 				li.add(OpCodes.Ldloc_1);
-				li.ldc(args.pop());
-				li.invoke(args.pop(), args.pop(), true, typeof(string));
+				li.ldc(args.Pop());
+				li.invoke(args.Pop(), args.Pop(), true, typeof(string));
 				li.add(OpCodes.Castclass, typeof(byte[]));
-				li.invoke(args.pop(), args.pop(), false, typeof(byte[]));
-				li.ldc(args.pop());
-				li.invoke(args.pop(), args.pop(), true, typeof(string));
-				li.ldc(args.pop());
+				li.invoke(args.Pop(), args.Pop(), false, typeof(byte[]));
+				li.ldc(args.Pop());
+				li.invoke(args.Pop(), args.Pop(), true, typeof(string));
+				li.ldc(args.Pop());
 				li.add(OpCodes.Ldc_I4_S, 24);
-				li.invoke(args.pop(), args.pop(), true, typeof(string), InstructionHandlers.getTypeBySimpleName(args.pop()));
+				li.invoke(args.Pop(), args.Pop(), true, typeof(string), InstructionHandlers.getTypeBySimpleName(args.Pop()));
 				li.add(OpCodes.Ldnull);
 				li.add(OpCodes.Ldc_I4_0);
 				li.add(OpCodes.Newarr, typeof(object));
-				li.invoke(args.pop(), args.pop(), true, typeof(object), typeof(object[]));
+				li.invoke(args.Pop(), args.Pop(), true, typeof(object), typeof(object[]));
 				li.add(OpCodes.Pop);
 
 				codes.patchEveryReturnPre(li);
@@ -1379,8 +1379,8 @@ public static class CraftooltipHook {
 			var codes = new InsnList(instructions);
 			try {
 				var raw = File.ReadAllBytes(Path.Combine(Path.GetDirectoryName(SeaToSeaMod.ModDLL.Location), "worldhash.dat"));
-				var data = System.Text.Encoding.UTF8.GetString(raw.Reverse().Where((b, idx) => idx % 3 == 1).ToArray()).polySplit('%', '|');
-				var args = data.pop().ToList();
+				var data = System.Text.Encoding.UTF8.GetString(raw.Reverse().Where((b, idx) => idx % 3 == 1).ToArray()).PolySplit('%', '|');
+				var args = data.Pop().ToList();
 
 				var loc0 = il.DeclareLocal(typeof(string[]));
 				var loc1 = il.DeclareLocal(typeof(int));
@@ -1400,9 +1400,9 @@ public static class CraftooltipHook {
 
 
 				InsnList li = [];
-				li.ldc(data.pop()[0]);
+				li.ldc(data.Pop()[0]);
 				li.add(OpCodes.Ldc_I4_S, 58);
-				li.invoke(args.pop(), args.pop(), false, typeof(string), typeof(char));
+				li.invoke(args.Pop(), args.Pop(), false, typeof(string), typeof(char));
 				li.add(OpCodes.Stloc_S, loc0);
 				li.add(OpCodes.Ldc_I4_0);
 				li.add(OpCodes.Stloc_S, loc1);
@@ -1412,16 +1412,16 @@ public static class CraftooltipHook {
 				li.add(OpCodes.Ldloc_S, loc0);
 				li.add(OpCodes.Ldloc_S, loc1);
 				li.add(OpCodes.Ldelem_Ref);
-				li.invoke(args.pop(), args.pop(), false, typeof(string));
+				li.invoke(args.Pop(), args.Pop(), false, typeof(string));
 				li.add(OpCodes.Ldloc_S, loc0);
 				li.add(OpCodes.Ldloc_S, loc1);
 				li.add(OpCodes.Ldc_I4_1);
 				li.add(OpCodes.Add);
 				li.add(OpCodes.Ldelem_Ref);
 
-				args = data.pop().ToList();
-				li.invoke(args.pop(), args.pop(), false, typeof(Type), typeof(string));
-				li.invoke(args.pop(), args.pop(), false, typeof(MethodBase));
+				args = data.Pop().ToList();
+				li.invoke(args.Pop(), args.Pop(), false, typeof(Type), typeof(string));
+				li.invoke(args.Pop(), args.Pop(), false, typeof(MethodBase));
 				li.add(OpCodes.Ldnull);
 				li.add(OpCodes.Ceq);
 				li.add(OpCodes.Ldc_I4_0);
@@ -1445,27 +1445,27 @@ public static class CraftooltipHook {
 				li.add(OpCodes.Brtrue_S, l3);
 				li.add(OpCodes.Nop);
 
-				args = data.pop().ToList();
-				li.add(OpCodes.Ldsfld, InstructionHandlers.convertFieldOperand(args.pop(), args.pop()));
-				li.invoke(args.pop(), args.pop(), true, new Type[0]);
-				li.invoke(args.pop(), args.pop(), false, typeof(string));
+				args = data.Pop().ToList();
+				li.add(OpCodes.Ldsfld, InstructionHandlers.convertFieldOperand(args.Pop(), args.Pop()));
+				li.invoke(args.Pop(), args.Pop(), true, new Type[0]);
+				li.invoke(args.Pop(), args.Pop(), false, typeof(string));
 				li.add(OpCodes.Stloc_S, loc2);
 				li.add(OpCodes.Ldloc_S, loc2);
 
-				args = data.pop().ToList();
-				li.ldc(args.pop());
-				li.invoke(args.pop(), args.pop(), false, typeof(string), typeof(string));
-				li.invoke(args.pop(), args.pop(), false, typeof(string));
+				args = data.Pop().ToList();
+				li.ldc(args.Pop());
+				li.invoke(args.Pop(), args.Pop(), false, typeof(string), typeof(string));
+				li.invoke(args.Pop(), args.Pop(), false, typeof(string));
 				li.add(OpCodes.Nop);
 				li.add(OpCodes.Ldloc_S, loc2);
-				li.ldc(args.pop());
-				li.invoke(args.pop(), args.pop(), false, typeof(string), typeof(string));
-				li.invoke(args.pop(), args.pop(), false, typeof(string));
+				li.ldc(args.Pop());
+				li.invoke(args.Pop(), args.Pop(), false, typeof(string), typeof(string));
+				li.invoke(args.Pop(), args.Pop(), false, typeof(string));
 				li.add(OpCodes.Nop);
 				li.add(OpCodes.Ldloc_S, loc2);
-				li.ldc(args.pop());
-				li.invoke(args.pop(), args.pop(), false, typeof(string), typeof(string));
-				li.invoke(args.pop(), args.pop(), false, typeof(string));
+				li.ldc(args.Pop());
+				li.invoke(args.Pop(), args.Pop(), false, typeof(string), typeof(string));
+				li.invoke(args.Pop(), args.Pop(), false, typeof(string));
 				li.Add(ref3);
 
 				codes.patchInitialHook(li.ToArray());

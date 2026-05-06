@@ -74,14 +74,14 @@ public class PlanktonCloud : InteractableSpawnable {
                 var pos = getRandomPosition(ep);
                 var data2 = getSpawnData(BiomeBase.GetBiome(pos));
                 if (data2 != null && UnityEngine.Random.Range(0F, 1F) <= data2.spawnSuccessRate) {
-                    pos = pos.setY(-UnityEngine.Random.Range(data2.minDepth, data2.maxDepth));
+                    pos = pos.SetY(-UnityEngine.Random.Range(data2.minDepth, data2.maxDepth));
                     while (Vector3.Distance(pos, ep.transform.position) < 50 || (ep.GetVehicle() is SeaMoth &&
                                ep.GetVehicle().useRigidbody && Vector3.Distance(
                                    pos,
                                    ep.transform.position + ep.GetVehicle().useRigidbody.velocity.normalized * 20
                                ) < 30)) {
                         pos = getRandomPosition(ep, data2);
-                        pos = pos.setY(-UnityEngine.Random.Range(data2.minDepth, data2.maxDepth));
+                        pos = pos.SetY(-UnityEngine.Random.Range(data2.minDepth, data2.maxDepth));
                     }
 
                     GameObject go = ObjectUtil.createWorldObject(Info.ClassID);
@@ -97,9 +97,9 @@ public class PlanktonCloud : InteractableSpawnable {
     internal Vector3 getRandomPosition(Player ep, BiomeSpawnData data = null) {
         Vector3 pos = MathUtil.getRandomVectorAround(ep.transform.position, 120);
         var dist = pos - ep.transform.position;
-        pos = ep.transform.position + dist.setLength(UnityEngine.Random.Range(50F, 150F));
+        pos = ep.transform.position + dist.SetLength(UnityEngine.Random.Range(50F, 150F));
         if (data != null)
-            pos = pos.setY(-UnityEngine.Random.Range(data.minDepth, data.maxDepth));
+            pos = pos.SetY(-UnityEngine.Random.Range(data.minDepth, data.maxDepth));
         return pos;
     }
 
@@ -230,7 +230,7 @@ public class PlanktonCloudTag : PlanktonCloudClearableContactZone {
     }
 
     internal void init() {
-        SNUtil.log("Forcing enable of plankton @ " + transform.position + " @ " + DayNightCycle.main.timePassedAsFloat);
+        SNUtil.Log("Forcing enable of plankton @ " + transform.position + " @ " + DayNightCycle.main.timePassedAsFloat);
         gameObject.removeComponent<BloomCreature>();
         gameObject.removeComponent<SwimRandom>();
         gameObject.removeComponent<StayAtLeashPosition>();
@@ -260,9 +260,9 @@ public class PlanktonCloudTag : PlanktonCloudClearableContactZone {
         }
 
         if (!particles || !health) {
-            SNUtil.log(
+            SNUtil.Log(
                 "destroying incomplete plankton object: " + GetComponents<Component>()
-                    .Select(c => c.name + " [" + c.GetType() + "]").toDebugString()
+                    .Select(c => c.name + " [" + c.GetType() + "]").ToDebugString()
             );
             gameObject.destroy(false);
             return;
@@ -512,13 +512,13 @@ public class PlanktonCloudTag : PlanktonCloudClearableContactZone {
 
     public void damage(Component pos, float dT) {
         if (!pos) {
-            SNUtil.log("Cannot damage plankton from null pos");
+            SNUtil.Log("Cannot damage plankton from null pos");
             return;
         }
 
         lastScoopTime = DayNightCycle.main.timePassedAsFloat;
         if (!health) {
-            SNUtil.log("Cannot damage plankton without health");
+            SNUtil.Log("Cannot damage plankton without health");
             init();
             return;
         }

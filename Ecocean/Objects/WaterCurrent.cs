@@ -17,7 +17,7 @@ public static class WaterCurrent {
 
         XMLLocale.LocaleEntry e = EcoceanMod.locale.getEntry("WaterCurrent");
         EcoceanMod.waterCurrentCommon = EnumHandler.AddEntry<TechType>(e.key).WithPdaInfo(e.name, e.desc);
-        SNUtil.addPDAEntry(
+        SNUtil.AddPdaEntry(
             basic,
             5,
             e.getString("category"),

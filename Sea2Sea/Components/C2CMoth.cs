@@ -200,7 +200,7 @@ internal class C2CMoth : MonoBehaviour {
 
     internal void purgeHeat() {
         temperatureAtPurge = vehicleTemperature;
-        SNUtil.log(
+        SNUtil.Log(
             "Starting heat purge (" + temperatureAtPurge + ") @ " + DayNightCycle.main.timePassedAsFloat,
             SeaToSeaMod.ModDLL
         );
@@ -209,7 +209,7 @@ internal class C2CMoth : MonoBehaviour {
     }
 
     internal void fireHeatsink(float time) {
-        SNUtil.log(
+        SNUtil.Log(
             "Heat purge complete @ " + time + " (" + holdTempLowTime + "/" + HOLD_LOW_TIME + "), firing heatsink",
             SeaToSeaMod.ModDLL
         );
@@ -250,7 +250,7 @@ internal class C2CMoth : MonoBehaviour {
                 a.lastTarget.SetTarget(null);
         }*/
         foreach (var a in WorldUtil.getObjectsNearWithComponent<AttackLastTarget>(transform.position, r)) {
-            a.clearAttackTarget();
+            a.ClearAttackTarget();
         }
 
         voidStealthStoredEnergy = 0;
@@ -287,7 +287,7 @@ internal class C2CMoth : MonoBehaviour {
         }
 
         if (!speedModifier)
-            speedModifier = seamoth.addSpeedModifier();
+            speedModifier = seamoth.AddSpeedModifier();
         if (!temperatureDamage) {
             temperatureDamage = GetComponent<TemperatureDamage>();
             baseDamageAmount = temperatureDamage.baseDamagePerSecond;
@@ -373,7 +373,7 @@ internal class C2CMoth : MonoBehaviour {
                         Vector3.Cross(vel, Vector3.up),
                         seamoth.transform.forward,
                         UnityEngine.Random.Range(0F, 360F)
-                    ).setLength(0.8F);
+                    ).SetLength(0.8F);
                 body.AddForce(vec, ForceMode.VelocityChange);
             }
         }
@@ -396,7 +396,7 @@ internal class C2CMoth : MonoBehaviour {
             }
 
             if (temperatureDebugActive)
-                SNUtil.writeToChat(
+                SNUtil.WriteToChat(
                     "Purging: " + vehicleTemperature.ToString("0000.00") + " > " + holdTempLowTime.ToString("00.00")
                 );
         } else {
@@ -438,7 +438,7 @@ internal class C2CMoth : MonoBehaviour {
 
             vehicleTemperature += qDot;
             if (temperatureDebugActive)
-                SNUtil.writeToChat(
+                SNUtil.WriteToChat(
                     Tamb + " > " + dT + " > " + speed.ToString("00.0") + " > " + f0.ToString("00.0000") + " > " +
                     qDot.ToString("00.0000") + " > " + vehicleTemperature.ToString("0000.00")
                 );
@@ -477,7 +477,7 @@ internal class C2CMoth : MonoBehaviour {
 
     private class SeamothWithStealthHUD : uGUI_ExosuitHUD {
         internal void init(uGUI_ExosuitHUD from) {
-            this.copyObject(from);
+            this.CopyObject(from);
         }
 
         private void Start() {

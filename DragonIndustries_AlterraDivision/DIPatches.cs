@@ -6,6 +6,7 @@ using System.Linq; //More advanced manipulation of lists/collections
 using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
+using Nautilus.Handlers;
 using UnityEngine; //Needed for most Unity Enginer manipulations: Vectors, GameObjects, Audio, etc.
 
 namespace ReikaKalseki.DIAlterra;

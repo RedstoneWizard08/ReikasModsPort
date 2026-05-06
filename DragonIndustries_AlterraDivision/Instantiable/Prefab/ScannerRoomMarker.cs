@@ -13,7 +13,7 @@ public sealed class ScannerRoomMarker : CustomPrefab {
     [SetsRequiredMembers]
     public ScannerRoomMarker(TechType markAs) : base("ScannerRoomMarker_" + markAs.AsString(), "", "") {
         markerType = markAs;
-        ownerMod = SNUtil.tryGetModDLL();
+        ownerMod = SNUtil.TryGetModDLL();
 
         SpriteHandler.RegisterSprite(
             markerType,

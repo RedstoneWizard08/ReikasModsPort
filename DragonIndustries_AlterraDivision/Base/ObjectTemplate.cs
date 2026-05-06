@@ -30,7 +30,7 @@ public abstract class ObjectTemplate {
 	public static void registerType(string tagname, Func<XmlElement, ObjectTemplate> ctr) {
 		if (types.ContainsKey(tagname))
 			throw new Exception("Tag name '" + tagname + "' already in use!");
-		SNUtil.log("Registered XML object ref type " + ctr.Method.DeclaringType.Name + "::" + ctr.Method.Name + " as " + tagname, SNUtil.diDLL);
+		SNUtil.Log("Registered XML object ref type " + ctr.Method.DeclaringType.Name + "::" + ctr.Method.Name + " as " + tagname, SNUtil.DiDLL);
 		types[tagname] = ctr;
 		//typeIDs[t] = tagname;
 	}
@@ -41,7 +41,7 @@ public abstract class ObjectTemplate {
 		var key = e.Name;
 		if (!types.ContainsKey(key))
 			throw new Exception("Nonexistent object type '" + e.Name + "'! Types: " + string.Join(",", types.Keys));
-		if (key == "object" && !e.hasProperty("prefab") && e.hasProperty("type")) //quickfix for back compat
+		if (key == "object" && !e.HasProperty("prefab") && e.HasProperty("type")) //quickfix for back compat
 			key = "generator";
 		var builder = types[key];
 		try {

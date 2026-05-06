@@ -69,7 +69,7 @@ public class MushroomDiskRain : MonoBehaviour {
         sh.shapeType = ParticleSystemShapeType.Circle;
         sh.rotation = new Vector3(0, 0, 0);
         sh.radius = Mathf.Max(collider.size.x, collider.size.z) * 1.2F;
-        Color c = renderColor.exponent(1.25F).WithAlpha(1);
+        Color c = renderColor.Exponent(1.25F).WithAlpha(1);
         clr.color = c;
         main.startColor = c;
         emit.rateOverTimeMultiplier = 2.5F;
@@ -114,9 +114,9 @@ public class MushroomDiskRain : MonoBehaviour {
                 var e = Player.main.gameObject.EnsureComponent<FoodEffectSystem.VisualDistortionEffect>();
                 e.intensity = 2;
                 e.timeRemaining = 10;
-                e.effectColor = renderColor.toVectorA().exponent(4F);
+                e.effectColor = renderColor.ToVectorA().Exponent(4F);
                 e.tintIntensity = 0.32F; //0.28
-                e.tintColor = (renderColor.exponent(2) * 4).WithAlpha(1);
+                e.tintColor = (renderColor.Exponent(2) * 4).WithAlpha(1);
             } else {
                 //if (other.isTrigger)
                 //	SNUtil.writeToChat("Touching "+other.gameObject.GetFullHierarchyPath());

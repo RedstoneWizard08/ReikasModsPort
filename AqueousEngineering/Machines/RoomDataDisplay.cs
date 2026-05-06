@@ -67,7 +67,7 @@ public class RoomDataDisplayLogic : CustomMachineLogic {
     private Text[] text;
 
     private void Start() {
-        SNUtil.log("Reinitializing base room data display");
+        SNUtil.Log("Reinitializing base room data display");
         AqueousEngineeringMod.roomDataBlock.initializeMachine(gameObject);
     }
 

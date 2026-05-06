@@ -102,7 +102,7 @@ public class HeatColumnShellTag : MonoBehaviour {
         var f = scaleFactor + 2 * Mathf.Sin(age * 0.2F);
         transform.localScale = new Vector3(f, 300, f);
         if (Player.main)
-            transform.position = transform.position.setY(Mathf.Min(-150, Player.main.transform.position.y - 50));
+            transform.position = transform.position.SetY(Mathf.Min(-150, Player.main.transform.position.y - 50));
         //collider.radius = 
 
         render.materials[0].SetTexture(
@@ -129,7 +129,7 @@ public class HeatColumnShellTag : MonoBehaviour {
         }
 
         if (f > 0 && Player.main) {
-            double dist = (transform.position - Player.main.transform.position).setY(0).magnitude;
+            double dist = (transform.position - Player.main.transform.position).SetY(0).magnitude;
             f *= (float)MathUtil.linterpolate(dist, 50, 200, 0.3, 1, true);
         }
 

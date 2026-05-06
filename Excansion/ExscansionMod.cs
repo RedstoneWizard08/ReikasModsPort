@@ -12,6 +12,7 @@ namespace ReikaKalseki.Exscansion;
 
 [BepInPlugin(MOD_KEY, "Exscansion", Nautilus.PluginInfo.PLUGIN_VERSION)]
 [BepInDependency("com.snmodding.nautilus")]
+[BepInDependency(DIMod.MOD_KEY)]
 public class ExscansionMod : BaseUnityPlugin {
     public const string MOD_KEY = "ReikaKalseki.Exscansion";
 
@@ -30,7 +31,6 @@ public class ExscansionMod : BaseUnityPlugin {
         harmony.apply();
 
         ModVersionCheck.getFromGitVsInstall("Exscansion", modDLL, "Exscansion").register();
-        SNUtil.checkModHash(modDLL);
 
         abandonedBase = new ScannerRoomMarker(
             EnumHandler.AddEntry<TechType>("AbandonedBase").WithPdaInfo("Titanium Mass", "")

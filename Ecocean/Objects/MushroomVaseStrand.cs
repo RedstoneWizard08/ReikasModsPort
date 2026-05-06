@@ -177,7 +177,7 @@ public class MushroomVaseStrand : BasicCustomPlant, CustomHarvestBehavior {
                 }
 
                 if (!flag)
-                    SNUtil.log("Failed to initialize " + this + " collider, was missing");
+                    SNUtil.Log("Failed to initialize " + this + " collider, was missing");
                 foreach (var r in GetComponentsInChildren<Renderer>()) {
                     if (r.gameObject.name.StartsWith(
                             "coral_reef_plant_middle_05",
@@ -258,7 +258,7 @@ public class MushroomVaseStrand : BasicCustomPlant, CustomHarvestBehavior {
                 if (DIHooks.GetWorldAge() > 0.5F && time - lastSiblingCheck >= 2.5F) {
                     var p = grown.gameObject.FindAncestor<Planter>();
                     if (!p) {
-                        SNUtil.log(
+                        SNUtil.Log(
                             "Farmed mushroom vase strand without a planter?! " + gameObject.GetFullHierarchyPath()
                         );
                         gameObject.destroy(false);
@@ -316,7 +316,7 @@ public class MushroomVaseStrand : BasicCustomPlant, CustomHarvestBehavior {
             if (isHarvested()) {
                 if (DayNightCycle.main.timePassedAsFloat - lastHarvest > 0.25F) {
                     //in case double code call, or a misclick
-                    SNUtil.log(
+                    SNUtil.Log(
                         "Destroying already-harvested mushroom vase strand, dT=" +
                         (DayNightCycle.main.timePassedAsFloat - lastHarvest)
                     );

@@ -33,19 +33,19 @@ internal class ParentTo : ManipulationBase {
 	}
 
 	public override void loadFromXML(XmlElement e) {
-		type = (SeekType)Enum.Parse(typeof(SeekType), e.getProperty("type"));
-		seekID = e.getProperty("key");
+		type = (SeekType)Enum.Parse(typeof(SeekType), e.GetProperty("type"));
+		seekID = e.GetProperty("key");
 	}
 
 	public override void saveToXML(XmlElement e) {
-		e.addProperty("type", Enum.GetName(typeof(SeekType), type));
-		e.addProperty("key", seekID);
+		e.AddProperty("type", Enum.GetName(typeof(SeekType), type));
+		e.AddProperty("key", seekID);
 	}
 
 	private GameObject findObject(GameObject from) {
 		switch (type) {
 			case SeekType.FindNearTechType:
-				return findNear(from, go => go.GetComponent<TechTag>().type == SNUtil.getTechType(seekID));
+				return findNear(from, go => go.GetComponent<TechTag>().type == SNUtil.GetTechType(seekID));
 			case SeekType.FindNearClassID:
 				return findNear(from, go => go.GetComponent<PrefabIdentifier>().classId == seekID);
 			default:

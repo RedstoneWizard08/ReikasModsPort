@@ -14,7 +14,7 @@ public static class CustomMaterials {
     static CustomMaterials() {
         foreach (Materials m in Enum.GetValues(typeof(Materials))) {
             var id = Enum.GetName(typeof(Materials), m);
-            SNUtil.log("Registering material " + id);
+            SNUtil.Log("Registering material " + id);
             var attr = getMaterial(m);
             var e = SeaToSeaMod.ItemLocale.getEntry(id);
             var template =
@@ -34,7 +34,7 @@ public static class CustomMaterials {
             item.Register();
             techs[item.Info.TechType] = item;
             item.addPDAEntry(e.pda, m == Materials.PRESSURE_CRYSTALS ? 5 : 2, e.getString("header"));
-            SNUtil.log(" > " + item);
+            SNUtil.Log(" > " + item);
         }
     }
 

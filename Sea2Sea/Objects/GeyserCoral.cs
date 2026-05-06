@@ -209,6 +209,6 @@ internal class GeyserCoralTag : MonoBehaviour {
 
     private void OnScanned() {
         _scanned = true;
-        SNUtil.addBlueprintNotification(C2CItems.geyserFilter.TechType);
+        SNUtil.AddBlueprintNotification(C2CItems.geyserFilter.TechType);
     }
 }

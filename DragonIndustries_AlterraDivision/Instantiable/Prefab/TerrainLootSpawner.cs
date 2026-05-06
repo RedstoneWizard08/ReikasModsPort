@@ -44,7 +44,7 @@ public class TerrainLootSpawner : CustomPrefab {
                 var id = GetComponent<PrefabIdentifier>().classId;
                 spawnID = spawnIDs.ContainsKey(id) ? spawnIDs[id] : null;
                 if (spawnID == null)
-                    SNUtil.log("No spawn ID for prefab " + id + " @ " + transform.position);
+                    SNUtil.Log("No spawn ID for prefab " + id + " @ " + transform.position);
                 return;
             }
 

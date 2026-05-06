@@ -36,7 +36,7 @@ public class BasicCraftingItem : CustomPrefab, DIPrefab<BasicCraftingItem, Strin
 
     [SetsRequiredMembers]
     public BasicCraftingItem(string id, string name, string desc, string template) : base(id, name, desc) {
-        ownerMod = SNUtil.tryGetModDLL();
+        ownerMod = SNUtil.TryGetModDLL();
         // typeof(ModPrefab).GetField("Mod", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(this, ownerMod);
         this.id = id;
 

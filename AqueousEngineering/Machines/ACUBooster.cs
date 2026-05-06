@@ -87,7 +87,7 @@ public class ACUBoosterLogic : CustomMachineLogic {
     //internal GameObject rotator;
 
     private void Start() {
-        SNUtil.log("Reinitializing acu booster");
+        SNUtil.Log("Reinitializing acu booster");
         AqueousEngineeringMod.acuBoosterBlock.initializeMachine(gameObject);
     }
 
@@ -96,11 +96,11 @@ public class ACUBoosterLogic : CustomMachineLogic {
     }
 
     protected override void load(System.Xml.XmlElement data) {
-        lastFeedTime = (float)data.getFloat("last", float.NaN);
+        lastFeedTime = (float)data.GetFloat("last", float.NaN);
     }
 
     protected override void save(System.Xml.XmlElement data) {
-        data.addProperty("last", lastFeedTime);
+        data.AddProperty("last", lastFeedTime);
     }
 
     private WaterPark tryFindACU() {

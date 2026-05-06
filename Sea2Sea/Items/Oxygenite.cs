@@ -62,7 +62,7 @@ public class Oxygenite : BasicCustomOre {
     */
     public static void dumpLocations() {
         var file = BuildingHandler.instance.dumpPrefabs("oxygeniteSpawns", spawns);
-        SNUtil.writeToChat("Exported " + spawns.Count + " oxygenite to " + file);
+        SNUtil.WriteToChat("Exported " + spawns.Count + " oxygenite to " + file);
     }
 }
 

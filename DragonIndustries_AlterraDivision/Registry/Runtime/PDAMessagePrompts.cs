@@ -18,9 +18,9 @@ public class PDAMessagePrompts {
 	}
 
 	public StoryGoal addPDAMessage(string key, string text, string soundFile) {
-		SNUtil.log("Constructing PDA message " + key);
+		SNUtil.Log("Constructing PDA message " + key);
 		var item = new StoryGoal(key, Story.GoalType.PDA, 0);
-		SNUtil.addVOLine(item, text, SoundManager.registerPDASound(SNUtil.tryGetModDLL(), "prompt_" + key, soundFile).asset);
+		SNUtil.AddVoLine(item, text, SoundManager.registerPDASound(SNUtil.TryGetModDLL(), "prompt_" + key, soundFile).asset);
 		mappings[key] = item;
 		return item;
 	}

@@ -18,7 +18,7 @@ internal class C2CStasisRifle : CustomGrindable, ReactsOnDrilled {
 			var ss = WorldUtil.createStasisSphere(pos, 2, 0.5F);
 			SoundManager.playSoundAt(GetComponent<StasisRifle>().fireSound, pos);
 			Utils.PlayOneShotPS(ObjectUtil.lookupPrefab(VanillaCreatures.CRASHFISH.prefab).GetComponent<Crash>().detonateParticlePrefab, transform.position, transform.rotation);
-			nextSphereTime = time + ss.getLifespan();
+			nextSphereTime = time + ss.GetLifespan();
 		}
 	}
 

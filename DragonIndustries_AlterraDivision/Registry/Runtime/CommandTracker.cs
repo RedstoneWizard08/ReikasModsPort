@@ -15,7 +15,7 @@ public class CommandTracker : SerializedTracker<CommandTracker.CommandEvent> {
 	}
 
 	private static CommandEvent parse(XmlElement s) {
-		return new CommandEvent(CommandEvent.buildCommand(s), s.getFloat("eventTime", -1));
+		return new CommandEvent(CommandEvent.buildCommand(s), s.GetFloat("eventTime", -1));
 	}
 
 	public class CommandEvent : SerializedTrackedEvent {
@@ -31,8 +31,8 @@ public class CommandTracker : SerializedTracker<CommandTracker.CommandEvent> {
 		}
 
 		internal static string buildCommand(XmlElement e) {
-			var cmd = e.getProperty("command");
-			foreach (var e2 in e.getDirectElementsByTagName("arg")) {
+			var cmd = e.GetProperty("command");
+			foreach (var e2 in e.GetDirectElementsByTagName("arg")) {
 				cmd += " " + e2.InnerText;
 			}
 			return cmd;
@@ -40,9 +40,9 @@ public class CommandTracker : SerializedTracker<CommandTracker.CommandEvent> {
 
 		private static void splitCommand(string cmd, XmlElement e) {
 			var parts = cmd.Split(' ');
-			e.addProperty("command", parts[0]);
+			e.AddProperty("command", parts[0]);
 			for (var i = 1; i < parts.Length; i++) {
-				e.addProperty("arg", parts[i]);
+				e.AddProperty("arg", parts[i]);
 			}
 		}
 

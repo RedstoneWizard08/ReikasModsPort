@@ -12,6 +12,7 @@ namespace ReikaKalseki.Reefbalance;
 
 [BepInPlugin(MOD_KEY, "Reefbalance", Nautilus.PluginInfo.PLUGIN_VERSION)]
 [BepInDependency("com.snmodding.nautilus")]
+[BepInDependency(DIMod.MOD_KEY)]
 public class ReefbalanceMod : BaseUnityPlugin {
     public const string MOD_KEY = "ReikaKalseki.Reefbalance";
 
@@ -56,7 +57,6 @@ public class ReefbalanceMod : BaseUnityPlugin {
         harmony.apply();
 
         ModVersionCheck.getFromGitVsInstall("Re(ef)Balance", modDLL, "Reefbalance").register();
-        SNUtil.checkModHash(modDLL);
 
         DIHooks.OnFruitPlantTickEvent += fpt => {
             var fp = fpt.GetPlant();
@@ -200,7 +200,7 @@ public class ReefbalanceMod : BaseUnityPlugin {
 
         foreach (var kvp in scanCountOverrides) {
             PDAHandler.EditFragmentsToScan(kvp.Key, kvp.Value);
-            SNUtil.log("Setting fragment scan requirement: " + kvp.Key + " = " + kvp.Value);
+            SNUtil.Log("Setting fragment scan requirement: " + kvp.Key + " = " + kvp.Value);
         }
 
         var uran = config.getInt(RBConfig.ConfigEntries.URANPERROD);
@@ -213,7 +213,7 @@ public class ReefbalanceMod : BaseUnityPlugin {
                 }
             );
 
-            var refuel = SNUtil.getTechType("ReplenishReactorRod");
+            var refuel = SNUtil.GetTechType("ReplenishReactorRod");
             if (refuel != TechType.None) {
                 RecipeUtil.modifyIngredients(
                     refuel,

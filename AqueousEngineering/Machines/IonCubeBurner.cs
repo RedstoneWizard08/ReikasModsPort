@@ -52,7 +52,7 @@ public class IonCubeBurner : CustomMachine<IonCubeBurnerLogic> {
 
 public class IonCubeBurnerLogic : CustomMachineLogic {
     private void Start() {
-        SNUtil.log("Reinitializing base ion cube burner");
+        SNUtil.Log("Reinitializing base ion cube burner");
         //AqueousEngineeringMod.ionCubeBlock.initializeMachine(gameObject);
     }
 

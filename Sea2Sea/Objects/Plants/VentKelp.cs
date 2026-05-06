@@ -283,7 +283,7 @@ internal class GlowKelpTag : MonoBehaviour {
                            UnderwaterIslandsFloorBiome.wreckCtrPos2
                        ) <= 15) {
                 //SNUtil.writeToChat("Destroying vent kelp @ "+transform.position.y);
-                SNUtil.log("Destroying shallow/near-wreck vent kelp @ " + transform.position);
+                SNUtil.Log("Destroying shallow/near-wreck vent kelp @ " + transform.position);
                 gameObject.destroy();
                 return;
             }
@@ -317,7 +317,7 @@ internal class GlowKelpTag : MonoBehaviour {
                 if (s.index >= limit) {
                     cropped = true;
                     s.obj.destroy();
-                    SNUtil.log("Destroying extra farmed vent kelp @ " + transform.position + " #" + s.index);
+                    SNUtil.Log("Destroying extra farmed vent kelp @ " + transform.position + " #" + s.index);
                     continue;
                 }
             }
@@ -357,7 +357,7 @@ internal class GlowKelpTag : MonoBehaviour {
                     if (grown)
                         s.obj.GetComponentInParent<Planter>().RemoveItem(grown.seed);
                     s.obj.destroy();
-                    SNUtil.log("Destroying surface vent kelp @ " + transform.position + " #" + s.index);
+                    SNUtil.Log("Destroying surface vent kelp @ " + transform.position + " #" + s.index);
                     redoRenderers = true;
                     continue;
                 }
@@ -374,7 +374,7 @@ internal class GlowKelpTag : MonoBehaviour {
             }
             gameObject.destroy();*/
             gameObject.GetComponentInParent<LiveMixin>().TakeDamage(99999F);
-            SNUtil.log("Killing incomplete/killed vent kelp @ " + transform.position);
+            SNUtil.Log("Killing incomplete/killed vent kelp @ " + transform.position);
         }
     }
 

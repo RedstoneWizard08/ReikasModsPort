@@ -108,7 +108,7 @@ public class PlanktonFeederLogic : CustomMachineLogic {
     private bool active;
 
     private void Start() {
-        SNUtil.log("Reinitializing base plankton feeder");
+        SNUtil.Log("Reinitializing base plankton feeder");
         AqueousEngineeringMod.planktonFeederBlock.initializeMachine(gameObject);
     }
 

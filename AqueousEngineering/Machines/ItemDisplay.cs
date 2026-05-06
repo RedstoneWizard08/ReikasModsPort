@@ -127,7 +127,7 @@ public class ItemDisplayLogic : CustomMachineLogic {
     //private Vector3 rotationSpeedTargets = Vector3.zero;
 
     private void Start() {
-        SNUtil.log("Reinitializing base item display");
+        SNUtil.Log("Reinitializing base item display");
         AqueousEngineeringMod.displayBlock.initializeMachine(gameObject);
     }
 

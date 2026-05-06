@@ -55,9 +55,9 @@ public abstract class BiomeBase : IComparable<BiomeBase> {
         BiomeList.Add(this);
         if (this is CustomBiome)
             CustomBiomes.Add((CustomBiome)this);
-        SNUtil.log(
+        SNUtil.Log(
             "Registered biome " + DisplayName + " with ids " + string.Join(", ", ids),
-            SNUtil.tryGetModDLL(true)
+            SNUtil.TryGetModDLL(true)
         );
     }
 

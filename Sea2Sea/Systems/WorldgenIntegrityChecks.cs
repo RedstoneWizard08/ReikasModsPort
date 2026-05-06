@@ -24,7 +24,7 @@ public static class WorldgenIntegrityChecks {
 	}
 
 	public static void throwError() {
-		throw new Exception(currentErrorText.toDebugString());
+		throw new Exception(currentErrorText.ToDebugString());
 	}
 
 }

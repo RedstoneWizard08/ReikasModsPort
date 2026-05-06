@@ -30,7 +30,7 @@ public static class SignalManager {
             throw new Exception("Signal ID '" + id + "' already in use!");
         var sig = new ModSignal(id, name, desc, pda, prompt);
         signals[sig.id] = sig;
-        SNUtil.log("Constructed signal " + sig);
+        SNUtil.Log("Constructed signal " + sig);
         return sig;
     }
 
@@ -70,18 +70,18 @@ public static class SignalManager {
                 ? null
                 : PDAManager.createPage("signal_" + id, longName, pda, "DownloadedData");
 
-            ownerMod = SNUtil.tryGetModDLL();
+            ownerMod = SNUtil.TryGetModDLL();
         }
 
         public ModSignal addRadioTrigger(string soundPath) {
             return addRadioTrigger(
-                SoundManager.registerPDASound(SNUtil.tryGetModDLL(), "radio_" + id, soundPath).asset
+                SoundManager.registerPDASound(SNUtil.TryGetModDLL(), "radio_" + id, soundPath).asset
             );
         }
 
         public ModSignal addRadioTrigger(FMODAsset sound) {
             setStoryGate("radio_" + id);
-            radioMessage = SNUtil.addRadioMessage(storyGate, radioText, sound);
+            radioMessage = SNUtil.AddRadioMessage(storyGate, radioText, sound);
             return this;
         }
 
@@ -116,7 +116,7 @@ public static class SignalManager {
 
             if (pdaEntry != null)
                 pdaEntry.register();
-            SNUtil.log("Registered signal " + this);
+            SNUtil.Log("Registered signal " + this);
         }
 
         public GameObject spawnGenericSignalHolder(Vector3 pos) {
@@ -161,9 +161,9 @@ public static class SignalManager {
             initializer.ping = signalInstance;
             initializer.signal = this;
 
-            SNUtil.log(
+            SNUtil.Log(
                 "Initialized GO holder for signal " + id + " [" + flag + "]: " + go + " @ " + go.transform.position,
-                SNUtil.diDLL
+                SNUtil.DiDLL
             );
 
             go.SetActive(true);
@@ -182,7 +182,7 @@ public static class SignalManager {
 
         public void activate(int delay = 0) {
             if (!signalInstance) {
-                SNUtil.log("Cannot disable mod signal " + this + " because it has no object/instance!", ownerMod);
+                SNUtil.Log("Cannot disable mod signal " + this + " because it has no object/instance!");
                 return;
             }
 
@@ -238,7 +238,7 @@ public static class SignalManager {
                 signal = getSignal(types[ping.pingType]);
             }
 
-            SNUtil.log("Starting signal init of " + signal + " / " + ping, SNUtil.diDLL);
+            SNUtil.Log("Starting signal init of " + signal + " / " + ping, SNUtil.DiDLL);
             signal.signalInstance = ping;
             signal.initializer = this;
             ping.SetLabel(signal.longName);
@@ -251,7 +251,7 @@ public static class SignalManager {
         }
 
         internal void triggerFX() {
-            SNUtil.log("Firing signal unlock FX: " + signal.id);
+            SNUtil.Log("Firing signal unlock FX: " + signal.id);
             SoundManager.playSound("event:/player/signal_upload"); //"signal location uploaded to PDA"
             Subtitles.main.AddRawLongInternal(0, new StringBuilder("Signal location uploaded to PDA."), 0, 6, 6);
             //SNUtil.playSound("event:/tools/scanner/new_encyclopediea"); //triple-click	
@@ -325,7 +325,7 @@ public static class SignalManager {
                 signal = getSignal(types[ping.pingType]);
             }
 
-            SNUtil.log("Starting signal init of " + signal + " / " + ping, SNUtil.diDLL);
+            SNUtil.Log("Starting signal init of " + signal + " / " + ping, SNUtil.DiDLL);
             ping.SetLabel(signal.longName);
 
             var available = signal.storyGate == null ||

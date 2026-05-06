@@ -35,7 +35,7 @@ internal class LavaCastleVentCrystalConverter : MonoBehaviour {
                 azur.SetActive(true);
             }
 
-            SNUtil.log(
+            SNUtil.Log(
                 "Converted lava castle vent placeholder @ " + transform.position + ": " + (azur ? azur.name : "NULL")
             );
             gameObject.destroy(false);

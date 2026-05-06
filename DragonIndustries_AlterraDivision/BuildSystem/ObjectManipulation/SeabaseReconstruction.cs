@@ -25,10 +25,10 @@ public static class SeabaseReconstruction {
     }
 
     internal static SeabasePrefab getOrCreatePrefab(XmlElement e) {
-        var id = e.getProperty("identifier");
+        var id = e.GetProperty("identifier");
         if (!dataCache.ContainsKey(id)) {
             dataCache[id] = new SeabasePrefab(id, e);
-            SNUtil.log("Created worldgen seabase " + id);
+            SNUtil.Log("Created worldgen seabase " + id);
         }
 
         return dataCache[id];
@@ -62,14 +62,14 @@ public static class SeabaseReconstruction {
         }
 
         private void rebuild(float time) {
-            SNUtil.log("Seabase '" + seabaseID + "' undergoing reconstruction", SNUtil.diDLL);
+            SNUtil.Log("Seabase '" + seabaseID + "' undergoing reconstruction", SNUtil.DiDLL);
             if (reconstructionData == null) {
-                SNUtil.writeToChat("Cannot rebuild worldgen seabase @ " + baseCenter + " - no data");
+                SNUtil.WriteToChat("Cannot rebuild worldgen seabase @ " + baseCenter + " - no data");
                 return;
             }
 
-            var li = reconstructionData.getDirectElementsByTagName("part");
-            SNUtil.log("Reconstructing base from " + li.Count + " parts", SNUtil.diDLL);
+            var li = reconstructionData.GetDirectElementsByTagName("part");
+            SNUtil.Log("Reconstructing base from " + li.Count + " parts", SNUtil.DiDLL);
             var idx = 0;
             foreach (var e2 in li) {
                 //SNUtil.log("Reconstructing part #"+idx+" from "+e2.InnerXml, SNUtil.diDLL);
@@ -79,11 +79,11 @@ public static class SeabaseReconstruction {
                     pfb.loadFromXML(e2);
                     if (baseHasPart(gameObject, pfb) &&
                         pfb.prefabName != "9d3e9fa5-a5ac-496e-89f4-70e13c0bedd5") { //ie is loose
-                        SNUtil.log("Skipped recreate of loose piece: " + pfb, SNUtil.diDLL);
+                        SNUtil.Log("Skipped recreate of loose piece: " + pfb, SNUtil.DiDLL);
                         continue;
                     }
 
-                    SNUtil.log("Reconstructed BaseCell/loose piece: " + pfb, SNUtil.diDLL);
+                    SNUtil.Log("Reconstructed BaseCell/loose piece: " + pfb, SNUtil.DiDLL);
                     var go2 = pfb.createWorldObject();
                     go2.transform.parent = gameObject.transform;
                     go2.EnsureComponent<WorldgenSeabasePart>();
@@ -91,15 +91,15 @@ public static class SeabaseReconstruction {
                     go2.EnsureComponent<PreventDeconstruction>();
                     baseCenter += go2.transform.position;
                     pieceCount++;
-                    var li1 = e2.getDirectElementsByTagName("cellData");
+                    var li1 = e2.GetDirectElementsByTagName("cellData");
                     if (li1.Count == 1) {
-                        foreach (var e3 in li1[0].getDirectElementsByTagName("component")) {
+                        foreach (var e3 in li1[0].GetDirectElementsByTagName("component")) {
                             var pfb2 = new DICustomPrefab("basePart");
                             //Base.Piece type = Enum.Parse(typeof(Base.Piece), e3.getProperty("piece"));
                             pfb2.loadFromXML(e3);
                             if (pfb2.prefabName == PlacedObject.BUBBLE_PREFAB)
                                 continue;
-                            SNUtil.log("Reconstructed base component: " + pfb2, SNUtil.diDLL);
+                            SNUtil.Log("Reconstructed base component: " + pfb2, SNUtil.DiDLL);
                             var go3 = pfb2.createWorldObject();
                             if (pfb2.prefabName == "RoomWaterParkBottom")
                                 go3.removeChildObject("BaseWaterParkFloorBottom/Bubbles");
@@ -109,7 +109,7 @@ public static class SeabaseReconstruction {
                                 go3.EnsureComponent<WorldgenBulkhead>();
                             go3.transform.parent = go2.transform;
                             rebuildNestedObjects(go3, e3);
-                            if (!reconstructionData.getBoolean("allowDeconstruct")) {
+                            if (!reconstructionData.GetBoolean("allowDeconstruct")) {
                                 go3.removeComponent<BaseDeconstructable>();
                                 go3.removeComponent<Constructable>();
                                 var pv = go3.EnsureComponent<PreventDeconstruction>();
@@ -120,12 +120,12 @@ public static class SeabaseReconstruction {
 
                             go3.removeComponent<Fabricator>();
                             go3.removeComponent<MedicalCabinet>();
-                            var li0 = e3.getDirectElementsByTagName("supportData");
+                            var li0 = e3.GetDirectElementsByTagName("supportData");
                             if (li0.Count == 1)
                                 new SeabaseLegLengthPreservation(li0[0]).applyToObject(go3);
                             else if (li0.Count == 0)
                                 new SeabaseLegLengthPreservation(null).applyToObject(go3);
-                            li0 = e3.getDirectElementsByTagName("modify");
+                            li0 = e3.GetDirectElementsByTagName("modify");
                             if (li0.Count == 1) {
                                 List<ManipulationBase> li2 = [];
                                 DICustomPrefab.loadManipulations(li0[0], li2);
@@ -136,14 +136,14 @@ public static class SeabaseReconstruction {
                         }
                     }
 
-                    li1 = e2.getDirectElementsByTagName("inventory");
+                    li1 = e2.GetDirectElementsByTagName("inventory");
                     if (li1.Count == 1) {
                         //SNUtil.log("Recreating inventory contents: "+li1[0].OuterXml, SNUtil.diDLL);
                         var sc = go2.GetComponent<StorageContainer>();
                         var cg = go2.GetComponent<Charger>();
                         var p = go2.GetComponent<Planter>();
                         if (sc == null && cg == null) {
-                            SNUtil.log("Tried to deserialize inventory to a null container in " + go2);
+                            SNUtil.Log("Tried to deserialize inventory to a null container in " + go2);
                             continue;
                         }
 
@@ -152,24 +152,24 @@ public static class SeabaseReconstruction {
                             pg = go2.EnsureComponent<GrowbedPropifier>();
                         }
 
-                        foreach (var e3 in li1[0].getDirectElementsByTagName("item")) {
-                            var tt = SNUtil.getTechType(e3.getProperty("type"));
+                        foreach (var e3 in li1[0].GetDirectElementsByTagName("item")) {
+                            var tt = SNUtil.GetTechType(e3.GetProperty("type"));
                             if (tt == TechType.None) {
-                                SNUtil.log("Could not deserialize item - null TechType: " + e3.OuterXml, SNUtil.diDLL);
+                                SNUtil.Log("Could not deserialize item - null TechType: " + e3.OuterXml, SNUtil.DiDLL);
                             } else {
                                 var lootCube = false;
                                 var igo = tt.getItem();
                                 if (igo == null) {
-                                    SNUtil.log(
+                                    SNUtil.Log(
                                         "Item did not have prefab, using loot cube: " + e3.OuterXml,
-                                        SNUtil.diDLL
+                                        SNUtil.DiDLL
                                     );
                                     igo = ObjectUtil.lookupPrefab("01de572d-5549-44c6-97cf-645b07d1c79d");
                                     lootCube = true;
                                 }
 
-                                var amt = e3.getInt("amount", 1);
-                                var slot = e3.getProperty("slot", true);
+                                var amt = e3.GetInt("amount", 1);
+                                var slot = e3.GetProperty("slot", true);
                                 for (var i = 0; i < amt; i++) {
                                     var igo2 = igo.clone();
                                     igo2.SetActive(false);
@@ -177,9 +177,9 @@ public static class SeabaseReconstruction {
                                     pp.SetTechTypeOverride(tt, true);
                                     InventoryItem item = null;
                                     if (pp == null) {
-                                        SNUtil.log(
+                                        SNUtil.Log(
                                             "Could not deserialize item - no pickupable: " + e3.OuterXml,
-                                            SNUtil.diDLL
+                                            SNUtil.DiDLL
                                         );
                                     }
 
@@ -190,7 +190,7 @@ public static class SeabaseReconstruction {
                                     }
                                 }
 
-                                SNUtil.log("Added " + tt + " x" + amt, SNUtil.diDLL);
+                                SNUtil.Log("Added " + tt + " x" + amt, SNUtil.DiDLL);
                             }
                         } /*
                         if (sc != null)
@@ -204,7 +204,7 @@ public static class SeabaseReconstruction {
                     if (mdl)
                         mdl.SetActive(true);
                 } catch (Exception ex) {
-                    SNUtil.log("Threw exception reconstructing part: " + ex.ToString(), SNUtil.diDLL);
+                    SNUtil.Log("Threw exception reconstructing part: " + ex.ToString(), SNUtil.DiDLL);
                 }
             }
 
@@ -250,9 +250,9 @@ public static class SeabaseReconstruction {
                 c.gameObject.destroy();
             }
 
-            SNUtil.log(
+            SNUtil.Log(
                 "Finished reconstructing seabase '" + seabaseID + "' @ " + baseCenter + " @ " + time,
-                SNUtil.diDLL
+                SNUtil.DiDLL
             );
             //ObjectUtil.dumpObjectData(gameObject);
         }
@@ -262,7 +262,7 @@ public static class SeabaseReconstruction {
             if (seabaseID == null)
                 seabaseID = gameObject.GetComponentInChildren<SeabaseIDHolder>().name;
             if (seabaseID == null) {
-                SNUtil.writeToChat("Could not find seabase ID in " + this + " @ " + transform.position);
+                SNUtil.WriteToChat("Could not find seabase ID in " + this + " @ " + transform.position);
                 return;
             }
 
@@ -328,25 +328,25 @@ public static class SeabaseReconstruction {
 
             if (storages == null) {
                 storages = gameObject.GetComponentsInChildren<StorageContainer>();
-                SNUtil.log(
-                    "Worldgen Seabase " + seabaseID + " finding storages: " + storages.toDebugString(),
-                    SNUtil.diDLL
+                SNUtil.Log(
+                    "Worldgen Seabase " + seabaseID + " finding storages: " + storages.ToDebugString(),
+                    SNUtil.DiDLL
                 );
             }
 
             if (chargers == null) {
                 chargers = gameObject.GetComponentsInChildren<Charger>();
-                SNUtil.log(
-                    "Worldgen Seabase " + seabaseID + " finding chargers: " + chargers.toDebugString(),
-                    SNUtil.diDLL
+                SNUtil.Log(
+                    "Worldgen Seabase " + seabaseID + " finding chargers: " + chargers.ToDebugString(),
+                    SNUtil.DiDLL
                 );
             }
 
             if (animations == null) {
                 animations = gameObject.GetComponentsInChildren<Animator>();
-                SNUtil.log(
-                    "Worldgen Seabase " + seabaseID + " finding animations: " + animations.toDebugString(),
-                    SNUtil.diDLL
+                SNUtil.Log(
+                    "Worldgen Seabase " + seabaseID + " finding animations: " + animations.ToDebugString(),
+                    SNUtil.DiDLL
                 );
             }
 
@@ -358,20 +358,20 @@ public static class SeabaseReconstruction {
 
                 foreach (var p in storages) {
                     if (p.container.IsEmpty() && p.storageRoot.transform.childCount > 0) {
-                        SNUtil.log(
+                        SNUtil.Log(
                             "Worldgen Seabase " + seabaseID + " rebuilding storage for " + p + ": " +
-                            p.storageRoot.GetComponentsInChildren<Pickupable>().toDebugString(),
-                            SNUtil.diDLL
+                            p.storageRoot.GetComponentsInChildren<Pickupable>().ToDebugString(),
+                            SNUtil.DiDLL
                         );
                         try {
                             foreach (var pp in p.GetComponentsInChildren<Pickupable>(true)) {
                                 p.container.AddItem(pp);
                             }
                         } catch (Exception e) {
-                            SNUtil.log(
+                            SNUtil.Log(
                                 "Exception initializing worldgen seabase inventory @ " + p.transform.position + ": " +
                                 e,
-                                SNUtil.diDLL
+                                SNUtil.DiDLL
                             );
                         }
                     }
@@ -394,10 +394,10 @@ public static class SeabaseReconstruction {
                 foreach (var p in chargers) {
                     //SNUtil.writeToChat(p+" @ "+p.transform.position+" : "+p.equipment.equippedCount.Count+" : "+p.equipmentRoot.transform.childCount);
                     if (p.equipment.equippedCount.Count == 0 && p.equipmentRoot.transform.childCount > 0) {
-                        SNUtil.log(
+                        SNUtil.Log(
                             "Worldgen Seabase " + seabaseID + " rebuilding storage for " + p + ": " +
-                            p.equipmentRoot.GetComponentsInChildren<Pickupable>().toDebugString(),
-                            SNUtil.diDLL
+                            p.equipmentRoot.GetComponentsInChildren<Pickupable>().ToDebugString(),
+                            SNUtil.DiDLL
                         );
                         try {
                             var i = 0;
@@ -414,9 +414,9 @@ public static class SeabaseReconstruction {
                             p.animator.SetBool(p.animParamOpen, true);
                             p.ToggleUI(true);
                         } catch (Exception e) {
-                            SNUtil.log(
+                            SNUtil.Log(
                                 "Exception initializing worldgen seabase charger @ " + p.transform.position + ": " + e,
-                                SNUtil.diDLL
+                                SNUtil.DiDLL
                             );
                         }
                     }
@@ -455,8 +455,8 @@ public static class SeabaseReconstruction {
     }
 
     private static void rebuildNestedObjects(GameObject main, XmlElement e) {
-        foreach (var e2 in e.getDirectElementsByTagName("child")) {
-            var pfb = new DICustomPrefab(e2.getProperty("prefab"));
+        foreach (var e2 in e.GetDirectElementsByTagName("child")) {
+            var pfb = new DICustomPrefab(e2.GetProperty("prefab"));
             pfb.loadFromXML(e2);
             var go = pfb.createWorldObject();
             if (go != null) {
@@ -546,7 +546,7 @@ public static class SeabaseReconstruction {
         }
 
         public GameObject GetGameObject() {
-            SNUtil.log("Reconstructing seabase with " + data.ChildNodes.Count + " parts", SNUtil.diDLL);
+            SNUtil.Log("Reconstructing seabase with " + data.ChildNodes.Count + " parts", SNUtil.DiDLL);
             var go = new GameObject(Info.ClassID);
             go.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.VeryFar;
             go.EnsureComponent<PrefabIdentifier>().ClassId = Info.ClassID;
@@ -560,11 +560,11 @@ public static class SeabaseReconstruction {
             holder.transform.parent = go.transform;
             //go.GetComponent<LightingController>().state = LightingController.LightingState.Damaged;
             //go.EnsureComponent<BaseHider>();
-            var pos = data.getVector("position").Value;
+            var pos = data.GetVector("position").Value;
             go.transform.position = pos;
             go.transform.localPosition = Vector3.zero;
             go.transform.localRotation = Quaternion.identity;
-            SNUtil.log("Finished deserializing seabase @ " + pos, SNUtil.diDLL);
+            SNUtil.Log("Finished deserializing seabase @ " + pos, SNUtil.DiDLL);
             return go;
         }
     }

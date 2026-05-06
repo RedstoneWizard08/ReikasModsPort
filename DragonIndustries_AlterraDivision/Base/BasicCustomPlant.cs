@@ -48,7 +48,7 @@ public class BasicCustomPlant : CustomPrefab, DIPrefab<FloraPrefabFetch>, Flora 
         string seedName = "Seed"
     ) : base(id, name, desc) {
         baseTemplate = template;
-        ownerMod = SNUtil.tryGetModDLL();
+        ownerMod = SNUtil.TryGetModDLL();
         // typeof(ModPrefab).GetField("Mod", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(this, ownerMod);
         seed = seedPfb == null ? null : new BasicCustomPlantSeed(this, seedPfb, seedName);
         AddOnRegister(() => {
@@ -60,7 +60,7 @@ public class BasicCustomPlant : CustomPrefab, DIPrefab<FloraPrefabFetch>, Flora 
                     CraftDataHandler.SetHarvestType(Info.TechType, collectionMethod);
                     CraftDataHandler.SetHarvestOutput(Info.TechType, seed.Info.TechType);
                     CraftDataHandler.SetHarvestFinalCutBonus(Info.TechType, finalCutBonus);
-                    SNUtil.log("Finished patching " + this + " > " + seed, ownerMod);
+                    SNUtil.Log("Finished patching " + this + " > " + seed, ownerMod);
                 }
             }
         );

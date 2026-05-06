@@ -213,7 +213,7 @@ public class BaseCreatureRepellentLogic : ToggleableMachineBase {
     private float lastTickTime;
 
     private void Start() {
-        SNUtil.log("Reinitializing base repellent");
+        SNUtil.Log("Reinitializing base repellent");
         AqueousEngineeringMod.repellentBlock.initializeMachine(gameObject);
     }
 
@@ -228,15 +228,15 @@ public class BaseCreatureRepellentLogic : ToggleableMachineBase {
     }
 
     protected override void load(System.Xml.XmlElement data) {
-        lastTickTime = (float)data.getFloat("last", float.NaN);
-        cooldown = (float)data.getFloat("cooldown", float.NaN);
-        isEnabled = data.getBoolean("toggled");
+        lastTickTime = (float)data.GetFloat("last", float.NaN);
+        cooldown = (float)data.GetFloat("cooldown", float.NaN);
+        isEnabled = data.GetBoolean("toggled");
     }
 
     protected override void save(System.Xml.XmlElement data) {
-        data.addProperty("last", lastTickTime);
-        data.addProperty("cooldown", cooldown);
-        data.addProperty("toggled", isEnabled);
+        data.AddProperty("last", lastTickTime);
+        data.AddProperty("cooldown", cooldown);
+        data.AddProperty("toggled", isEnabled);
     }
 
     protected override HolographicControl getButtonType() {

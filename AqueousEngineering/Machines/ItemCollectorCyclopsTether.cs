@@ -60,7 +60,7 @@ public class ItemCollectorCyclopsTetherLogic : CustomMachineLogic {
     public GameObject itemCollector;
 
     private void Start() {
-        SNUtil.log("Reinitializing cyclops item collector tether");
+        SNUtil.Log("Reinitializing cyclops item collector tether");
         AqueousEngineeringMod.collectorTetherBlock.initializeMachine(gameObject);
     }
 

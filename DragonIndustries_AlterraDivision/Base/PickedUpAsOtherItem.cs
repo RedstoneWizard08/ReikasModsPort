@@ -70,10 +70,10 @@ public class PickedUpAsOtherItem : CustomPrefab {
                     "Tooltip_" + d.Info.TechType.AsString(),
                     Language.main.Get("Tooltip_" + d.template.AsString())
                 );
-                SNUtil.log(
+                SNUtil.Log(
                     "Relocalized otherpickup " + d + " > " + d.Info.TechType.AsString() + " > " +
                     Language.main.Get(d.Info.TechType),
-                    SNUtil.diDLL
+                    SNUtil.DiDLL
                 );
             }
         }

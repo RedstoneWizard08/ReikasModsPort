@@ -27,14 +27,14 @@ public abstract class CustomEquipable : CustomPrefab, DIPrefab<CustomEquipable, 
             page = PDAManager.createPage("ency_" + Info.ClassID, Info.PrefabFileName, e.pda, "Tech/Equipment");
             var header = e.getString("header");
             if (header != null)
-                page.setHeaderImage(TextureManager.getTexture(SNUtil.tryGetModDLL(), "Textures/PDA/" + header));
+                page.setHeaderImage(TextureManager.getTexture(SNUtil.TryGetModDLL(), "Textures/PDA/" + header));
             page.register();
         }
     }
 
     [SetsRequiredMembers]
     protected CustomEquipable(string id, string name, string desc, string template) : base(id, name, desc) {
-        ownerMod = SNUtil.tryGetModDLL();
+        ownerMod = SNUtil.TryGetModDLL();
         // typeof(ModPrefab).GetField("Mod", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(this, ownerMod);
         this.id = id;
 

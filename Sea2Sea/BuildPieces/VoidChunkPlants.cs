@@ -131,13 +131,13 @@ internal class VoidChunkPlants : RandomPlant {
 	public override void loadFromXML(XmlElement e) {
 		base.loadFromXML(e);
 
-		mushrooms = e.getInt("mushrooms", mushrooms);
+		mushrooms = e.GetInt("mushrooms", mushrooms);
 	}
 
 	public override void saveToXML(XmlElement e) {
 		base.saveToXML(e);
 
-		e.addProperty("mushrooms", mushrooms);
+		e.AddProperty("mushrooms", mushrooms);
 	}
 
 	private class VoidPlant {

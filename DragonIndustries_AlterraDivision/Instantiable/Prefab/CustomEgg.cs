@@ -3,33 +3,32 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Nautilus.Assets;
-using Nautilus.Assets.Gadgets;
 using Nautilus.Handlers;
 using UnityEngine;
 
 namespace ReikaKalseki.DIAlterra;
 
 public sealed class CustomEgg : CustomPrefab {
-    public readonly TechType creatureToSpawn;
-    private readonly TechType template;
-    private TechType undiscoveredTechType;
+    public readonly TechType CreatureToSpawn;
+    private readonly TechType _template;
+    private TechType _undiscoveredTechType;
 
-    private readonly string creatureID;
+    private readonly string _creatureID;
 
-    public float eggScale = 1;
+    public float EggScale = 1;
 
-    private string eggTexture;
-    public string creatureHeldDesc;
-    private Action<GameObject> objectModify;
+    private string _eggTexture;
+    public string CreatureHeldDesc;
+    private Action<GameObject> _objectModify;
 
-    public int eggSize = 2;
-    public int creatureSize = 3;
+    public int EggSize = 2;
+    public int CreatureSize = 3;
 
-    public readonly WaterParkCreatureData eggProperties;
+    public readonly WaterParkCreatureData EggProperties;
 
-    private readonly Assembly ownerMod;
+    private readonly Assembly _ownerMod;
 
-    private static readonly Dictionary<TechType, CustomEgg> eggs = new();
+    private static readonly Dictionary<TechType, CustomEgg> Eggs = new();
 
     [SetsRequiredMembers]
     public CustomEgg(CustomPrefab pfb, TechType t) : this(pfb.Info.TechType, t, pfb.Info.ClassID) {
@@ -45,115 +44,116 @@ public sealed class CustomEgg : CustomPrefab {
         id + " Egg",
         "Hatches a " + id
     ) {
-        ownerMod = a != null ? a : SNUtil.tryGetModDLL();
+        _ownerMod = a != null ? a : SNUtil.TryGetModDLL();
 
-        creatureToSpawn = c;
-        template = t.getEgg();
-        if (template == TechType.None)
+        CreatureToSpawn = c;
+        _template = t.GetEgg();
+        if (_template == TechType.None)
             throw new Exception("Failed to find egg for creature techtype " + t.AsString());
 
-        creatureID = id;
+        _creatureID = id;
 
-        var prefab = CraftData.GetPrefabForTechTypeAsync(t).GetResult();
+        var prefab = PrefabUtil.GetPrefabForTechType(t);
         var creature = prefab.GetComponent<WaterParkCreature>();
         var wpp = creature.data;
-        eggProperties = ScriptableObject.CreateInstance<WaterParkCreatureData>();
-        eggProperties.initialSize = wpp.initialSize;
-        eggProperties.maxSize = wpp.maxSize;
-        eggProperties.outsideSize = wpp.outsideSize;
-        eggProperties.daysToGrow = wpp.daysToGrow;
-        eggProperties.isPickupableOutside = wpp.isPickupableOutside;
 
-        AddOnRegister(onPatched);
+        EggProperties = ScriptableObject.CreateInstance<WaterParkCreatureData>();
+        EggProperties.initialSize = wpp.initialSize;
+        EggProperties.maxSize = wpp.maxSize;
+        EggProperties.outsideSize = wpp.outsideSize;
+        EggProperties.daysToGrow = wpp.daysToGrow;
+        EggProperties.isPickupableOutside = wpp.isPickupableOutside;
 
-        eggs[creatureToSpawn] = this;
+        AddOnRegister(OnPatched);
+
+        Eggs[CreatureToSpawn] = this;
         SetGameObject(GetGameObject);
         Info.WithIcon(GetItemSprite());
     }
 
-    private void onPatched() {
-        if (ownerMod == null)
-            throw new Exception("Egg item " + creatureID + "/" + Info.TechType + " has no source mod!");
+    private void OnPatched() {
+        if (_ownerMod == null)
+            throw new Exception("Egg item " + _creatureID + "/" + Info.TechType + " has no source mod!");
 
-        CraftDataHandler.SetItemSize(creatureToSpawn, new Vector2int(creatureSize, creatureSize));
+        CraftDataHandler.SetItemSize(CreatureToSpawn, new Vector2int(CreatureSize, CreatureSize));
 
-        var prefab = CraftData.GetPrefabForTechTypeAsync(creatureToSpawn).GetResult();
+        var prefab = PrefabUtil.GetPrefabForTechType(CreatureToSpawn);
         var creature = prefab.GetComponent<WaterParkCreature>();
-        creature.data = eggProperties;
+        creature.data = EggProperties;
 
-        undiscoveredTechType = EnumHandler.AddEntry<TechType>(Info.ClassID + "_undiscovered").WithPdaInfo("", "");
-        SpriteHandler.RegisterSprite(undiscoveredTechType, GetItemSprite());
-        CraftDataHandler.SetItemSize(undiscoveredTechType, SizeInInventory);
+        _undiscoveredTechType = EnumHandler.AddEntry<TechType>(Info.ClassID + "_undiscovered").WithPdaInfo("", "");
+        SpriteHandler.RegisterSprite(_undiscoveredTechType, GetItemSprite());
+        CraftDataHandler.SetItemSize(_undiscoveredTechType, SizeInInventory);
 
         //WaterParkCreatureData data = ScriptableObject.CreateInstance<WaterParkCreatureData>();
 
-        SNUtil.log("Constructed custom egg for " + creatureID + ": " + Info.TechType.AsString(), ownerMod);
+        SNUtil.Log("Constructed custom egg for " + _creatureID + ": " + Info.TechType.AsString(), _ownerMod);
     }
 
-    public Vector2int SizeInInventory => new(eggSize, eggSize);
+    public Vector2int SizeInInventory => new(EggSize, EggSize);
 
-    public CustomEgg setTexture(string tex) {
-        eggTexture = tex;
+    public CustomEgg SetTexture(string tex) {
+        _eggTexture = tex;
         SpriteHandler.RegisterSprite(
-            creatureToSpawn,
-            TextureManager.getSprite(ownerMod, eggTexture + creatureID + "_Hatched")
+            CreatureToSpawn,
+            TextureManager.getSprite(_ownerMod, _eggTexture + _creatureID + "_Hatched")
         );
         return this;
     }
 
-    public CustomEgg modifyGO(Action<GameObject> a) {
-        objectModify = a;
+    public CustomEgg ModifyGo(Action<GameObject> a) {
+        _objectModify = a;
         return this;
     }
 
-    protected Sprite GetItemSprite() {
-        return TextureManager.getSprite(ownerMod, "Textures/Items/Egg_" + creatureID);
+    private Sprite GetItemSprite() {
+        return TextureManager.getSprite(_ownerMod, "Textures/Items/Egg_" + _creatureID);
     }
 
     public GameObject GetGameObject() {
-        var pfb = ObjectUtil.createWorldObject(template);
+        var pfb = ObjectUtil.createWorldObject(_template);
         var egg = pfb.EnsureComponent<CreatureEgg>();
         egg.eggType = Info.TechType;
-        egg.overrideEggType = undiscoveredTechType; //undiscovered
-        egg.creatureType = creatureToSpawn;
+        egg.overrideEggType = _undiscoveredTechType; //undiscovered
+        egg.creatureType = CreatureToSpawn;
         // egg.explodeOnHatch = false;
         pfb.fullyEnable();
-        pfb.transform.localScale = Vector3.one * eggScale;
-        RenderUtil.swapTextures(ownerMod, pfb.GetComponentInChildren<Renderer>(), eggTexture + creatureID);
-        objectModify?.Invoke(pfb);
+        pfb.transform.localScale = Vector3.one * EggScale;
+        RenderUtil.swapTextures(_ownerMod, pfb.GetComponentInChildren<Renderer>(), _eggTexture + _creatureID);
+        _objectModify?.Invoke(pfb);
         return pfb;
     }
 
-    public static void updateLocale() {
-        foreach (var e in eggs.Values) {
-            var cname = Language.main.Get(e.creatureToSpawn);
+    public static void UpdateLocale() {
+        foreach (var e in Eggs.Values) {
+            var cname = Language.main.Get(e.CreatureToSpawn);
             CustomLocaleKeyDatabase.registerKey(e.Info.TechType.AsString(), cname + " Egg");
             CustomLocaleKeyDatabase.registerKey("Tooltip_" + e.Info.TechType.AsString(), "Hatches a " + cname);
 
             CustomLocaleKeyDatabase.registerKey(
-                e.undiscoveredTechType.AsString(),
+                e._undiscoveredTechType.AsString(),
                 Language.main.Get(TechType.BonesharkEggUndiscovered)
             );
             CustomLocaleKeyDatabase.registerKey(
-                "Tooltip_" + e.undiscoveredTechType.AsString(),
+                "Tooltip_" + e._undiscoveredTechType.AsString(),
                 Language.main.Get("Tooltip_" + TechType.BonesharkEggUndiscovered.AsString())
             );
 
-            SNUtil.log("Relocalized " + e + " > " + Language.main.Get(e.Info.TechType), e.ownerMod);
-            if (!string.IsNullOrEmpty(e.creatureHeldDesc)) {
+            SNUtil.Log("Relocalized " + e + " > " + Language.main.Get(e.Info.TechType), e._ownerMod);
+            if (!string.IsNullOrEmpty(e.CreatureHeldDesc)) {
                 CustomLocaleKeyDatabase.registerKey(
-                    "Tooltip_" + e.creatureToSpawn.AsString(),
-                    e.creatureHeldDesc + "\nRaised in containment."
+                    "Tooltip_" + e.CreatureToSpawn.AsString(),
+                    e.CreatureHeldDesc + "\nRaised in containment."
                 );
             }
         }
     }
 
-    public static CustomEgg getEgg(TechType creature) {
-        return eggs.ContainsKey(creature) ? eggs[creature] : null;
+    public static CustomEgg GetEgg(TechType creature) {
+        return Eggs.TryGetValue(creature, out var egg) ? egg : null;
     }
 
-    public static CustomEgg createAndRegisterEgg(
+    public static CustomEgg CreateAndRegisterEgg(
         CustomPrefab creature,
         TechType basis,
         float scale,
@@ -164,11 +164,11 @@ public sealed class CustomEgg : CustomPrefab {
         params BiomeType[] spawn
     ) {
         var egg = new CustomEgg(creature, basis);
-        registerEgg(egg, scale, grownHeldDesc, isBig, modify, eggSpawnRate, spawn);
+        RegisterEgg(egg, scale, grownHeldDesc, isBig, modify, eggSpawnRate, spawn);
         return egg;
     }
 
-    public static CustomEgg createAndRegisterEgg(
+    public static CustomEgg CreateAndRegisterEgg(
         TechType creature,
         TechType basis,
         float scale,
@@ -179,11 +179,11 @@ public sealed class CustomEgg : CustomPrefab {
         params BiomeType[] spawn
     ) {
         var egg = new CustomEgg(creature, basis);
-        registerEgg(egg, scale, grownHeldDesc, isBig, modify, eggSpawnRate, spawn);
+        RegisterEgg(egg, scale, grownHeldDesc, isBig, modify, eggSpawnRate, spawn);
         return egg;
     }
 
-    private static void registerEgg(
+    private static void RegisterEgg(
         CustomEgg egg,
         float scale,
         string grownHeldDesc,
@@ -192,12 +192,12 @@ public sealed class CustomEgg : CustomPrefab {
         float eggSpawnRate,
         params BiomeType[] spawn
     ) {
-        egg.setTexture("Textures/Eggs/");
-        egg.creatureHeldDesc = grownHeldDesc;
-        egg.eggScale = scale;
+        egg.SetTexture("Textures/Eggs/");
+        egg.CreatureHeldDesc = grownHeldDesc;
+        egg.EggScale = scale;
         if (!isBig) {
-            egg.creatureSize = 2;
-            egg.eggSize = 1;
+            egg.CreatureSize = 2;
+            egg.EggSize = 1;
         }
 
         modify?.Invoke(egg);
@@ -215,7 +215,7 @@ public sealed class CustomEgg : CustomPrefab {
             );
     }
 
-    public bool includes(TechType tt) {
-        return tt == Info.TechType || tt == undiscoveredTechType;
+    public bool Includes(TechType tt) {
+        return tt == Info.TechType || tt == _undiscoveredTechType;
     }
 }

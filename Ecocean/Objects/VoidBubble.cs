@@ -90,7 +90,7 @@ public class VoidBubble : InteractableSpawnable {
         //SNUtil.writeToChat(densityNoise.getValue(ctr).ToString("0.000")+" > "+f.ToString("0.000")+" > "+(0.94F+f).ToString("0.000"));
         if (UnityEngine.Random.Range(0F, 1F) < 0.94F + f)
             return;
-        Vector3 pos = MathUtil.getRandomVectorAround(ctr, 90).setY(ctr.y - 140 + UnityEngine.Random.Range(0F, 30F));
+        Vector3 pos = MathUtil.getRandomVectorAround(ctr, 90).SetY(ctr.y - 140 + UnityEngine.Random.Range(0F, 30F));
         if (VanillaBiomes.Void.IsInBiome(pos) &&
             (pos.y >= -50 || VanillaBiomes.Void.IsInBiome(pos + Vector3.up * 50)) &&
             !ECHooks.isVoidHeatColumn(pos, out var trash)) {

@@ -59,7 +59,7 @@ public static class MathUtil {
 	}
 
 	public static bool isPointInCylinder(Vector3 center, Vector3 point, double r, double h) {
-		return Math.Abs(point.y - center.y) <= h && (center - point).setY(0).magnitude <= r;
+		return Math.Abs(point.y - center.y) <= h && (center - point).SetY(0).magnitude <= r;
 	}
 
 	public static void rotateObjectAround(GameObject go, Vector3 point, double amt) {
@@ -165,7 +165,7 @@ public static class MathUtil {
 	}
 
 	public static Vector3 getRandomPointAtSetDistance(Vector3 pos, float dist) {
-		return pos + new Vector3(UnityEngine.Random.Range(-1F, 1F), UnityEngine.Random.Range(-1F, 1F), UnityEngine.Random.Range(-1F, 1F)).setLength(dist);
+		return pos + new Vector3(UnityEngine.Random.Range(-1F, 1F), UnityEngine.Random.Range(-1F, 1F), UnityEngine.Random.Range(-1F, 1F)).SetLength(dist);
 	}
 
 }

@@ -41,7 +41,7 @@ public class SeamothPlanktonScoop : SeamothModule {
                         if (sc.container.AddItem(collected.GetComponentInChildren<Pickupable>()) != null)
                             uGUI_IconNotifier.main.Play(harvest, uGUI_IconNotifier.AnimationType.From, null);
                         if (sc.container.IsFull())
-                            SNUtil.writeToChat("Plankton scoop is full");
+                            SNUtil.WriteToChat("Plankton scoop is full");
                         break;
                     }
                 }

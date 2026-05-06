@@ -30,7 +30,7 @@ public class ModVersionCheck : IComparable<ModVersionCheck> {
 	public void register() {
 		modVersions.Add(this);
 		modVersions.Sort();
-		SNUtil.log("Registered version check " + this, SNUtil.tryGetModDLL(true));
+		SNUtil.Log("Registered version check " + this, SNUtil.TryGetModDLL(true));
 	}
 
 	public int CompareTo(ModVersionCheck other) {
@@ -67,7 +67,7 @@ public class ModVersionCheck : IComparable<ModVersionCheck> {
 			return ModVersion.parse(text);
 		}
 		catch (Exception ex) {
-			SNUtil.log("Failed to get local git version: " + ex.ToString());
+			SNUtil.Log("Failed to get local git version: " + ex.ToString());
 			return ModVersion.ERROR;
 		}
 	}
@@ -75,20 +75,20 @@ public class ModVersionCheck : IComparable<ModVersionCheck> {
 	private static ModVersion getModifiedTimeFromGitFile(string repo) {
 		try {
 			var prev = DateTime.Now;
-			SNUtil.log("Fetching remote version from " + repo, SNUtil.diDLL);
+			SNUtil.Log("Fetching remote version from " + repo, SNUtil.DiDLL);
 			var url = "https://raw.githubusercontent.com/ReikaKalseki/"+repo+"/main/"+VERSION_FILE;
 			var text = new WebClient().DownloadString(url);
 			var mv = ModVersion.parse(text);
 			var after = DateTime.Now;
-			SNUtil.log("Version check for " + repo + " done in " + (after - prev).TotalSeconds.ToString("0.000") + " seconds; version = " + mv, SNUtil.diDLL);
+			SNUtil.Log("Version check for " + repo + " done in " + (after - prev).TotalSeconds.ToString("0.000") + " seconds; version = " + mv, SNUtil.DiDLL);
 			return mv;
 		}
 		catch (Exception ex) {
 			var str = ex.ToString();
-			SNUtil.log("Failed to get remote " + repo + " git version: " + str, SNUtil.diDLL);
+			SNUtil.Log("Failed to get remote " + repo + " git version: " + str, SNUtil.DiDLL);
 			if (str.StartsWith("System.Net.WebException", StringComparison.InvariantCultureIgnoreCase) && str.Contains("ConnectFailure")) {
-				SNUtil.log("Could not connect to server!", SNUtil.diDLL);
-				SNUtil.createPopupWarning("Could not connect to " + repo + " GitHub for versions. Check your internet/firewall/proxy settings.", false);
+				SNUtil.Log("Could not connect to server!", SNUtil.DiDLL);
+				SNUtil.CreatePopupWarning("Could not connect to " + repo + " GitHub for versions. Check your internet/firewall/proxy settings.", false);
 			}
 			return ModVersion.ERROR;
 		}
@@ -115,7 +115,7 @@ public class ModVersionCheck : IComparable<ModVersionCheck> {
 	}
 
 	private static void doFetchRemoteVersions() {
-		SNUtil.log("Fetching remote mod versions", SNUtil.diDLL);
+		SNUtil.Log("Fetching remote mod versions", SNUtil.DiDLL);
 		foreach (var mv in modVersions) {
 			mv.performRemoteCheck();
 		}

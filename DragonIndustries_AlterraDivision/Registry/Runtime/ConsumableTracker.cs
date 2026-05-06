@@ -23,7 +23,7 @@ public class ConsumableTracker : SerializedTracker<ConsumableTracker.ConsumeItem
 	}
 
 	private static ConsumeItemEvent parseConsumption(XmlElement s) {
-		return new ConsumeItemEvent(SNUtil.getTechType(s.getProperty("itemType")), s.getFloat("eventTime", -1), s.getBoolean("isEat"));
+		return new ConsumeItemEvent(SNUtil.GetTechType(s.GetProperty("itemType")), s.GetFloat("eventTime", -1), s.GetBoolean("isEat"));
 	}
 
 	public ReadOnlyCollection<ConsumeItemEvent> getEvents() {
@@ -41,8 +41,8 @@ public class ConsumableTracker : SerializedTracker<ConsumableTracker.ConsumeItem
 		}
 
 		public override void saveToXML(XmlElement e) {
-			e.addProperty("itemType", itemType.AsString());
-			e.addProperty("isEat", isEating);
+			e.AddProperty("itemType", itemType.AsString());
+			e.AddProperty("isEat", isEating);
 		}
 
 		public override string ToString() {

@@ -23,7 +23,7 @@ public class WreckDoorSwaps : ManipulationBase {
 		var sw = go.EnsureComponent<WreckDoorSwapper>();
 		sw.swaps = swaps;
 		sw.Invoke(nameof(WreckDoorSwapper.applyDelayed), 2);
-		SNUtil.log("Queuing door swaps " + swaps.toDebugString("\n")+" on wreck "+go.name+" @ "+go.transform.position);
+		SNUtil.Log("Queuing door swaps " + swaps.ToDebugString("\n")+" on wreck "+go.name+" @ "+go.transform.position);
 	}
 
 	public override void applyToObject(PlacedObject go) {
@@ -32,8 +32,8 @@ public class WreckDoorSwaps : ManipulationBase {
 
 	public override void loadFromXML(XmlElement e) {
 		swaps.Clear();
-		foreach (var e2 in e.getDirectElementsByTagName("door")) {
-			var d = new DoorSwap(e2.getVector("position").Value, e2.getProperty("type"));
+		foreach (var e2 in e.GetDirectElementsByTagName("door")) {
+			var d = new DoorSwap(e2.GetVector("position").Value, e2.GetProperty("type"));
 			swaps.Add(d);
 		}
 	}
@@ -41,8 +41,8 @@ public class WreckDoorSwaps : ManipulationBase {
 	public override void saveToXML(XmlElement e) {
 		foreach (var d in swaps) {
 			var e2 = e.OwnerDocument.CreateElement("door");
-			e2.addProperty("position", d.position);
-			e2.addProperty("type", d.doorType);
+			e2.AddProperty("position", d.position);
+			e2.AddProperty("type", d.doorType);
 			e.AppendChild(e2);
 		}
 	}
@@ -75,11 +75,11 @@ public class WreckDoorSwaps : ManipulationBase {
 		}
 
 		public void applyTo(GameObject go) {
-			SNUtil.log("Matched to door "+go.transform.position+", converted to "+doorType, SNUtil.diDLL);
+			SNUtil.Log("Matched to door "+go.transform.position+", converted to "+doorType, SNUtil.DiDLL);
 			var par = go.transform.parent;
 			var put = ObjectUtil.createWorldObject(doorPrefabs[doorType], true, true);
 			if (put == null) {
-				SNUtil.writeToChat("Could not find prefab for door type " + doorType);
+				SNUtil.WriteToChat("Could not find prefab for door type " + doorType);
 				return;
 			}
 			put.transform.position = go.transform.position;
@@ -158,7 +158,7 @@ public class WreckDoorSwaps : ManipulationBase {
 							break;
 					}
 					catch (Exception e) {
-						SNUtil.log("Threw exception processing PI '"+pi+"': " + e);
+						SNUtil.Log("Threw exception processing PI '"+pi+"': " + e);
 						throw e;
 					}
 				}
@@ -179,8 +179,8 @@ public class WreckDoorSwaps : ManipulationBase {
 					has += "[PREFAB] "+pi.name + " [" + pi.ClassId + "] @ " + pi.transform.position + "\n";
 				}
 			}
-			SNUtil.log(has, SNUtil.diDLL);
-			SNUtil.log("}\nTrying again in 2s", SNUtil.diDLL);
+			SNUtil.Log(has, SNUtil.DiDLL);
+			SNUtil.Log("}\nTrying again in 2s", SNUtil.DiDLL);
 		}
 
 		public void applyDelayed() {
@@ -190,30 +190,30 @@ public class WreckDoorSwaps : ManipulationBase {
 				doSimpleSearch(doors, unfound);
 			}
 			catch (Exception e) {
-				SNUtil.log("Threw exception doing simple search: " + e);
+				SNUtil.Log("Threw exception doing simple search: " + e);
 			}
 			if (unfound.Count > 0) {
-				SNUtil.log("Some door swaps in wreck @ " + transform.position + " found no easy match, checking all PIs\n" + unfound.toDebugString("\n"), SNUtil.diDLL);
+				SNUtil.Log("Some door swaps in wreck @ " + transform.position + " found no easy match, checking all PIs\n" + unfound.ToDebugString("\n"), SNUtil.DiDLL);
 				try {
 					doPrefabSearch(unfound);
 				}
 				catch (Exception e) {
-					SNUtil.log("Threw exception processing PIs: "+e);
+					SNUtil.Log("Threw exception processing PIs: "+e);
 				}
 			}
 			if (unfound.Count > 0) {
-				SNUtil.log("Some door swaps (" + unfound.Count + "/" + swaps.Count + ") for " + gameObject.name + " @ " + transform.position + " found no match!!\n" + unfound.toDebugString("\n"), SNUtil.diDLL);
+				SNUtil.Log("Some door swaps (" + unfound.Count + "/" + swaps.Count + ") for " + gameObject.name + " @ " + transform.position + " found no match!!\n" + unfound.ToDebugString("\n"), SNUtil.DiDLL);
 				try {
 					printCandidates(doors, unfound);
 				}
 				catch (Exception e) {
-					SNUtil.log("Threw exception printing candidates: " + e);
+					SNUtil.Log("Threw exception printing candidates: " + e);
 				}
 				Invoke(nameof(applyDelayed), 2);
 				swaps = unfound;
 			}
 			else {
-				SNUtil.log("Door swaps completed in "+ gameObject.name + " @ " + transform.position);
+				SNUtil.Log("Door swaps completed in "+ gameObject.name + " @ " + transform.position);
 				this.destroy();
 			}
 		}

@@ -155,18 +155,18 @@ public class FallingMaterialSystem {
 
     private Vector3 SelectRandomPosition() {
         var sel = MathUtil.getRandomVectorAround(
-            Player.main.transform.position.setY(0),
+            Player.main.transform.position.SetY(0),
             new Vector3(1200, 0, 1200)
         );
         while (!IsValidPosition(sel)) {
-            sel = MathUtil.getRandomVectorAround(Player.main.transform.position.setY(0), new Vector3(1200, 0, 1200));
+            sel = MathUtil.getRandomVectorAround(Player.main.transform.position.SetY(0), new Vector3(1200, 0, 1200));
         }
 
-        return sel.setY(-2);
+        return sel.SetY(-2);
     }
 
     public bool IsValidPosition(Vector3 sel) {
-        return !VanillaBiomes.Void.IsInBiome(sel.setY(-5)) && !IsCloseToExclusion(sel);
+        return !VanillaBiomes.Void.IsInBiome(sel.SetY(-5)) && !IsCloseToExclusion(sel);
     }
 
     private bool IsCloseToExclusion(Vector3 sel) {
@@ -197,7 +197,7 @@ public class FallingMaterialSystem {
             if (!go)
                 return;
             go.transform.position = MathUtil.getRandomVectorAround(pos, new Vector3(100, 0, 100))
-                .setY(UnityEngine.Random.Range(500F, 1500F));
+                .SetY(UnityEngine.Random.Range(500F, 1500F));
             soundPos = go.transform.position;
             foreach (var p in go.GetComponentsInChildren<ParticleSystem>()) {
                 if (p)
@@ -210,17 +210,17 @@ public class FallingMaterialSystem {
             item.transform.SetParent(go.transform);
             item.transform.localPosition = Vector3.zero;
             var tag = go.EnsureComponent<FallingMaterialTag>();
-            tag.Velocity = MathUtil.getRandomVectorAround(Vector3.zero, 20).setY(-24);
+            tag.Velocity = MathUtil.getRandomVectorAround(Vector3.zero, 20).SetY(-24);
             EntryEvent?.Invoke(go);
         }
 
         var playerPos = Player.main.transform.position;
-        if (playerPos.y >= -50 || (pos.setY(playerPos.y) - playerPos).magnitude < 200)
+        if (playerPos.y >= -50 || (pos.SetY(playerPos.y) - playerPos).magnitude < 200)
             SoundManager.playSoundAt(EntrySound, soundPos, false, 9999);
         if (_signal != null)
             _signal.deactivate();
         else
-            SNUtil.log("Could not deactivate null signal in FallingMaterial::spawnItem");
+            SNUtil.Log("Could not deactivate null signal in FallingMaterial::spawnItem");
         if (_currentSpawner)
             _currentSpawner.gameObject.destroy(false);
         _currentSpawner = null;

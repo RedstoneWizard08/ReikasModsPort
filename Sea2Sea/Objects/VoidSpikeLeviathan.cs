@@ -115,7 +115,7 @@ public class VoidSpikeLeviathan : CreatureAsset {
 
     public void register() {
         Register();
-        SNUtil.addPDAEntry(CustomPrefab, 20, "Lifeforms/Fauna/Leviathans", locale.pda, locale.getString("header"));
+        SNUtil.AddPdaEntry(CustomPrefab, 20, "Lifeforms/Fauna/Leviathans", locale.pda, locale.getString("header"));
     }
 
     public static void MakeReefbackTest() {

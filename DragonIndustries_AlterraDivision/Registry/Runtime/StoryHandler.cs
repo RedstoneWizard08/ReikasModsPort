@@ -30,7 +30,7 @@ public class StoryHandler : SerializedTracker<StoryHandler.StoryGoalRecord>, ISt
 	}
 
 	private static StoryGoalRecord parse(XmlElement s) {
-		return new StoryGoalRecord(s.getProperty("goal"), s.getFloat("eventTime", -1));
+		return new StoryGoalRecord(s.GetProperty("goal"), s.GetFloat("eventTime", -1));
 	}
 
 	private static StoryGoalRecord parseLegacy(string s) {
@@ -63,31 +63,31 @@ public class StoryHandler : SerializedTracker<StoryHandler.StoryGoalRecord>, ISt
 
 	public void onLoad() {
 		if (!BiomeGoalTracker.main) {
-			SNUtil.log("Story biome goal tracker not initialized yet!", SNUtil.diDLL);
+			SNUtil.Log("Story biome goal tracker not initialized yet!", SNUtil.DiDLL);
 			return;
 		}
 		var lgt = BiomeGoalTracker.main.gameObject.GetComponent<LocationGoalTracker>();
 		var cg = lgt.gameObject.EnsureComponent<ConditionalLocationGoalTracker>();
 		foreach (var g in queuedTickedGoals) {
 			if (g is ConditionalLocationGoal clg) {
-				SNUtil.log("Registering conditional location goal '" + g.key + "' for position " + clg.position, SNUtil.diDLL);
+				SNUtil.Log("Registering conditional location goal '" + g.key + "' for position " + clg.position, SNUtil.DiDLL);
 				cg.goals.Add(clg);
 			}
 			else if (g is LocationGoal lg) {
-				SNUtil.log("Registering location goal '" + g.key + "' for position " + lg.position + ": " + lg.location, SNUtil.diDLL);
+				SNUtil.Log("Registering location goal '" + g.key + "' for position " + lg.position + ": " + lg.location, SNUtil.DiDLL);
 				lgt.goals.Add(lg);
 			}
 			else if (g is BiomeGoal bg) {
-				SNUtil.log("Registering discovery goal '" + g.key + "' for biome " + bg.biome, SNUtil.diDLL);
+				SNUtil.Log("Registering discovery goal '" + g.key + "' for biome " + bg.biome, SNUtil.DiDLL);
 				BiomeGoalTracker.main.goals.Add(bg);
 			}
 			else {
-				SNUtil.log("Unrecognized ticked goal '" + g.key + "' type: " + g.GetType().FullName + "!");
+				SNUtil.Log("Unrecognized ticked goal '" + g.key + "' type: " + g.GetType().FullName + "!");
 			}
 		}
 		var ut = lgt.gameObject.GetComponent<OnGoalUnlockTracker>();
 		foreach (var kvp in queuedChainedGoalRedirects) {
-			SNUtil.log("Applying redirect for goal '" + kvp.Key + "': " + kvp.Value);
+			SNUtil.Log("Applying redirect for goal '" + kvp.Key + "': " + kvp.Value);
 			if (kvp.Value == null) {
 				ut.goalUnlocks.Remove(kvp.Key);
 			}
@@ -174,7 +174,7 @@ public class StoryHandler : SerializedTracker<StoryHandler.StoryGoalRecord>, ISt
 	}
 
 	public void NotifyGoalComplete(string key) {
-		SNUtil.log("Completed Story Goal '" + key + "' @ " + DayNightCycle.main.timePassedAsFloat, SNUtil.diDLL);
+		SNUtil.Log("Completed Story Goal '" + key + "' @ " + DayNightCycle.main.timePassedAsFloat, SNUtil.DiDLL);
 		foreach (var ig in listeners) {
 			ig.NotifyGoalComplete(key);
 		}
@@ -250,7 +250,7 @@ public class StoryHandler : SerializedTracker<StoryHandler.StoryGoalRecord>, ISt
 		}
 
 		public override void saveToXML(XmlElement e) {
-			e.addProperty("goal", goal);
+			e.AddProperty("goal", goal);
 		}
 
 		public override string ToString() {

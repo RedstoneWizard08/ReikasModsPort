@@ -61,7 +61,7 @@ public class ACUMonitorLogic : CustomMachineLogic, IHandTarget {
     //internal GameObject rotator;
 
     private void Start() {
-        SNUtil.log("Reinitializing acu monitor");
+        SNUtil.Log("Reinitializing acu monitor");
         AqueousEngineeringMod.acuMonitorBlock.initializeMachine(gameObject);
     }
 
@@ -103,7 +103,7 @@ public class ACUMonitorLogic : CustomMachineLogic, IHandTarget {
             if (call)
                 call.PrintTerminalInfo();
             else
-                SNUtil.writeToChat("ACU is in an invalid state.");
+                SNUtil.WriteToChat("ACU is in an invalid state.");
         }
     }
 }

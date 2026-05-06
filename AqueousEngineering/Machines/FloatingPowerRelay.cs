@@ -31,7 +31,7 @@ public class FloatingPowerRelay : CustomMachine<FloatingPowerRelayLogic> {
 
         var mdl = go.setModel(
             "Power_Transmitter",
-            ObjectUtil.lookupPrefab(TechType.Gravsphere).GetResult().getChildObject("gravSphere_anim")
+            ObjectUtil.lookupPrefab(TechType.Gravsphere).getChildObject("gravSphere_anim")
         );
         var inner = mdl.getChildObject("Gravsphere");
         foreach (var rr in inner.GetComponentsInChildren<Renderer>()) {
@@ -78,7 +78,7 @@ public class FloatingPowerRelayLogic : CustomMachineLogic {
     private Renderer mainRenderer;
 
     private void Start() {
-        SNUtil.log("Reinitializing base floating power relay");
+        SNUtil.Log("Reinitializing base floating power relay");
         AqueousEngineeringMod.powerRelayBlock.initializeMachine(gameObject);
     }
 

@@ -23,9 +23,9 @@ public abstract class SeamothModule : CustomEquipable {
         foreach (var kvp in storageHandlers) {
             if (!string.IsNullOrEmpty(kvp.Value.localeKey) && !string.IsNullOrEmpty(kvp.Value.localizedHoverText)) {
                 CustomLocaleKeyDatabase.registerKey(kvp.Value.localeKey, kvp.Value.localizedHoverText);
-                SNUtil.log(
+                SNUtil.Log(
                     "Relocalized seamoth module tooltip " + kvp.Value.localeKey + " > " + kvp.Value.localizedHoverText,
-                    SNUtil.diDLL
+                    SNUtil.DiDLL
                 );
             }
         }

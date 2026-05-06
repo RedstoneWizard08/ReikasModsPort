@@ -41,20 +41,20 @@ public class HealingOverTime : MonoBehaviour, CustomSerializedComponent {
 	}
 
 	public virtual void saveToXML(XmlElement e) {
-		e.addProperty("total", totalToHeal);
-		e.addProperty("remaining", healingRemaining);
-		e.addProperty("duration", totalDuration);
-		e.addProperty("rate", healRate);
-		e.addProperty("time", startTime);
+		e.AddProperty("total", totalToHeal);
+		e.AddProperty("remaining", healingRemaining);
+		e.AddProperty("duration", totalDuration);
+		e.AddProperty("rate", healRate);
+		e.AddProperty("time", startTime);
 	}
 
 	public virtual void readFromXML(XmlElement e) {
-		totalToHeal = (float)e.getFloat("total", 0);
-		healingRemaining = (float)e.getFloat("remaining", 0);
-		totalDuration = (float)e.getFloat("duration", 0);
-		healRate = (float)e.getFloat("rate", 0);
+		totalToHeal = (float)e.GetFloat("total", 0);
+		healingRemaining = (float)e.GetFloat("remaining", 0);
+		totalDuration = (float)e.GetFloat("duration", 0);
+		healRate = (float)e.GetFloat("rate", 0);
 		activate();
-		startTime = (float)e.getFloat("time", 0);
+		startTime = (float)e.GetFloat("time", 0);
 	}
 
 }

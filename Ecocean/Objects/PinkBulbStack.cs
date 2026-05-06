@@ -24,7 +24,7 @@ public class PinkBulbStack : BasicCustomPlant {
         ea.decomposes = true;
         ea.foodValue = 6;
         ea.waterValue = 4;
-        ea.kDecayRate = ObjectUtil.lookupPrefab(TechType.CreepvinePiece).GetResult().GetComponent<Eatable>().kDecayRate;
+        ea.kDecayRate = ObjectUtil.lookupPrefab(TechType.CreepvinePiece).GetComponent<Eatable>().kDecayRate;
         ea.timeDecayStart = DayNightCycle.main.timePassedAsFloat;
     }
 

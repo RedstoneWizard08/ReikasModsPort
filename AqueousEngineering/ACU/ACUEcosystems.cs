@@ -170,35 +170,35 @@ public static class ACUEcosystems {
     }
 
     public static void addPost() {
-        var tt = SNUtil.getTechType("StellarThalassacean");
+        var tt = SNUtil.GetTechType("StellarThalassacean");
         if (tt != TechType.None)
             addPredatorType(tt, 6F, 1.5F, 0.3F, false, BiomeRegions.GrandReef, BiomeRegions.Koosh, BiomeRegions.Other);
 
-        tt = SNUtil.getTechType("JasperThalassacean");
+        tt = SNUtil.GetTechType("JasperThalassacean");
         if (tt != TechType.None)
             addPredatorType(tt, 6F, 1.5F, 0.3F, false, BiomeRegions.LostRiver);
 
-        tt = SNUtil.getTechType("Twisteel");
+        tt = SNUtil.GetTechType("Twisteel");
         if (tt != TechType.None)
             addPredatorType(tt, 2F, 0.5F, 0.8F, true, BiomeRegions.BloodKelp, BiomeRegions.Koosh);
 
-        tt = SNUtil.getTechType("JellySpinner");
+        tt = SNUtil.GetTechType("JellySpinner");
         if (tt != TechType.None)
             addFood(new AnimalFood(tt, BiomeRegions.BloodKelp, BiomeRegions.LostRiver));
 
-        tt = SNUtil.getTechType("TriangleFish");
+        tt = SNUtil.GetTechType("TriangleFish");
         if (tt != TechType.None)
             addFood(new AnimalFood(tt, BiomeRegions.Shallows));
 
-        tt = SNUtil.getTechType("Axetail");
+        tt = SNUtil.GetTechType("Axetail");
         if (tt != TechType.None)
             addFood(new AnimalFood(tt, BiomeRegions.RedGrass));
 
-        tt = SNUtil.getTechType("RibbonRay");
+        tt = SNUtil.GetTechType("RibbonRay");
         if (tt != TechType.None)
             addFood(new AnimalFood(tt, BiomeRegions.Shallows, BiomeRegions.Mushroom));
 
-        tt = SNUtil.getTechType("GrandGlider");
+        tt = SNUtil.GetTechType("GrandGlider");
         if (tt != TechType.None) {
             addFood(new AnimalFood(tt, 2, BiomeRegions.GrandReef, BiomeRegions.Koosh, BiomeRegions.Other));
             addPredatorType(
@@ -213,7 +213,7 @@ public static class ACUEcosystems {
             );
         }
 
-        tt = SNUtil.getTechType("Filtorb");
+        tt = SNUtil.GetTechType("Filtorb");
         if (tt != TechType.None)
             addFood(
                 new AnimalFood(
@@ -232,16 +232,16 @@ public static class ACUEcosystems {
         addClownPincher("AmberClownPincher", BiomeRegions.Other);
         addClownPincher("CitrineClownPincher", BiomeRegions.Other);
 
-        tt = SNUtil.getTechType("GulperLeviathanBaby");
+        tt = SNUtil.GetTechType("GulperLeviathanBaby");
         if (tt != TechType.None)
             addPredatorType(tt, 5F, 4F, 0.2F, true, BiomeRegions.GrandReef);
-        tt = SNUtil.getTechType("GulperLeviathan");
+        tt = SNUtil.GetTechType("GulperLeviathan");
         if (tt != TechType.None)
             addPredatorType(tt, 8F, 8F, 0.2F, true, BiomeRegions.BloodKelp, BiomeRegions.GrandReef, BiomeRegions.Other);
     }
 
     private static void addClownPincher(string id, BiomeRegions.RegionType br) {
-        var tt = SNUtil.getTechType(id);
+        var tt = SNUtil.GetTechType(id);
         if (tt != TechType.None) {
             addFood(new AnimalFood(tt, br));
             addPredatorType(tt, 1.5F, 2F, 1.6F, false, br);
@@ -335,7 +335,7 @@ public static class ACUEcosystems {
             //if (possibleBiomes.Count <= 0)
             //	SNUtil.writeToChat("Biome list empty after "+tt+" > "+edibleFish[tt]);
             if (acu.NextIsDebug)
-                SNUtil.writeToChat(tt + " > " + edibleFish[tt] + " > " + string.Join(",", possibleBiomes));
+                SNUtil.WriteToChat(tt + " > " + edibleFish[tt] + " > " + string.Join(",", possibleBiomes));
             foodFish.Add(wp);
             acu.HerbivoreCount++;
         } else if (metabolisms.ContainsKey(tt)) {
@@ -347,7 +347,7 @@ public static class ACUEcosystems {
             List<BiomeRegions.RegionType> li = [..am.additionalRegions, am.primaryRegion];
             possibleBiomes.IntersectWith(li);
             if (acu.NextIsDebug)
-                SNUtil.writeToChat(tt + " > " + am + " > " + string.Join(",", possibleBiomes));
+                SNUtil.WriteToChat(tt + " > " + am + " > " + string.Join(",", possibleBiomes));
             //if (possibleBiomes.Count <= 0)
             //	SNUtil.writeToChat("Biome list empty after "+tt+" > "+am);
             var c = wp.gameObject.GetComponentInChildren<Creature>();
@@ -379,7 +379,7 @@ public static class ACUEcosystems {
                     //if (possibleBiomes.Count <= 0)
                     //	SNUtil.writeToChat("Biome list empty after "+vf+" > "+pf);
                     if (acu.NextIsDebug)
-                        SNUtil.writeToChat(
+                        SNUtil.WriteToChat(
                             pi + " > " + pf + " & " + string.Join(",", pf.regionType) + " > " +
                             string.Join(",", possibleBiomes)
                         );
@@ -570,9 +570,9 @@ public static class ACUEcosystems {
         }
 
         public static float calculateFoodValue(TechType tt) {
-            GameObject go = ObjectUtil.lookupPrefab(SNUtil.getTechType("Cooked" + tt)).GetResult();
+            GameObject go = ObjectUtil.lookupPrefab(SNUtil.GetTechType("Cooked" + tt));
             if (!go)
-                go = ObjectUtil.lookupPrefab(SNUtil.getTechType(tt + "Cooked")).GetResult();
+                go = ObjectUtil.lookupPrefab(SNUtil.GetTechType(tt + "Cooked"));
             var ea = go ? go.GetComponent<Eatable>() : null;
             return ea ? ea.foodValue * 0.01F : 0.2F; //so a reginald is ~40%
         }

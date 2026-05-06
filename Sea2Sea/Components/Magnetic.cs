@@ -23,7 +23,7 @@ internal class Magnetic : MonoBehaviour {
 					vehicle = GetComponentInChildren<Vehicle>();
 			}
 			catch (Exception e) {
-				SNUtil.log("Magnetic threw exception on search: " + e, SeaToSeaMod.ModDLL);
+				SNUtil.Log("Magnetic threw exception on search: " + e, SeaToSeaMod.ModDLL);
 			}
 			searched = true;
 		}
@@ -42,9 +42,9 @@ internal class Magnetic : MonoBehaviour {
 		diff = diff.normalized;
 		var mag = 240F*dT/Mathf.Max(0.1F, dist);
 		if (m1.body && !m1.body.isKinematic)
-			m1.body.AddForce(diff.setLength(mag), ForceMode.Force);
+			m1.body.AddForce(diff.SetLength(mag), ForceMode.Force);
 		if (m2.body && !m2.body.isKinematic)
-			m2.body.AddForce(-diff.setLength(mag), ForceMode.Force);
+			m2.body.AddForce(-diff.SetLength(mag), ForceMode.Force);
 	}
 
 }

@@ -62,7 +62,7 @@ public class MultiTechTrigger : ProgressionTrigger {
 	}
 
 	public override string ToString() {
-		return "Techs " + techs.toDebugString();
+		return "Techs " + techs.ToDebugString();
 	}
 
 }
@@ -185,7 +185,7 @@ public class TechUnlockEffect : DelayedProgressionEffect {
 
 	private static void unlockTech(TechType tt) {
 		KnownTech.Add(tt);
-		SNUtil.triggerTechPopup(tt);
+		SNUtil.TriggerTechPopup(tt);
 	}
 
 	public override string ToString() {

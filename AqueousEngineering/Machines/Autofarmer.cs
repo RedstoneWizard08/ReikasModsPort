@@ -63,7 +63,7 @@ public class AutofarmerLogic : CustomMachineLogic {
     private float harvestTime;
 
     private void Start() {
-        SNUtil.log("Reinitializing base farmer");
+        SNUtil.Log("Reinitializing base farmer");
         AqueousEngineeringMod.farmerBlock.initializeMachine(gameObject);
     }
 
@@ -158,11 +158,11 @@ public class AutofarmerLogic : CustomMachineLogic {
                 if (fp && !custom) {
                     var pp = drop.GetComponent<PickPrefab>();
                     td = pp.pickTech;
-                    drop = ObjectUtil.lookupPrefab(td).GetResult();
+                    drop = ObjectUtil.lookupPrefab(td);
                 } else if (td == TechType.JellyPlantSeed || td == TechType.WhiteMushroomSpore ||
                            td == TechType.AcidMushroomSpore) {
                     td = tt;
-                    drop = ObjectUtil.lookupPrefab(tt).GetResult().clone();
+                    drop = ObjectUtil.lookupPrefab(tt).clone();
                 }
 
                 //SNUtil.log("DT "+td+" > "+drop);
@@ -216,7 +216,7 @@ public class AutofarmerLogic : CustomMachineLogic {
                 return  ? TechType.CreepvineSeedCluster : TechType.CreepvinePiece;*/
             default:
                 return TechData.GetHarvestOutput(tt) != null
-                    ? ObjectUtil.lookupPrefab(TechData.GetHarvestOutput(tt)).GetResult()
+                    ? ObjectUtil.lookupPrefab(TechData.GetHarvestOutput(tt))
                     : null;
         }
     }

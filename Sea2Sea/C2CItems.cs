@@ -249,17 +249,17 @@ public static class C2CItems {
         broodmother.Register();
 
         deepStalker.Data =
-            SNUtil.getModifiedACUParams(TechType.Stalker, 1, 1, 1, 1.5F);
+            SNUtil.GetModifiedAcuParams(TechType.Stalker, 1, 1, 1, 1.5F);
         sanctuaryray.Data =
-            SNUtil.getModifiedACUParams(TechType.Jellyray, 1, 1, 1, 1.25F);
+            SNUtil.GetModifiedAcuParams(TechType.Jellyray, 1, 1, 1, 1.25F);
         purpleBoomerang.Data =
-            SNUtil.getModifiedACUParams(TechType.Boomerang, 1, 1, 1, 0.67F);
+            SNUtil.GetModifiedAcuParams(TechType.Boomerang, 1, 1, 1, 0.67F);
         purpleHoopfish.Data =
-            SNUtil.getModifiedACUParams(TechType.Hoopfish, 1.2F, 1.2F, 1.2F, 1.25F);
+            SNUtil.GetModifiedAcuParams(TechType.Hoopfish, 1.2F, 1.2F, 1.2F, 1.25F);
         purpleHolefish.Data =
-            SNUtil.getModifiedACUParams(TechType.HoleFish, 4F, 4F, 4F, 3.0F);
+            SNUtil.GetModifiedAcuParams(TechType.HoleFish, 4F, 4F, 4F, 3.0F);
         voltaicBladderfish.Data =
-            SNUtil.getModifiedACUParams(TechType.Bladderfish, 1, 1, 1, 1);
+            SNUtil.GetModifiedAcuParams(TechType.Bladderfish, 1, 1, 1, 1);
 
         voidSpikeLevi = new VoidSpikeLeviathan(SeaToSeaMod.ItemLocale.getEntry("VoidSpikeLevi"));
         voidSpikeLevi.register();
@@ -321,7 +321,7 @@ public static class C2CItems {
         alkali.Register();
         var e = SeaToSeaMod.ItemLocale.getEntry(alkali.ClassID);
         alkali.addPDAEntry(e.pda, 3, e.getString("header"));
-        SNUtil.log(" > " + alkali);
+        SNUtil.Log(" > " + alkali);
         GenUtil.registerPlantWorldgen(alkali, BiomeType.Mountains_IslandCaveFloor, 1, 1F);
         GenUtil.registerPlantWorldgen(alkali, BiomeType.Mountains_CaveFloor, 1, 0.5F);
         GenUtil.registerPlantWorldgen(alkali, BiomeType.Dunes_CaveFloor, 1, 0.5F);
@@ -333,20 +333,20 @@ public static class C2CItems {
         kelp.Register();
         e = SeaToSeaMod.ItemLocale.getEntry(kelp.ClassID);
         kelp.addPDAEntry(e.pda, 3, e.getString("header"));
-        SNUtil.log(" > " + kelp);
+        SNUtil.Log(" > " + kelp);
 
         healFlower = new HealingFlower();
         healFlower.Register();
         e = SeaToSeaMod.ItemLocale.getEntry(healFlower.ClassID);
         healFlower.addPDAEntry(e.pda, 5, e.getString("header"));
-        SNUtil.log(" > " + healFlower);
+        SNUtil.Log(" > " + healFlower);
         GenUtil.registerPlantWorldgen(healFlower, BiomeType.GrassyPlateaus_CaveFloor, 1, 2.5F);
 
         mountainGlow = new MountainGlow();
         mountainGlow.Register();
         e = SeaToSeaMod.ItemLocale.getEntry(mountainGlow.ClassID);
         mountainGlow.addPDAEntry(e.pda, 8, e.getString("header"));
-        SNUtil.log(" > " + mountainGlow);
+        SNUtil.Log(" > " + mountainGlow);
         GenUtil.registerPrefabWorldgen(
             mountainGlow,
             EntitySlot.Type.Small,
@@ -376,11 +376,11 @@ public static class C2CItems {
         sanctuaryPlant.Register();
         e = SeaToSeaMod.ItemLocale.getEntry(sanctuaryPlant.ClassID);
         sanctuaryPlant.addPDAEntry(e.pda, 10, e.getString("header"));
-        SNUtil.log(" > " + sanctuaryPlant);
+        SNUtil.Log(" > " + sanctuaryPlant);
 
         e = SeaToSeaMod.ItemLocale.getEntry("BRINE_CORAL");
-        brineCoral = SNUtil.addTechTypeToVanillaPrefabs(e, SeaToSeaMod.LrCoralClusters.ToArray());
-        SNUtil.addPDAEntry(brineCoral, e.key, e.name, 3, e.getString("category"), e.pda, e.getString("header"));
+        brineCoral = SNUtil.AddTechTypeToVanillaPrefabs(e, SeaToSeaMod.LrCoralClusters.ToArray());
+        SNUtil.AddPdaEntry(brineCoral, e.key, e.name, 3, e.getString("category"), e.pda, e.getString("header"));
 
         brineCoralPiece = new WorldCollectedItem(
             SeaToSeaMod.ItemLocale.getEntry("BrineCoralPiece"),
@@ -405,7 +405,7 @@ public static class C2CItems {
         }
 
         emperorRootCommon = EnumHandler.AddEntry<TechType>(e.key).WithPdaInfo(e.name, e.desc);
-        SNUtil.addPDAEntry(emperorRootCommon, e.key, e.name, 5, e.getString("category"), e.pda, e.getString("header"));
+        SNUtil.AddPdaEntry(emperorRootCommon, e.key, e.name, 5, e.getString("category"), e.pda, e.getString("header"));
 
         emperorRootOil = new EmperorRootOil(SeaToSeaMod.ItemLocale.getEntry("EmperorRootOil"));
         emperorRootOil.Register();
@@ -441,11 +441,11 @@ public static class C2CItems {
             BaseBioReactor.GetCharge(TechType.CreepvinePiece)
         );
         BioReactorHandler.SetBioReactorCharge(
-            CustomEgg.getEgg(deepStalker.Info.TechType).Info.TechType,
+            CustomEgg.GetEgg(deepStalker.Info.TechType).Info.TechType,
             BaseBioReactor.GetCharge(TechType.StalkerEgg) * 0.9F
         );
         BioReactorHandler.SetBioReactorCharge(
-            CustomEgg.getEgg(purpleHolefish.Info.TechType).Info.TechType,
+            CustomEgg.GetEgg(purpleHolefish.Info.TechType).Info.TechType,
             BaseBioReactor.GetCharge(TechType.GasopodEgg) * 1.5F
         );
         BioReactorHandler.SetBioReactorCharge(
@@ -465,7 +465,7 @@ public static class C2CItems {
         var e = SeaToSeaMod.ItemLocale.getEntry("bioprocessor");
         processor = new Bioprocessor(e);
         processor.Register();
-        SNUtil.log("Registered custom machine " + processor);
+        SNUtil.Log("Registered custom machine " + processor);
         processor.addPDAPage(e.pda, "Bioprocessor");
         processor.addFragments(4, 5, SeaToSeaMod.BioprocFragments);
         Bioprocessor.addRecipes();
@@ -473,14 +473,14 @@ public static class C2CItems {
         e = SeaToSeaMod.ItemLocale.getEntry("rebreathercharger");
         rebreatherCharger = new RebreatherRecharger(e);
         rebreatherCharger.Register();
-        SNUtil.log("Registered custom machine " + rebreatherCharger);
+        SNUtil.Log("Registered custom machine " + rebreatherCharger);
         rebreatherCharger.addPDAPage(e.pda, "RebreatherCharger");
         rebreatherCharger.addFragments(4, 7.5F, SeaToSeaMod.RebreatherChargerFragments);
 
         e = SeaToSeaMod.ItemLocale.getEntry("geyserfilter");
         geyserFilter = new GeyserFilter(e);
         geyserFilter.Register();
-        SNUtil.log("Registered custom machine " + geyserFilter);
+        SNUtil.Log("Registered custom machine " + geyserFilter);
         geyserFilter.addPDAPage(e.pda, "GeyserFilter");
         /*
         e = SeaToSeaMod.itemLocale.getEntry("incubatorinjector");
@@ -594,10 +594,10 @@ public static class C2CItems {
         if (DIHooks.GetWorldAge() < 0.25F)
             return;
         if (brokenTablets.ContainsKey(tech))
-            SNUtil.triggerTechPopup(brokenTablets[tech]);
+            SNUtil.TriggerTechPopup(brokenTablets[tech]);
         else if (tech == CraftingItems.getItem(CraftingItems.Items.BacterialSample).Info.TechType ||
                  tech == CraftingItems.getItem(CraftingItems.Items.LathingDrone).TechType)
-            SNUtil.triggerTechPopup(tech);
+            SNUtil.TriggerTechPopup(tech);
     }
 
     private class OxygenBoost : MonoBehaviour {

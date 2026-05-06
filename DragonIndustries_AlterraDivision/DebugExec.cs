@@ -21,19 +21,19 @@ public static class DebugExec {
 				case "call": {
 					var call = AccessTools.Method(t, member);
 					var ret = call.Invoke(inst, []);
-					SNUtil.writeToChat("Invoking " + type + "." + member + " returned: " + toString(ret));
+					SNUtil.WriteToChat("Invoking " + type + "." + member + " returned: " + toString(ret));
 				}
 					break;
 				case "field": {
 					var field = AccessTools.Field(t, member);
 					var ret = field.GetValue(inst);
-					SNUtil.writeToChat("Field " + type + "." + member + " contains: " + toString(ret));
+					SNUtil.WriteToChat("Field " + type + "." + member + " contains: " + toString(ret));
 				}
 					break;
 			}
 		}
 		catch (Exception e) {
-			SNUtil.writeToChat("Exec threw exception: " + e.ToString());
+			SNUtil.WriteToChat("Exec threw exception: " + e.ToString());
 		}
 	}
 
@@ -41,10 +41,10 @@ public static class DebugExec {
 		if (o == null) {
 			return "null";
 		}
-		else if (o.isDictionary()) {
+		else if (o.IsDictionary()) {
 			return o.ToString();//((IDictionary)o).toDebugString();
 		}
-		else if (o.isEnumerable()) {
+		else if (o.IsEnumerable()) {
 			return o.ToString();//((IEnumerable)o).toDebugString();
 		}
 		else {

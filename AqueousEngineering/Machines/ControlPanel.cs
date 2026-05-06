@@ -76,18 +76,18 @@ public class BaseControlPanelLogic : CustomMachineLogic {
     private readonly HashSet<string> activeButtons = [];
 
     private void Start() {
-        SNUtil.log("Reinitializing base control panel");
+        SNUtil.Log("Reinitializing base control panel");
         AqueousEngineeringMod.controlsBlock.initializeMachine(gameObject);
     }
 
     protected override void load(System.Xml.XmlElement data) {
         activeButtons.Clear();
-        foreach (var e in data.getDirectElementsByTagName("activeButton")) {
+        foreach (var e in data.GetDirectElementsByTagName("activeButton")) {
             activeButtons.Add(e.InnerText);
         }
 
-        SNUtil.log(
-            "Loaded control panel with active buttons " + activeButtons.toDebugString(),
+        SNUtil.Log(
+            "Loaded control panel with active buttons " + activeButtons.ToDebugString(),
             AqueousEngineeringMod.modDLL
         );
         if (buttons != null) {
@@ -121,7 +121,7 @@ public class BaseControlPanelLogic : CustomMachineLogic {
             //activeButtons.Remove(control.ClassID);
         }
 
-        SNUtil.log(
+        SNUtil.Log(
             "Added button " + control.ClassID + " to control panel; active: " + com.getState(),
             AqueousEngineeringMod.modDLL
         );

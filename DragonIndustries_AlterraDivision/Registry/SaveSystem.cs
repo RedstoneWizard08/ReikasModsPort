@@ -26,8 +26,8 @@ public static class SaveSystem {
         // IngameMenuHandler.Main.RegisterOnLoadEvent(handleLoad);
         // IngameMenuHandler.Main.RegisterOnSaveEvent(handleSave);
 
-        oldSaveDir = Path.Combine(Path.GetDirectoryName(SNUtil.diDLL.Location), "persistentData");
-        SNUtil.migrateSaveDataFolder(oldSaveDir, ".dat", saveFileName);
+        oldSaveDir = Path.Combine(Path.GetDirectoryName(SNUtil.DiDLL.Location), "persistentData");
+        SNUtil.MigrateSaveDataFolder(oldSaveDir, ".dat", saveFileName);
     }
 
     public static void addSaveHandler(CustomPrefab pfb, SaveHandler h) {
@@ -64,7 +64,7 @@ public static class SaveSystem {
     }
 
     public static void handleSave() {
-        var path = Path.Combine(SNUtil.getCurrentSaveDir(), saveFileName);
+        var path = Path.Combine(SNUtil.GetCurrentSaveDir(), saveFileName);
         var doc = new XmlDocument();
         var rootnode = doc.CreateElement("Root");
         doc.AppendChild(rootnode);
@@ -75,13 +75,13 @@ public static class SaveSystem {
             if (sh != null) {
                 try {
                     if (debugSave)
-                        SNUtil.log("Found " + sh + " save handler for " + pi.ClassId, SNUtil.diDLL);
+                        SNUtil.Log("Found " + sh + " save handler for " + pi.ClassId, SNUtil.DiDLL);
                     sh.data = doc.CreateElement("object");
                     sh.data.SetAttribute("objectID", pi.Id);
                     sh.save(pi);
                     doc.DocumentElement.AppendChild(sh.data);
                 } catch (Exception ex) {
-                    SNUtil.writeToChat(
+                    SNUtil.WriteToChat(
                         "Failed to save data for object " + pi.name + " [" + pi.ClassId + "]: " + ex.ToString()
                     );
                 }
@@ -91,7 +91,7 @@ public static class SaveSystem {
         var e = doc.CreateElement("player");
         foreach (var t in playerSaveHandlers.Values) {
             if (t.saveAction == null) {
-                SNUtil.log("Could not run save handler " + t + " on player: no save hook", SNUtil.diDLL);
+                SNUtil.Log("Could not run save handler " + t + " on player: no save hook", SNUtil.DiDLL);
                 continue;
             }
 
@@ -100,7 +100,7 @@ public static class SaveSystem {
                 t.saveAction.Invoke(Player.main, e2);
                 e.AppendChild(e2);
             } catch (Exception ex) {
-                SNUtil.log("Save handler " + t + " on player threw " + ex, SNUtil.diDLL);
+                SNUtil.Log("Save handler " + t + " on player threw " + ex, SNUtil.DiDLL);
             }
         }
 
@@ -114,13 +114,13 @@ public static class SaveSystem {
         }
 
         doc.DocumentElement.AppendChild(e);
-        SNUtil.log("Saving " + doc.DocumentElement.ChildNodes.Count + " objects to disk", SNUtil.diDLL);
+        SNUtil.Log("Saving " + doc.DocumentElement.ChildNodes.Count + " objects to disk", SNUtil.DiDLL);
         Directory.GetParent(path).Create();
         doc.Save(path);
     }
 
     public static void handleLoad() {
-        var dir = SNUtil.getCurrentSaveDir();
+        var dir = SNUtil.GetCurrentSaveDir();
         var path = Path.Combine(dir, saveFileName);
         if (!File.Exists(path))
             path = Path.Combine(dir, saveFileName.Replace(".dat", ".xml"));
@@ -132,7 +132,7 @@ public static class SaveSystem {
                 saveData[e.Name == "player" || e.Name == "components" ? e.Name : e.GetAttribute("objectID")] = e;
             }
 
-            SNUtil.log("Loaded " + saveData.Count + " object entries from disk", SNUtil.diDLL);
+            SNUtil.Log("Loaded " + saveData.Count + " object entries from disk", SNUtil.DiDLL);
         }
     }
 
@@ -140,26 +140,26 @@ public static class SaveSystem {
         if (loaded)
             return;
         loaded = true;
-        SNUtil.log("Applying saved object entries", SNUtil.diDLL);
+        SNUtil.Log("Applying saved object entries", SNUtil.DiDLL);
         if (saveData.ContainsKey("player")) {
             var e = saveData["player"];
             foreach (XmlElement e2 in e.ChildNodes) {
                 if (!playerSaveHandlers.ContainsKey(e2.Name)) {
-                    SNUtil.log("Skipping player save tag '" + e2.Name + "'; no mapping to a handler", SNUtil.diDLL);
+                    SNUtil.Log("Skipping player save tag '" + e2.Name + "'; no mapping to a handler", SNUtil.DiDLL);
                     continue;
                 }
 
                 var t = playerSaveHandlers[e2.Name];
                 if (t.loadAction == null) {
-                    SNUtil.log("Could not run load handler " + t + " on player: no load hook", SNUtil.diDLL);
+                    SNUtil.Log("Could not run load handler " + t + " on player: no load hook", SNUtil.DiDLL);
                     continue;
                 }
 
                 try {
                     t.loadAction.Invoke(Player.main, e2);
-                    SNUtil.log("Applied player load action " + t.id, SNUtil.diDLL);
+                    SNUtil.Log("Applied player load action " + t.id, SNUtil.DiDLL);
                 } catch (Exception ex) {
-                    SNUtil.log("Save handler " + t + " on player threw " + ex, SNUtil.diDLL);
+                    SNUtil.Log("Save handler " + t + " on player threw " + ex, SNUtil.DiDLL);
                 }
             }
         }
@@ -170,18 +170,18 @@ public static class SaveSystem {
                 try {
                     var t = InstructionHandlers.getTypeBySimpleName(e2.Name);
                     if (t == null) {
-                        SNUtil.log(
+                        SNUtil.Log(
                             "Could not reinstantiate custom serialized component: no type found for '" + e2.Name + "'",
-                            SNUtil.diDLL
+                            SNUtil.DiDLL
                         );
                         continue;
                     }
 
                     var cs = (CustomSerializedComponent)Player.main.gameObject.AddComponent(t);
                     cs.readFromXML(e2);
-                    SNUtil.log("Deserialized new " + t + " onto player", SNUtil.diDLL);
+                    SNUtil.Log("Deserialized new " + t + " onto player", SNUtil.DiDLL);
                 } catch (Exception ex) {
-                    SNUtil.log("Trying to deserialize " + e2.Name + " on player threw " + ex, SNUtil.diDLL);
+                    SNUtil.Log("Trying to deserialize " + e2.Name + " on player threw " + ex, SNUtil.DiDLL);
                 }
             }
         }
@@ -189,11 +189,11 @@ public static class SaveSystem {
         foreach (var pi in UnityEngine.Object.FindObjectsOfType<PrefabIdentifier>()) {
             var sh = getHandler(pi, true);
             if (sh != null) {
-                SNUtil.log("Found " + sh + " load handler for " + pi.ClassId + " [" + pi.id + "]", SNUtil.diDLL);
+                SNUtil.Log("Found " + sh + " load handler for " + pi.ClassId + " [" + pi.id + "]", SNUtil.DiDLL);
                 try {
                     sh.load(pi);
                 } catch (Exception e) {
-                    SNUtil.log("Threw error loading object " + pi.ClassId + " " + pi.Id + ": " + e, SNUtil.diDLL);
+                    SNUtil.Log("Threw error loading object " + pi.ClassId + " " + pi.Id + ": " + e, SNUtil.DiDLL);
                 }
             }
         }
@@ -204,7 +204,7 @@ public static class SaveSystem {
             XmlElement elem = null;
             //SNUtil.log("Attempting to load "+pi+" ["+pi.id+"]", SNUtil.diDLL);
             if (needSaveData && handlers.ContainsKey(pi.ClassId) && !saveData.ContainsKey(pi.Id))
-                SNUtil.log("Object " + pi + " [" + pi.id + "] had no data to load!", SNUtil.diDLL);
+                SNUtil.Log("Object " + pi + " [" + pi.id + "] had no data to load!", SNUtil.DiDLL);
             if (handlers.TryGetValue(pi.ClassId, out var ret) &&
                 (!needSaveData || saveData.TryGetValue(pi.Id, out elem))) {
                 if (elem != null)
@@ -225,21 +225,21 @@ public static class SaveSystem {
 
     public static void saveToXML(XmlElement e, string s, object val) {
         if (val is string val1)
-            e.addProperty(s, val1);
+            e.AddProperty(s, val1);
         else if (val is int i)
-            e.addProperty(s, i);
+            e.AddProperty(s, i);
         else if (val is bool b)
-            e.addProperty(s, b);
+            e.AddProperty(s, b);
         if (val is float f)
-            e.addProperty(s, f);
+            e.AddProperty(s, f);
         if (val is double d)
-            e.addProperty(s, d);
+            e.AddProperty(s, d);
         else if (val is Vector3 vector3)
-            e.addProperty(s, vector3);
+            e.AddProperty(s, vector3);
         else if (val is Quaternion quaternion)
-            e.addProperty(s, quaternion);
+            e.AddProperty(s, quaternion);
         else if (val is Color color)
-            e.addProperty(s, color);
+            e.AddProperty(s, color);
     }
 
     public static void setField(XmlElement e, string s, MemberInfo f, object inst) {
@@ -247,21 +247,21 @@ public static class SaveSystem {
         var t = f is FieldInfo info ? info.FieldType : ((PropertyInfo)f).PropertyType;
 
         if (t == typeof(string))
-            put = e.getProperty(s, true);
+            put = e.GetProperty(s, true);
         else if (t == typeof(bool))
-            put = e.getBoolean(s);
+            put = e.GetBoolean(s);
         else if (t == typeof(int))
-            put = e.getInt(s, 0, true);
+            put = e.GetInt(s, 0, true);
         else if (t == typeof(float))
-            put = (float)e.getFloat(s, 0);
+            put = (float)e.GetFloat(s, 0);
         else if (t == typeof(double))
-            put = e.getFloat(s, 0);
+            put = e.GetFloat(s, 0);
         else if (t == typeof(Vector3))
-            put = e.getVector(s, true).GetValueOrDefault();
+            put = e.GetVector(s, true).GetValueOrDefault();
         else if (t == typeof(Quaternion))
-            put = e.getQuaternion(s, true).GetValueOrDefault();
+            put = e.GetQuaternion(s, true).GetValueOrDefault();
         else if (t == typeof(Color))
-            put = e.getColor(s, true, true).GetValueOrDefault();
+            put = e.GetColor(s, true, true).GetValueOrDefault();
 
         if (f is FieldInfo fi)
             fi.SetValue(inst, put);
@@ -365,7 +365,7 @@ public static class SaveSystem {
         }
 
         public override string ToString() {
-            return $"[ComponentFieldSaveHandler Fields={fields.toDebugString()}]";
+            return $"[ComponentFieldSaveHandler Fields={fields.ToDebugString()}]";
         }
     }
 }

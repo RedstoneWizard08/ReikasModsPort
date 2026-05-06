@@ -42,14 +42,14 @@ public sealed class AddLockerContents : ManipulationBase {
 		items.Clear();
 		foreach (XmlElement e2 in e.ChildNodes) {
 			Item i = null;
-			var type = e2.getProperty("type");
-			var n = e2.getProperty("name");
+			var type = e2.GetProperty("type");
+			var n = e2.GetProperty("name");
 			switch (type) {
 				case "prefab":
 					i = new Item(n);
 					break;
 				case "tech":
-					i = new Item(SNUtil.getTechType(n));
+					i = new Item(SNUtil.GetTechType(n));
 					break;
 				case "resource":
 					i = new Item(VanillaResources.getByName(n.ToUpperInvariant()).prefab);
@@ -57,12 +57,12 @@ public sealed class AddLockerContents : ManipulationBase {
 			}
 			if (i == null)
 				throw new Exception("Invalid item ref type '" + type + "'");
-			if (e2.hasProperty("min") && e2.hasProperty("max")) {
-				i.amountMin = e2.getInt("min", 1);
-				i.amountMax = e2.getInt("max", 1);
+			if (e2.HasProperty("min") && e2.HasProperty("max")) {
+				i.amountMin = e2.GetInt("min", 1);
+				i.amountMax = e2.GetInt("max", 1);
 			}
-			else if (e2.hasProperty("amount")) {
-				var amt = e2.getInt("amount", 1);
+			else if (e2.HasProperty("amount")) {
+				var amt = e2.GetInt("amount", 1);
 				i.amountMin = amt;
 				i.amountMax = amt;
 			}
@@ -73,10 +73,10 @@ public sealed class AddLockerContents : ManipulationBase {
 	public override void saveToXML(XmlElement e) {
 		foreach (var s in items) {
 			var e2 = e.OwnerDocument.CreateElement("item");
-			e2.addProperty("type", "prefab");
-			e2.addProperty("name", s.prefab);
-			e2.addProperty("min", s.amountMin);
-			e2.addProperty("max", s.amountMax);
+			e2.AddProperty("type", "prefab");
+			e2.AddProperty("name", s.prefab);
+			e2.AddProperty("min", s.amountMin);
+			e2.AddProperty("max", s.amountMax);
 			e.AppendChild(e2);
 		}
 	}

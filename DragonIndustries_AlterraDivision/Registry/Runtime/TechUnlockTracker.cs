@@ -26,12 +26,12 @@ public class TechUnlockTracker : SerializedTracker<TechUnlockTracker.TechUnlock>
 	}
 
 	private static TechUnlock parseUnlock(XmlElement s) {
-		return new TechUnlock(SNUtil.getTechType(s.getProperty("tech")), s.getFloat("eventTime", -1), s.getBoolean("isScan"));
+		return new TechUnlock(SNUtil.GetTechType(s.GetProperty("tech")), s.GetFloat("eventTime", -1), s.GetBoolean("isScan"));
 	}
 
 	private static TechUnlock parseLegacyUnlock(string s) {
 		var parts = s.Split(',');
-		var tt = SNUtil.getTechType(parts[0]);
+		var tt = SNUtil.GetTechType(parts[0]);
 		return new TechUnlock(tt, float.Parse(parts[1]), bool.Parse(parts[2]));
 	}
 
@@ -56,8 +56,8 @@ public class TechUnlockTracker : SerializedTracker<TechUnlockTracker.TechUnlock>
 		}
 
 		public override void saveToXML(XmlElement e) {
-			e.addProperty("tech", tech.AsString());
-			e.addProperty("isScan", isScan);
+			e.AddProperty("tech", tech.AsString());
+			e.AddProperty("isScan", isScan);
 		}
 
 		public override string ToString() {

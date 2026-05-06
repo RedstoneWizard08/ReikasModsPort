@@ -25,7 +25,7 @@ public abstract class InteractableSpawnable : CustomPrefab {
     [SetsRequiredMembers]
     protected InteractableSpawnable(XMLLocale.LocaleEntry e) : base(e.key, e.name, e.desc) {
         locale = e;
-        ownerMod = SNUtil.tryGetModDLL();
+        ownerMod = SNUtil.TryGetModDLL();
         SetGameObject(GetGameObject);
     }
 
@@ -33,14 +33,14 @@ public abstract class InteractableSpawnable : CustomPrefab {
 
     public void countGen<G>(WorldgenDatabase worldgen) where G : WorldGenerator {
         fragmentCount = worldgen.getCount<G>();
-        SNUtil.log("Found " + fragmentCount + " " + Info.ClassID + " to use as fragments", ownerMod);
+        SNUtil.Log("Found " + fragmentCount + " " + Info.ClassID + " to use as fragments", ownerMod);
     }
 
     public void countGen(WorldgenDatabase worldgen, string id = null) {
         if (id == null)
             id = Info.ClassID;
         fragmentCount = worldgen.getCount(id);
-        SNUtil.log("Found " + fragmentCount + " " + id + " to use as fragments", ownerMod);
+        SNUtil.Log("Found " + fragmentCount + " " + id + " to use as fragments", ownerMod);
     }
 
     public void setFragment(TechType unlock, int count, bool delete = false) {
@@ -58,7 +58,7 @@ public abstract class InteractableSpawnable : CustomPrefab {
     }
 
     public void registerEncyPage() {
-        SNUtil.addPDAEntry(
+        SNUtil.AddPdaEntry(
             this,
             scanTime,
             locale.getString("category"),

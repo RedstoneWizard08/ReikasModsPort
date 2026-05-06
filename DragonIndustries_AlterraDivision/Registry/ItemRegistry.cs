@@ -17,10 +17,10 @@ public class ItemRegistry {
 
     public CustomPrefab getItem(string id) {
         if (registry.ContainsKey(id)) {
-            SNUtil.log("Fetching item '" + id + "'", SNUtil.tryGetModDLL(true));
+            SNUtil.Log("Fetching item '" + id + "'", SNUtil.TryGetModDLL(true));
             return registry[id];
         } else {
-            SNUtil.log("Could not find item '" + id + "'", SNUtil.tryGetModDLL(true));
+            SNUtil.Log("Could not find item '" + id + "'", SNUtil.TryGetModDLL(true));
             return null;
         }
     }
@@ -32,11 +32,11 @@ public class ItemRegistry {
     public CustomPrefab getItem(TechType tt, bool doLog = true) {
         if (registryTech.ContainsKey(tt)) {
             if (doLog)
-                SNUtil.log("Fetching item '" + tt + "'", SNUtil.tryGetModDLL(true));
+                SNUtil.Log("Fetching item '" + tt + "'", SNUtil.TryGetModDLL(true));
             return registryTech[tt];
         } else {
             if (doLog)
-                SNUtil.log("Could not find item '" + tt + "'", SNUtil.tryGetModDLL(true));
+                SNUtil.Log("Could not find item '" + tt + "'", SNUtil.TryGetModDLL(true));
             return null;
         }
     }
@@ -44,7 +44,7 @@ public class ItemRegistry {
     public void addItem(CustomPrefab di) {
         registry[di.Info.ClassID] = di;
         registryTech[di.Info.TechType] = di;
-        SNUtil.log("Registering item '" + di + "'", SNUtil.tryGetModDLL(true));
+        SNUtil.Log("Registering item '" + di + "'", SNUtil.TryGetModDLL(true));
         foreach (var a in listeners) {
             a(di);
         }

@@ -11,7 +11,7 @@ internal class C2CModOptions : ModOptions {
 
     public const string PropGunSwap = "PropGunSwap";
 
-    public C2CModOptions() : base(SeaToSeaMod.ModKey.from('.')) {
+    public C2CModOptions() : base(SeaToSeaMod.ModKey.From('.')) {
         AddBinding(PropGunSwap, "(Pro/Re)pulsion Gun Swap", KeyCode.Backslash);
     }
 

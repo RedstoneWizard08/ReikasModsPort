@@ -21,13 +21,13 @@ public sealed class HolographicControl : CustomPrefab {
     internal Sprite[] icons;
 
     internal static readonly Sprite defaultOffIcon = Sprite.Create(
-        TextureManager.getTexture(SNUtil.diDLL, "Textures/HoloButton_false"),
+        TextureManager.getTexture(SNUtil.DiDLL, "Textures/HoloButton_false"),
         new Rect(0, 0, 200, 200),
         new Vector2(0, 0)
     );
 
     internal static readonly Sprite defaultOnIcon = Sprite.Create(
-        TextureManager.getTexture(SNUtil.diDLL, "Textures/HoloButton_true"),
+        TextureManager.getTexture(SNUtil.DiDLL, "Textures/HoloButton_true"),
         new Rect(0, 0, 200, 200),
         new Vector2(0, 0)
     );
@@ -40,7 +40,7 @@ public sealed class HolographicControl : CustomPrefab {
         Action<HolographicControlTag> a,
         Func<HolographicControlTag, bool> f
     ) : base("HoloControl_" + name, "Holographic Control - " + name, desc) {
-        ownerMod = SNUtil.tryGetModDLL();
+        ownerMod = SNUtil.TryGetModDLL();
 
         isToggleable = tg;
         actionData = a;

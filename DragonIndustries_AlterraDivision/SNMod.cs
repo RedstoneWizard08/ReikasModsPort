@@ -4,7 +4,7 @@ namespace ReikaKalseki.DIAlterra;
 
 public abstract class SNMod : BepInEx.BaseUnityPlugin { //FOR 2.0
 
-	public readonly Assembly modDLL = SNUtil.tryGetModDLL();
+	public readonly Assembly modDLL = SNUtil.TryGetModDLL();
 	public readonly string displayName;
 
 	public abstract void loadConfig();

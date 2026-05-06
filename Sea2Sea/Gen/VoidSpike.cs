@@ -45,7 +45,7 @@ public sealed class VoidSpike : WorldGenerator {
         if (get == null) {
             get = new LargeWorldLevelPrefab(template, lvl).registerPrefab();
             prefabCache[template] = get;
-            SNUtil.log("Creating void version of " + template);
+            SNUtil.Log("Creating void version of " + template);
         }
 
         return get;
@@ -98,7 +98,7 @@ public sealed class VoidSpike : WorldGenerator {
     public static LargeWorldLevelPrefab getPrefab(string s) {
         return !prefabCache.ContainsKey(s)
             ? throw new Exception(
-                "Voidspike Prefabs did not contain '" + s + "': contains " + prefabCache.toDebugString()
+                "Voidspike Prefabs did not contain '" + s + "': contains " + prefabCache.ToDebugString()
             )
             : prefabCache[s];
     }
@@ -150,23 +150,23 @@ public sealed class VoidSpike : WorldGenerator {
     }
 
     public override void loadFromXML(XmlElement e) {
-        setScale((float)e.getFloat("scale", scale));
-        oreRichness = e.getFloat("oreRichness", oreRichness);
+        setScale((float)e.GetFloat("scale", scale));
+        oreRichness = e.GetFloat("oreRichness", oreRichness);
 
-        if (e.hasProperty("hasFloater"))
-            hasFloater = e.getBoolean("hasFloater");
-        if (e.hasProperty("hasFlora"))
-            hasFloater = e.getBoolean("hasFlora");
-        if (e.hasProperty("hasPod"))
-            hasPod = e.getBoolean("hasPod");
+        if (e.HasProperty("hasFloater"))
+            hasFloater = e.GetBoolean("hasFloater");
+        if (e.HasProperty("hasFlora"))
+            hasFloater = e.GetBoolean("hasFlora");
+        if (e.HasProperty("hasPod"))
+            hasPod = e.GetBoolean("hasPod");
     }
 
     public override void saveToXML(XmlElement e) {
-        e.addProperty("scale", scale);
-        e.addProperty("oreRichness", oreRichness);
-        e.addProperty("hasFloater", hasFloater);
-        e.addProperty("hasPod", hasPod);
-        e.addProperty("hasFlora", hasFlora);
+        e.AddProperty("scale", scale);
+        e.AddProperty("oreRichness", oreRichness);
+        e.AddProperty("hasFloater", hasFloater);
+        e.AddProperty("hasPod", hasPod);
+        e.AddProperty("hasFlora", hasFlora);
     }
 
     public bool intersects(Vector3 vec, double r = 0) {

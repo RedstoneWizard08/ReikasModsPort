@@ -73,7 +73,7 @@ public sealed class UncraftingRecipeItem : CustomPrefab, DuplicateItemDelegate {
     private void onPatched() {
         if (ownerMod == null)
             throw new Exception("Uncrafting item " + basis + "/" + Info.TechType + " has no source mod!");
-        SNUtil.log(
+        SNUtil.Log(
             "Constructed uncrafting of " + basis + ": " + Info.TechType + " @ " + string.Join("/", craftingMenuTree),
             ownerMod
         );

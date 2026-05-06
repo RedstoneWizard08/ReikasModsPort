@@ -125,7 +125,7 @@ public class AmpeelAntennaLogic : CustomMachineLogic {
     private float lastACUCheckTime = -1;
 
     private void Start() {
-        SNUtil.log("Reinitializing base ampeel antenna");
+        SNUtil.Log("Reinitializing base ampeel antenna");
         AqueousEngineeringMod.ampeelAntennaBlock.initializeMachine(gameObject);
 
         connectedACU = tryFindACU();

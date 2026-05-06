@@ -31,7 +31,7 @@ public class XMLLocale {
 			var lc = constructEntry(e);
 			entries[lc.key] = lc;
 		}
-		SNUtil.log("XML DB '" + this + "' loaded " + entries.Count + " entries: " + string.Join(", ", entries.Keys), ownerMod);/*
+		SNUtil.Log("XML DB '" + this + "' loaded " + entries.Count + " entries: " + string.Join(", ", entries.Keys), ownerMod);/*
 		foreach (LocaleEntry e in entries.Values) {
 			SNUtil.log(e.ToString());
 		}*/
@@ -45,7 +45,7 @@ public class XMLLocale {
 			doc.Load(path);
 		}
 		else {
-			SNUtil.log("Could not find XML file " + path + "!", ownerMod);
+			SNUtil.Log("Could not find XML file " + path + "!", ownerMod);
 		}
 		return doc;
 	}
@@ -57,7 +57,7 @@ public class XMLLocale {
 	public LocaleEntry getEntry(string id) {
 		if (entries.ContainsKey(id))
 			return entries[id];
-		SNUtil.log("Could not find locale entry '" + id + "'", ownerMod);
+		SNUtil.Log("Could not find locale entry '" + id + "'", ownerMod);
 		return NOT_FOUND;
 	}
 
@@ -84,7 +84,7 @@ public class XMLLocale {
 		public readonly string desc;
 		public readonly string pda;
 
-		internal LocaleEntry(XmlElement e) : this(e, e.Name, cleanString(e.getProperty("name")), cleanString(e.getProperty("desc", true)), cleanString(e.getProperty("pda"))) {
+		internal LocaleEntry(XmlElement e) : this(e, e.Name, cleanString(e.GetProperty("name")), cleanString(e.GetProperty("desc", true)), cleanString(e.GetProperty("pda"))) {
 
 		}
 
@@ -102,11 +102,11 @@ public class XMLLocale {
 		}
 
 		public string dump() {
-			return element == null ? "<null>" : element.format();
+			return element == null ? "<null>" : element.Format();
 		}
 
 		public bool hasField(string key) {
-			return element != null && element.hasProperty(key);
+			return element != null && element.HasProperty(key);
 		}
 
 		public T getField<T>(string key) where T : class {
@@ -122,34 +122,34 @@ public class XMLLocale {
 				return fallback;
 			var t = typeof(T);
 			if (t == typeof(Int3)) {
-				var vec = element.getVector(key);
-				return vec != null && vec.HasValue ? (T)Convert.ChangeType(vec.Value.roundToInt3(), t) : fallback;
+				var vec = element.GetVector(key);
+				return vec != null && vec.HasValue ? (T)Convert.ChangeType(vec.Value.RoundToInt3(), t) : fallback;
 			}
 			if (t == typeof(Vector3)) {
-				var vec = element.getVector(key);
+				var vec = element.GetVector(key);
 				return vec != null && vec.HasValue ? (T)Convert.ChangeType(vec.Value, t) : fallback;
 			}
 			if (t == typeof(Quaternion)) {
-				var vec = element.getQuaternion(key);
+				var vec = element.GetQuaternion(key);
 				return vec != null && vec.HasValue ? (T)Convert.ChangeType(vec.Value, t) : fallback;
 			}
 			if (t == typeof(string)) {
-				var get = element.getProperty(key, true);
+				var get = element.GetProperty(key, true);
 				return (T)Convert.ChangeType(get == null ? null : cleanString(get), t);
 			}
 			if (t == typeof(bool)) {
-				return (T)Convert.ChangeType(element.getBoolean(key), t);
+				return (T)Convert.ChangeType(element.GetBoolean(key), t);
 			}
 			if (t == typeof(int)) {
-				return (T)Convert.ChangeType(element.getInt(key, (int)(object)fallback, true), t);
+				return (T)Convert.ChangeType(element.GetInt(key, (int)(object)fallback, true), t);
 			}
 			if (t == typeof(float)) {
 				var fall = (double)(object)fallback;
-				return (T)Convert.ChangeType((float)element.getFloat(key, fall), t);
+				return (T)Convert.ChangeType((float)element.GetFloat(key, fall), t);
 			}
 			if (t == typeof(double)) {
 				var fall = (double)(object)fallback;
-				return (T)Convert.ChangeType(element.getFloat(key, fall), t);
+				return (T)Convert.ChangeType(element.GetFloat(key, fall), t);
 			}
 			throw new Exception("Undefined data type '" + t + "'");
 		}

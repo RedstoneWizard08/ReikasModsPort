@@ -12,7 +12,7 @@ public class MarshmallowCan : CustomPrefab {
     }
 
     public GameObject GetGameObject() {
-        var go = ObjectUtil.lookupPrefab(TechType.PlanterPot).GetResult()
+        var go = ObjectUtil.lookupPrefab(TechType.PlanterPot)
             .getChildObject("model/Base_interior_Planter_Pot_01").clone();
         go.removeChildObject("pot_generic_plant_01");
         go.transform.localScale = new Vector3(0.2F, 0.2F, 0.5F);

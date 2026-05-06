@@ -40,7 +40,7 @@ public class KeypadCodeSwappingSystem {
 			var code = dd.getRandomizedDoorCode();
 			foreach (var pad in pi.GetComponentsInChildren<KeypadDoorConsole>())
 				pad.accessCode = code;
-			SNUtil.log("Swapping code on " + pi.name + " @ " + pi.transform.position + ": " + dd.oldCode + " > " + code + " in " + dd.encyKey, SNUtil.diDLL);
+			SNUtil.Log("Swapping code on " + pi.name + " @ " + pi.transform.position + ": " + dd.oldCode + " > " + code + " in " + dd.encyKey, SNUtil.DiDLL);
 			/*
 		    if (pi.ClassId == CAPTAIN_DOOR) {
 			    StarshipDoor s = pi.GetComponentInChildren<StarshipDoor>();
@@ -63,7 +63,7 @@ public class KeypadCodeSwappingSystem {
 			var key = "EncyDesc_"+c.encyKey;
 			var code = c.getRandomizedDoorCode();
 			CustomLocaleKeyDatabase.registerKey(key, Language.main.Get(key).Replace(c.oldCode, code));
-			SNUtil.log("Swapping code in ency entry " + c.encyKey + ": " + c.oldCode + " > " + c, SNUtil.diDLL);
+			SNUtil.Log("Swapping code in ency entry " + c.encyKey + ": " + c.oldCode + " > " + c, SNUtil.DiDLL);
 		}
 	}
 
@@ -86,7 +86,7 @@ public class KeypadCodeSwappingSystem {
 		internal string getRandomizedDoorCode() {
 			if (prefab == CAPTAIN_DOOR)
 				return "0000"; //impossible to enter
-			Random.InitState(SNUtil.getWorldSeedInt() ^ encyKey.GetHashCode());
+			Random.InitState(SNUtil.GetWorldSeedInt() ^ encyKey.GetHashCode());
 			Random.Range(0, 1);
 			var ret = "";
 			while (ret.Length < 4)

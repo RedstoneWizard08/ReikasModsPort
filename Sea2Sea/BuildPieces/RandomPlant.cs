@@ -62,14 +62,14 @@ internal class RandomPlant : PieceBase {
 	}
 
 	public override void loadFromXML(XmlElement e) {
-		foreach (var e2 in e.getDirectElementsByTagName("plant")) {
-			var name = e2.getProperty("name");
-			var wt = e2.getProperty("weight");
+		foreach (var e2 in e.GetDirectElementsByTagName("plant")) {
+			var name = e2.GetProperty("name");
+			var wt = e2.GetProperty("weight");
 			plants.addEntry(VanillaFlora.getByName(name), double.Parse(wt));
 		}
-		preferLit = e.getBoolean("lit");
-		count = e.getInt("count", 1);
-		var f = e.getVector("fuzz", true);
+		preferLit = e.GetBoolean("lit");
+		count = e.GetInt("count", 1);
+		var f = e.GetVector("fuzz", true);
 		if (f != null && f.HasValue)
 			fuzz = f.Value;
 	}
@@ -77,13 +77,13 @@ internal class RandomPlant : PieceBase {
 	public override void saveToXML(XmlElement e) {
 		foreach (var f in plants.getValues()) {
 			var e2 = e.OwnerDocument.CreateElement("plant");
-			e2.addProperty("name", f.getName());
-			e2.addProperty("weight", plants.getWeight(f));
+			e2.AddProperty("name", f.getName());
+			e2.AddProperty("weight", plants.getWeight(f));
 			e.AppendChild(e2);
 		}
-		e.addProperty("lit", preferLit);
-		e.addProperty("count", count);
-		e.addProperty("fuzz", fuzz);
+		e.AddProperty("lit", preferLit);
+		e.AddProperty("count", count);
+		e.AddProperty("fuzz", fuzz);
 	}
 
 }

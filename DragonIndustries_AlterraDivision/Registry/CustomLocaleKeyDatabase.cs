@@ -17,7 +17,7 @@ public static class CustomLocaleKeyDatabase {
     }
 
     public static void registerKey(string key, string text) {
-        SNUtil.log("Mapped locale key '" + key + "' to \"" + text + "\"", SNUtil.diDLL);
+        SNUtil.Log("Mapped locale key '" + key + "' to \"" + text + "\"", SNUtil.DiDLL);
         if (DIHooks.HasWorldLoadStarted())
             LanguageHandler.SetLanguageLine(key, text);
         else

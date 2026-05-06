@@ -144,7 +144,7 @@ public static class DIHooks {
     private static int _selectedSlot;
 
     static DIHooks() {
-        SNUtil.log("Initializing DIHooks");
+        SNUtil.Log("Initializing DIHooks");
 
         PrecursorTeleporter.TeleportEventStart += StartTeleport;
         PrecursorTeleporter.TeleportEventEnd += StopTeleport;
@@ -781,9 +781,9 @@ public static class DIHooks {
         var warnRestart = _hasLoadedAWorld;
         _hasLoadedAWorld = true;
         _worldLoadTime = Time.time;
-        SNUtil.log("Intercepted world load", SNUtil.diDLL);
+        SNUtil.Log("Intercepted world load", SNUtil.DiDLL);
         DuplicateRecipeDelegate.updateLocale();
-        CustomEgg.updateLocale();
+        CustomEgg.UpdateLocale();
         PickedUpAsOtherItem.updateLocale();
         SeamothModule.updateLocale();
 
@@ -844,7 +844,7 @@ public static class DIHooks {
                 );
             }
 
-            if (SNUtil.checkPiracy()) {
+            if (SNUtil.CheckPiracy()) {
                 li.Add(
                     "<color=#ff5050ff>This appears to be a result of pirating the game, which cuts its internet connection. There is nothing that can be done without buying Subnautica.</color>"
                 );
@@ -962,7 +962,7 @@ public static class DIHooks {
             try {
                 OnPlayerTickEvent.Invoke(ep);
             } catch (Exception ex) {
-                SNUtil.writeToChat("Threw exception running player tick hooks: " + ex);
+                SNUtil.WriteToChat("Threw exception running player tick hooks: " + ex);
             }
         }
     }
@@ -1012,7 +1012,7 @@ public static class DIHooks {
             damage *= hm.damageFactor;
         //}
         var pi = target.GetComponent<PrefabIdentifier>();
-        if (pi && pi.ClassId == CustomEgg.getEgg(TechType.SpineEel).Info.ClassID &&
+        if (pi && pi.ClassId == CustomEgg.GetEgg(TechType.SpineEel).Info.ClassID &&
             (type == DamageType.Acid || type == DamageType.Poison))
             return 0;
         if (OnDamageEvent != null) {
@@ -1020,13 +1020,13 @@ public static class DIHooks {
             OnDamageEvent.Invoke(deal);
             if (DamageDebugLevel > 1 ||
                 (DamageDebugLevel == 1 && !Mathf.Approximately(deal.OriginalAmount, deal.Amount)))
-                SNUtil.writeToChat(
+                SNUtil.WriteToChat(
                     "Adjusting damage type " + type + " yield from " + deal.OriginalAmount + " to " + deal.Amount
                 );
             return deal.Amount;
         } else {
             if (DamageDebugLevel > 2)
-                SNUtil.writeToChat("Applying unchanged damage amount " + damage);
+                SNUtil.WriteToChat("Applying unchanged damage amount " + damage);
             return damage;
         }
     }
@@ -1090,7 +1090,7 @@ public static class DIHooks {
             p.gameObject.destroy(false); //not immediate because prawn is animation
             var tt2 = mapTo.getTemplate();
             var n = mapTo.getNumberCollectedAs();
-            SNUtil.log("Converting pickup '" + p + "' to '" + tt2 + "' x" + n, SNUtil.diDLL);
+            SNUtil.Log("Converting pickup '" + p + "' to '" + tt2 + "' x" + n, SNUtil.DiDLL);
             collected.Clear();
             for (var i = 0; i < n; i++) {
                 var go = ObjectUtil.createWorldObject(tt2, true, false);
@@ -1102,7 +1102,7 @@ public static class DIHooks {
                 collected.Add(p);
             }
 
-            SNUtil.log("Conversion complete", SNUtil.diDLL);
+            SNUtil.Log("Conversion complete", SNUtil.DiDLL);
             tt = tt2;
         }
 
@@ -1278,7 +1278,7 @@ public static class DIHooks {
             try {
                 OnSkyApplierSpawnEvent.Invoke(pk);
             } catch (Exception ex) {
-                SNUtil.log(
+                SNUtil.Log(
                     "Threw error when processing SkyApplier spawn of " + pk.gameObject.GetFullHierarchyPath() + ": " +
                     ex.ToString()
                 );
@@ -1330,7 +1330,7 @@ public static class DIHooks {
             if (_bay.dockedVehicle && DayNightCycle.main.timePassedAsFloat - _lastTime >= 0.5F &&
                 !_bay.dockedVehicle.GetComponentInParent<SubRoot>()) {
                 _bay.DockVehicle(_bay.dockedVehicle, false);
-                SNUtil.writeToChat(
+                SNUtil.WriteToChat(
                     "Re-binding vehicle " + _bay.dockedVehicle + " to docking bay " +
                     _bay.gameObject.GetFullHierarchyPath()
                 );
@@ -1515,7 +1515,7 @@ public static class DIHooks {
                     tt = component.GetTechType();
             }
 
-            SNUtil.log("Player used item " + tt, SNUtil.diDLL);
+            SNUtil.Log("Player used item " + tt, SNUtil.DiDLL);
             flag = UsableItemRegistry.instance.use(tt, s, useObj);
             if (flag)
                 FMODUWE.PlayOneShot(TechData.GetSoundUse(tt), Player.main.transform.position, 1f);
@@ -1971,7 +1971,7 @@ public static class DIHooks {
     }
 
     public static void RecomputeFog() {
-        SNUtil.log("Recomputing fog @ " + Camera.main.transform.position, SNUtil.diDLL);
+        SNUtil.Log("Recomputing fog @ " + Camera.main.transform.position, SNUtil.DiDLL);
         WaterBiomeManager.main.Rebuild();
         WaterBiomeManager.main.BuildSettingsTextures();
     }
@@ -1983,11 +1983,11 @@ public static class DIHooks {
         foreach (var f in typeof(WaterBiomeManager).GetFields((BindingFlags)0x7fffffff)) {
             var get = f.GetValue(wbm);
             if (get is RenderTexture texture) {
-                SNUtil.writeToChat("Dumping RenderTexture WaterBiomeManager::" + f.Name);
-                RenderUtil.dumpTexture(SNUtil.diDLL, f.Name, texture);
+                SNUtil.WriteToChat("Dumping RenderTexture WaterBiomeManager::" + f.Name);
+                RenderUtil.dumpTexture(SNUtil.DiDLL, f.Name, texture);
             } else if (get is Texture2D texture2D) {
-                SNUtil.writeToChat("Dumping Texture2D WaterBiomeManager::" + f.Name);
-                RenderUtil.dumpTexture(SNUtil.diDLL, f.Name, texture2D);
+                SNUtil.WriteToChat("Dumping Texture2D WaterBiomeManager::" + f.Name);
+                RenderUtil.dumpTexture(SNUtil.DiDLL, f.Name, texture2D);
             } else {
                 //SNUtil.writeToChat("Skipping non-texture object "+get);
             }
@@ -2591,7 +2591,7 @@ public static class DIHooks {
 
     public static void OnRedundantFragmentScan() {
         var tgt = PDAScanner.scanTarget;
-        SNUtil.writeToChat(
+        SNUtil.WriteToChat(
             Language.main.Get(PDAScanner.GetEntryData(tgt.techType).blueprint) + " already known"
         ); //Language.main.Get("ScannerRedundantScanned")
         var r = new RedundantScanEvent();
@@ -2790,7 +2790,7 @@ public static class DIHooks {
                 BaseStrengthComputeEvent?.Invoke(calc);
                 var total = calc.FinalStrength;
                 if (!Mathf.Approximately(total, b.totalStrength))
-                    SNUtil.writeToChat(
+                    SNUtil.WriteToChat(
                         Language.main.GetFormat("BaseHullStrChanged", total - b.totalStrength, total)
                     );
                 b.totalStrength = total;
@@ -2805,7 +2805,7 @@ public static class DIHooks {
             try {
                 ico.background.material.color = new Color(1.8F, 0.85F, 0.3F, 1);
             } catch (Exception e) {
-                SNUtil.log(e.ToString());
+                SNUtil.Log(e.ToString());
             }
         } else {
             var im = ii.item.GetComponent<InfectedMixin>();
@@ -2813,7 +2813,7 @@ public static class DIHooks {
                 try {
                     ico.background.material.color = new Color(0.2F, 1.5F, 0.2F, 1);
                 } catch (Exception e) {
-                    SNUtil.log(e.ToString());
+                    SNUtil.Log(e.ToString());
                 }
             }
         }
@@ -2848,7 +2848,7 @@ public static class DIHooks {
     public static SurfaceType DebugGetSurfaceType(SurfaceType s, Vector3 vec) {
         if (SurfaceTypeDebugLevel > 1 || (SurfaceTypeDebugLevel == 1 && s != SurfaceType.Ceiling &&
                                           s != SurfaceType.Wall && s != SurfaceType.Ground))
-            SNUtil.writeToChat("Returning surface type " + s + " from " + vec);
+            SNUtil.WriteToChat("Returning surface type " + s + " from " + vec);
         return s;
     }
 
@@ -2864,10 +2864,10 @@ public static class DIHooks {
                 if (has) {
                     if (_skipZeroedDeserialization && has.transform.position.sqrMagnitude > 0.01 &&
                         uid.transform.position.sqrMagnitude < 0.01) {
-                        SNUtil.log(
+                        SNUtil.Log(
                             "Skipping setup of UID at origin: " + uid.name + " in favor of " + has.name + " @ " +
                             has.transform.position,
-                            SNUtil.diDLL
+                            SNUtil.DiDLL
                         );
                         uid.gameObject.destroy(false);
                     } else {
@@ -2900,7 +2900,7 @@ public static class DIHooks {
 
     public static GameObject CreateSpawnedItem(TechType tt, bool customOnly) {
         var ret = CraftData.InstantiateFromPrefab(
-            CraftData.GetPrefabForTechTypeAsync(tt).GetResult(),
+            PrefabUtil.GetPrefabForTechType(tt),
             tt,
             customOnly
         );
@@ -2911,9 +2911,9 @@ public static class DIHooks {
                 if (pi)
                     e.setObject(pi);
                 else
-                    SNUtil.log("No PrefabIdentifier to attach to spawn event " + e);
+                    SNUtil.Log("No PrefabIdentifier to attach to spawn event " + e);
             } else {
-                SNUtil.log("No object at all for spawn event " + e);
+                SNUtil.Log("No object at all for spawn event " + e);
             }
         }
 

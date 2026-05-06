@@ -65,7 +65,7 @@ public class RepairBeaconLogic : CustomMachineLogic {
     private float lastSound = -1;
 
     private void Start() {
-        SNUtil.log("Reinitializing base repair beacon");
+        SNUtil.Log("Reinitializing base repair beacon");
         AqueousEngineeringMod.repairBlock.initializeMachine(gameObject);
     }
 

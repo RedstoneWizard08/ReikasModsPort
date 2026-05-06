@@ -13,13 +13,13 @@ public class HealthModifier : SelfRemovingComponent, CustomSerializedComponent {
 	}
 
 	public virtual void saveToXML(XmlElement e) {
-		e.addProperty("endTime", elapseWhen);
-		e.addProperty("modifier", damageFactor);
+		e.AddProperty("endTime", elapseWhen);
+		e.AddProperty("modifier", damageFactor);
 	}
 
 	public virtual void readFromXML(XmlElement e) {
-		elapseWhen = (float)e.getFloat("endTime", 0);
-		damageFactor = (float)e.getFloat("modifier", 0);
+		elapseWhen = (float)e.GetFloat("endTime", 0);
+		damageFactor = (float)e.GetFloat("modifier", 0);
 	}
 
 }

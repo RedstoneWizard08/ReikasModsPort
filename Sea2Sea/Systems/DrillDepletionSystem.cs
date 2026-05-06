@@ -139,7 +139,7 @@ internal class MotherlodeDrillTag : MonoBehaviour {
     private float _lastOreTableAssignTime = -1;
 
     private void Start() {
-        SNUtil.writeToChat(
+        SNUtil.WriteToChat(
             "Drill at " + WorldUtil.getRegionalDescription(transform.position, true) + " is mining deposit: " +
             Language.main.Get(Deposit.TechType.AsString())
         );

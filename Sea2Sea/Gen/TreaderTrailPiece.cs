@@ -41,11 +41,11 @@ internal class TreaderTrailPiece : WorldGenerator {
 	}
 
 	public override void loadFromXML(XmlElement e) {
-		intensity = (float)e.getFloat("intensity", intensity);
+		intensity = (float)e.GetFloat("intensity", intensity);
 	}
 
 	public override void saveToXML(XmlElement e) {
-		e.addProperty("intensity", intensity);
+		e.AddProperty("intensity", intensity);
 	}
 
 }

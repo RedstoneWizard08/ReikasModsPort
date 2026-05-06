@@ -114,7 +114,7 @@ public static class InstructionHandlers {
 					info += "\n";
 				}
 			}
-			throw new Exception("Could not find a method named '" + name + "' with args " + args.toDebugString() + " in type '" + owner + "'!\n" + info);
+			throw new Exception("Could not find a method named '" + name + "' with args " + args.ToDebugString() + " in type '" + owner + "'!\n" + info);
 		}
 		return ret;
 	}
@@ -326,7 +326,7 @@ public static class InstructionHandlers {
 		FileLog.logPath = Path.Combine(Path.GetDirectoryName(parent.Assembly.Location), "harmony-log.txt");
 		var ilDumpFolder = getILDumpFolder();
 		var msg = "Running harmony patches in " + parent.Assembly.GetName().Name + "::" + parent.Name;
-		SNUtil.log(msg);
+		SNUtil.Log(msg);
 		FileLog.Log(msg);
 		foreach (var t in parent.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)) {
 			FileLog.Log("Running harmony patches in " + t.Name);
@@ -394,7 +394,7 @@ public static class InstructionHandlers {
 	}
 
 	public static string getILDumpFolder() {
-		return Path.Combine(Path.GetDirectoryName(SNUtil.diDLL.Location), "original-il");
+		return Path.Combine(Path.GetDirectoryName(SNUtil.DiDLL.Location), "original-il");
 	}
 
 	public static void dumpMethodIL(IEnumerable<CodeInstruction> li, string id) {
@@ -445,7 +445,7 @@ public static class InstructionHandlers {
 				dumpMethodIL(orig, id);
 			}
 			catch (Exception e) {
-				SNUtil.log("Threw exception dumping patch '" + patch.DeclaringType.Name + "' [" + attrs.toDebugString("\n") + "] IL: " + e);
+				SNUtil.Log("Threw exception dumping patch '" + patch.DeclaringType.Name + "' [" + attrs.ToDebugString("\n") + "] IL: " + e);
 			}
 		}
 		FileLog.Log("Starting patch " + patch.DeclaringType);

@@ -121,23 +121,23 @@ public class MaterialPropertyDefinition {
 		var texs = (XmlElement)doc.DocumentElement.GetElementsByTagName("textures")[0];
 		var flags = (XmlElement)doc.DocumentElement.GetElementsByTagName("flags")[0];
 		var props = (XmlElement)doc.DocumentElement.GetElementsByTagName("properties")[0];
-		foreach (var e in texs.getDirectElementsByTagName("entry")) {
+		foreach (var e in texs.GetDirectElementsByTagName("entry")) {
 			var tex = new TextureDefinition();
 			tex.readFromFile(e);
 			textures[tex.name] = tex;
 			tex.texture = TextureManager.getTexture(a, Path.Combine(folder, tex.name));
 		}
-		foreach (var e in props.getDirectElementsByTagName("entry")) {
-			var shd = new ShaderProperty(shaderPropTypes[e.getProperty("name")]);
+		foreach (var e in props.GetDirectElementsByTagName("entry")) {
+			var shd = new ShaderProperty(shaderPropTypes[e.GetProperty("name")]);
 			shd.readFromFile(e);
 			shaderProperties[shd.definition.name] = shd;
 		}
-		foreach (var e in flags.getDirectElementsByTagName("entry")) {
+		foreach (var e in flags.GetDirectElementsByTagName("entry")) {
 			shaderFlags.Add(e.InnerText);
 		}
-		color = doc.DocumentElement.getColor("color", true).Value;
-		renderQueue = doc.DocumentElement.getInt("renderQueue", 0, false);
-		illumFlags = (MaterialGlobalIlluminationFlags)doc.DocumentElement.getInt("illumFlags", 0, false);
+		color = doc.DocumentElement.GetColor("color", true).Value;
+		renderQueue = doc.DocumentElement.GetInt("renderQueue", 0, false);
+		illumFlags = (MaterialGlobalIlluminationFlags)doc.DocumentElement.GetInt("illumFlags", 0, false);
 	}
 
 	public void writeToFile(string folder) {
@@ -153,19 +153,19 @@ public class MaterialPropertyDefinition {
 			var e = doc.CreateElement("entry");
 			tex.writeToFile(e);
 			texs.AppendChild(e);
-			RenderUtil.dumpTexture(SNUtil.diDLL, tex.name, (Texture2D)tex.texture, folder);
+			RenderUtil.dumpTexture(SNUtil.DiDLL, tex.name, (Texture2D)tex.texture, folder);
 		}
 		foreach (var s in shaderFlags) {
-			flags.addProperty("entry", s);
+			flags.AddProperty("entry", s);
 		}
 		foreach (var shd in shaderProperties.Values) {
 			var e = doc.CreateElement("entry");
 			shd.writeToFile(e);
 			props.AppendChild(e);
 		}
-		doc.DocumentElement.addProperty("color", color);
-		doc.DocumentElement.addProperty("renderQueue", renderQueue);
-		doc.DocumentElement.addProperty("illumFlags", (int)illumFlags);
+		doc.DocumentElement.AddProperty("color", color);
+		doc.DocumentElement.AddProperty("renderQueue", renderQueue);
+		doc.DocumentElement.AddProperty("illumFlags", (int)illumFlags);
 		doc.DocumentElement.AppendChild(texs);
 		doc.DocumentElement.AppendChild(flags);
 		doc.DocumentElement.AppendChild(props);
@@ -209,25 +209,25 @@ public class MaterialPropertyDefinition {
 
 		internal object loadValue(XmlElement e) {
 			if (valueType == typeof(int))
-				return e.getInt(name, 0, false);
+				return e.GetInt(name, 0, false);
 			if (valueType == typeof(float))
-				return e.getFloat(name, float.NaN);
+				return e.GetFloat(name, float.NaN);
 			//if (valueType == typeof(float[]))
 			//	return e.GetFloatArray(name);
-			return valueType == typeof(Vector4) ? e.getVector4(name) : valueType == typeof(Color) ? e.getColor(name, true) : (object)null;
+			return valueType == typeof(Vector4) ? e.GetVector4(name) : valueType == typeof(Color) ? e.GetColor(name, true) : (object)null;
 		}
 
 		internal void saveValue(XmlElement e, object val) {
 			if (valueType == typeof(int))
-				e.addProperty(name, (int)val);
+				e.AddProperty(name, (int)val);
 			if (valueType == typeof(float))
-				e.addProperty(name, (float)val);
+				e.AddProperty(name, (float)val);
 			//if (valueType == typeof(float[]))
 			//e.addProperty(name, val);
 			if (valueType == typeof(Vector4))
-				e.addProperty(name, (Vector4)val);
+				e.AddProperty(name, (Vector4)val);
 			if (valueType == typeof(Color))
-				e.addProperty(name, (Color)val);
+				e.AddProperty(name, (Color)val);
 		}
 
 		internal object getValue(Material m) {
@@ -274,12 +274,12 @@ public class MaterialPropertyDefinition {
 				definition.applyValue(m, value);
 			}
 			catch (Exception ex) {
-				SNUtil.log("Could not apply shader property " + definition.name + " [" + value + "]: " + ex);
+				SNUtil.Log("Could not apply shader property " + definition.name + " [" + value + "]: " + ex);
 			}
 		}
 
 		public void writeToFile(XmlElement e) {
-			e.addProperty("name", definition.name);
+			e.AddProperty("name", definition.name);
 			definition.saveValue(e, value);
 		}
 
@@ -315,15 +315,15 @@ public class MaterialPropertyDefinition {
 		}
 
 		public void writeToFile(XmlElement e) {
-			e.addProperty("name", name);
-			e.addProperty("scale", scale.WithZ(0));
-			e.addProperty("offset", offset.WithZ(0));
+			e.AddProperty("name", name);
+			e.AddProperty("scale", scale.WithZ(0));
+			e.AddProperty("offset", offset.WithZ(0));
 		}
 
 		public void readFromFile(XmlElement e) {
-			name = e.getProperty("name");
-			scale = e.getVector("scale").Value.XY();
-			offset = e.getVector("offset").Value.XY();
+			name = e.GetProperty("name");
+			scale = e.GetVector("scale").Value.XY();
+			offset = e.GetVector("offset").Value.XY();
 		}
 
 	}

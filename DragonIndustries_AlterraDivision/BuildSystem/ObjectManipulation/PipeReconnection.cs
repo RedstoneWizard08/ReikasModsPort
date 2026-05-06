@@ -58,15 +58,15 @@ internal class PipeReconnector : MonoBehaviour {
 			List<IPipeConnection> li = [];
 			li.AddRange(FindObjectsOfType<OxygenPipe>());
 			li.AddRange(FindObjectsOfType<BasePipeConnector>());
-			SNUtil.log(string.Join(",", li.Select(p => p + " @ " + ((MonoBehaviour)p).transform.position)));
+			SNUtil.Log(string.Join(",", li.Select(p => p + " @ " + ((MonoBehaviour)p).transform.position)));
 			foreach (var conn in li) {
 				var pos = ((MonoBehaviour)conn).transform.position;
 				double dd = Vector3.Distance(pos, position);
-				SNUtil.log("Pipe " + gameObject.transform.position + " check against " + pos + " @ dist=" + dd);
+				SNUtil.Log("Pipe " + gameObject.transform.position + " check against " + pos + " @ dist=" + dd);
 				if (connection == null || dd < dist) {
 					connection = conn;
 					dist = dd;
-					SNUtil.log("Reconnected");
+					SNUtil.Log("Reconnected");
 				}
 			}
 			if (connection != null)

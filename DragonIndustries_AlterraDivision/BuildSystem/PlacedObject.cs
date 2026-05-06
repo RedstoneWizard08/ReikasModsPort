@@ -48,7 +48,7 @@ public sealed class PlacedObject : DICustomPrefab {
 		if (go == null)
 			throw new Exception("Tried to make a place of a null obj!");
 		if (go.transform == null)
-			SNUtil.log("Place of obj " + go + " has null transform?!", SNUtil.diDLL);
+			SNUtil.Log("Place of obj " + go + " has null transform?!", SNUtil.DiDLL);
 		position = go.transform.position;
 		rotation = go.transform.rotation;
 		scale = go.transform.localScale;
@@ -76,11 +76,11 @@ public sealed class PlacedObject : DICustomPrefab {
 					fx.SetActive(false);
 				}
 				else {
-					SNUtil.writeToChat("Bubbles not constructable!");
+					SNUtil.WriteToChat("Bubbles not constructable!");
 				}
 			}
 			else {
-				SNUtil.writeToChat("Bubbles not found.");
+				SNUtil.WriteToChat("Bubbles not found.");
 			}
 		}
 		catch (Exception e) {
@@ -124,15 +124,15 @@ public sealed class PlacedObject : DICustomPrefab {
 	public void setSelected(bool sel) {
 		isSelected = sel;
 		if (fx == null) {
-			SNUtil.writeToChat("Could not set enabled visual of " + this + " due to null FX GO");
+			SNUtil.WriteToChat("Could not set enabled visual of " + this + " due to null FX GO");
 			return;
 		}
 		try {
 			fx.SetActive(isSelected);
 		}
 		catch (Exception ex) {
-			SNUtil.writeToChat("Could not set enabled visual of " + this + " due to FX (" + fx + ") GO error");
-			SNUtil.log("Could not set enabled visual of " + this + " due to FX (" + fx + ") GO error: " + ex.ToString(), SNUtil.diDLL);
+			SNUtil.WriteToChat("Could not set enabled visual of " + this + " due to FX (" + fx + ") GO error");
+			SNUtil.Log("Could not set enabled visual of " + this + " due to FX (" + fx + ") GO error: " + ex.ToString(), SNUtil.DiDLL);
 		}
 	}
 
@@ -219,17 +219,17 @@ public sealed class PlacedObject : DICustomPrefab {
 	public override void saveToXML(XmlElement e) {
 		base.saveToXML(e);
 
-		SNUtil.log("Serializing " + obj + " to xml as '" + prefabName + "':", SNUtil.diDLL);
+		SNUtil.Log("Serializing " + obj + " to xml as '" + prefabName + "':", SNUtil.DiDLL);
 
 		if (parent != null && parent.xmlID != null && parent.xmlID.HasValue) {
-			e.addProperty("parent", parent.xmlID.ToString());
+			e.AddProperty("parent", parent.xmlID.ToString());
 		}
 		if (isSeabase) {
 			foreach (Transform t in obj.transform) {
 				var go2 = t.gameObject;
 				var p2 = createNewObject(go2);
 				if (p2 == null) {
-					SNUtil.log("Could not find an identifier for " + t, SNUtil.diDLL);
+					SNUtil.Log("Could not find an identifier for " + t, SNUtil.DiDLL);
 				}
 				else {
 					var cell = e.OwnerDocument.CreateElement("part");
@@ -242,7 +242,7 @@ public sealed class PlacedObject : DICustomPrefab {
 						foreach (Transform t2 in t) {
 							var p3 = createNewObject(t2.gameObject);
 							if (p3 == null) {
-								SNUtil.log("Could not find an identifier for " + t2, SNUtil.diDLL);
+								SNUtil.Log("Could not find an identifier for " + t2, SNUtil.DiDLL);
 							}
 							else {
 								var e3 = e.OwnerDocument.CreateElement("component");
@@ -259,8 +259,8 @@ public sealed class PlacedObject : DICustomPrefab {
 						var e2 = e.OwnerDocument.CreateElement("inventory");
 						foreach (var tt in sc.container.GetItemTypes()) {
 							var e3 = e.OwnerDocument.CreateElement("item");
-							e3.addProperty("type", "" + tt);
-							e3.addProperty("amount", sc.container.GetItems(tt).Count);
+							e3.AddProperty("type", "" + tt);
+							e3.AddProperty("amount", sc.container.GetItems(tt).Count);
 							e2.AppendChild(e3);
 						}
 						cell.AppendChild(e2);
@@ -271,8 +271,8 @@ public sealed class PlacedObject : DICustomPrefab {
 							if (kvp.Value == null || kvp.Value.item == null)
 								continue;
 							var e3 = e.OwnerDocument.CreateElement("item");
-							e3.addProperty("type", "" + kvp.Value.item.GetTechType());
-							e3.addProperty("slot", kvp.Key);
+							e3.AddProperty("type", "" + kvp.Value.item.GetTechType());
+							e3.AddProperty("slot", kvp.Key);
 							e2.AppendChild(e3);
 						}
 						cell.AppendChild(e2);
@@ -285,17 +285,17 @@ public sealed class PlacedObject : DICustomPrefab {
 			var bf = obj.GetComponent<BaseFoundationPiece>();
 			if (bf != null) {
 				var e2 = e.OwnerDocument.CreateElement("supportData");
-				e2.addProperty("maxHeight", bf.maxPillarHeight);
-				e2.addProperty("extra", bf.extraHeight);
-				e2.addProperty("minHeight", bf.minHeight);
+				e2.AddProperty("maxHeight", bf.maxPillarHeight);
+				e2.AddProperty("extra", bf.extraHeight);
+				e2.AddProperty("minHeight", bf.minHeight);
 				if (bf.pillars != null) {
 					foreach (var p in bf.pillars) {
 						var l = p.adjustable;
 						if (l) {
 							var e3 = e.OwnerDocument.CreateElement("pillar");
-							e3.addProperty("position", l.position);
-							e3.addProperty("rotation", l.rotation);
-							e3.addProperty("scale", l.localScale);
+							e3.AddProperty("position", l.position);
+							e3.AddProperty("rotation", l.rotation);
+							e3.AddProperty("scale", l.localScale);
 							e2.AppendChild(e3);
 						}
 					}
@@ -303,7 +303,7 @@ public sealed class PlacedObject : DICustomPrefab {
 				e.AppendChild(e2);
 			}
 		}
-		SNUtil.log("Finished XML serialization of " + prefabName, SNUtil.diDLL);
+		SNUtil.Log("Finished XML serialization of " + prefabName, SNUtil.DiDLL);
 	}
 
 	public override void loadFromXML(XmlElement e) {
@@ -340,7 +340,7 @@ public sealed class PlacedObject : DICustomPrefab {
 		if (fx != null && fx.transform != null)
 			fx.transform.localScale = scale;
 
-		var pp = e.getProperty("parent", true);
+		var pp = e.GetProperty("parent", true);
 		if (!string.IsNullOrEmpty(pp) && ids.ContainsKey(pp)) {
 			parent = ids[pp];
 			if (parent != null)
@@ -362,7 +362,7 @@ public sealed class PlacedObject : DICustomPrefab {
 	public static PlacedObject fromXML(XmlElement e, bool readXML = true) {
 		var pfb = new DICustomPrefab("");
 		pfb.loadFromXML(e);
-		SNUtil.log("Building placed object from custom prefab " + pfb + " > " + e.format(), SNUtil.diDLL);
+		SNUtil.Log("Building placed object from custom prefab " + pfb + " > " + e.Format(), SNUtil.DiDLL);
 		var b = createNewObject(pfb);
 		if (readXML)
 			b.loadFromXML(e);
@@ -409,7 +409,7 @@ public sealed class PlacedObject : DICustomPrefab {
 
 	private static PlacedObject createNewObject(string id, bool basePiece) {
 		if (id == null) {
-			SNUtil.writeToChat("Prefab not placed; ID was null");
+			SNUtil.WriteToChat("Prefab not placed; ID was null");
 			return null;
 		}
 		var go = basePiece ? ObjectUtil.getBasePiece(id) : ObjectUtil.createWorldObject(id);

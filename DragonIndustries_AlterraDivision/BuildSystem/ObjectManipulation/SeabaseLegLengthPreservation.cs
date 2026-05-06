@@ -28,21 +28,21 @@ internal class SeabaseLegLengthPreservation : ManipulationBase {
 				bf.gameObject.destroy();
 			}
 			else {
-				bf.maxPillarHeight = (float)data.getFloat("maxHeight", double.NaN);
-				bf.extraHeight = (float)data.getFloat("extra", double.NaN);
-				bf.minHeight = (float)data.getFloat("minHeight", double.NaN);
-				var li = data.getDirectElementsByTagName("pillar");
+				bf.maxPillarHeight = (float)data.GetFloat("maxHeight", double.NaN);
+				bf.extraHeight = (float)data.GetFloat("extra", double.NaN);
+				bf.minHeight = (float)data.GetFloat("minHeight", double.NaN);
+				var li = data.GetDirectElementsByTagName("pillar");
 				foreach (var p in bf.pillars) {
 					var l = p.adjustable;
 					if (l) {
 						var matched = false;
 						foreach (var e3 in li) {
-							var pos = e3.getVector("position").Value;
+							var pos = e3.GetVector("position").Value;
 							//SNUtil.log("Comparing xml pos "+pos+" to "+l.position+" = "+Vector3.Distance(pos, l.position));
 							if (Vector3.Distance(pos, l.position) <= 0.25) {
-								l.rotation = e3.getQuaternion("rotation").Value;
-								l.localScale = e3.getVector("scale").Value;
-								SNUtil.log("Applied pillar match " + e3.OuterXml, SNUtil.diDLL);
+								l.rotation = e3.GetQuaternion("rotation").Value;
+								l.localScale = e3.GetVector("scale").Value;
+								SNUtil.Log("Applied pillar match " + e3.OuterXml, SNUtil.DiDLL);
 								matched = true;
 							}
 						}

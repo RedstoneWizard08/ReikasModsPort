@@ -6,3 +6,6 @@ riderModule.iml
 Prebuilt
 .venv
 .idea
+cache.json
+__pycache__
+.build

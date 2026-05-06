@@ -52,7 +52,7 @@ public abstract class SwapTexture : ManipulationBase {
 							if (tex2 != null)
 								m.SetTexture(n, tex2);
 							else
-								SNUtil.writeToChat("Could not find texture " + put);
+								SNUtil.WriteToChat("Could not find texture " + put);
 						}
 					}
 				}
@@ -69,7 +69,7 @@ public abstract class SwapTexture : ManipulationBase {
 		swaps.Clear();
 		foreach (XmlNode n2 in e.ChildNodes) {
 			if (n2 is XmlElement e2) {
-				swaps[e2.getProperty("from")] = e2.getProperty("to");
+				swaps[e2.GetProperty("from")] = e2.GetProperty("to");
 			}
 		}
 	}
@@ -77,8 +77,8 @@ public abstract class SwapTexture : ManipulationBase {
 	public override void saveToXML(XmlElement e) {
 		foreach (var kvp in swaps) {
 			var e2 = e.OwnerDocument.CreateElement("swap");
-			e2.addProperty("from", kvp.Key);
-			e2.addProperty("to", kvp.Value);
+			e2.AddProperty("from", kvp.Key);
+			e2.AddProperty("to", kvp.Value);
 			e.AppendChild(e2);
 		}
 	}

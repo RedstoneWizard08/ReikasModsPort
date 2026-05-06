@@ -13,6 +13,7 @@ namespace ReikaKalseki.Ecocean;
 
 [BepInPlugin(MOD_KEY, "Ecocean", Nautilus.PluginInfo.PLUGIN_VERSION)]
 [BepInDependency("com.snmodding.nautilus")]
+[BepInDependency(DIMod.MOD_KEY)]
 public class EcoceanMod : BaseUnityPlugin {
     public const string MOD_KEY = "ReikaKalseki.Ecocean";
 
@@ -83,7 +84,6 @@ public class EcoceanMod : BaseUnityPlugin {
         harmony.apply();
 
         ModVersionCheck.getFromGitVsInstall("Ecocean", modDLL, "Ecocean").register();
-        SNUtil.checkModHash(modDLL);
 
         locale.load();
 
@@ -141,8 +141,8 @@ public class EcoceanMod : BaseUnityPlugin {
         mushroomTendrils[1].Patch();
         */
         e = locale.getEntry("celeryTree");
-        celeryTree = SNUtil.addTechTypeToVanillaPrefabs(e, DecoPlants.CELERY_TREE.prefab);
-        SNUtil.addPDAEntry(celeryTree, e.key, e.name, 10, "Lifeforms/Flora/Land", e.pda, e.getString("header"));
+        celeryTree = SNUtil.AddTechTypeToVanillaPrefabs(e, DecoPlants.CELERY_TREE.prefab);
+        SNUtil.AddPdaEntry(celeryTree, e.key, e.name, 10, "Lifeforms/Flora/Land", e.pda, e.getString("header"));
 
         voidBubble = new VoidBubble(locale.getEntry("VoidBubble"));
         voidBubble.register();
@@ -173,7 +173,7 @@ public class EcoceanMod : BaseUnityPlugin {
         glowShroom.Register();
         e = locale.getEntry(glowShroom.ClassID);
         glowShroom.addPDAEntry(e.pda, 15F, e.getString("header"));
-        SNUtil.log(" > " + glowShroom);
+        SNUtil.Log(" > " + glowShroom);
         GenUtil.registerPrefabWorldgen(
             glowShroom,
             EntitySlot.Type.Medium,
@@ -187,7 +187,7 @@ public class EcoceanMod : BaseUnityPlugin {
         lavaShroom.Register();
         e = locale.getEntry(lavaShroom.ClassID);
         lavaShroom.addPDAEntry(e.pda, 20F, e.getString("header"));
-        SNUtil.log(" > " + lavaShroom);
+        SNUtil.Log(" > " + lavaShroom);
         GenUtil.registerPrefabWorldgen(
             lavaShroom,
             EntitySlot.Type.Medium,
@@ -250,8 +250,8 @@ public class EcoceanMod : BaseUnityPlugin {
             BaseBioReactor.GetCharge(TechType.GarryFish) * 0.6F
         );
 
-        GenUtil.registerWorldgen(new PositionedPrefab(VanillaCreatures.REAPER.prefab, reaperlessTripleVent.setY(-200)));
-        GenUtil.registerWorldgen(new PositionedPrefab(VanillaCreatures.REAPER.prefab, northDuneBit.setY(-320)));
+        GenUtil.registerWorldgen(new PositionedPrefab(VanillaCreatures.REAPER.prefab, reaperlessTripleVent.SetY(-200)));
+        GenUtil.registerWorldgen(new PositionedPrefab(VanillaCreatures.REAPER.prefab, northDuneBit.SetY(-320)));
 
         TerrainLootSpawner.WeightedTerrainLootSpawn wr = new TerrainLootSpawner.WeightedTerrainLootSpawn();
         wr.addEntry(VanillaResources.DIAMOND.prefab, 20);

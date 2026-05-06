@@ -117,7 +117,7 @@ public static bool hasNoGasMask() {
                         Mathf.Sin(a) * r
                     );
                     var vec = pi.transform.position + dt;
-                    var ray = new Ray(vec, -dt.setY(0));
+                    var ray = new Ray(vec, -dt.SetY(0));
                     if (UWE.Utils.RaycastIntoSharedBuffer(
                             ray,
                             24,
@@ -217,7 +217,7 @@ public static bool hasNoGasMask() {
                     QueryTriggerInteraction.Ignore
                 ) > 0) {
                 var hit = UWE.Utils.sharedHitBuffer[0];
-                SNUtil.writeToChat(i + ": " + hit.transform);
+                SNUtil.WriteToChat(i + ": " + hit.transform);
                 if (hit.transform != null && hit.normal.y > -0.7F) {
                     var flag = true;
                     foreach (var pi in WorldUtil.getObjectsNearWithComponent<PrefabIdentifier>(
@@ -334,20 +334,20 @@ public static bool hasNoGasMask() {
 
                 if (selSlot >= 0)
                     Inventory.main.quickSlots.Select(selSlot);
-                SNUtil.writeToChat(
+                SNUtil.WriteToChat(
                     "Swapped to " + Language.main.Get(to) + (batt /* != TechType.None*/
                         ? ", with battery '" + Language.main.Get(batt.GetTechType()) + "' (" +
                           (battCh * 100F).ToString("0.0") + "% full)"
                         : "")
                 );
             } else {
-                SNUtil.writeToChat("Swapped (pro/re)pulsion gun but not found in inventory afterwards?!");
+                SNUtil.WriteToChat("Swapped (pro/re)pulsion gun but not found in inventory afterwards?!");
                 if (batt /* != TechType.None*/)
                     //InventoryUtil.addItem(batt);
                     Inventory.main.Pickup(batt);
             }
         } else {
-            SNUtil.writeToChat("Found no (pro/re)pulsion gun to swap");
+            SNUtil.WriteToChat("Found no (pro/re)pulsion gun to swap");
         }
     }
 
@@ -358,6 +358,6 @@ public static bool hasNoGasMask() {
             ptc++;
         }
 
-        SNUtil.writeToChat("Removed " + ptc + " platinum.");
+        SNUtil.WriteToChat("Removed " + ptc + " platinum.");
     }
 }

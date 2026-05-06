@@ -131,7 +131,7 @@ public static class GenUtil {
         validateCoords(gen.position);
         Action<GameObject> call = go => {
             var id = gen.uniqueID;
-            SNUtil.log("Placing world generator " + gen + " [" + id + "]");
+            SNUtil.Log("Placing world generator " + gen + " [" + id + "]");
             generatorTable[id] = gen;
             go.EnsureComponent<WorldGeneratorHolder>().generatorID = id;
         };
@@ -143,7 +143,7 @@ public static class GenUtil {
             call
         );
         CoordinatedSpawnsHandler.RegisterCoordinatedSpawn(info);
-        SNUtil.log("Queuing world generator " + gen);
+        SNUtil.Log("Queuing world generator " + gen);
         return info;
     }
 
@@ -274,7 +274,7 @@ public static class GenUtil {
 
             return true;
         } else {
-            SNUtil.log("Generator " + gen + " failed, trying again in one second", SNUtil.diDLL);
+            SNUtil.Log("Generator " + gen + " failed, trying again in one second", SNUtil.DiDLL);
             return false;
         }
     }
@@ -289,7 +289,7 @@ public static class GenUtil {
         public CustomPrefabImpl(string name, string template, string display = "") : base(name, display, "") {
             baseTemplate = new StringPrefabContainer(template);
 
-            ownerMod = SNUtil.tryGetModDLL();
+            ownerMod = SNUtil.TryGetModDLL();
             SetGameObject(GetGameObject);
         }
 
@@ -373,7 +373,7 @@ public static class GenUtil {
 
         public void NotifyGoalComplete(string key) {
             if (key == containedTech.AsString()) {
-                SNUtil.triggerTechPopup(containedTech);
+                SNUtil.TriggerTechPopup(containedTech);
                 TechnologyUnlockSystem.instance.triggerDirectUnlock(containedTech, false);
             }
         }
@@ -555,7 +555,7 @@ public static class GenUtil {
                 if (!itemInside && !itemGrabbed && (collectionGoal == null ||
                                                     !Story.StoryGoalManager.main.IsGoalComplete(collectionGoal))) {
                     itemInside = ObjectUtil.createWorldObject(itemToSpawn).GetComponent<Pickupable>();
-                    SNUtil.log("Filling crate @ " + transform.position + " with " + itemInside);
+                    SNUtil.Log("Filling crate @ " + transform.position + " with " + itemInside);
                     itemInside.transform.SetParent(transform);
                     itemInside.transform.localPosition = new Vector3(0, 0.33F, 0);
                     itemInside.transform.localRotation = Quaternion.identity;
@@ -666,9 +666,9 @@ public static class GenUtil {
         internal bool generate() {
             generatorInstance = generatorTable.ContainsKey(generatorID) ? generatorTable[generatorID] : null;
             if (generatorInstance == null) {
-                SNUtil.log(
+                SNUtil.Log(
                     "WorldGen holder '" + generatorID + "' @ " + transform.position + " had no generator!",
-                    SNUtil.diDLL
+                    SNUtil.DiDLL
                 );
                 return false;
             }

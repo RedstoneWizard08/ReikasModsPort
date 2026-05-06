@@ -13,7 +13,7 @@ public class SurvivalEventTracker : SerializedTracker<SurvivalEventTracker.Survi
 	}
 
 	private static SurvivalEvent parse(XmlElement s) {
-		var type = s.getProperty("type");
+		var type = s.GetProperty("type");
 		if (string.IsNullOrEmpty(type))
 			return null;
 		switch (type) {

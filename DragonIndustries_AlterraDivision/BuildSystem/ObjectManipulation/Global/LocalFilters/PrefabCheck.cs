@@ -21,11 +21,11 @@ internal sealed class PrefabCheck : LocalCheck {
 	}
 
 	internal override void loadFromXML(XmlElement e) {
-		id = e.getProperty("id");
+		id = e.GetProperty("id");
 	}
 
 	internal override void saveToXML(XmlElement e) {
-		e.addProperty("id", id);
+		e.AddProperty("id", id);
 	}
 
 }

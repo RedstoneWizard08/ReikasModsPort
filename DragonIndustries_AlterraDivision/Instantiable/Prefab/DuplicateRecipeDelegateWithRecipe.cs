@@ -88,7 +88,7 @@ public sealed class DuplicateRecipeDelegateWithRecipe : CustomPrefab, DuplicateI
             throw new Exception("Delegate item " + basis.AsString() + "/" + Info.ClassID + " has no source mod!");
         if (sprite == null)
             throw new Exception("Delegate item " + basis + "/" + Info.ClassID + " has no sprite!");
-        SNUtil.log(
+        SNUtil.Log(
             "Constructed craftable delegate of " + basis.AsString() + ": " + Info.ClassID + " @ " +
             RecipeUtil.toString(recipe) + " @ " + string.Join("/", craftingMenuTree),
             ownerMod

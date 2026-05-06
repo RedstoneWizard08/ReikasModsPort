@@ -19,7 +19,7 @@ public sealed class RichText {
 	}
 
 	public void addColor(Color c) {
-		addColor(c.toARGB());
+		addColor(c.ToArgb());
 	}
 
 	public void addColor(int c) {

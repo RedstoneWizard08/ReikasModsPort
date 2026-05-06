@@ -41,7 +41,7 @@ public class ExplodingGrabbable : CustomPrefab {
                 var id = GetComponent<PrefabIdentifier>().classId;
                 template = templates.ContainsKey(id) ? templates[id] : null;
                 if (template == null)
-                    SNUtil.log("No template for exploding grabbable prefab " + id + " @ " + transform.position);
+                    SNUtil.Log("No template for exploding grabbable prefab " + id + " @ " + transform.position);
             }
         }
 

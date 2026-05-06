@@ -123,7 +123,7 @@ public class BaseCellEnviroHandler : MonoBehaviour {
             transform.position.y < -500
                 ? 0
                 : MushroomVaseStrand.getSpawnRate(currentBiome); //there are no plankton spawns below -500
-        SNUtil.log(
+        SNUtil.Log(
             "Computed plankton spawn rate of " + planktonSpawnRate + " for base cell " + transform.position + " (" +
             currentBiome.DisplayName + ") @ " + DayNightCycle.main.timePassedAsFloat
         );

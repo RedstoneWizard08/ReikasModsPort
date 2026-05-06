@@ -129,7 +129,7 @@ internal class BrightLightController : MonoBehaviour {
         bonusLights.Clear();
         var go = gameObject.getChildObject(cyclops ? "Floodlights" : "lights_parent");
         if (!go) {
-            SNUtil.writeToChat("Could not find light parent on " + gameObject + "=" + vehicle);
+            SNUtil.WriteToChat("Could not find light parent on " + gameObject + "=" + vehicle);
             return;
         }
 

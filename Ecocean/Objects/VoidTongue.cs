@@ -50,7 +50,7 @@ public class VoidTongue : CustomPrefab {
 
     public void register() {
         this.Register();
-        pdaPage = SNUtil.addPDAEntry(this, -1, "Lifeforms/Fauna/Leviathans", locale.pda, locale.getString("header"));
+        pdaPage = SNUtil.AddPdaEntry(this, -1, "Lifeforms/Fauna/Leviathans", locale.pda, locale.getString("header"));
         ItemRegistry.instance.addItem(this);
     }
 }
@@ -458,7 +458,7 @@ public class VoidTongueTag : MonoBehaviour {
                 pda = v == Player.main.GetVehicle();
             }
 
-            ReikaKalseki.DIAlterra.SNUtil.log("", ReikaKalseki.DIAlterra.SNUtil.diDLL);
+            ReikaKalseki.DIAlterra.SNUtil.Log("", ReikaKalseki.DIAlterra.SNUtil.DiDLL);
             if (!stuckCyclops)
                 JointHelper.ConnectFixed(jointHelper, rb);
             ObjectUtil.addCyclopsHologramWarning(

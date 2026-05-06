@@ -96,7 +96,7 @@ public class PostCoveDomeTag : MonoBehaviour {
 
 	private void OnScanned() {
 		scanned = true;
-		SNUtil.addBlueprintNotification(CraftingItems.getItem(CraftingItems.Items.ObsidianGlass).TechType);
+		SNUtil.AddBlueprintNotification(CraftingItems.getItem(CraftingItems.Items.ObsidianGlass).TechType);
 	}
 
 	public static int maximumDomeChildren = 16;

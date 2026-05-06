@@ -31,13 +31,13 @@ public class Scatter : ManipulationBase {
 	}
 
 	public override void loadFromXML(XmlElement e) {
-		range = ((XmlElement)e.ParentNode).getVector("Scatter").Value;
+		range = ((XmlElement)e.ParentNode).GetVector("Scatter").Value;
 	}
 
 	public override void saveToXML(XmlElement e) {
-		e.addProperty("x", range.x);
-		e.addProperty("y", range.y);
-		e.addProperty("z", range.z);
+		e.AddProperty("x", range.x);
+		e.AddProperty("y", range.y);
+		e.AddProperty("z", range.z);
 	}
 
 	public override bool needsReapplication() {

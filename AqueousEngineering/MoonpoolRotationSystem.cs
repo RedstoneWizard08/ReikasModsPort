@@ -59,7 +59,7 @@ public class MoonpoolRotationSystem : SaveSystem.SaveHandler {
     public override void load(PrefabIdentifier pi) {
         var mgr = pi.GetComponentInChildren<MoonpoolRotationManager>();
         if (mgr) {
-            mgr.setRotation((float)data.getFloat("rotation", 0), false);
+            mgr.setRotation((float)data.GetFloat("rotation", 0), false);
         }
     }
 
@@ -143,7 +143,7 @@ public class MoonpoolRotationSystem : SaveSystem.SaveHandler {
                 }
             }
 
-            SNUtil.log("Added moonpool rotation buttons: " + buttons.toDebugString(), AqueousEngineeringMod.modDLL);
+            SNUtil.Log("Added moonpool rotation buttons: " + buttons.ToDebugString(), AqueousEngineeringMod.modDLL);
         }
         /*
             private void alignButtons() {
@@ -175,11 +175,11 @@ public class MoonpoolRotationSystem : SaveSystem.SaveHandler {
         }
 
         internal void load(XmlElement data) {
-            setRotation((float)data.getFloat("angle", 0), false);
+            setRotation((float)data.GetFloat("angle", 0), false);
         }
 
         internal void save(XmlElement data) {
-            data.addProperty("angle", desiredRotation);
+            data.AddProperty("angle", desiredRotation);
         }
     }
 

@@ -44,7 +44,7 @@ public class OutdoorPot : CustomPrefab {
                 "Tooltip_" + d.TechType.AsString(),
                 Language.main.Get("Tooltip_" + d.pot.AsString()) + " Designed for outdoor use."
             );
-            SNUtil.log("Relocalized " + d + " > " + Language.main.Get(d.TechType), AqueousEngineeringMod.modDLL);
+            SNUtil.Log("Relocalized " + d + " > " + Language.main.Get(d.TechType), AqueousEngineeringMod.modDLL);
         }
     }
 
@@ -89,7 +89,7 @@ public class OutdoorPot : CustomPrefab {
             world.SetActive(true);
             return world;
         } else {
-            SNUtil.writeToChat("Could not fetch template GO for " + this);
+            SNUtil.WriteToChat("Could not fetch template GO for " + this);
             return null;
         }
     }

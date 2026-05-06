@@ -81,7 +81,7 @@ internal class VoltaicBladderfishTag : MonoBehaviour, AmpeelAntennaCreature {
     public float powerExponentAddition => POWER_EXPONENT;
 
     public static void computeMaximumEfficiency(int acuSize) {
-        SNUtil.log("Voltaic Bladderfish yields for size-" + acuSize + " ACU:");
+        SNUtil.Log("Voltaic Bladderfish yields for size-" + acuSize + " ACU:");
         var refAmt = AmpeelAntenna.ACU_COEFFICIENT * AmpeelAntenna.POWER_GEN;
         var ampSize = 3; //ampeel is 3 units each;
         var slots = 10 * acuSize;
@@ -90,7 +90,7 @@ internal class VoltaicBladderfishTag : MonoBehaviour, AmpeelAntennaCreature {
             var maxVolt = slots - ampSize * ampeels;
             for (var volt = 0; volt <= maxVolt; volt++) {
                 var yield = Mathf.Min(AmpeelAntenna.AMPEEL_CAP, Mathf.Pow(ampeels, 1 + volt * POWER_EXPONENT));
-                SNUtil.log(
+                SNUtil.Log(
                     "    " + ampeels + " ampeels + " + volt + " voltaic: " + (yield * refAmt).ToString("0.00") + " (" +
                     yield.ToString("0.00") + "x)"
                 );

@@ -55,7 +55,7 @@ internal class C2CTreader : MonoBehaviour {
 				//int amt = stalkers.Count;
 				for (var i = amt; i < 3; i++) {
 					var go = ObjectUtil.createWorldObject(C2CItems.deepStalker.ClassID, true, true);
-					go.transform.position = MathUtil.getRandomVectorAround(transform.position, 12).setY(transform.position.y + 2);
+					go.transform.position = MathUtil.getRandomVectorAround(transform.position, 12).SetY(transform.position.y + 2);
 					go.GetComponent<DeepStalkerTag>().bindToTreader(GetComponent<SeaTreader>());
 				}
 			}

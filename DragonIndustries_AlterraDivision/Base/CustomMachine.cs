@@ -29,7 +29,7 @@ public abstract class CustomMachine<M> : CustomPrefab, DIPrefab<CustomMachine<M>
 
     [SetsRequiredMembers]
     protected CustomMachine(string id, string name, string desc, string template) : base(id, name, desc) {
-        ownerMod = SNUtil.tryGetModDLL();
+        ownerMod = SNUtil.TryGetModDLL();
         // typeof(ModPrefab).GetField("Mod", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(this, ownerMod);
         this.id = id;
         baseTemplate = new StringPrefabContainer(template);
@@ -86,18 +86,18 @@ public abstract class CustomMachine<M> : CustomPrefab, DIPrefab<CustomMachine<M>
     }
 
     public void addFragments(int needed, float scanTime = 5, params CustomPrefab[] fragments) {
-        SNUtil.log(
-            "Creating " + fragments.Length + " fragments for " + this + " from " + fragments.toDebugString(),
+        SNUtil.Log(
+            "Creating " + fragments.Length + " fragments for " + this + " from " + fragments.ToDebugString(),
             ownerMod
         );
         foreach (var m in fragments) {
             var info = m.GetGadget<ScanningGadget>().ScannerEntryData;
             info.blueprint = Info.TechType;
             // m = GenUtil.getOrCreateFragment(this, info.template, m.objectModify);
-            SNUtil.log("Registered fragment " + m.Info.ClassID, ownerMod);
+            SNUtil.Log("Registered fragment " + m.Info.ClassID, ownerMod);
         }
 
-        SNUtil.addPDAEntry(
+        SNUtil.AddPdaEntry(
             fragments[0],
             scanTime,
             null,
@@ -123,7 +123,7 @@ public abstract class CustomMachine<M> : CustomPrefab, DIPrefab<CustomMachine<M>
             isPowerGenerator() ? "Tech/Power" : "Tech/Habitats"
         );
         if (pageHeader != null)
-            page.setHeaderImage(TextureManager.getTexture(SNUtil.tryGetModDLL(), "Textures/PDA/" + pageHeader));
+            page.setHeaderImage(TextureManager.getTexture(SNUtil.TryGetModDLL(), "Textures/PDA/" + pageHeader));
         page.register();
         if (_registered)
             TechnologyUnlockSystem.instance.registerPage(Info.TechType, page);
@@ -382,7 +382,7 @@ public abstract class CustomMachineLogic : MonoBehaviour {
         var add = 0;
         for (var i = 0; i < amt; i++) {
             var item = ObjectUtil.createWorldObject(CraftData.GetClassIdForTechType(tt), true, false);
-            SNUtil.log("Adding " + item + " to " + GetType().Name + " inventory");
+            SNUtil.Log("Adding " + item + " to " + GetType().Name + " inventory");
             item.SetActive(false);
             if (storage.container.AddItem(item.GetComponent<Pickupable>()) != null)
                 add++;
@@ -393,7 +393,7 @@ public abstract class CustomMachineLogic : MonoBehaviour {
 
     protected bool consumePower(float amt) {
         if (logPowerConsume)
-            SNUtil.log(
+            SNUtil.Log(
                 this + " attempting to draw " + amt + " power (==" + (amt / lastTickDelta).ToString("0.00") +
                 "/s) from " + sub
             );
@@ -408,17 +408,17 @@ public abstract class CustomMachineLogic : MonoBehaviour {
             amt *= f;
             sub.powerRelay.ConsumeEnergy(amt, out powerConsumedLastAttempt);
             if (logPowerConsume)
-                SNUtil.log(
+                SNUtil.Log(
                     "Power cost multiplied by " + f + ", and was attempted; " + powerConsumedLastAttempt +
                     " was drained"
                 );
             if (amt - powerConsumedLastAttempt > 0.001) {
                 if (logPowerConsume)
-                    SNUtil.log("Refunding " + powerConsumedLastAttempt + " power which was less than requested " + amt);
+                    SNUtil.Log("Refunding " + powerConsumedLastAttempt + " power which was less than requested " + amt);
                 sub.powerRelay.AddEnergy(powerConsumedLastAttempt, out var trash); //refund
             } else {
                 if (logPowerConsume)
-                    SNUtil.log("Power drain successful");
+                    SNUtil.Log("Power drain successful");
                 return true;
             }
         }
@@ -435,10 +435,10 @@ public abstract class CustomMachineLogic : MonoBehaviour {
     private void findClosestSub() {
         if (!needsAttachedBase())
             return;
-        SNUtil.log(
+        SNUtil.Log(
             "Custom machine " + this + " @ " + transform.position +
             " did not have proper parent component hierarchy: " + transform.parent,
-            SNUtil.diDLL
+            SNUtil.DiDLL
         );
         foreach (var s in FindObjectsOfType<SubRoot>()) {
             if (s.isCyclops || !s.isBase)
@@ -454,9 +454,9 @@ public abstract class CustomMachineLogic : MonoBehaviour {
         if (sub) {
             transform.parent = sub.transform;
             onAttachToBase();
-            SNUtil.log(
+            SNUtil.Log(
                 "Custom machine " + this + " @ " + transform.position + " parented to sub: " + sub,
-                SNUtil.diDLL
+                SNUtil.DiDLL
             );
         }
 

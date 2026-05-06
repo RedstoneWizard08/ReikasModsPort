@@ -96,11 +96,11 @@ public class ItemCollector : BasicCraftingItem {
             }
 
             if (gravity && targetInventories.Count > 0 && Random.Range(0F, 1F) <= Time.deltaTime) {
-                var rb = gravity.attractableList.getRandomEntry();
+                var rb = gravity.attractableList.GetRandomEntry();
                 if (rb && rb.gameObject.activeInHierarchy && !rb.GetComponent<WaterParkItem>()) {
                     var pp = rb.GetComponent<Pickupable>();
                     if (pp && Vector3.Distance(pp.transform.position, transform.position) <= 8) {
-                        var sc = targetInventories.getRandomEntry();
+                        var sc = targetInventories.GetRandomEntry();
                         if (sc && sc.container.AddItem(pp) != null) {
                             pp.PlayPickupSound();
                             pp.gameObject.SetActive(false);

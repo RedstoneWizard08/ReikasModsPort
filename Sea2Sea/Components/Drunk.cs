@@ -45,7 +45,7 @@ public class Drunk : PlayerMovementSpeedModifier {
 			nextPushRecalculation = time + Random.Range(0.5F, 1.5F);
 			currentPush = Random.onUnitSphere * Random.Range(0.25F, 1.0F) * intensity;
 			if (!Player.main.IsSwimming())
-				currentPush = currentPush.setY(0);
+				currentPush = currentPush.SetY(0);
 		}
 		if (time >= nextShaderRecalculation) {
 			var dur = Random.Range(0.25F, 2.0F);
@@ -60,10 +60,10 @@ public class Drunk : PlayerMovementSpeedModifier {
 		drunkVisual.effect = 4 * shaderIntensity;
 		//player.AddForce(currentPush, ForceMode.VelocityChange);
 		if (Random.Range(0F, 1F) < 0.04F)
-			SNUtil.shakeCamera(Random.Range(0.4F, 1.5F), Random.Range(0.25F, 0.75F), Random.Range(0.125F, 0.67F));
+			SNUtil.ShakeCamera(Random.Range(0.4F, 1.5F), Random.Range(0.25F, 0.75F), Random.Range(0.125F, 0.67F));
 		if (age > 5F && time - lastVomitTime >= 5F / intensity && Random.Range(0F, 1F) < 0.001F) {
 			lastVomitTime = time;
-			SNUtil.vomit(survivalObject, 0, Random.Range(0F, 2F));
+			SNUtil.Vomit(survivalObject, 0, Random.Range(0F, 2F));
 		}
 		base.Update();
 	}
@@ -78,12 +78,12 @@ public class Drunk : PlayerMovementSpeedModifier {
 
 	public override void saveToXML(XmlElement e) {
 		base.saveToXML(e);
-		e.addProperty("intensity", intensity);
+		e.AddProperty("intensity", intensity);
 	}
 
 	public override void readFromXML(XmlElement e) {
 		base.readFromXML(e);
-		intensity = (float)e.getFloat("intensity", 0);
+		intensity = (float)e.GetFloat("intensity", 0);
 	}
 
 	public static Drunk add(float duration) {

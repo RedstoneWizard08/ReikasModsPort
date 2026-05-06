@@ -156,12 +156,12 @@ public class PrecursorFabricatorConsole : CustomPrefab {
                 t.localScale = Vector3.one * 0.99F; //zfight fix
                 t.localPosition = new Vector3(0, 2.1F, 0);
                 foreach (var r in go.GetComponentsInChildren<Renderer>()) {
-                    RenderUtil.swapTextures(SNUtil.diDLL, r, "Textures/PrecursorFabricatorArms");
+                    RenderUtil.swapTextures(SNUtil.DiDLL, r, "Textures/PrecursorFabricatorArms");
                     //r.materials[0].SetFloat("_SpecInt", 5F);
                 }
             } else if (pfb.prefabName == "a0a9237e-dee3-4efa-81ff-fea3893a6eb7") {
                 foreach (var r in go.GetComponentsInChildren<Renderer>()) {
-                    RenderUtil.swapTextures(SNUtil.diDLL, r, "Textures/PrecursorFabricatorBase");
+                    RenderUtil.swapTextures(SNUtil.DiDLL, r, "Textures/PrecursorFabricatorBase");
                     RenderUtil.setEmissivity(r, 1);
                     r.materials[0].SetFloat("_SpecInt", 2F);
                 }

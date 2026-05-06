@@ -25,7 +25,7 @@ public class GhostGelTracker : MonoBehaviour {
                             InventoryUtil.addItem(CraftingItems.getItem(CraftingItems.Items.GhostGel).Info.TechType);
                             harvestCount++;
                         } else {
-                            SNUtil.writeToChat(
+                            SNUtil.WriteToChat(
                                 SeaToSeaMod.MouseoverLocale.getEntry("GhostLeviathanSampleCooldown").desc
                             );
                         }

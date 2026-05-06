@@ -29,7 +29,7 @@ public static class PDAManager {
             throw new Exception("PDA page ID '" + id + "' already in use! " + pages[id]);
         var sig = new PDAPage(id, name, text, cat);
         pages[sig.id] = sig;
-        SNUtil.log("Registered PDA page " + sig);
+        SNUtil.Log("Registered PDA page " + sig);
         return sig;
     }
 
@@ -66,7 +66,7 @@ public static class PDAManager {
 
             prefabID = new PDAPrefab(this);
 
-            ownerMod = SNUtil.tryGetModDLL();
+            ownerMod = SNUtil.TryGetModDLL();
         }
 
         public PDAPage addSubcategory(string s) {
@@ -77,13 +77,13 @@ public static class PDAManager {
         public PDAPage setVoiceover(string path) {
             var sid = VanillaSounds.getID(path);
             if (sid == null) {
-                SNUtil.log("Sound path " + path + " did not find an ID. Registering as custom.");
-                pageData.audio = SoundManager.registerPDASound(SNUtil.tryGetModDLL(), "pda_vo_" + id, path).asset;
+                SNUtil.Log("Sound path " + path + " did not find an ID. Registering as custom.");
+                pageData.audio = SoundManager.registerPDASound(SNUtil.TryGetModDLL(), "pda_vo_" + id, path).asset;
             } else {
                 pageData.audio = SoundManager.buildSound(path, sid);
             }
 
-            SNUtil.log("Setting " + this + " sound to " + pageData.audio.id + "=" + pageData.audio.path);
+            SNUtil.Log("Setting " + this + " sound to " + pageData.audio.id + "=" + pageData.audio.path);
             return this;
         }
 
@@ -151,7 +151,7 @@ public static class PDAManager {
         }
 
         public void markUpdated(float duration = 3F) {
-            SNUtil.addEncyNotification(id, duration);
+            SNUtil.AddEncyNotification(id, duration);
         }
 
         public TreeNode getNode() {
@@ -249,7 +249,7 @@ public static class PDAManager {
         }
 
         public Assembly getOwnerMod() {
-            return SNUtil.diDLL;
+            return SNUtil.DiDLL;
         }
 
         public string ClassID => Info.ClassID;

@@ -78,14 +78,14 @@ public class PositionedPrefab : ObjectTemplate {
 	}
 
 	public override void saveToXML(XmlElement n) {
-		n.addProperty("prefab", prefabName);
-		n.addProperty("position", position);
-		var rot = n.addProperty("rotation", rotation.eulerAngles);
-		rot.addProperty("quaternion", rotation);
-		n.addProperty("scale", scale);
+		n.AddProperty("prefab", prefabName);
+		n.AddProperty("position", position);
+		var rot = n.AddProperty("rotation", rotation.eulerAngles);
+		rot.AddProperty("quaternion", rotation);
+		n.AddProperty("scale", scale);
 
 		if (xmlID != null && xmlID.HasValue)
-			n.addProperty("xmlID", xmlID.Value.ToString());
+			n.AddProperty("xmlID", xmlID.Value.ToString());
 	}
 
 	public override string ToString() {
@@ -93,23 +93,23 @@ public class PositionedPrefab : ObjectTemplate {
 	}
 
 	public override void loadFromXML(XmlElement e) {
-		setPrefabName(e.getProperty("prefab"));
-		position = e.getVector("position").Value;
-		var rot = e.getVector("rotation", out var elem, true);
+		setPrefabName(e.GetProperty("prefab"));
+		position = e.GetVector("position").Value;
+		var rot = e.GetVector("rotation", out var elem, true);
 		//SBUtil.log("rot: "+rot);
 		var quat = rotation;
 		if (rot != null && rot.HasValue) {
-			var specify = elem.getQuaternion("quaternion", true);
+			var specify = elem.GetQuaternion("quaternion", true);
 			//SBUtil.log("quat: "+specify);
 			quat = specify != null && specify.HasValue ? specify.Value : Quaternion.Euler(rot.Value.x, rot.Value.y, rot.Value.z);
 		}
 		rotation = quat;
 		//SBUtil.log("use rot: "+rotation+" / "+rotation.eulerAngles);
-		var sc = e.getVector("scale", true);
+		var sc = e.GetVector("scale", true);
 		if (sc != null && sc.HasValue)
 			scale = sc.Value;
 
-		var xmlid = e.getProperty("xmlID", true);
+		var xmlid = e.GetProperty("xmlID", true);
 		if (!string.IsNullOrEmpty(xmlid)) {
 			xmlID = new Guid(xmlid);
 		}
@@ -120,17 +120,17 @@ public class PositionedPrefab : ObjectTemplate {
 	}
 
 	public static Quaternion readRotation(XmlElement e) {
-		var rot = e.getDirectElementsByTagName("rotation")[0];
-		return rot.hasProperty("quaternion") ? rot.getQuaternion("quaternion").Value : Quaternion.Euler((float)rot.getFloat("x", double.NaN), (float)rot.getFloat("y", double.NaN), (float)rot.getFloat("z", double.NaN));
+		var rot = e.GetDirectElementsByTagName("rotation")[0];
+		return rot.HasProperty("quaternion") ? rot.GetQuaternion("quaternion").Value : Quaternion.Euler((float)rot.GetFloat("x", double.NaN), (float)rot.GetFloat("y", double.NaN), (float)rot.GetFloat("z", double.NaN));
 	}
 
 	public static void saveRotation(XmlElement e, Quaternion quat) {
-		e = e.addChild("rotation");
+		e = e.AddChild("rotation");
 		var vec = quat.eulerAngles;
-		e.addProperty("x", vec.x);
-		e.addProperty("y", vec.x);
-		e.addProperty("z", vec.x);
-		e.addProperty("quaternion", quat);
+		e.AddProperty("x", vec.x);
+		e.AddProperty("y", vec.x);
+		e.AddProperty("z", vec.x);
+		e.AddProperty("quaternion", quat);
 	}
 
 	#region Equals and GetHashCode implementation

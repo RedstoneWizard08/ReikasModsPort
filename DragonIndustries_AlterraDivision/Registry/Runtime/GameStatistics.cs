@@ -46,52 +46,52 @@ public class GameStatistics {
 		xmlDoc = new XmlDocument();
 		xmlDoc.AppendChild(xmlDoc.CreateElement("Root"));
 
-		var e = xmlDoc.DocumentElement.addChild("Player");
-		e.addProperty("health", Player.main.liveMixin.health);
+		var e = xmlDoc.DocumentElement.AddChild("Player");
+		e.AddProperty("health", Player.main.liveMixin.health);
 		var sv = Player.main.GetComponent<Survival>();
 		if (sv) {
-			e.addProperty("food", sv.food);
-			e.addProperty("water", sv.water);
+			e.AddProperty("food", sv.food);
+			e.AddProperty("water", sv.water);
 		}
-		collectStorage(e.addProperty("inventory"), Inventory.main.container);
-		collectStorage(e.addProperty("equipment"), Inventory.main.equipment);
+		collectStorage(e.AddProperty("inventory"), Inventory.main.container);
+		collectStorage(e.AddProperty("equipment"), Inventory.main.equipment);
 
-		e = xmlDoc.DocumentElement.addChild("Bases");
+		e = xmlDoc.DocumentElement.AddChild("Bases");
 		foreach (var sub in bases) {
-			var e2 = e.addChild("Base");
+			var e2 = e.AddChild("Base");
 			var pos = sub.transform.position;
-			e2.addProperty("centerX", pos.x);
-			e2.addProperty("centerY", pos.y);
-			e2.addProperty("centerZ", pos.z);
-			e2.addProperty("biome", WorldUtil.getRegionalDescription(pos, false));
-			e2.addProperty("cellSize", sub.GetComponentsInChildren<BaseCell>(true).Length);
-			e2.addProperty("scannerCount", sub.GetComponentsInChildren<MapRoomFunctionality>(true).Length);
-			e2.addProperty("moonpoolCount", sub.GetComponentsInChildren<VehicleDockingBay>(true).Length);
-			e2.addProperty("acuCount", sub.GetComponentsInChildren<WaterPark>(true).Length);
-			e2.addProperty("currentPower", sub.powerRelay.GetPower());
-			e2.addProperty("maxPower", sub.powerRelay.GetMaxPower());
+			e2.AddProperty("centerX", pos.x);
+			e2.AddProperty("centerY", pos.y);
+			e2.AddProperty("centerZ", pos.z);
+			e2.AddProperty("biome", WorldUtil.getRegionalDescription(pos, false));
+			e2.AddProperty("cellSize", sub.GetComponentsInChildren<BaseCell>(true).Length);
+			e2.AddProperty("scannerCount", sub.GetComponentsInChildren<MapRoomFunctionality>(true).Length);
+			e2.AddProperty("moonpoolCount", sub.GetComponentsInChildren<VehicleDockingBay>(true).Length);
+			e2.AddProperty("acuCount", sub.GetComponentsInChildren<WaterPark>(true).Length);
+			e2.AddProperty("currentPower", sub.powerRelay.GetPower());
+			e2.AddProperty("maxPower", sub.powerRelay.GetMaxPower());
 			collectStorage(e2, sub.gameObject);
 		}
 
-		e = xmlDoc.DocumentElement.addChild("Cyclopses");
+		e = xmlDoc.DocumentElement.AddChild("Cyclopses");
 		foreach (var sub in cyclops) {
-			var e2 = e.addChild("Cyclops");
+			var e2 = e.AddChild("Cyclops");
 			foreach (var tt in sub.getCyclopsUpgrades()) {
-				e2.addProperty("module", tt.AsString());
+				e2.AddProperty("module", tt.AsString());
 			}
 			collectStorage(e2, sub.gameObject);
 		}
 
-		e = xmlDoc.DocumentElement.addChild("Vehicles");
+		e = xmlDoc.DocumentElement.AddChild("Vehicles");
 		foreach (var v in vehicles) {
-			var e2 = e.addChild("Vehicle");
-			e2.addProperty("type", getObjectType(v));
+			var e2 = e.AddChild("Vehicle");
+			e2.AddProperty("type", getObjectType(v));
 			foreach (var tt in v.getVehicleUpgrades()) {
-				e2.addProperty("module", tt.AsString());
+				e2.AddProperty("module", tt.AsString());
 			}
 		}
 
-		e = xmlDoc.DocumentElement.addChild("StoryGoals");
+		e = xmlDoc.DocumentElement.AddChild("StoryGoals");
 		/*
 		foreach (string goal in StoryGoalManager.main.completedGoals) {
 			XmlElement e2 = e.addChild("Goal");
@@ -99,50 +99,50 @@ public class GameStatistics {
 			e2.addProperty("unlockTime", 0);
 		}*/
 		StoryHandler.instance.forAllNewerThan(9999999, g => {
-			var e2 = e.addChild("Unlock");
-			e2.addProperty("tech", g.goal);
-			e2.addProperty("unlockTime", g.eventTime);
+			var e2 = e.AddChild("Unlock");
+			e2.AddProperty("tech", g.goal);
+			e2.AddProperty("unlockTime", g.eventTime);
 		});
 
-		e = xmlDoc.DocumentElement.addChild("TechUnlocks");
+		e = xmlDoc.DocumentElement.AddChild("TechUnlocks");
 		TechUnlockTracker.instance.forAllNewerThan(9999999, u => {
-			var e2 = e.addChild("Unlock");
-			e2.addProperty("tech", u.tech.AsString());
-			e2.addProperty("unlockTime", u.eventTime);
+			var e2 = e.AddChild("Unlock");
+			e2.AddProperty("tech", u.tech.AsString());
+			e2.AddProperty("unlockTime", u.eventTime);
 		});
 
-		e = xmlDoc.DocumentElement.addChild("Cheats");
+		e = xmlDoc.DocumentElement.AddChild("Cheats");
 		{
-			var e2 = e.addChild("SpawnedItems");
+			var e2 = e.AddChild("SpawnedItems");
 			SpawnedItemTracker.instance.forAll(s => {
-				var e3 = e2.addChild("SpawnedItem");
-				e3.addProperty("item", s.itemType.AsString());
-				e3.addProperty("spawnTime", s.eventTime);
+				var e3 = e2.AddChild("SpawnedItem");
+				e3.AddProperty("item", s.itemType.AsString());
+				e3.AddProperty("spawnTime", s.eventTime);
 			});
-			e2 = e.addChild("Commands");
+			e2 = e.AddChild("Commands");
 			CommandTracker.instance.forAll(s => {
-				var e3 = e2.addChild("Command");
-				e3.addProperty("command", s.command);
-				e3.addProperty("runTime", s.eventTime);
+				var e3 = e2.AddChild("Command");
+				e3.AddProperty("command", s.command);
+				e3.AddProperty("runTime", s.eventTime);
 			});
 		}
 	}
 
 	private void collectStorage(XmlElement root, GameObject from) {
-		var e = root.addChild("inventories");
+		var e = root.AddChild("inventories");
 		foreach (var sc in from.GetComponentsInChildren<StorageContainer>(true)) {
-			var e3 = e.addChild("storage");
-			e3.addProperty("type", getObjectType(sc));
+			var e3 = e.AddChild("storage");
+			e3.AddProperty("type", getObjectType(sc));
 			collectStorage(e3, sc.container);
 		}
 	}
 
 	private void collectStorage(XmlElement e3, Equipment sc) {
-		var items = e3.addChild("items");
+		var items = e3.AddChild("items");
 		foreach (var kvp in sc.equipment) {
 			if (kvp.Value != null) {
 				var tt = kvp.Value.item.GetTechType();
-				var added = items.addProperty(kvp.Key, tt.AsString());
+				var added = items.AddProperty(kvp.Key, tt.AsString());
 				added.SetAttribute("displayName", Language.main.Get(tt));
 			}
 		}
@@ -157,9 +157,9 @@ public class GameStatistics {
 		});
 		if (counts.Count == 0)
 			return;
-		var items = e3.addChild("items");
+		var items = e3.AddChild("items");
 		foreach (var kvp in counts) {
-			var added = items.addProperty(kvp.Key.AsString(), kvp.Value);
+			var added = items.AddProperty(kvp.Key.AsString(), kvp.Value);
 			added.SetAttribute("displayName", Language.main.Get(kvp.Key));
 		}
 	}
@@ -175,7 +175,7 @@ public class GameStatistics {
 	}
 
 	public void submit() {
-		var file = Path.Combine(SNUtil.getCurrentSaveDir(), "finalStatistics.xml");
+		var file = Path.Combine(SNUtil.GetCurrentSaveDir(), "finalStatistics.xml");
 		writeToFile(file);
 	}
 

@@ -72,7 +72,7 @@ public class GlowOil : CustomPrefab {
         //world.removeComponent<EnzymeBall>();
         //world.removeComponent<Plantable>();
         var p = world.GetComponent<Plantable>();
-        GameObject jellyseed = ObjectUtil.lookupPrefab(TechType.SnakeMushroomSpore).GetResult();
+        GameObject jellyseed = ObjectUtil.lookupPrefab(TechType.SnakeMushroomSpore);
         var p2 = jellyseed.GetComponent<Plantable>();
         p.plantTechType = p2.plantTechType;
         p.growingPlant = p2.growingPlant;
@@ -365,7 +365,7 @@ internal class GlowOilTag : MonoBehaviour {
                     continue;
                 g.go.transform.localPosition += g.motion * dT;
                 if (isExploding && g.go.transform.position.y > -0.5)
-                    g.go.transform.position = g.go.transform.position.setY(-0.5F);
+                    g.go.transform.position = g.go.transform.position.SetY(-0.5F);
                 g.go.transform.Rotate(g.rotation, Space.Self);
             }
 

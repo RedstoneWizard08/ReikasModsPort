@@ -157,7 +157,7 @@ public class VoidSpikeLeviathanSystem {
                 ScreenFXManager.instance.registerOverrideThisTick(ScreenFXManager.instance.sonarShader);
                 ScreenFXManager.instance.radiationShader.noiseFactor =
                     sonarInterferenceIntensity * sonarInterferenceIntensity * 0.6F;
-                ScreenFXManager.instance.radiationShader.color = sonarInterferenceColor.asColor();
+                ScreenFXManager.instance.radiationShader.color = sonarInterferenceColor.AsColor();
                 ScreenFXManager.instance.sonarShader.enabled = false;
             }
         }
@@ -373,7 +373,7 @@ public class VoidSpikeLeviathanSystem {
                     pos = MathUtil.getRandomVectorAround(pos, 15);
 
                     if (forceEMP)
-                        SNUtil.writeToChat("Spawning EMP blast @ " + pos);
+                        SNUtil.WriteToChat("Spawning EMP blast @ " + pos);
                     spawnEMPBlast(pos);
                     //shutdownSeamoth(ep.GetVehicle(), false);
                 }
@@ -422,7 +422,7 @@ public class VoidSpikeLeviathanSystem {
         var pos = cam.position + /*ep.transform.forward*/MainCamera.camera.transform.forward.normalized * range;
         pos = MathUtil.getRandomVectorAround(pos, 20 * distSc * fovSc);
         var dist = pos - cam.position;
-        dist = dist.setLength(range);
+        dist = dist.SetLength(range);
         return dist;
     }
 
@@ -674,7 +674,7 @@ public class VoidSpikeLeviathanSystem {
             var d = UnityEngine.Random.Range(96F, 150F);
             var pos = sub.transform.position + Camera.main.transform.forward * d;
             pos = MathUtil.getRandomVectorAround(pos, 45);
-            pos = sub.transform.position + (pos - sub.transform.position).setLength(d);
+            pos = sub.transform.position + (pos - sub.transform.position).SetLength(d);
             spawnEMPBlast(pos);
         }
     }

@@ -18,13 +18,13 @@ public sealed class ScatteredPiezoGenerator : WorldGenerator {
     }
 
     public override void loadFromXML(XmlElement e) {
-        numberToGen = e.getInt("number", 0, false);
-        scatterRange = e.getVector("range").Value;
+        numberToGen = e.GetInt("number", 0, false);
+        scatterRange = e.GetVector("range").Value;
     }
 
     public override void saveToXML(XmlElement e) {
-        e.addProperty("number", numberToGen);
-        e.addProperty("range", scatterRange);
+        e.AddProperty("number", numberToGen);
+        e.AddProperty("range", scatterRange);
     }
 
     public override bool generate(List<GameObject> generated) {

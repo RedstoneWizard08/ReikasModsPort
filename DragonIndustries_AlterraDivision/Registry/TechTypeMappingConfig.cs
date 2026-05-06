@@ -15,7 +15,7 @@ public class TechTypeMappingConfig<E> {
 	private readonly Action<TechType, E> valueConsumer;
 
 	public TechTypeMappingConfig(string n, ValueParser<E> parser, Action<TechType, E> consumer) {
-		ownerMod = SNUtil.tryGetModDLL();
+		ownerMod = SNUtil.TryGetModDLL();
 		filename = n;
 		valueParsing = parser;
 		valueConsumer = consumer;
@@ -32,35 +32,35 @@ public class TechTypeMappingConfig<E> {
 	public void load() {
 		var path = Path.Combine(Path.GetDirectoryName(ownerMod.Location), Path.Combine("Config", filename+".txt"));
 		if (File.Exists(path)) {
-			SNUtil.log("Loading TechType mapping file '" + filename + "'.", ownerMod);
+			SNUtil.Log("Loading TechType mapping file '" + filename + "'.", ownerMod);
 			foreach (var raw in File.ReadAllLines(path)) {
 				var line = raw.Trim();
 				if (line.Length == 0 || line.StartsWith("//", StringComparison.InvariantCultureIgnoreCase))
 					continue;
 				var split = line.Split(['='], StringSplitOptions.RemoveEmptyEntries);
 				if (split.Length == 2) {
-					var find = SNUtil.getTechType(split[0]);
+					var find = SNUtil.GetTechType(split[0]);
 					if (find != TechType.None) {
 						if (valueParsing.tryParse(split[1], out var parsed)) {
 							valueConsumer.Invoke(find, parsed);
-							SNUtil.log("Setting TechType mapping: " + find + " = " + parsed);
+							SNUtil.Log("Setting TechType mapping: " + find + " = " + parsed);
 						}
 						else {
-							SNUtil.log("TechType mapping format was invalid; no value parsed for '" + parsed + "'");
+							SNUtil.Log("TechType mapping format was invalid; no value parsed for '" + parsed + "'");
 						}
 					}
 					else {
-						SNUtil.log("TechType found no matching TechType for '" + split[0] + "'", ownerMod);
+						SNUtil.Log("TechType found no matching TechType for '" + split[0] + "'", ownerMod);
 					}
 				}
 				else {
-					SNUtil.log("Incorrectly formatted TechType mapping: " + line, ownerMod);
+					SNUtil.Log("Incorrectly formatted TechType mapping: " + line, ownerMod);
 				}
 			}
 		}
 		else {
 			Directory.CreateDirectory(Path.GetDirectoryName(path));
-			SNUtil.log("TechType mapping file '" + filename + "' not found. Generating default.", ownerMod);
+			SNUtil.Log("TechType mapping file '" + filename + "' not found. Generating default.", ownerMod);
 			string[] lines = [
 				"//This file contains a list of TechTypes in a key=value format, used to assign them custom mappings.",
 				"//TechType names are case-sensitive, and in the case of modded TechTypes equal to their ClassID names.",

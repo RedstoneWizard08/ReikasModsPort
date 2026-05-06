@@ -63,7 +63,7 @@ public class SonarFloraTag : SonarOnlyRenderer {
                     renderers.Add(new SonarRender(r));
                 }
             } else if (renderers.Count == 0) {
-                SNUtil.log("Adding cheap sonar flora halo");
+                SNUtil.Log("Adding cheap sonar flora halo");
                 GameObject sphere = gameObject.getChildObject("SonarHalo");
                 if (!sphere) {
                     sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere).setName("SonarHalo");

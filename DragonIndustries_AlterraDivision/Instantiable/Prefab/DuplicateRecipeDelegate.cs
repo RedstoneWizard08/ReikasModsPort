@@ -101,7 +101,7 @@ public class DuplicateRecipeDelegate : CustomPrefab, DuplicateItemDelegate {
         li.Add(d);
         delegates[tt] = li;
         // delegateItems.Add(ttsrc, d);
-        SNUtil.log("Registering delegate item " + d + " ref pfb=" + tt, d.getOwnerMod());
+        SNUtil.Log("Registering delegate item " + d + " ref pfb=" + tt, d.getOwnerMod());
     }
 
     public static IEnumerable<DuplicateItemDelegate> getDelegates(TechType of) {
@@ -126,7 +126,7 @@ public class DuplicateRecipeDelegate : CustomPrefab, DuplicateItemDelegate {
                     var dt = ((CustomPrefab)d).Info.TechType;
                     CustomLocaleKeyDatabase.registerKey(dt.AsString(), Language.main.Get(tt) + d.getNameSuffix());
                     CustomLocaleKeyDatabase.registerKey("Tooltip_" + dt.AsString(), d.getTooltip());
-                    SNUtil.log(
+                    SNUtil.Log(
                         "Relocalized " + d + " > " + dt.AsString() + " > " + Language.main.Get(dt),
                         d.getOwnerMod()
                     );

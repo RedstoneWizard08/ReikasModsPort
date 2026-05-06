@@ -62,15 +62,15 @@ public class CrashZoneSanctuarySpawner : CustomPrefab {
                 age += Time.deltaTime;
             if (age < 2)
                 return;
-            SNUtil.log("Spawning sanctuary plants @ " + transform.position);
+            SNUtil.Log("Spawning sanctuary plants @ " + transform.position);
             List<Vector3> ends = [];
             //List<RaycastHit> terrainHits = new List<RaycastHit>();
-            UnityEngine.Random.InitState(SNUtil.getWorldSeedInt());
+            UnityEngine.Random.InitState(SNUtil.GetWorldSeedInt());
             for (var i = 0; i < 60; i++) {
                 var pos = MathUtil.getRandomVectorAround(
                     transform.position,
                     new Vector3(CrashZoneSanctuaryBiome.biomeRadius, 0, CrashZoneSanctuaryBiome.biomeRadius)
-                ).setY(-300);
+                ).SetY(-300);
                 var root = WorldUtil.getTerrainVectorAt(pos, 90);
                 if (!root.HasValue) {
                     i--;

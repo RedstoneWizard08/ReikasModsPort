@@ -32,7 +32,7 @@ public class RescueSystem {
     public static void createRescuePDAButton() {
         if (rescuePDAButton)
             return;
-        rescuePDAButton = SNUtil.createPDAUIButtonUnderTab<uGUI_InventoryTab>(
+        rescuePDAButton = SNUtil.CreatePdauiButtonUnderTab<uGUI_InventoryTab>(
             TextureManager.getTexture(SeaToSeaMod.ModDLL, "Textures/RescueUIBtn"),
             requestRescue
         ).setName("RescueButton");
@@ -162,11 +162,11 @@ public class RescueSystem {
                     unlockUI(grp);
                     if (!rescue()) {
                         if (Player.main.currentSub)
-                            SNUtil.writeToChat(
+                            SNUtil.WriteToChat(
                                 "You can only carry certified low-power Alterra equipment during the emergency rescue warp."
                             );
                         else
-                            SNUtil.writeToChat(
+                            SNUtil.WriteToChat(
                                 "Rescue warp can only be initiate from inside an Alterra seabase or mobile base platform."
                             );
                     }
@@ -224,7 +224,7 @@ public class RescueSystem {
             Player.main.SetCurrentSub(null);
             yield return new WaitForSeconds(1f);
             UWE.Utils.ExitPhysicsSyncSection();
-            SNUtil.writeToChat("You wake up an unknown amount of time later.");
+            SNUtil.WriteToChat("You wake up an unknown amount of time later.");
             this.destroy(false);
             yield break;
         }

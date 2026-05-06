@@ -34,16 +34,16 @@ internal class Offset : GlobalManipulation {
 
 	public override void loadFromXML(XmlElement e) {
 		base.loadFromXML(e);
-		translate.x = (float)e.getFloat("x", double.NaN);
-		translate.y = (float)e.getFloat("y", double.NaN);
-		translate.z = (float)e.getFloat("z", double.NaN);
+		translate.x = (float)e.GetFloat("x", double.NaN);
+		translate.y = (float)e.GetFloat("y", double.NaN);
+		translate.z = (float)e.GetFloat("z", double.NaN);
 	}
 
 	public override void saveToXML(XmlElement e) {
 		base.saveToXML(e);
-		e.addProperty("x", translate.x);
-		e.addProperty("y", translate.y);
-		e.addProperty("z", translate.z);
+		e.AddProperty("x", translate.x);
+		e.AddProperty("y", translate.y);
+		e.AddProperty("z", translate.z);
 	}
 
 }

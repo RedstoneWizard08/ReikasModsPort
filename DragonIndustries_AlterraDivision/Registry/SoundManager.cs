@@ -52,9 +52,9 @@ public static class SoundManager {
 
         path = Path.Combine(li.ToArray());
         if (!File.Exists(path))
-            SNUtil.log("Failed to find sound at '" + path + "'!", a);
+            SNUtil.Log("Failed to find sound at '" + path + "'!", a);
         var bb = busPath != null ? busPath : "bus:/master";
-        SNUtil.log("Registered custom sound '" + id + "' @ " + path + " on bus " + busPath);
+        SNUtil.Log("Registered custom sound '" + id + "' @ " + path + " on bus " + busPath);
         var snd = AudioUtils.CreateSound(path, m);
         processing?.Invoke(snd);
         CustomSoundHandler.RegisterCustomSound(id, snd, bb);
@@ -127,7 +127,7 @@ public static class SoundManager {
         }
 
         if (snd.asset == null) {
-            SNUtil.writeToChat("Tried to play null sound @ " + position);
+            SNUtil.WriteToChat("Tried to play null sound @ " + position);
             return null;
         }
 

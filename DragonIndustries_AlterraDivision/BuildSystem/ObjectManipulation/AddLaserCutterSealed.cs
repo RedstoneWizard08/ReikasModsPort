@@ -34,13 +34,13 @@ internal class AddLaserCutterSealed : ManipulationBase {
 	}
 
 	public override void loadFromXML(XmlElement e) {
-		timeToUse = e.getInt("timeToUse", 100); //100 is the default
-		text = e.getProperty("mouseover", true);
+		timeToUse = e.GetInt("timeToUse", 100); //100 is the default
+		text = e.GetProperty("mouseover", true);
 	}
 
 	public override void saveToXML(XmlElement e) {
-		e.addProperty("mouseover", text);
-		e.addProperty("timeToUse", timeToUse);
+		e.AddProperty("mouseover", text);
+		e.AddProperty("timeToUse", timeToUse);
 	}
 
 }

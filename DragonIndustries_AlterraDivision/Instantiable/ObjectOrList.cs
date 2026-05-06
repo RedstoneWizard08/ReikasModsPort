@@ -23,7 +23,7 @@ public sealed class ObjectOrList<E> {
 
 	public override string ToString() {
 		if (isCollection)
-			return objects.toDebugString();
+			return objects.ToDebugString();
 		var obj = value;
 		return obj == null ? "null" : obj.ToString();
 	}

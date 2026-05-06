@@ -38,7 +38,7 @@ public static class TextureManager {
     private static Texture2D loadTexture(Assembly a, string relative, out bool found) {
         var folder = Path.GetDirectoryName(a.Location);
         var path = Path.Combine(folder, relative + ".png");
-        SNUtil.log("Loading texture from '" + path + "'", a);
+        SNUtil.Log("Loading texture from '" + path + "'", a);
         var newTex = ImageUtils.LoadTextureFromFile(path);
         found = File.Exists(path);
         return newTex;
@@ -65,7 +65,13 @@ public static class TextureManager {
     private static Sprite loadSprite(Assembly a, string relative, out bool found) {
         var folder = Path.GetDirectoryName(a.Location);
         var path = Path.Combine(folder, relative + ".png");
-        SNUtil.log("Loading sprite from '" + path + "'", a);
+        SNUtil.Log("Loading sprite from '" + path + "'", a);
+
+        if (!File.Exists(path)) {
+            found = false;
+            return null;
+        }
+        
         var newTex = ImageUtils.LoadSpriteFromFile(path);
         found = File.Exists(path);
         return newTex;

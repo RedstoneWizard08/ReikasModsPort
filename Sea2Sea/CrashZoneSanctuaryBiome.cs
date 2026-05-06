@@ -53,7 +53,7 @@ public class CrashZoneSanctuaryBiome : CustomBiome {
                 var pos = MathUtil.getRandomVectorAround(
                     biomeCenter,
                     new Vector3(biomeRadius, 0, biomeRadius) * 0.67F
-                ).setY(-340);
+                ).SetY(-340);
                 if (IsInBiome(pos))
                     GenUtil.registerWorldgen(new PositionedPrefab(kvp.Key, pos));
             }

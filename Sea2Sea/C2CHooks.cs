@@ -149,7 +149,7 @@ public static class C2CHooks {
 
     private static TechType loadTechPistol() {
         if (techPistol == TechType.None && !searchedTechPistol) {
-            techPistol = SNUtil.getTechType("TechPistol");
+            techPistol = SNUtil.GetTechType("TechPistol");
             if (DIHooks.IsWorldLoaded())
                 searchedTechPistol = true;
         }
@@ -158,7 +158,7 @@ public static class C2CHooks {
     }
 
     static C2CHooks() {
-        SNUtil.log("Initializing C2CHooks");
+        SNUtil.Log("Initializing C2CHooks");
         DIHooks.OnWorldLoadedEvent += onWorldLoaded;
         DIHooks.OnDamageEvent += recalculateDamage;
         DIHooks.OnItemPickedUpEvent += onItemPickedUp;
@@ -245,7 +245,7 @@ public static class C2CHooks {
 
         DIHooks.TargetabilityEvent += checkTargetingSkip;
 
-        SNUtil.log("Finished registering main DI event callbacks");
+        SNUtil.Log("Finished registering main DI event callbacks");
 
         KnownTech.onAdd += onTechUnlocked;
 
@@ -264,7 +264,7 @@ public static class C2CHooks {
 
         FallingMaterialSystem.ImpactEvent += onMeteorImpact;
 
-        SNUtil.log("Finished registering event callbacks");
+        SNUtil.Log("Finished registering event callbacks");
 
         scanToScannerRoom.Add(CustomMaterials.getItem(CustomMaterials.Materials.PLATINUM).TechType);
         scanToScannerRoom.Add(CustomMaterials.getItem(CustomMaterials.Materials.PRESSURE_CRYSTALS).TechType);
@@ -494,7 +494,7 @@ public static class C2CHooks {
             Time.timeSinceLevelLoad - IngameMenu.main.lastSavedStateTime >=
             SeaToSeaMod.ModConfig.getFloat(C2CConfig.ConfigEntries.SAVETHRESH) * 60F && time - lastSaveAlertTime >=
             SeaToSeaMod.ModConfig.getFloat(C2CConfig.ConfigEntries.SAVECOOL) * 60F && allowSaving(true)) {
-            SNUtil.writeToChat(
+            SNUtil.WriteToChat(
                 "It has been " +
                 Utils.PrettifyTime((int)(Time.timeSinceLevelLoad - IngameMenu.main.lastSavedStateTime)) +
                 " since you last saved; you should do so again soon."
@@ -593,7 +593,7 @@ public static class C2CHooks {
                 var hit = v ? v.gameObject : ep.gameObject;
                 var pos = distsq <= 2500
                     ? hit.transform.position
-                    : MathUtil.getRandomVectorAround(crashMesa, 40).setY(crashMesa.y);
+                    : MathUtil.getRandomVectorAround(crashMesa, 40).SetY(crashMesa.y);
                 go.EnsureComponent<C2CReaper>().forceAggression(hit, pos);
             }
         }
@@ -643,7 +643,7 @@ public static class C2CHooks {
             if (inBKelpBase) {
                 StoryGoal.Execute("SeeBkelpBase", Story.GoalType.Story);
                 if (time >= nextBkelpBaseAmbTime) {
-                    SNUtil.log("Queuing bkelp base ambience @ " + ep.transform.position);
+                    SNUtil.Log("Queuing bkelp base ambience @ " + ep.transform.position);
                     VanillaMusic.WRECK.play();
                     nextBkelpBaseAmbTime = DayNightCycle.main.timePassedAsFloat + UnityEngine.Random.Range(60F, 90F);
                 }
@@ -889,7 +889,7 @@ public static class C2CHooks {
                 var go = s.gameObject;
                 var door = rb.gameObject.getChildObject("Starship_doors_manual_01/Starship_doors_automatic");
                 var rb2 = door.EnsureComponent<Rigidbody>();
-                rb2.copyObject(rb);
+                rb2.CopyObject(rb);
                 s.GetComponent<StarshipDoorLocked>()
                     .destroy(
                         false
@@ -1273,7 +1273,7 @@ public static class C2CHooks {
                     dmg *= 0.08F; //do about 2% damage
                 lv.TakeDamage(dmg, Player.main.gameObject.transform.position, DamageType.Electrical, p.gameObject);
             }
-        } else if (CustomEgg.getEgg(TechType.SpineEel).includes(tt)) {
+        } else if (CustomEgg.GetEgg(TechType.SpineEel).Includes(tt)) {
             //SNUtil.writeToChat((Player.main.transform.position - lrnest).magnitude.ToString());
             if ((Player.main.transform.position - lrnest).magnitude <= 50) {
                 StoryGoal.Execute("LRNest", Story.GoalType.Story);
@@ -1380,13 +1380,13 @@ public static class C2CHooks {
         if (over == TechType.None && c.unlockTechType == TechType.RepulsionCannon)
             over = AqueousEngineeringMod.wirelessChargerBlock.TechType;
         if (over != TechType.None && over != c.unlockTechType) {
-            SNUtil.log(
+            SNUtil.Log(
                 "Blueprint @ " + c.gameObject.transform.position + ", previously " + c.unlockTechType +
                 ", found an override to " + over
             );
             var go = ObjectUtil.createWorldObject(GenUtil.getOrCreateDatabox(over).TechType);
             if (!go) {
-                SNUtil.log("Could not find prefab for databox for " + over + "!");
+                SNUtil.Log("Could not find prefab for databox for " + over + "!");
                 return;
             }
 
@@ -1570,7 +1570,7 @@ public static class C2CHooks {
                     break;*/
             }
         } catch (Exception e) {
-            SNUtil.log(
+            SNUtil.Log(
                 "Caught exception processing precursor door " + pk.gameObject.GetFullHierarchyPath() + " @ " +
                 pk.transform.position + ": " + e.ToString()
             );
@@ -1593,7 +1593,7 @@ public static class C2CHooks {
     }
 
     public static GameObject getCrafterGhostModel(GameObject ret, TechType tech) {
-        SNUtil.log("Crafterghost for " + tech + ": " + ret);
+        SNUtil.Log("Crafterghost for " + tech + ": " + ret);
         if (tech == TechType.PrecursorKey_Red || tech == TechType.PrecursorKey_White) {
             ret = ObjectUtil.lookupPrefab(CraftData.GetClassIdForTechType(tech));
             ret = ret.clone();
@@ -1629,32 +1629,32 @@ public static class C2CHooks {
         }
 
         var pi = go.FindAncestor<PrefabIdentifier>();
-        if (SNUtil.match(pi, "d79ab37f-23b6-42b9-958c-9a1f4fc64cfd") &&
+        if (SNUtil.Match(pi, "d79ab37f-23b6-42b9-958c-9a1f4fc64cfd") &&
             Vector3.Distance(fcsWreckOpenableDoor, go.transform.position) <= 0.5) {
             new WreckDoorSwaps.DoorSwap(go.transform.position, "Handle").applyTo(go);
-        } else if (SNUtil.match(pi, "055b3160-f57b-46ba-80f5-b708d0c8180e") &&
+        } else if (SNUtil.Match(pi, "055b3160-f57b-46ba-80f5-b708d0c8180e") &&
                    Vector3.Distance(fcsWreckBlockedDoor, go.transform.position) <= 0.5) {
             new WreckDoorSwaps.DoorSwap(go.transform.position, "Blocked").applyTo(go);
-        } else if (SNUtil.match(pi, VanillaCreatures.SEA_TREADER.prefab)) {
+        } else if (SNUtil.Match(pi, VanillaCreatures.SEA_TREADER.prefab)) {
             //go.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.Global;
             go.EnsureComponent<C2CTreader>();
-        } else if (SNUtil.match(pi, VanillaCreatures.CAVECRAWLER.prefab)) {
+        } else if (SNUtil.Match(pi, VanillaCreatures.CAVECRAWLER.prefab)) {
             go.EnsureComponent<C2Crawler>();
-        } else if (SNUtil.match(pi, VanillaCreatures.REAPER.prefab)) {
+        } else if (SNUtil.Match(pi, VanillaCreatures.REAPER.prefab)) {
             go.EnsureComponent<C2CReaper>();
-        } else if (SNUtil.match(pi, VanillaCreatures.GHOST_LEVIATHAN.prefab) ||
-                   SNUtil.match(pi, VanillaCreatures.GHOST_LEVIATHAN_BABY.prefab)) {
+        } else if (SNUtil.Match(pi, VanillaCreatures.GHOST_LEVIATHAN.prefab) ||
+                   SNUtil.Match(pi, VanillaCreatures.GHOST_LEVIATHAN_BABY.prefab)) {
             go.EnsureComponent<GhostGelTracker>().setup();
-        } else if (DeIntegrationSystem.Instance.IsLoaded() && !go.GetComponent<WaterParkCreature>() && SNUtil.match(
+        } else if (DeIntegrationSystem.Instance.IsLoaded() && !go.GetComponent<WaterParkCreature>() && SNUtil.Match(
                        go,
                        DeIntegrationSystem.Instance.GetThalassacean(),
                        DeIntegrationSystem.Instance.GetLrThalassacean()
                    )) {
             go.EnsureComponent<DeIntegrationSystem.C2CThalassacean>();
         } else if (DeIntegrationSystem.Instance.IsLoaded() && !go.GetComponent<WaterParkCreature>() &&
-                   SNUtil.match(go, DeIntegrationSystem.Instance.GetGulper())) {
+                   SNUtil.Match(go, DeIntegrationSystem.Instance.GetGulper())) {
             go.EnsureComponent<DeIntegrationSystem.C2CGulper>();
-        } else if (SNUtil.match(pi, "61ac1241-e990-4646-a618-bddb6960325b")) {
+        } else if (SNUtil.Match(pi, "61ac1241-e990-4646-a618-bddb6960325b")) {
             if (Vector3.Distance(go.transform.position, Player.main.transform.position) <= 80 &&
                 go.transform.position.y < -200) {
                 PDAMessagePrompts.instance.trigger(PDAMessages.getAttr(PDAMessages.Messages.TreaderPooPrompt).key);
@@ -1666,7 +1666,7 @@ public static class C2CHooks {
             }
         }*/ else if (go.isVent()) {
             go.EnsureComponent<C2CVentInteraction>();
-        } else if (SNUtil.match(pi, "407e40cf-69f2-4412-8ab6-45faac5c4ea2")) {
+        } else if (SNUtil.Match(pi, "407e40cf-69f2-4412-8ab6-45faac5c4ea2")) {
             //SNUtil.log("Initialized lava castle smoke");
             var root = go.getChildObject("CollisionHolder");
             if (!root) {
@@ -1679,7 +1679,7 @@ public static class C2CHooks {
             Utils.ZeroTransform(root.transform);
             var bounds = go.GetComponent<Renderer>().bounds;
             var lim = bounds.max;
-            var dxz = (lim - go.transform.position).setY(0).Rotated(0, -45, 0, go.transform.position);
+            var dxz = (lim - go.transform.position).SetY(0).Rotated(0, -45, 0, go.transform.position);
             var dy = lim.y - go.transform.position.y;
             var n = 32;
             for (var i = 0; i < n; i++) {
@@ -1731,7 +1731,7 @@ public static class C2CHooks {
         } /*
         else if (SNUtil.match(pi, "SeaVoyager")) {
             go.EnsureComponent<C2CVoyager>();
-        }*/ else if (SNUtil.match(pi, "172d9440-2670-45a3-93c7-104fee6da6bc")) {
+        }*/ else if (SNUtil.Match(pi, "172d9440-2670-45a3-93c7-104fee6da6bc")) {
             if (Vector3.Distance(go.transform.position, lostRiverCachePanel) < 2) {
                 var r = go.getChildObject("Precursor_Lab_infoframe/Precursor_Lab_infoframe_glass")
                     .GetComponent<Renderer>();
@@ -1771,7 +1771,7 @@ public static class C2CHooks {
                 ht.onHandClick.AddListener(hte => {
                         if (!KnownTech.knownTech.Contains(C2CItems.treatment.TechType)) {
                             KnownTech.Add(C2CItems.treatment.TechType);
-                            SNUtil.triggerTechPopup(C2CItems.treatment.TechType);
+                            SNUtil.TriggerTechPopup(C2CItems.treatment.TechType);
                         }
                     }
                 );
@@ -1782,7 +1782,7 @@ public static class C2CHooks {
         }*/ else if (pi && auroraFires.Contains(pi.ClassId) &&
                      EnvironmentalDamageSystem.instance.isPositionInAuroraPrawnBay(pi.transform.position)) {
             blueAuroraPrawnFire(go);
-        } else if (SNUtil.match(pi, "b86d345e-0517-4f6e-bea4-2c5b40f623b4") && pi.transform.parent &&
+        } else if (SNUtil.Match(pi, "b86d345e-0517-4f6e-bea4-2c5b40f623b4") && pi.transform.parent &&
                    pi.transform.parent.name.Contains("ExoRoom_Weldable")) {
             var inner = go.getChildObject("Starship_doors_manual_01/Starship_doors_automatic");
             var d = go.transform.parent.GetComponentInChildren<StarshipDoorLocked>();
@@ -1849,7 +1849,7 @@ public static class C2CHooks {
             var pfb = ObjectUtil.lookupPrefab(VanillaResources.LARGE_QUARTZ.prefab);
             go.makeMapRoomScannable(C2CItems.brineCoral);
             var d = go.EnsureComponent<Drillable>();
-            d.copyObject(pfb.GetComponent<Drillable>());
+            d.CopyObject(pfb.GetComponent<Drillable>());
             go.name = name;
             /*
             d.deleteWhenDrilled = true;
@@ -1869,7 +1869,7 @@ public static class C2CHooks {
             d.maxResourcesToSpawn = hard ? 3 : 4;
             go.EnsureComponent<BrineCoralTag>();
             d.onDrilled += (dr) => { dr.GetComponent<BrineCoralTag>().onDrilled(); };
-        } else if (SNUtil.match(pi, "58247109-68b9-411f-b90f-63461df9753a") &&
+        } else if (SNUtil.Match(pi, "58247109-68b9-411f-b90f-63461df9753a") &&
                    Vector3.Distance(deepDegasiTablet, go.transform.position) <= 0.2) {
             var go2 = ObjectUtil.createWorldObject(C2CItems.brokenOrangeTablet.ClassID);
             go2.transform.position = go.transform.position;
@@ -1888,7 +1888,7 @@ public static class C2CHooks {
                     go.destroy(false);
                 }
             }
-        } else if (SNUtil.match(pi, "83b61f89-1456-4ff5-815a-ecdc9b6cc9e4")) { //broken purple tablet
+        } else if (SNUtil.Match(pi, "83b61f89-1456-4ff5-815a-ecdc9b6cc9e4")) { //broken purple tablet
             var light = ObjectUtil.lookupPrefab("53ffa3e8-f2f7-43b8-a5c7-946e766aff64").GetComponentInChildren<Light>()
                 .gameObject;
             var rel = light.transform.localPosition;
@@ -1921,13 +1921,13 @@ public static class C2CHooks {
                     }
                 }
             }*/
-        } else if (SNUtil.match(pi, "1c34945a-656d-4f70-bf86-8bc101a27eee")) {
+        } else if (SNUtil.Match(pi, "1c34945a-656d-4f70-bf86-8bc101a27eee")) {
             go.EnsureComponent<C2CMoth>();
             go.EnsureComponent<BrightLightController>().setLightValues(120, 1.75F, 135, 180, 2.5F)
                 .setPowerValues(0.15F, 0.5F);
             go.EnsureComponent<SeamothTetherController>();
             //go.EnsureComponent<VoidSpikeLeviathanSystem.SeamothStealthManager>();
-        } else if (SNUtil.match(pi, "ba3fb98d-e408-47eb-aa6c-12e14516446b")) { //prawn
+        } else if (SNUtil.Match(pi, "ba3fb98d-e408-47eb-aa6c-12e14516446b")) { //prawn
             var td = go.EnsureComponent<TemperatureDamage>();
             td.minDamageTemperature = 350;
             td.baseDamagePerSecond = Mathf.Max(10, td.baseDamagePerSecond) * 0.33F;
@@ -1936,9 +1936,9 @@ public static class C2CHooks {
             //go.removeComponent<ImmuneToPropulsioncannon>();
             go.EnsureComponent<BrightLightController>().setLightValues(120, 1.6F, 120, 150, 2.25F)
                 .setPowerValues(0.25F, 0.67F);
-        } else if (SNUtil.match(pi, "8b113c46-c273-4112-b7ef-65c50d2591ed")) { //rocket
+        } else if (SNUtil.Match(pi, "8b113c46-c273-4112-b7ef-65c50d2591ed")) { //rocket
             go.EnsureComponent<C2CRocket>();
-        } else if (SNUtil.match(pi, "d4be3a5d-67c3-4345-af25-7663da2d2898")) { //cuddlefish
+        } else if (SNUtil.Match(pi, "d4be3a5d-67c3-4345-af25-7663da2d2898")) { //cuddlefish
             var p = go.EnsureComponent<Pickupable>();
             p.isPickupable = true;
             p.overrideTechType = TechType.Cutefish;
@@ -1952,13 +1952,13 @@ public static class C2CHooks {
             go.transform.position = auroraStorageModule.position;
             go.transform.rotation = auroraStorageModule.rotation;
         }*/
-        else if (SNUtil.match(pi, auroraDepthModule.prefabName) &&
+        else if (SNUtil.Match(pi, auroraDepthModule.prefabName) &&
                  Vector3.Distance(auroraDepthModule.position, go.transform.position) <= 0.2) {
             var go2 = ObjectUtil.createWorldObject(SeaToSeaMod.BrokenAuroraDepthModule.ClassID);
             go2.transform.position = go.transform.position;
             go2.transform.rotation = go.transform.rotation;
             go.destroy(false);
-        } else if (SNUtil.match(pi, "bc9354f8-2377-411b-be1f-01ea1914ec49") &&
+        } else if (SNUtil.Match(pi, "bc9354f8-2377-411b-be1f-01ea1914ec49") &&
                    Vector3.Distance(auroraRepulsionGunTerminal, go.transform.position) <= 0.2) {
             pi.GetComponent<StoryHandTarget>().goal = SeaToSeaMod.AuroraTerminal;
         } else if (pi && pi.GetComponent<BlueprintHandTarget>()) {
@@ -1967,7 +1967,7 @@ public static class C2CHooks {
         } else if (pi && (pi.ClassId == VanillaResources.MAGNETITE.prefab ||
                           pi.ClassId == VanillaResources.LARGE_MAGNETITE.prefab)) {
             go.EnsureComponent<Magnetic>();
-        } else if (SNUtil.match(pi, "160e99a7-cb46-409d-98e2-360a76ff92da")) {
+        } else if (SNUtil.Match(pi, "160e99a7-cb46-409d-98e2-360a76ff92da")) {
             go.EnsureComponent<C2CStasisRifle>();
         }
 
@@ -2143,7 +2143,7 @@ public static class C2CHooks {
         sm.gameObject.EnsureComponent<C2CMoth>().recalculateModules();
         sm.gameObject.EnsureComponent<BrightLightController>().recalculateModule();
         sm.gameObject.EnsureComponent<SeamothTetherController>().recalculateModule();
-        if (added && GameModeUtils.currentEffectiveMode != GameModeOption.Creative && !SNUtil.canUseDebug())
+        if (added && GameModeUtils.currentEffectiveMode != GameModeOption.Creative && !SNUtil.CanUseDebug())
             ItemUnlockLegitimacySystem.instance.validateModule(sm, slotID, tt);
     }
 
@@ -2156,13 +2156,13 @@ public static class C2CHooks {
 
         sm.gameObject.EnsureComponent<BrightLightController>().recalculateModule();
         C2CUtil.resizeCyclopsStorage(sm);
-        if (GameModeUtils.currentEffectiveMode != GameModeOption.Creative && !SNUtil.canUseDebug())
+        if (GameModeUtils.currentEffectiveMode != GameModeOption.Creative && !SNUtil.CanUseDebug())
             ItemUnlockLegitimacySystem.instance.validateModules(sm);
     }
 
     public static void updatePrawnModules(Exosuit sm, int slotID, TechType tt, bool added) {
         sm.gameObject.EnsureComponent<BrightLightController>().recalculateModule();
-        if (added && GameModeUtils.currentEffectiveMode != GameModeOption.Creative && !SNUtil.canUseDebug())
+        if (added && GameModeUtils.currentEffectiveMode != GameModeOption.Creative && !SNUtil.CanUseDebug())
             ItemUnlockLegitimacySystem.instance.validateModule(sm, slotID, tt);
     }
 
@@ -2462,7 +2462,7 @@ public static class C2CHooks {
         //	return;
         //}
         if (!C2CProgression.Instance.IsRequiredProgressionComplete()) {
-            SNUtil.writeToChat("Missing progression, cannot launch");
+            SNUtil.WriteToChat("Missing progression, cannot launch");
             return;
         }
 
@@ -2589,7 +2589,7 @@ public static class C2CHooks {
                 var tag = h.Hit.FindAncestor<GlowKelpTag>();
                 h.Drops[h.DefaultDrop] = 2;
                 var f = tag.isFarmed() ? 0 : 0.25F;
-                var egg = CustomEgg.getEgg(C2CItems.purpleHolefish.TechType).TechType;
+                var egg = CustomEgg.GetEgg(C2CItems.purpleHolefish.TechType).TechType;
                 f -= Inventory.main.GetPickupCount(egg) * 0.2F; //100% chance if 0, 80% chance if 1, down to 0% at >= 5
                 /*
                 WaterPark wp = tag.getACU();
@@ -2611,7 +2611,7 @@ public static class C2CHooks {
         if (SeaToSeaMod.ModConfig.getBoolean(C2CConfig.ConfigEntries.HARDMODE) &&
             KnownTech.Contains(TechType.BaseUpgradeConsole) && !KnownTech.Contains(TechType.SeamothElectricalDefense)) {
             KnownTech.Add(TechType.SeamothElectricalDefense);
-            SNUtil.triggerTechPopup(TechType.SeamothElectricalDefense);
+            SNUtil.TriggerTechPopup(TechType.SeamothElectricalDefense);
         }
     }
 
@@ -2642,7 +2642,7 @@ public static class C2CHooks {
                 var d = UnityEngine.Random.Range(96F, 150F);
                 var pos = campos + cam.transform.forward * d;
                 pos = MathUtil.getRandomVectorAround(pos, 45);
-                pos = campos + (pos - campos).setLength(d);
+                pos = campos + (pos - campos).SetLength(d);
                 VoidSpikeLeviathanSystem.instance.spawnEMPBlast(pos);
                 nextCameraEMPTime = time + UnityEngine.Random.Range(1.2F, 2.5F);
             }
@@ -2693,10 +2693,10 @@ public static class C2CHooks {
         } else if (scanToScannerRoom.Contains(rt.resource.techType)) {
             rt.isDetectable = PDAScanner.complete.Contains(rt.resource.techType);
         } else if (rt.resource.techType == SeaToSeaMod.MushroomBioFragment.TechType) {
-            rt.isDetectable = SNUtil.getFragmentScanCount(rt.resource.techType) >
+            rt.isDetectable = SNUtil.GetFragmentScanCount(rt.resource.techType) >
                               SeaToSeaMod.MushroomBioFragment.fragmentCount - 2;
         } else if (rt.resource.techType == SeaToSeaMod.GeyserCoral.TechType) {
-            rt.isDetectable = SNUtil.getFragmentScanCount(rt.resource.techType) >
+            rt.isDetectable = SNUtil.GetFragmentScanCount(rt.resource.techType) >
                               SeaToSeaMod.GeyserCoral.fragmentCount - 4;
         }
 
@@ -3124,11 +3124,11 @@ public static class C2CHooks {
     public static void mergeDeathrunRecipeChange(TechType tt, RecipeData td) {
         RecipeData real = RecipeUtil.getRecipe(tt);
         if (real == null) {
-            SNUtil.log("Discarding deathrun " + tt + " recipe, as there is no vanilla recipe");
+            SNUtil.Log("Discarding deathrun " + tt + " recipe, as there is no vanilla recipe");
             return;
         }
 
-        SNUtil.log(
+        SNUtil.Log(
             "Integrating deathrun recipe change: " + tt + " = " + RecipeUtil.toString(td) + " into " +
             RecipeUtil.toString(real)
         );
@@ -3202,7 +3202,7 @@ public static class C2CHooks {
             var trig = Physics.queriesHitTriggers;
             Physics.queriesHitTriggers = true;
             foreach (var pi in WorldUtil.getObjectsNearWithComponent<PrefabIdentifier>(refpt, 4)) {
-                if (SNUtil.match(pi, "32e0b9a0-236b-4e03-81cf-921a92ef735d")) {
+                if (SNUtil.Match(pi, "32e0b9a0-236b-4e03-81cf-921a92ef735d")) {
                     inBrine = true;
                     break;
                 }
@@ -3429,7 +3429,7 @@ public static class C2CHooks {
                             break;
                     }
 
-                    SNUtil.writeToChat(msg);
+                    SNUtil.WriteToChat(msg);
                 }
 
                 MoraleSystem.instance.shiftMorale(morale);

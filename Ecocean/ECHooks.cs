@@ -23,7 +23,7 @@ public static partial class ECHooks {
     internal static List<Vector3> heatColumns = [];
 
     static ECHooks() {
-        SNUtil.log("Initializing ECHooks");
+        SNUtil.Log("Initializing ECHooks");
         DIHooks.OnWorldLoadedEvent += onWorldLoaded;
 
         DIHooks.OnSkyApplierSpawnEvent += onSkyApplierSpawn;
@@ -68,7 +68,7 @@ public static partial class ECHooks {
 
     public static void onWorldLoaded() {
         heatColumns.Clear();
-        UnityEngine.Random.InitState(SNUtil.getWorldSeedInt());
+        UnityEngine.Random.InitState(SNUtil.GetWorldSeedInt());
         for (var i = 0; i < 100; i++) {
             var vec = new Vector3(UnityEngine.Random.Range(0F, 1000F), 0, UnityEngine.Random.Range(0F, 1000F));
             if (heatColumns.Any(v => (v - vec).sqrMagnitude <= 40000))
@@ -76,7 +76,7 @@ public static partial class ECHooks {
             heatColumns.Add(vec);
         }
 
-        SNUtil.log("Computed heat columns: " + heatColumns.toDebugString());
+        SNUtil.Log("Computed heat columns: " + heatColumns.ToDebugString());
     }
 
     public static void tickPrawn(Exosuit e) {
@@ -111,12 +111,12 @@ public static partial class ECHooks {
         var vv = ep.GetVehicle();
         var pos = ep.transform.position;
         var inColumn = false;
-        if (pos.setY(0).magnitude >= 1700) { //more than 1200m from center
+        if (pos.SetY(0).magnitude >= 1700) { //more than 1200m from center
             EcoceanMod.voidBubble.tickSpawner(ep, time, dT);
-            Vector3 mod = pos.modulo(1000);
+            Vector3 mod = pos.Modulo(1000);
             var offset = pos - mod;
             foreach (var col in heatColumns) {
-                var dist = (col.setY(mod.y) - mod).magnitude;
+                var dist = (col.SetY(mod.y) - mod).magnitude;
                 var at = col + offset;
                 if (dist > 200 || !isVoidHeatColumn(at, out var trash, true))
                     continue;
@@ -134,7 +134,7 @@ public static partial class ECHooks {
                     //	id = EcoceanMod.voidOrganic.ClassID;
                     //}
                     if (UnityEngine.Random.Range(0F, 1F) < 0.075F) {
-                        id = EcoceanMod.heatColumnBones.Values.getRandomEntry().ClassID;
+                        id = EcoceanMod.heatColumnBones.Values.GetRandomEntry().ClassID;
                         yRange = (float)MathUtil.linterpolate(dist, 80, 200, 100, 300);
                     } /*
                     else if (UnityEngine.Random.Range(0F, 1F) < 0.2F) {
@@ -148,15 +148,15 @@ public static partial class ECHooks {
                     }
 
                     if (anyY) {
-                        vec2 = vec2.setY(pos.y - 200F + UnityEngine.Random.Range(0, 400F));
+                        vec2 = vec2.SetY(pos.y - 200F + UnityEngine.Random.Range(0, 400F));
                     } else {
-                        vec2 = vec2.setY(pos.y - 100);
+                        vec2 = vec2.SetY(pos.y - 100);
                     }
 
                     if (forceCenter)
-                        vec2 = at.setY(vec2.y);
+                        vec2 = at.SetY(vec2.y);
                     if (!float.IsNaN(forcedY))
-                        vec2 = vec2.setY(forcedY);
+                        vec2 = vec2.SetY(forcedY);
                     if (yRange > 0)
                         vec2 += Vector3.up * UnityEngine.Random.Range(0F, yRange);
                     GameObject go = ObjectUtil.createWorldObject(id);
@@ -220,7 +220,7 @@ public static partial class ECHooks {
             GameObject go = ObjectUtil.createWorldObject(EcoceanMod.tongue.ClassID);
             go.fullyEnable();
             var depth = Mathf.Min(pos.y - UnityEngine.Random.Range(400F, 500F) * (ep.currentSub ? 2 : 1));
-            Vector3 put = MathUtil.getRandomVectorAround(pos, 60).setY(depth);
+            Vector3 put = MathUtil.getRandomVectorAround(pos, 60).SetY(depth);
             go.transform.position = put;
             //go.transform.position = MathUtil.getRandomVectorAround(pos+Camera.main.transform.forward.normalized*400, 40).setY(-1600);
             var v = go.GetComponent<VoidTongueTag>();
@@ -237,13 +237,13 @@ public static partial class ECHooks {
     public static bool isVoidHeatColumn(Vector3 vec, out Vector3 colCenter, bool biomeOnly = false) {
         //2200 is significantly offshore
         colCenter = Vector3.zero;
-        if (!(VanillaBiomes.Void.IsInBiome(vec) && vec.setY(0).magnitude >= 2200))
+        if (!(VanillaBiomes.Void.IsInBiome(vec) && vec.SetY(0).magnitude >= 2200))
             return false;
         if (biomeOnly)
             return true;
-        Vector3 mod = vec.modulo(1000);
+        Vector3 mod = vec.Modulo(1000);
         foreach (var v in heatColumns) {
-            if ((v - mod).setY(0).sqrMagnitude <= 500) {
+            if ((v - mod).SetY(0).sqrMagnitude <= 500) {
                 colCenter = v;
                 return true;
             }
@@ -733,7 +733,7 @@ public static partial class ECHooks {
 
             if (geyser && geyser.erupting) {
                 var dh = transform.position.y - geyser.transform.position.y;
-                Vector3 vec = transform.position.setY(0) - geyser.transform.position.setY(0);
+                Vector3 vec = transform.position.SetY(0) - geyser.transform.position.SetY(0);
                 if (vec.sqrMagnitude >= 1600) {
                     this.destroy();
                 } else {

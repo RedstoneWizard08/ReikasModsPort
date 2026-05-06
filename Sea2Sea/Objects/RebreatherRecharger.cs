@@ -52,7 +52,7 @@ public class RebreatherRecharger : CustomMachine<RebreatherRechargerLogic> {
         var mdl = go.setModel("discovery_trashcan_01_d", air.getChildObject("model"));
         mdl.transform.localScale = new Vector3(3, 4, 3);
         lgc.Sound = go.EnsureComponent<FMOD_CustomLoopingEmitter>();
-        lgc.Sound.copyObject(snd);
+        lgc.Sound.CopyObject(snd);
         lgc.Turbine = mdl.getChildObject("_pipes_floating_air_intake_turbine_geo");
 
         var r = mdl.GetComponentInChildren<Renderer>();
@@ -83,16 +83,16 @@ public class RebreatherRechargerLogic : CustomMachineLogic {
     private float _available;
 
     private void Start() {
-        SNUtil.log("Reinitializing rebreather charger");
+        SNUtil.Log("Reinitializing rebreather charger");
         C2CItems.rebreatherCharger.initializeMachine(gameObject);
     }
 
     protected override void load(System.Xml.XmlElement data) {
-        _available = (float)data.getFloat("fuel", float.NaN);
+        _available = (float)data.GetFloat("fuel", float.NaN);
     }
 
     protected override void save(System.Xml.XmlElement data) {
-        data.addProperty("fuel", _available);
+        data.AddProperty("fuel", _available);
     }
 
     protected override void updateEntity(float seconds) {

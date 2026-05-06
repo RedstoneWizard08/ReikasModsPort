@@ -189,10 +189,10 @@ public static class ObjectUtil {
         where C : Component {
         foreach (Component c in go.GetComponentsInChildren<C>(true)) {
             if (debugMode)
-                SNUtil.log(
+                SNUtil.Log(
                     "Affecting component " + c + " in " + go + " @ " + go.transform.position + ": D=" + destroy + "/" +
                     setTo + "(" + setA + ")",
-                    SNUtil.diDLL
+                    SNUtil.DiDLL
                 );
             if (c is MonoBehaviour m && setA)
                 m.enabled = setTo;
@@ -209,61 +209,61 @@ public static class ObjectUtil {
 
     private static void dumpObjectData(this GameObject go, int indent, bool includeChildren = true) {
         if (!go) {
-            SNUtil.log("null object");
+            SNUtil.Log("null object");
             return;
         }
 
-        SNUtil.log("object " + go, SNUtil.diDLL, indent);
-        SNUtil.log("chain " + go.GetFullHierarchyPath(), SNUtil.diDLL, indent);
-        SNUtil.log("components: " + string.Join(", ", (object[])go.GetComponents<Component>()), SNUtil.diDLL, indent);
+        SNUtil.Log("object " + go, SNUtil.DiDLL, indent);
+        SNUtil.Log("chain " + go.GetFullHierarchyPath(), SNUtil.DiDLL, indent);
+        SNUtil.Log("components: " + string.Join(", ", (object[])go.GetComponents<Component>()), SNUtil.DiDLL, indent);
         var p = go.GetComponent<Pickupable>();
         if (p) {
-            SNUtil.log("pickup: " + p.GetTechType() + " = " + p.isPickupable, SNUtil.diDLL, indent);
+            SNUtil.Log("pickup: " + p.GetTechType() + " = " + p.isPickupable, SNUtil.DiDLL, indent);
         }
 
         var tag = go.GetComponent<TechTag>();
         if (tag) {
-            SNUtil.log("techtag: " + tag.type, SNUtil.diDLL, indent);
+            SNUtil.Log("techtag: " + tag.type, SNUtil.DiDLL, indent);
         }
 
         var res = go.GetComponent<ResourceTracker>();
         if (res) {
-            SNUtil.log("resource: " + res.name + " = " + res.techType, SNUtil.diDLL, indent);
+            SNUtil.Log("resource: " + res.name + " = " + res.techType, SNUtil.DiDLL, indent);
         }
 
         var e = go.GetComponent<EntityTag>();
         if (e) {
-            SNUtil.log("entity: " + e.name + " = " + e.tag, SNUtil.diDLL, indent);
+            SNUtil.Log("entity: " + e.name + " = " + e.tag, SNUtil.DiDLL, indent);
         }
 
         var pp = go.GetComponent<Plantable>();
         if (pp) {
-            SNUtil.log("plantable: " + pp.name + " = " + pp.plantTechType, SNUtil.diDLL, indent);
-            SNUtil.log("plant: ", SNUtil.diDLL, indent);
+            SNUtil.Log("plantable: " + pp.name + " = " + pp.plantTechType, SNUtil.DiDLL, indent);
+            SNUtil.Log("plant: ", SNUtil.DiDLL, indent);
             dumpObjectData(pp.growingPlant, indent + 1);
         }
 
         var live = go.GetComponent<LiveMixin>();
         if (live) {
-            SNUtil.log(
+            SNUtil.Log(
                 "live: " + live.name + " = " + live.health + "/" + live.maxHealth + " = " + live.IsAlive(),
-                SNUtil.diDLL,
+                SNUtil.DiDLL,
                 indent
             );
         }
 
         var infect = go.GetComponent<InfectedMixin>();
         if (infect) {
-            SNUtil.log("infected: " + infect.name + " = " + infect.infectedAmount, SNUtil.diDLL, indent);
+            SNUtil.Log("infected: " + infect.name + " = " + infect.infectedAmount, SNUtil.DiDLL, indent);
         }
 
-        SNUtil.log("transform: " + go.transform, SNUtil.diDLL, indent);
+        SNUtil.Log("transform: " + go.transform, SNUtil.DiDLL, indent);
         if (go.transform != null) {
-            SNUtil.log("position: " + go.transform.position, SNUtil.diDLL, indent);
-            SNUtil.log("transform object: " + go.transform.gameObject, SNUtil.diDLL, indent);
+            SNUtil.Log("position: " + go.transform.position, SNUtil.DiDLL, indent);
+            SNUtil.Log("transform object: " + go.transform.gameObject, SNUtil.DiDLL, indent);
             for (var i = 0; i < go.transform.childCount; i++) {
                 var ch = go.transform.GetChild(i).gameObject;
-                SNUtil.log("child object #" + i + ": " + (includeChildren ? "" : ch.name), SNUtil.diDLL, indent);
+                SNUtil.Log("child object #" + i + ": " + (includeChildren ? "" : ch.name), SNUtil.DiDLL, indent);
                 if (includeChildren)
                     dumpObjectData(ch, indent + 3);
             }
@@ -276,30 +276,30 @@ public static class ObjectUtil {
 
     private static void dumpObjectData(this Component go, int indent) {
         if (!go) {
-            SNUtil.log("null component");
+            SNUtil.Log("null component");
             return;
         }
 
-        SNUtil.log("component " + go, SNUtil.diDLL, indent);
+        SNUtil.Log("component " + go, SNUtil.DiDLL, indent);
         dumpObjectData(go.gameObject);
     }
 
     public static void dumpObjectData(Mesh m) {
-        SNUtil.log("Mesh " + m + ":");
+        SNUtil.Log("Mesh " + m + ":");
         if (m == null) {
-            SNUtil.log("Mesh is null");
+            SNUtil.Log("Mesh is null");
             return;
         }
 
-        SNUtil.log("Mesh has " + m.subMeshCount + " submeshes");
-        SNUtil.log("Mesh has " + m.vertexCount + " vertices:");
+        SNUtil.Log("Mesh has " + m.subMeshCount + " submeshes");
+        SNUtil.Log("Mesh has " + m.vertexCount + " vertices:");
         if (m.isReadable) {
             var verts = m.vertices;
             for (var i = 0; i < verts.Length; i++) {
-                SNUtil.log("Vertex " + i + ": " + verts[i].ToString("F5"));
+                SNUtil.Log("Vertex " + i + ": " + verts[i].ToString("F5"));
             }
         } else {
-            SNUtil.log("[Not readable]");
+            SNUtil.Log("[Not readable]");
         }
     }
 
@@ -343,7 +343,7 @@ public static class ObjectUtil {
             if (find && removed.Contains(find.GetInstanceID()))
                 find = null;
             if (removed.Count > 500) {
-                SNUtil.log("REMOVING CHILD OBJECT STUCK IN INFINITE LOOP INSIDE " + find.GetFullHierarchyPath() + "!");
+                SNUtil.Log("REMOVING CHILD OBJECT STUCK IN INFINITE LOOP INSIDE " + find.GetFullHierarchyPath() + "!");
                 return removed.Count;
             }
         }
@@ -399,9 +399,9 @@ public static class ObjectUtil {
         var endWild = name[name.Length - 1] == '*';
         if (startWild || endWild) {
             if (debugMode)
-                SNUtil.log(
+                SNUtil.Log(
                     "Looking for child wildcard match " + name + " > " + startWild + ", " + endWild,
-                    SNUtil.diDLL
+                    SNUtil.DiDLL
                 );
             return findFirstChildMatching(go, name, startWild, endWild);
         } else {
@@ -437,9 +437,9 @@ public static class ObjectUtil {
                 return t.gameObject;
             } else {
                 if (debugMode)
-                    SNUtil.log(
+                    SNUtil.Log(
                         "Found no match for " + s0 + " against " + t.gameObject.GetFullHierarchyPath(),
-                        SNUtil.diDLL
+                        SNUtil.DiDLL
                     );
                 var inner = findFirstChildMatching(t.gameObject, s0, startWild, endWild);
                 if (inner)
@@ -479,9 +479,9 @@ public static class ObjectUtil {
     public static GameObject createWorldObject(TechType tt, bool clone = true, bool makeActive = true) {
         if (tt == TechType.None)
             throw new Exception("Cannot spawn prefab for TechType.None!");
-        var prefab = lookupPrefab(tt).GetResult();
+        var prefab = lookupPrefab(tt);
         if (!prefab) {
-            SNUtil.writeToChat(
+            SNUtil.WriteToChat(
                 "Prefab not found for TechType '" + tt + "' [" + CraftData.GetClassIdForTechType(tt) + "]."
             );
             return null;
@@ -495,7 +495,7 @@ public static class ObjectUtil {
             throw new Exception("Cannot spawn prefab from null/empty classID!");
         var prefab = lookupPrefab(id);
         if (!prefab) {
-            SNUtil.writeToChat("Prefab not found for id '" + id + "' [" + PrefabData.getPrefab(id) + "].");
+            SNUtil.WriteToChat("Prefab not found for id '" + id + "' [" + PrefabData.getPrefab(id) + "].");
             return null;
         }
 
@@ -508,7 +508,7 @@ public static class ObjectUtil {
             go.SetActive(makeActive);
             return go;
         } else {
-            SNUtil.writeToChat("Prefab found and placed but resulted in null?!");
+            SNUtil.WriteToChat("Prefab found and placed but resulted in null?!");
             return null;
         }
     }
@@ -533,7 +533,7 @@ public static class ObjectUtil {
                 break;
         }
 
-        var pfb = lookupPrefab(seek).GetResult().clone();
+        var pfb = lookupPrefab(seek).clone();
         pfb.SetActive(false);
         if (seek != tt) {
             var pp = pfb.GetComponentInChildren<Pickupable>();
@@ -545,7 +545,7 @@ public static class ObjectUtil {
     }
 
     public static bool isPlantable(this TechType tt) {
-        var go = lookupPrefab(tt).GetResult();
+        var go = lookupPrefab(tt);
         return go && go.GetComponent<Plantable>();
     }
 
@@ -566,18 +566,19 @@ public static class ObjectUtil {
             return FoodCategory.OTHER;
     }
 
-    public static CoroutineTask<GameObject> lookupPrefab(TechType tt) {
+    public static GameObject lookupPrefab(TechType tt) {
         /*
         string id = CraftData.GetClassIdForTechType(tt);
         return string.IsNullOrEmpty(id) ? null : lookupPrefab(id);*/
-        return CraftData.GetPrefabForTechTypeAsync(tt);
+        return PrefabUtil.GetPrefabForTechType(tt);
     }
 
     public static GameObject lookupPrefab(string id) {
-        if (UWE.PrefabDatabase.GetPrefabAsync(id).TryGetPrefab(out var ret))
+        var ret = PrefabUtil.GetPrefab(id);
+        if (ret != null)
             return ret;
         if (EnumHandler.TryGetValue(id, out TechType key)) {
-            ret = lookupPrefab(key).GetResult();
+            ret = lookupPrefab(key);
         }
 
         return ret;
@@ -715,7 +716,7 @@ public static class ObjectUtil {
         }
 
         if (!world) {
-            SNUtil.writeToChat("Could not fetch template GO for " + pfb);
+            SNUtil.WriteToChat("Could not fetch template GO for " + pfb);
             return null;
         }
 
@@ -787,7 +788,7 @@ public static class ObjectUtil {
 
     public static T copyComponent<T>(GameObject from, GameObject to) where T : Component {
         var tgt = to.EnsureComponent<T>();
-        tgt.copyObject(from.GetComponent<T>());
+        tgt.CopyObject(from.GetComponent<T>());
         return tgt;
     }
 
@@ -1041,10 +1042,10 @@ public static class ObjectUtil {
 
     public static void destroy(this UnityEngine.Object go, bool immediate = true, float delay = 0) {
         if (debugMode)
-            SNUtil.log(
+            SNUtil.Log(
                 "Destroying " + go + " (" + (go is GameObject go2 ? go2.GetFullHierarchyPath() : go.GetType().Name) +
-                ") from\n" + SNUtil.getStacktrace(),
-                SNUtil.diDLL
+                ") from\n" + SNUtil.GetStacktrace(),
+                SNUtil.DiDLL
             );
         if (immediate)
             UnityEngine.Object.DestroyImmediate(go);

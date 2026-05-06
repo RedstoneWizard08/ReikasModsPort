@@ -64,7 +64,7 @@ public class ACUCleanerLogic : CustomMachineLogic {
     //internal GameObject rotator;
 
     private void Start() {
-        SNUtil.log("Reinitializing acu cleaner");
+        SNUtil.Log("Reinitializing acu cleaner");
         AqueousEngineeringMod.acuCleanerBlock.initializeMachine(gameObject);
     }
 

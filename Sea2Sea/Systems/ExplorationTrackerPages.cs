@@ -136,7 +136,7 @@ public class ExplorationTrackerPages : IStoryGoalListener {
 
         p = addPage(
             TrackerPages.METEOR,
-            new PositionTrigger(POITeleportSystem.instance.getPosition("meteor").setY(-375), 160)
+            new PositionTrigger(POITeleportSystem.instance.getPosition("meteor").SetY(-375), 160)
         );
         p.addFinding("meteor", Finding.fromScan(Auroresource.AuroresourceMod.DunesMeteor)).addFinding(
             "cache",
@@ -406,7 +406,7 @@ public class ExplorationTrackerPages : IStoryGoalListener {
             firstAppear,
             new DelayedEncyclopediaEffect(page.encyPage, 0.002F, 4, true)
         );
-        SNUtil.log("Added findings ency page " + page.encyPage);
+        SNUtil.Log("Added findings ency page " + page.encyPage);
         return page;
     }
 

@@ -97,7 +97,7 @@ public class PipeTravelSystem {
             var bRef = btnRef.GetComponent<Button>();
             b.image = bRef.image;
             go.SetActive(true);
-            b.copySprites(bRef);
+            b.CopySprites(bRef);
             b.onClick.AddListener(() => {
                     targetPosition = pos;
                     unlockUI(menu.GetComponent<uGUI_InputGroup>());
@@ -186,7 +186,7 @@ public class PipeTravelSystem {
                 var time = hitTimes[i];
                 yield return new WaitForSeconds(time - current);
                 SoundManager.playSoundAt(
-                    SoundManager.buildSound(impactSounds.getRandomEntry()),
+                    SoundManager.buildSound(impactSounds.GetRandomEntry()),
                     Player.main.transform.position,
                     false,
                     -1F,
@@ -195,7 +195,7 @@ public class PipeTravelSystem {
                 var del = Random.Range(0.1F, 0.33F);
                 yield return new WaitForSeconds(del);
                 SoundManager.playSoundAt(
-                    SoundManager.buildSound(hurtSounds.getRandomEntry()),
+                    SoundManager.buildSound(hurtSounds.GetRandomEntry()),
                     Player.main.transform.position,
                     false,
                     -1F,

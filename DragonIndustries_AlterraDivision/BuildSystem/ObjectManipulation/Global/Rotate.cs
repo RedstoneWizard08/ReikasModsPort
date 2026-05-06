@@ -37,18 +37,18 @@ internal class Rotate : GlobalManipulation {
 
 	public override void loadFromXML(XmlElement e) {
 		base.loadFromXML(e);
-		min = e.getVector("min").Value;
-		max = e.getVector("max").Value;
-		var or = e.getVector("origin", true);
+		min = e.GetVector("min").Value;
+		max = e.GetVector("max").Value;
+		var or = e.GetVector("origin", true);
 		if (or != null && or.HasValue)
 			origin = or.Value;
 	}
 
 	public override void saveToXML(XmlElement e) {
 		base.saveToXML(e);
-		e.addProperty("min", min);
-		e.addProperty("max", max);
-		e.addProperty("origin", origin);
+		e.AddProperty("min", min);
+		e.AddProperty("max", max);
+		e.AddProperty("origin", origin);
 	}
 
 }

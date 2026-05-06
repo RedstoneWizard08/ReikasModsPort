@@ -44,7 +44,7 @@ public sealed class MovingAverage {
 	}
 
 	public override string ToString() {
-		return getAverage() + "=" + data.toDebugString();
+		return getAverage() + "=" + data.ToDebugString();
 	}
 
 }

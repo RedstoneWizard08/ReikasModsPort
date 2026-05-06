@@ -26,11 +26,11 @@ public static class WorldgenLog {
 
 	public static void log(string s) {
 		queue.Add(s);
-		SNUtil.log(s, SNUtil.diDLL);
+		SNUtil.Log(s, SNUtil.DiDLL);
 	}
 
 	private static void save() {
-		var file = Path.Combine(SNUtil.getCurrentSaveDir(), "Worldgen.log");
+		var file = Path.Combine(SNUtil.GetCurrentSaveDir(), "Worldgen.log");
 		File.AppendAllText(file, string.Join("\n", queue));
 		queue.Clear();
 	}

@@ -23,17 +23,17 @@ public static class RecipeUtil {
     }
 
     public static void logChangedRecipes() {
-        SNUtil.log("Collated recipe changes: ");
+        SNUtil.Log("Collated recipe changes: ");
         List<string> oldR = [];
         List<string> newR = [];
         foreach (var kvp in originalRecipes) {
             var rec = getRecipe(kvp.Key);
-            SNUtil.log("Recipe for " + kvp.Key + " was changed. Previous recipe:");
+            SNUtil.Log("Recipe for " + kvp.Key + " was changed. Previous recipe:");
 
             if (kvp.Value.Count > 0) {
                 var s = ("" + kvp.Key).ToUpper();
                 foreach (var kvp2 in kvp.Value) {
-                    SNUtil.log(kvp2.Key + " x" + kvp2.Value);
+                    SNUtil.Log(kvp2.Key + " x" + kvp2.Value);
                     s = s + ".addIngredient(" + (kvp2.Key + "").ToUpper() + ", " + kvp2.Value + ")";
                 }
 
@@ -42,12 +42,12 @@ public static class RecipeUtil {
             }
 
             if (rec == null) {
-                SNUtil.log("Recipe was removed");
+                SNUtil.Log("Recipe was removed");
             } else {
-                SNUtil.log("New recipe:");
+                SNUtil.Log("New recipe:");
                 var s = ("" + kvp.Key).ToUpper();
                 foreach (var i in rec.Ingredients) {
-                    SNUtil.log(i.techType + " x" + i.amount);
+                    SNUtil.Log(i.techType + " x" + i.amount);
                     s = s + ".addIngredient(" + (i.techType + "").ToUpper() + ", " + i.amount + ")";
                 }
 
@@ -82,7 +82,7 @@ public static class RecipeUtil {
     public static void addIngredient(TechType recipe, TechType add, int amt) {
         var rec = getRecipe(recipe);
         cacheOriginalRecipe(recipe, rec);
-        SNUtil.log("Adding " + add + "x" + amt + " to recipe " + recipe);
+        SNUtil.Log("Adding " + add + "x" + amt + " to recipe " + recipe);
         foreach (var i in rec.Ingredients) {
             if (i.techType == add) {
                 i._amount += amt;
@@ -94,7 +94,7 @@ public static class RecipeUtil {
     }
 
     public static void addIngredient(RecipeData rec, TechType add, int amt) {
-        SNUtil.log("Adding " + add + "x" + amt + " to recipe " + rec);
+        SNUtil.Log("Adding " + add + "x" + amt + " to recipe " + rec);
         foreach (var i in rec.Ingredients) {
             if (i.techType == add) {
                 i._amount += amt;
@@ -108,7 +108,7 @@ public static class RecipeUtil {
     public static void ensureIngredient(TechType recipe, TechType item, int amt) {
         var rec = getRecipe(recipe);
         cacheOriginalRecipe(recipe, rec);
-        SNUtil.log("Ensuring " + item + "x" + amt + " in recipe " + recipe);
+        SNUtil.Log("Ensuring " + item + "x" + amt + " in recipe " + recipe);
         var has = 0;
         foreach (var i in rec.Ingredients) {
             if (i.techType == item) {
@@ -198,7 +198,7 @@ public static class RecipeUtil {
         if (node == null)
             buildRecipeNodeCache(); //try rebuild first
         if (node == null)
-            throw new Exception("No node found for recipe " + item + "\n\n" + nodes.toDebugString());
+            throw new Exception("No node found for recipe " + item + "\n\n" + nodes.ToDebugString());
         if (node.path == null)
             throw new Exception("Invalid pathless node " + node);
         CraftTreeHandler.RemoveNode(node.recipeType, node.path.Split('\\'));
@@ -212,7 +212,7 @@ public static class RecipeUtil {
             //CraftDataHandler.AddToGroup(TechGroup.Uncategorized, TechCategory.Misc, item);
         }
 
-        SNUtil.log("Removing recipe " + item);
+        SNUtil.Log("Removing recipe " + item);
         return rec;
     }
 
@@ -225,13 +225,13 @@ public static class RecipeUtil {
         if (node == null)
             buildRecipeNodeCache(); //try rebuild first
         if (node == null)
-            throw new Exception("No node found for recipe " + item + "\n\n" + nodes.toDebugString());
+            throw new Exception("No node found for recipe " + item + "\n\n" + nodes.ToDebugString());
         if (node.path == null)
             throw new Exception("Invalid pathless node " + node);
         CraftTreeHandler.RemoveNode(node.recipeType, node.path.Split('\\'));
         nodes.Remove(item);
         CraftTreeHandler.AddCraftingNode(cat == CraftTree.Type.None ? node.recipeType : cat, item, path);
-        SNUtil.log("Repathing recipe " + item + ": " + node.path + " > " + string.Join("\\", path));
+        SNUtil.Log("Repathing recipe " + item + ": " + node.path + " > " + string.Join("\\", path));
     }
 
     public static void setItemCategory(TechType item, TechGroup tg, TechCategory tc) {
@@ -292,7 +292,7 @@ public static class RecipeUtil {
     }
 
     public static void dumpCraftTree(CraftTree.Type type) {
-        SNUtil.log("Tree " + type + ":", SNUtil.diDLL);
+        SNUtil.Log("Tree " + type + ":", SNUtil.DiDLL);
         var root = getRootNode(type);
         dumpCraftTreeFromNode(root);
     }
@@ -303,7 +303,7 @@ public static class RecipeUtil {
 
     private static void dumpCraftTreeFromNode(CraftNode root, List<string> prefix) {
         if (root == null) {
-            SNUtil.log(string.Join("/", prefix) + " -> null @ root", SNUtil.diDLL);
+            SNUtil.Log(string.Join("/", prefix) + " -> null @ root", SNUtil.DiDLL);
             return;
         }
 
@@ -311,18 +311,18 @@ public static class RecipeUtil {
         for (var i = 0; i < nodes.Count; i++) {
             var node = nodes[i];
             if (node == null) {
-                SNUtil.log(string.Join("/", prefix) + " -> null @ " + i, SNUtil.diDLL);
+                SNUtil.Log(string.Join("/", prefix) + " -> null @ " + i, SNUtil.DiDLL);
             } else {
                 try {
                     var s = string.Join("/", prefix) + " -> Node #" + i + ": " + node.id;
                     if (Language.main)
                         s += " (" + Language.main.Get("Ency_" + node.id) + ")";
-                    SNUtil.log(s, SNUtil.diDLL);
+                    SNUtil.Log(s, SNUtil.DiDLL);
                     prefix.Add(node.id);
                     dumpCraftTreeFromNode((CraftNode)node, prefix);
                     prefix.RemoveAt(prefix.Count - 1);
                 } catch (Exception e) {
-                    SNUtil.log(e.ToString());
+                    SNUtil.Log(e.ToString());
                 }
             }
         }
@@ -330,7 +330,7 @@ public static class RecipeUtil {
 
     public static void dumpPDATree() {
         foreach (var kvp in PDAEncyclopedia.entries) {
-            SNUtil.log("PDA entry '" + kvp.Key + "': " + kvp.Value, SNUtil.diDLL);
+            SNUtil.Log("PDA entry '" + kvp.Key + "': " + kvp.Value, SNUtil.DiDLL);
         }
 
         dumpCraftTreeFromNode(PDAEncyclopedia.tree);

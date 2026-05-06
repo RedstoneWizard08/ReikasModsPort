@@ -1,6 +1,7 @@
 ﻿using System; //For data read/write methods
 using System.Collections.Generic;
 using BepInEx;
+using BepInEx.Logging;
 using Nautilus.Assets;
 using Nautilus.Handlers; //Working with Lists and Collections
 //For data read/write methods
@@ -12,9 +13,13 @@ namespace ReikaKalseki.DIAlterra;
 [BepInPlugin(MOD_KEY, "DIAlterra", Nautilus.PluginInfo.PLUGIN_VERSION)]
 [BepInDependency("com.snmodding.nautilus")]
 public class DIMod : BaseUnityPlugin {
+    private static DIMod Instance;
+    private ManualLogSource BaseLogger => base.Logger;
+    public new static ManualLogSource Logger => Instance.BaseLogger;
+
     public const string MOD_KEY = "ReikaKalseki.DIAlterra";
 
-    public static readonly XMLLocale locale = new(SNUtil.diDLL, "XML/locale.xml");
+    public static readonly XMLLocale locale = new(SNUtil.DiDLL, "XML/locale.xml");
     /*
     private static readonly List<SNMod> mods = new List<SNMod>();
 
@@ -24,7 +29,7 @@ public class DIMod : BaseUnityPlugin {
     */
     //public static readonly ModLogger logger = new ModLogger();
 
-    public static readonly Config<DIConfig.ConfigEntries> config = new(SNUtil.diDLL);
+    public static readonly Config<DIConfig.ConfigEntries> config = new(SNUtil.DiDLL);
 
     internal static readonly Dictionary<TechType, CustomPrefab> machineList = new();
 
@@ -32,6 +37,8 @@ public class DIMod : BaseUnityPlugin {
     public static TemporaryFloatingLocker floatingLocker { get; private set; }
 
     public void Start() {
+        Instance = this;
+        
         System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(PlacedObject).TypeHandle);
         System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(DICustomPrefab).TypeHandle);
         System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(WorldGenerator).TypeHandle);
@@ -39,15 +46,14 @@ public class DIMod : BaseUnityPlugin {
     }
 
     public void Awake() {
-        SNUtil.log("Start DI Main Init", SNUtil.diDLL);
+        SNUtil.Log("Start DI Main Init", SNUtil.DiDLL);
         config.load();
 
-        var harmony = new HarmonySystem(MOD_KEY, SNUtil.diDLL, typeof(DIPatches));
+        var harmony = new HarmonySystem(MOD_KEY, SNUtil.DiDLL, typeof(DIPatches));
         harmony.apply();
 
-        ModVersionCheck.getFromGitVsInstall("Dragon Industries", SNUtil.diDLL, "DragonIndustries_AlterraDivision")
+        ModVersionCheck.getFromGitVsInstall("Dragon Industries", SNUtil.DiDLL, "DragonIndustries_AlterraDivision")
             .register();
-        SNUtil.checkModHash(SNUtil.diDLL);
 
         System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(SaveSystem).TypeHandle);
         System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(SpawnedItemTracker).TypeHandle);
@@ -80,7 +86,7 @@ public class DIMod : BaseUnityPlugin {
             0.5F,
             BiomeType.BonesField_Ground,
             BiomeType.LostRiverJunction_Ground
-        ).modifyGO(e => {
+        ).ModifyGo(e => {
                 List<Renderer> li = [];
                 foreach (var r in e.GetComponentsInChildren<Renderer>()) {
                     RenderUtil.makeTransparent(r);
@@ -179,28 +185,28 @@ public class DIMod : BaseUnityPlugin {
 
         SpriteHandler.RegisterSprite(
             TechType.PDA,
-            TextureManager.getSprite(SNUtil.diDLL, "Textures/ScannerSprites/PDA")
+            TextureManager.getSprite(SNUtil.DiDLL, "Textures/ScannerSprites/PDA")
         );
         SpriteHandler.RegisterSprite(
             TechType.Databox,
-            TextureManager.getSprite(SNUtil.diDLL, "Textures/ScannerSprites/Databox")
+            TextureManager.getSprite(SNUtil.DiDLL, "Textures/ScannerSprites/Databox")
         );
         SpriteHandler.RegisterSprite(
             TechType.ReaperLeviathan,
-            TextureManager.getSprite(SNUtil.diDLL, "Textures/ScannerSprites/Reaper")
+            TextureManager.getSprite(SNUtil.DiDLL, "Textures/ScannerSprites/Reaper")
         );
 
         var le = locale.getEntry("AreaOfInterest");
-        SNUtil.allowDIDLL = true;
+        SNUtil.AllowDidll = true;
         areaOfInterestMarker = SignalManager.createSignal("AreaOfInterest", le.desc, le.desc, "", "");
         areaOfInterestMarker.register(
             null,
-            TextureManager.getSprite(SNUtil.diDLL, "Textures/AreaOfInterestMarker"),
+            TextureManager.getSprite(SNUtil.DiDLL, "Textures/AreaOfInterestMarker"),
             Vector3.zero
         );
-        SNUtil.allowDIDLL = false;
+        SNUtil.AllowDidll = false;
 
-        SNUtil.log("Finish DI Main Init", SNUtil.diDLL);
+        SNUtil.Log("Finish DI Main Init", SNUtil.DiDLL);
 
         // POST LOAD
 
@@ -232,13 +238,13 @@ public class DIMod : BaseUnityPlugin {
         params BiomeType[] spawn
     ) {
         Action<CustomEgg> a = e => {
-            e.eggProperties.maxSize = grownScale;
+            e.EggProperties.maxSize = grownScale;
             if (!isBig)
-                e.eggProperties.initialSize = Mathf.Max(e.eggProperties.initialSize, 0.2F);
-            e.eggProperties.daysToGrow = daysToGrow;
+                e.EggProperties.initialSize = Mathf.Max(e.EggProperties.initialSize, 0.2F);
+            e.EggProperties.daysToGrow = daysToGrow;
         };
-        SNUtil.allowDIDLL = true;
-        var egg = CustomEgg.createAndRegisterEgg(
+        SNUtil.AllowDidll = true;
+        var egg = CustomEgg.CreateAndRegisterEgg(
             creature,
             basis,
             scale,
@@ -248,7 +254,7 @@ public class DIMod : BaseUnityPlugin {
             rate,
             spawn
         );
-        SNUtil.allowDIDLL = false;
+        SNUtil.AllowDidll = false;
         return egg;
     }
 
@@ -322,7 +328,7 @@ public class DIMod : BaseUnityPlugin {
         }
 
         var file = BuildingHandler.instance.dumpPrefabs(id, li);
-        SNUtil.writeToChat("Exported " + li.Count + " prefabs of id '" + id + "' to " + file);
+        SNUtil.WriteToChat("Exported " + li.Count + " prefabs of id '" + id + "' to " + file);
     }
 
     private static void deletePrefabNear(float r, string id) {
@@ -331,12 +337,12 @@ public class DIMod : BaseUnityPlugin {
         var found = 0;
         foreach (var pi in WorldUtil.getObjectsNearWithComponent<PrefabIdentifier>(pos, r)) {
             pis++;
-            if (SNUtil.match(pi, id)) {
+            if (SNUtil.Match(pi, id)) {
                 pi.gameObject.destroy(false);
                 found++;
             }
 
-            SNUtil.writeToChat("Found " + pis + " objects near " + pos + ", deleted " + found);
+            SNUtil.WriteToChat("Found " + pis + " objects near " + pos + ", deleted " + found);
         }
     }
 
@@ -366,10 +372,10 @@ public class DIMod : BaseUnityPlugin {
     }
 
     private static void printBiomeData() {
-        SNUtil.writeToChat(
+        SNUtil.WriteToChat(
             "Current native biome: " + WaterBiomeManager.main.GetBiome(Player.main.transform.position, false)
         );
-        SNUtil.writeToChat("Localized DI name: " + BiomeBase.GetBiome(Player.main.transform.position).DisplayName);
+        SNUtil.WriteToChat("Localized DI name: " + BiomeBase.GetBiome(Player.main.transform.position).DisplayName);
     }
 
     private static void spawnParticle(string pfb, float dur) {
@@ -401,7 +407,7 @@ public class DIMod : BaseUnityPlugin {
             }
         }
 
-        SNUtil.writeToChat("Destroyed " + found + " items of type '" + id + "' not in StorageContainers.");
+        SNUtil.WriteToChat("Destroyed " + found + " items of type '" + id + "' not in StorageContainers.");
     }
 
     public static void restartGame() {

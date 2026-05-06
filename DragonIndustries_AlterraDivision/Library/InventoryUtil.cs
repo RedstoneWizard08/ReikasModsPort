@@ -74,16 +74,16 @@ public static class InventoryUtil {
     }
 
     public static void addItem(TechType tt) {
-        var obj = ObjectUtil.lookupPrefab(tt).GetResult().clone();
+        var obj = ObjectUtil.lookupPrefab(tt).clone();
         if (!obj) {
-            SNUtil.writeToChat("Could not spawn item " + tt + ", no prefab");
+            SNUtil.WriteToChat("Could not spawn item " + tt + ", no prefab");
             return;
         }
 
         obj.SetActive(false);
         var pp = obj.GetComponent<Pickupable>();
         if (!pp) {
-            SNUtil.writeToChat("Could not add " + Language.main.Get(tt) + " to inventory - no Pickupable");
+            SNUtil.WriteToChat("Could not add " + Language.main.Get(tt) + " to inventory - no Pickupable");
             return;
         }
 

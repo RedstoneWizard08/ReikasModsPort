@@ -20,8 +20,8 @@ public class VoidSpikesBiome : CustomBiome { //FIXME: 3. disappearing spikes 4. 
     public static readonly Vector3 signalLocation = new(1725, 0, -1250); //new Vector3(1725, 0, -997-100);
     //public static readonly double gap = Vector3.Distance(end500m, signalLocation);
 
-    private static readonly Vector3 travel = new Vector3(1, 0, -1).setLength(1500);
-    public static readonly Vector3 voidEndpoint500m = (signalLocation + travel).setY(end500m.y); //2785, -550, -2310
+    private static readonly Vector3 travel = new Vector3(1, 0, -1).SetLength(1500);
+    public static readonly Vector3 voidEndpoint500m = (signalLocation + travel).SetY(end500m.y); //2785, -550, -2310
     public static readonly Vector3 voidEndpoint900m = voidEndpoint500m + (end900m - end500m); //3225, -950, -2750
 
     public static readonly float biomeVolumeRadius = 200;
@@ -95,7 +95,7 @@ public class VoidSpikesBiome : CustomBiome { //FIXME: 3. disappearing spikes 4. 
         //SpikeCache.load();
 
         //GenUtil.registerWorldgen(generator);
-        var seed = SNUtil.getInstallSeed();
+        var seed = SNUtil.GetInstallSeed();
         var gens = generator.split(seed);
         foreach (var gen in gens) {
             GenUtil.registerWorldgen(gen);
@@ -166,15 +166,15 @@ public class VoidSpikesBiome : CustomBiome { //FIXME: 3. disappearing spikes 4. 
         var dist = getDistanceToBiome(pos, false);
         var f1 = biomeVolumeRadius + 25;
         if (dist >= f1 && dist <= f1 + 20) {
-            var tgt = (voidEndpoint500m + (pos - end500m).addLength(30)).setY(pos.y);
-            SNUtil.teleportPlayer(Player.main, tgt);
-            SNUtil.log("Teleported player back from biome: " + tgt);
+            var tgt = (voidEndpoint500m + (pos - end500m).AddLength(30)).SetY(pos.y);
+            SNUtil.TeleportPlayer(Player.main, tgt);
+            SNUtil.Log("Teleported player back from biome: " + tgt);
         } else {
             dist = MathUtil.getDistanceToLineSegment(pos, voidEndpoint500m, voidEndpoint900m);
             if (dist <= f1) {
-                var tgt = (end500m + (pos - voidEndpoint500m).addLength(-30)).setY(pos.y);
-                SNUtil.teleportPlayer(Player.main, tgt);
-                SNUtil.log("Teleported player to biome: " + tgt);
+                var tgt = (end500m + (pos - voidEndpoint500m).AddLength(-30)).SetY(pos.y);
+                SNUtil.TeleportPlayer(Player.main, tgt);
+                SNUtil.Log("Teleported player to biome: " + tgt);
                 foreach (var levi in VoidGhostLeviathansSpawner.main.spawnedCreatures) {
                     var delta = levi.transform.position - tgt;
                     levi.transform.position = tgt + delta;
@@ -188,7 +188,7 @@ public class VoidSpikesBiome : CustomBiome { //FIXME: 3. disappearing spikes 4. 
     }
 
     public void activateSignal() {
-        SNUtil.log("Activating void signal");
+        SNUtil.Log("Activating void signal");
         signal.activate(18);
     }
 

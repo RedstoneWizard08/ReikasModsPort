@@ -17,9 +17,9 @@ public static class AssetBundleManager {
 	public static AssetBundle getBundle(Assembly a, string path) {
 		if (!bundles.ContainsKey(path)) {
 			bundles[path] = loadBundle(a, path);
-			SNUtil.log("Loaded AssetBundle '" + path + "': ");
+			SNUtil.Log("Loaded AssetBundle '" + path + "': ");
 			foreach (object obj in bundles[path].LoadAllAssets()) {
-				SNUtil.log(" > " + obj);
+				SNUtil.Log(" > " + obj);
 			}
 		}
 		return bundles[path];

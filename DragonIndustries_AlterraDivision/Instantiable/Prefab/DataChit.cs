@@ -37,22 +37,22 @@ public sealed class DataChit : CustomPrefab {
         "Unlocks " + g.key
     ) {
         goal = g;
-        ownerMod = SNUtil.tryGetModDLL();
+        ownerMod = SNUtil.TryGetModDLL();
 
         if (!registeredCommonTechType) {
             scannerRoomChitType = EnumHandler.AddEntry<TechType>("DataChit").WithPdaInfo("Data Card", "");
             SpriteHandler.RegisterSprite(
                 scannerRoomChitType,
-                TextureManager.getSprite(SNUtil.diDLL, "Textures/ScannerSprites/DataChit")
+                TextureManager.getSprite(SNUtil.DiDLL, "Textures/ScannerSprites/DataChit")
             );
             registeredCommonTechType = true;
         }
 
         AddOnRegister(() => {
                 var data = new SNUtil.PopupData("Digital Data Downloaded", desc) {
-                    sound = "event:/tools/scanner/scan_complete",
+                    Sound = "event:/tools/scanner/scan_complete",
                 };
-                data.onUnlock = () => { SNUtil.triggerUnlockPopup(data); };
+                data.OnUnlock = () => { SNUtil.TriggerUnlockPopup(data); };
                 a?.Invoke(data);
                 popupData[Info.ClassID] = data;
             }
@@ -78,7 +78,7 @@ public sealed class DataChit : CustomPrefab {
         world.removeChildObject("PDALight");
         var r = world.GetComponentInChildren<Renderer>();
         RenderUtil.swapTextures(
-            SNUtil.diDLL,
+            SNUtil.DiDLL,
             r,
             "Textures/DataChit/",
             new Dictionary<int, string> { { 0, "" }, { 1, "" }, { 2, "" } }
@@ -100,7 +100,7 @@ public sealed class DataChit : CustomPrefab {
 
         private void OnStoryHandTarget() {
             var popup = popupData[GetComponent<PrefabIdentifier>().ClassId];
-            popup.onUnlock?.Invoke();
+            popup.OnUnlock?.Invoke();
         }
     }
 }

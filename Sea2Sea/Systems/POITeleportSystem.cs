@@ -54,13 +54,13 @@ public class POITeleportSystem {
 		addPOI("bkelpnest", new Vector3(-846, -522, 1294));
 		addPOI("dunesgeode", new Vector3(-1419, -585, 376));
 		addPOI("geysercave", C2CProgression.Instance.DronePdaCaveEntrance + new Vector3(5, 0, 5));
-		addPOI("glassforest", UnderwaterIslandsFloorBiome.wreckCtrPos1.setY(-480));
+		addPOI("glassforest", UnderwaterIslandsFloorBiome.wreckCtrPos1.SetY(-480));
 		addPOI("voidwreck", C2CHooks.voidWreckVoidPatch);
 		addPOI("voidspikes", VoidSpikesBiome.end500m);
 		addPOI("postcove", new Vector3(-1114, -1000, 525));
 		addPOI("pod12", C2CProgression.Instance.Pod12Location + Vector3.up * 20);
 		addPOI("sanctuary", CrashZoneSanctuaryBiome.biomeCenter + Vector3.up * 30);
-		addPOI("deepvoid", ((VoidSpikesBiome.signalLocation + VoidSpikesBiome.voidEndpoint500m) / 2F).setY(-950)).setActions(() => {
+		addPOI("deepvoid", ((VoidSpikesBiome.signalLocation + VoidSpikesBiome.voidEndpoint500m) / 2F).SetY(-950)).setActions(() => {
 			SubConsoleCommand.main.SpawnSub("cyclops", Player.main.transform.position + new Vector3(10, 0, 0), Quaternion.identity);
 			InventoryUtil.addItem(TechType.CyclopsHullModule3);
 			InventoryUtil.addItem(TechType.CyclopsShieldModule);
@@ -87,12 +87,12 @@ public class POITeleportSystem {
 	internal void jumpToPOI(string name) {
 		var p = data.ContainsKey(name) ? data[name] : null;
 		if (p != null) {
-			SNUtil.teleportPlayer(Player.main, p.position);
+			SNUtil.TeleportPlayer(Player.main, p.position);
 			p.additionalActions?.Invoke();
-			SNUtil.writeToChat("Jumped to POI '" + p.name + "' @ " + p.position);
+			SNUtil.WriteToChat("Jumped to POI '" + p.name + "' @ " + p.position);
 		}
 		else {
-			SNUtil.writeToChat("No POI exists for name '" + name + "'.");
+			SNUtil.WriteToChat("No POI exists for name '" + name + "'.");
 		}
 	}
 

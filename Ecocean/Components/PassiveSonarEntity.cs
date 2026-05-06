@@ -139,7 +139,7 @@ public abstract class PassiveSonarEntity : MonoBehaviour {
     }
 
     protected void createRadarSphere(GameObject go, Vector3 scale) {
-        SNUtil.log("Creating radar sphere for " + go.GetFullHierarchyPath());
+        SNUtil.Log("Creating radar sphere for " + go.GetFullHierarchyPath());
         GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere).setName("RadarHalo");
         sphere.transform.localScale = Vector3.Scale(getRadarSphereSize(), scale);
         sphere.transform.SetParent(go.transform);

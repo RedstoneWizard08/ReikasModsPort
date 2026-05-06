@@ -60,21 +60,21 @@ public sealed class VoidSpikes : WorldGenerator {
 	}
 
 	public override void loadFromXML(XmlElement e) {
-		count = e.getInt("count", count);
-		scaleXZ = (float)e.getFloat("scale", scaleXZ);
-		scaleY = (float)e.getFloat("scale", scaleY);
-		if (e.hasProperty("generateAux"))
-			generateAux = e.getBoolean("generateAux");
-		generateLeviathan = e.getBoolean("generateLeviathan");
-		fishCount = e.getInt("fishCount", fishCount);
+		count = e.GetInt("count", count);
+		scaleXZ = (float)e.GetFloat("scale", scaleXZ);
+		scaleY = (float)e.GetFloat("scale", scaleY);
+		if (e.HasProperty("generateAux"))
+			generateAux = e.GetBoolean("generateAux");
+		generateLeviathan = e.GetBoolean("generateLeviathan");
+		fishCount = e.GetInt("fishCount", fishCount);
 	}
 
 	public override void saveToXML(XmlElement e) {
-		e.addProperty("count", count);
-		e.addProperty("scaleXZ", scaleXZ);
-		e.addProperty("scaleY", scaleY);
-		e.addProperty("generateAux", generateAux);
-		e.addProperty("generateLeviathan", generateLeviathan);
+		e.AddProperty("count", count);
+		e.AddProperty("scaleXZ", scaleXZ);
+		e.AddProperty("scaleY", scaleY);
+		e.AddProperty("generateAux", generateAux);
+		e.AddProperty("generateLeviathan", generateLeviathan);
 	}
 
 	private void rerollCounts() {
@@ -85,13 +85,13 @@ public sealed class VoidSpikes : WorldGenerator {
 	}
 
 	public IEnumerable<SpikeCluster> split(int seed) {
-		SNUtil.log("Initializing spike clusters [" + count + "] with seed " + seed);
+		SNUtil.Log("Initializing spike clusters [" + count + "] with seed " + seed);
 		UnityEngine.Random.InitState(seed);
 		calculateSpikeClusters();
 		foreach (var s in spikes) {
 			s.fishCount = fishCount / spikes.Count;
 		}
-		SNUtil.log("Initialized " + spikes.Count + " spikes");
+		SNUtil.Log("Initialized " + spikes.Count + " spikes");
 		fishCount = 0;
 		return new ReadOnlyCollection<SpikeCluster>(spikes);
 	}
@@ -123,7 +123,7 @@ public sealed class VoidSpikes : WorldGenerator {
 		BiomeBase bb = BiomeBase.getBiome(pos);
 		if (bb != VanillaBiomes.VOID && bb != VoidSpikesBiome.instance)
 			return false;*/
-		UnityEngine.Random.InitState(SNUtil.getWorldSeedInt());
+		UnityEngine.Random.InitState(SNUtil.GetWorldSeedInt());
 		if (shouldRerollCounts)
 			rerollCounts();
 		if (spikes.Count == 0) {
@@ -223,18 +223,18 @@ public sealed class VoidSpikes : WorldGenerator {
 		}
 
 		public override void loadFromXML(XmlElement e) {
-			if (e.hasProperty("generateAux"))
-				generateAux = e.getBoolean("generateAux");
-			terraceSpikeCount = e.getInt("terraceSpikeCount", terraceSpikeCount);
-			auxSpikeCount = e.getInt("auxSpikeCount", auxSpikeCount);
-			edgeFactor = (float)e.getFloat("edgeFactor", edgeFactor);
+			if (e.HasProperty("generateAux"))
+				generateAux = e.GetBoolean("generateAux");
+			terraceSpikeCount = e.GetInt("terraceSpikeCount", terraceSpikeCount);
+			auxSpikeCount = e.GetInt("auxSpikeCount", auxSpikeCount);
+			edgeFactor = (float)e.GetFloat("edgeFactor", edgeFactor);
 		}
 
 		public override void saveToXML(XmlElement e) {
-			e.addProperty("generateAux", generateAux);
-			e.addProperty("terraceSpikeCount", terraceSpikeCount);
-			e.addProperty("auxSpikeCount", auxSpikeCount);
-			e.addProperty("edgeFactor", edgeFactor);
+			e.AddProperty("generateAux", generateAux);
+			e.AddProperty("terraceSpikeCount", terraceSpikeCount);
+			e.AddProperty("auxSpikeCount", auxSpikeCount);
+			e.AddProperty("edgeFactor", edgeFactor);
 		}
 
 		public Vector3 getRootLocation() {

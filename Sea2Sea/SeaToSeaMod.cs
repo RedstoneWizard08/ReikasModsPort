@@ -4,17 +4,28 @@ using System.IO;
 using System.Reflection;
 using BepInEx;
 using HarmonyLib;
+using JetBrains.Annotations;
 using Nautilus.Assets;
 using Nautilus.Assets.Gadgets;
 using Nautilus.Handlers;
+using ReikaKalseki.AqueousEngineering;
+using ReikaKalseki.Auroresource;
 using ReikaKalseki.DIAlterra;
+using ReikaKalseki.Ecocean;
 using ReikaKalseki.Exscansion;
+using ReikaKalseki.Reefbalance;
 using UnityEngine;
 
 namespace ReikaKalseki.SeaToSea;
 
 [BepInPlugin(ModKey, "SeaToSea", Nautilus.PluginInfo.PLUGIN_VERSION)]
 [BepInDependency("com.snmodding.nautilus")]
+[BepInDependency(DIMod.MOD_KEY)]
+[BepInDependency(AqueousEngineeringMod.MOD_KEY)]
+[BepInDependency(AuroresourceMod.ModKey)]
+[BepInDependency(EcoceanMod.MOD_KEY)]
+[BepInDependency(ExscansionMod.MOD_KEY)]
+[BepInDependency(ReefbalanceMod.MOD_KEY)]
 public class SeaToSeaMod : BaseUnityPlugin {
     public const string ModKey = "ReikaKalseki.SeaToSea";
 
@@ -34,35 +45,41 @@ public class SeaToSeaMod : BaseUnityPlugin {
     private static readonly Dictionary<string, Dictionary<string, Texture2D>> DegasiBaseTextures = new();
 
     public static readonly CustomPrefab[] RebreatherChargerFragments = [
-        new(
-            "f350b8ae-9ee4-4349-a6de-d031b11c82b1",
-            "",
-            ""
-        ), //, go => go.transform.localScale = new Vector3(1, 3, 1)),
-        new(
-            "f744e6d9-f719-4653-906b-34ed5dbdb230",
-            "",
-            ""
-        ), //, go => go.transform.localScale = new Vector3(1, 2, 1)),
+        CreateFragment("f350b8ae-9ee4-4349-a6de-d031b11c82b1", go => go.transform.localScale = new Vector3(1, 3, 1)),
+        CreateFragment("f744e6d9-f719-4653-906b-34ed5dbdb230", go => go.transform.localScale = new Vector3(1, 2, 1)),
         //new TechnologyFragment("589bf5a6-6866-4828-90b2-7266661bb6ed"),
-        new(
-            "3c076458-505e-4683-90c1-34c1f7939a0f",
-            "",
-            ""
-        ), //, go => go.transform.localScale = new Vector3(1, 1, 0.2F)),
+        CreateFragment("3c076458-505e-4683-90c1-34c1f7939a0f", go => go.transform.localScale = new Vector3(1, 1, 0.2F)),
     ];
 
     public static readonly CustomPrefab[] BioprocFragments = [
-        new("85259b00-2672-497e-bec9-b200a1ab012f", "", ""),
+        CreateFragment("85259b00-2672-497e-bec9-b200a1ab012f"),
         //new TechnologyFragment("ba258aad-07e9-4c9b-b517-2ce7400db7b2"),
         //new TechnologyFragment("cf4ca320-bb13-45b6-b4c9-2a079023e787"),
-        new(
+        CreateFragment(
             "f4b3942e-02d8-4526-b384-677a2ad9ce58",
-            "",
-            ""
-        ), // go => go.transform.localScale = new Vector3(0.25F, 0.25F, 0.5F)
-        new("f744e6d9-f719-4653-906b-34ed5dbdb230", "", ""),
+            go => go.transform.localScale = new Vector3(0.25F, 0.25F, 0.5F)
+        ),
+        CreateFragment("f744e6d9-f719-4653-906b-34ed5dbdb230"),
     ];
+
+    private static int _fragmentId;
+
+    private static CustomPrefab CreateFragment(string targetClass, [CanBeNull] Action<GameObject> modifier = null) {
+        var prefab = new CustomPrefab($"s2c_fragment_{_fragmentId}", $"Fragment {_fragmentId}", "");
+
+        prefab.CreateFragment(CraftData.entClassTechTable[targetClass], 1);
+
+        prefab.SetGameObject(() => {
+                var go = PrefabUtil.GetPrefab(targetClass);
+                modifier?.Invoke(go);
+                return go;
+            }
+        );
+
+        _fragmentId++;
+
+        return prefab;
+    }
 
     public static readonly HashSet<string> LrCoralClusters = [
         "a711c0fa-f31e-4426-9164-a9a65557a9a2",
@@ -187,7 +204,6 @@ public static SoundManager.SoundData voidspikeLeviAmbient;
         hs.apply();
 
         ModVersionCheck.getFromGitVsInstall("Sea To Sea", ModDLL, "SeaToSea").register();
-        SNUtil.checkModHash(ModDLL);
 
         // CustomPrefab.addPrefabNamespace("ReikaKalseki.SeaToSea");
 
@@ -217,14 +233,14 @@ public static SoundManager.SoundData voidspikeLeviAmbient;
             e.name,
             e.desc,
             d => {
-                d.controlText = e.pda;
-                d.graphic = () => SNUtil.getTechPopupSprite(TechType.LaserCutter);
+                d.ControlText = e.pda;
+                d.Graphic = () => SNUtil.GetTechPopupSprite(TechType.LaserCutter);
             }
         );
         //laserCutterBulkhead.showOnScannerRoom = false;
         LaserCutterBulkhead.Register();
         e = MiscLocale.getEntry("bioprocessorBoost");
-        BioProcessorBoost = new DataChit(e.key, e.name, e.desc, d => { d.controlText = e.pda; });
+        BioProcessorBoost = new DataChit(e.key, e.name, e.desc, d => { d.ControlText = e.pda; });
         //bioProcessorBoost.showOnScannerRoom = false;
         BioProcessorBoost.Register();
         e = MiscLocale.getEntry("jellyshroomSeamothDepth");
@@ -232,7 +248,7 @@ public static SoundManager.SoundData voidspikeLeviAmbient;
             e.key,
             e.name,
             e.desc,
-            d => { d.onUnlock = C2CProgression.OnSeamothDepthChit; }
+            d => { d.OnUnlock = C2CProgression.OnSeamothDepthChit; }
         ) {
             showOnScannerRoom = true,
         };
@@ -378,7 +394,7 @@ public static SoundManager.SoundData voidspikeLeviAmbient;
 
         e = PdaLocale.getEntry("LavaCastleSmoke");
         LavaCastleSmoker = EnumHandler.AddEntry<TechType>(e.key).WithPdaInfo(e.name, e.desc);
-        LavaCastleSmokerPda = SNUtil.addPDAEntry(
+        LavaCastleSmokerPda = SNUtil.AddPdaEntry(
             LavaCastleSmoker,
             e.key,
             e.name,
@@ -451,7 +467,7 @@ public static SoundManager.SoundData voidspikeLeviAmbient;
 
         AuroraTerminal = new Story.StoryGoal("auroraringterminal_c2c", Story.GoalType.PDA, 0);
         e = MiscLocale.getEntry(AuroraTerminal.key);
-        SNUtil.addVOLine(AuroraTerminal, e.desc, SoundManager.registerPDASound(ModDLL, e.key, e.pda).asset);
+        SNUtil.AddVoLine(AuroraTerminal, e.desc, SoundManager.registerPDASound(ModDLL, e.key, e.pda).asset);
         //StoryHandler.instance.addListener(s => {if (s == auroraTerminal.key) {}});
 
         SunbeamCountdownTrigger = new Story.StoryGoal("c2cTriggerSunbeamCountdown", Story.GoalType.Story, 0);
@@ -489,7 +505,7 @@ public static SoundManager.SoundData voidspikeLeviAmbient;
         var ang = new Vector3(0, 317, 0);
         var pos1 = new Vector3(-1226, -350, -1258);
         var pos2 = new Vector3(-1327, -350, -1105);
-        var tgt = pos2 + (pos2 - pos1).setLength(40);
+        var tgt = pos2 + (pos2 - pos1).SetLength(40);
         for (var i = 0; i <= 4; i++) {
             var pos = Vector3.Lerp(pos1, pos2, i / 4F);
             GenUtil.registerWorldgen(
@@ -501,10 +517,10 @@ public static SoundManager.SoundData voidspikeLeviAmbient;
             );
         }
 
-        SNUtil.addMultiScanUnlock(TechType.PowerTransmitter, 2, TechType.PowerTransmitter, 1, false);
-        SNUtil.addMultiScanUnlock(TechType.LEDLight, 2, TechType.LEDLight, 1, false);
-        SNUtil.addMultiScanUnlock(TechType.ThermalPlant, 4, TechType.ThermalPlant, 1, false);
-        SNUtil.addMultiScanUnlock(TechType.NuclearReactor, 7, TechType.NuclearReactor, 1, false);
+        SNUtil.AddMultiScanUnlock(TechType.PowerTransmitter, 2, TechType.PowerTransmitter, 1, false);
+        SNUtil.AddMultiScanUnlock(TechType.LEDLight, 2, TechType.LEDLight, 1, false);
+        SNUtil.AddMultiScanUnlock(TechType.ThermalPlant, 4, TechType.ThermalPlant, 1, false);
+        SNUtil.AddMultiScanUnlock(TechType.NuclearReactor, 7, TechType.NuclearReactor, 1, false);
 
         SpriteHandler.RegisterSprite(C2CItems.brineCoral, TextureManager.getSprite(ModDLL, "Textures/BrineCoralIcon"));
 
@@ -589,7 +605,7 @@ public static SoundManager.SoundData voidspikeLeviAmbient;
         if (!BepInExUtil.IsModLoaded(PluginIDs.TerrainPatcher)) {
             var msg = "TerrainPatcher is a required dependency for SeaToSea!";
 
-            SNUtil.createPopupWarning(
+            SNUtil.CreatePopupWarning(
                 msg,
                 false /*, SNUtil.createPopupButton("Download", () => {
                 System.Diagnostics.Process.Start("https://github.com/Esper89/Subnautica-TerrainPatcher/releases/download/v0.4/TerrainPatcher-v0.4.zip");
@@ -603,21 +619,21 @@ public static SoundManager.SoundData voidspikeLeviAmbient;
         if (!BepInExUtil.IsModLoaded(PluginIDs.RadialTabs)) {
             var msg =
                 "RadialTabs is recommended when using SeaToSea to ensure that all crafting nodes in fabricator UIs remain onscreen.";
-            SNUtil.createPopupWarning(
+            SNUtil.CreatePopupWarning(
                 msg,
                 true /*, SNUtil.createPopupButton("Download", () => {
                 System.Diagnostics.Process.Start("https://www.nexusmods.com/Core/Libs/Common/Widgets/ModRequirementsPopUp?id=2624&game_id=1155");
                 Application.Quit(64);
             }), SNUtil.createPopupButton("Ignore")*/
             );
-            SNUtil.log(msg + " You should add this mod if at all possible.");
+            SNUtil.Log(msg + " You should add this mod if at all possible.");
         }
 
         var fn = "generated.optoctreepatch";
         if (File.Exists(Path.Combine(Path.GetDirectoryName(ModDLL.Location), fn))) {
             var msg = "Delete " + fn +
                       " from your install directory. This is an old file from previous versions and will conflict with new terrain patches.";
-            SNUtil.createPopupWarning(msg, false);
+            SNUtil.CreatePopupWarning(msg, false);
             throw new Exception(msg);
         }
 
@@ -659,7 +675,7 @@ public static SoundManager.SoundData voidspikeLeviAmbient;
         foreach (BiomeType bb in Enum.GetValues(typeof(BiomeType))) {
             LootDistributionHandler.EditLootDistributionData(VanillaResources.SULFUR.prefab, bb, 0, 1);
             LootDistributionHandler.EditLootDistributionData(
-                CustomEgg.getEgg(TechType.SpineEel).Info.ClassID,
+                CustomEgg.GetEgg(TechType.SpineEel).Info.ClassID,
                 bb,
                 0,
                 1
@@ -724,7 +740,7 @@ public static SoundManager.SoundData voidspikeLeviAmbient;
                     if (!m || m.mainTexture == null) continue;
                     var n = m.mainTexture.name.Replace(" (Instance)", "").ToLowerInvariant();
                     if (exported.Contains(n)) continue;
-                    SNUtil.log(
+                    SNUtil.Log(
                         "Exporting degasi base textures from " + r.gameObject.GetFullHierarchyPath() +
                         ": " + n,
                         ModDLL
@@ -775,19 +791,19 @@ public static SoundManager.SoundData voidspikeLeviAmbient;
         SanctuaryDirectionHint.register(
             "4c10bbd6-5100-4632-962e-69306b09222f",
             SpriteManager.Get(SpriteManager.Group.Pings, "Sunbeam"),
-            CrashZoneSanctuaryBiome.biomeCenter.setY(-360)
+            CrashZoneSanctuaryBiome.biomeCenter.SetY(-360)
         );
         SanctuaryDirectionHint.addWorldgen();
 
         e = PdaLocale.getEntry("crashmesahint");
-        CrashMesaRadio = SNUtil.addRadioMessage("crashmesaradio", e.getString("radio"), e.getString("radioSound"));
+        CrashMesaRadio = SNUtil.AddRadioMessage("crashmesaradio", e.getString("radio"), e.getString("radioSound"));
     }
 
     private static void AddOreGen() {
         var vent = CustomMaterials.getItem(CustomMaterials.Materials.VENT_CRYSTAL);
         vent.registerWorldgen(BiomeType.Dunes_ThermalVent, 1, 3F);
         vent.registerWorldgen(BiomeType.Mountains_ThermalVent, 1, 1.0F);
-        
+
         // TODO: FCS Compat
         // if (FCSIntegrationSystem.instance.isLoaded()) {
         //     vent.registerWorldgen(BiomeType.UnderwaterIslands_Geyser, 1, 0.2F);
@@ -1098,25 +1114,25 @@ public static SoundManager.SoundData voidspikeLeviAmbient;
 
         ConsoleCommandsHandler.RegisterConsoleCommand<Action<bool>>(
             "c2cSMMAnyW",
-            b => AnywhereSeamothModuleCheatActive = b && SNUtil.canUseDebug()
+            b => AnywhereSeamothModuleCheatActive = b && SNUtil.CanUseDebug()
         );
         ConsoleCommandsHandler.RegisterConsoleCommand<Action<bool>>(
             "c2cTrackerAll",
-            b => TrackerShowAllCheatActive = b && SNUtil.canUseDebug()
+            b => TrackerShowAllCheatActive = b && SNUtil.CanUseDebug()
         );
         //ConsoleCommandsHandler.RegisterConsoleCommand<Action>("c2cTrackerSetAll", ExplorationTrackerPages.instance.markAllDiscovered);
         ConsoleCommandsHandler.RegisterConsoleCommand<Action<bool>>(
             "c2cSGSA",
-            b => FastSeaglideCheatActive = b && SNUtil.canUseDebug()
+            b => FastSeaglideCheatActive = b && SNUtil.CanUseDebug()
         );
         ConsoleCommandsHandler.RegisterConsoleCommand<Action<bool>>(
             "c2cFRHS",
-            b => SeamothHeatSinkModule.FREE_CHEAT = b && SNUtil.canUseDebug()
+            b => SeamothHeatSinkModule.FREE_CHEAT = b && SNUtil.CanUseDebug()
         );
         ConsoleCommandsHandler.RegisterConsoleCommand<Action<float>>(
             "c2cENVHEAT",
             b => {
-                if (SNUtil.canUseDebug())
+                if (SNUtil.CanUseDebug())
                     EnvironmentalDamageSystem.instance.TEMPERATURE_OVERRIDE = b;
             }
         );
@@ -1127,7 +1143,7 @@ public static SoundManager.SoundData voidspikeLeviAmbient;
         ConsoleCommandsHandler.RegisterConsoleCommand<Action<string>>(
             "c2cSignalUnlock",
             arg => {
-                if (SNUtil.canUseDebug())
+                if (SNUtil.CanUseDebug())
                     UnlockSignal(arg);
             }
         );
@@ -1137,7 +1153,7 @@ public static SoundManager.SoundData voidspikeLeviAmbient;
         );
         ConsoleCommandsHandler.RegisterConsoleCommand(
             "c2cRFLdebug",
-            () => SNUtil.writeToChat(
+            () => SNUtil.WriteToChat(
                 "Rocket launch error: " + FinalLaunchAdditionalRequirementSystem.instance.hasAllCargo() +
                 "; Missing scan=" + LifeformScanningSystem.instance.hasScannedEverything()
             )
@@ -1163,7 +1179,7 @@ public static SoundManager.SoundData voidspikeLeviAmbient;
         ConsoleCommandsHandler.RegisterConsoleCommand<Action<float>>(
             "c2cMORALEDELTA",
             arg => {
-                if (SNUtil.canUseDebug())
+                if (SNUtil.CanUseDebug())
                     MoraleSystem.instance.shiftMorale(arg);
             }
         );

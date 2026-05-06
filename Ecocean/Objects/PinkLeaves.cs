@@ -42,7 +42,7 @@ public class PinkLeaves : BasicCustomPlant, MultiTexturePrefab {
         go.layer = LayerID.Useable;
 
         go.EnsureComponent<LiveMixin>()
-            .copyObject<LiveMixin>(ObjectUtil.lookupPrefab(TechType.SeaCrown).GetResult().GetComponent<LiveMixin>());
+            .CopyObject<LiveMixin>(ObjectUtil.lookupPrefab(TechType.SeaCrown).GetComponent<LiveMixin>());
 
         GameObject pfb = ObjectUtil.lookupPrefab(DecoPlants.BANANA_LEAF.prefab);
         foreach (var r in pfb.GetComponentsInChildren<Renderer>()) {
@@ -124,7 +124,7 @@ internal class PinkLeavesTag : MonoBehaviour {
             r0[0].transform.localScale = Vector3.one * 0.2F;
             EcoceanMod.pinkLeaves.prepareGameObject(gameObject, r0);
             var lv = gameObject.EnsureComponent<LiveMixin>();
-            lv.copyObject<LiveMixin>(ObjectUtil.lookupPrefab(TechType.SeaCrown).GetResult().GetComponent<LiveMixin>());
+            lv.CopyObject<LiveMixin>(ObjectUtil.lookupPrefab(TechType.SeaCrown).GetComponent<LiveMixin>());
             if (lv.damageInfo == null)
                 lv.damageInfo = new DamageInfo();
             lv.ResetHealth();

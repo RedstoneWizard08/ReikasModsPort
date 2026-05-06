@@ -58,7 +58,7 @@ public sealed class VoidSpikeWreck : WorldGenerator {
     }
 
     public override bool generate(List<GameObject> li) {
-        SNUtil.log("Generating void spike deep debris @ " + position);
+        SNUtil.Log("Generating void spike deep debris @ " + position);
 
         var platform = spawner(platformPrefab);
         platform.transform.position = position + Vector3.down * 0.1F;

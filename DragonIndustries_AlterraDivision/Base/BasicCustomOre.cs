@@ -23,7 +23,7 @@ public class BasicCustomOre : CustomPrefab, DIPrefab<VanillaResources> {
 
     [SetsRequiredMembers]
     public BasicCustomOre(string id, string name, string desc, VanillaResources template) : base(id, name, desc) {
-        ownerMod = SNUtil.tryGetModDLL();
+        ownerMod = SNUtil.TryGetModDLL();
         // typeof(ModPrefab).GetField("Mod", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(this, ownerMod);
         baseTemplate = template;
 
@@ -39,12 +39,12 @@ public class BasicCustomOre : CustomPrefab, DIPrefab<VanillaResources> {
     }
 
     public void registerWorldgen(BiomeType biome, int amt, float chance) {
-        SNUtil.log("Adding worldgen " + biome + " x" + amt + " @ " + chance + "% to " + this, ownerMod);
+        SNUtil.Log("Adding worldgen " + biome + " x" + amt + " @ " + chance + "% to " + this, ownerMod);
         GenUtil.registerOreWorldgen(this, biome, amt, chance);
     }
 
     public void addPDAEntry(string text, float scanTime = 2, string header = null) {
-        SNUtil.addPDAEntry(this, scanTime, "PlanetaryGeology", text, header, null);
+        SNUtil.AddPdaEntry(this, scanTime, "PlanetaryGeology", text, header, null);
     }
 
     protected Sprite GetItemSprite() {

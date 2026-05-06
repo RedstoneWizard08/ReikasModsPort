@@ -150,7 +150,7 @@ public class MoraleSystem {
         //this is not a baseline, this is a delta/s!
         //-------------------
         //"OMG RESCUE!"
-        registerPersistentEffect(ep => SNUtil.isSunbeamExpected(), 0, 200);
+        registerPersistentEffect(ep => SNUtil.IsSunbeamExpected(), 0, 200);
         //hope falls, discontent rises
         float sunbeamCrisisDuration = 3600; //1h
         registerPersistentEffect("SunbeamDestroyed", true, -200, sunbeamCrisisDuration);
@@ -209,7 +209,7 @@ public class MoraleSystem {
         ); //+5 from knowing there is a rocket plan
         registerPermanentGoalEffect(StoryGoals.ROCKET_INFO, 0, 5); //permanent +5 to baseline after rocket known
 
-        registerPersistentEffect(ep => SNUtil.isPlayerCured(), 5, 20); //permanent +5/+20 after cure
+        registerPersistentEffect(ep => SNUtil.IsPlayerCured(), 5, 20); //permanent +5/+20 after cure
         registerPermanentGoalEffect(StoryGoals.ROCKET_COMPLETE, 5, 10); //another permanent +5/+10 after rocket built
 
         registerPersistentEffect(ep => WorldUtil.isInPCFTank(ep.gameObject), 0, 20);
@@ -570,7 +570,7 @@ public class MoraleSystem {
         var amb = bb != null && biomeEffect.ContainsKey(bb) ? biomeEffect[bb] : null;
 
         if (checkMoraleDebugFlag(MoraleDebugFlags.CORE))
-            SNUtil.writeToChat("Morale UI initialized, applying sim");
+            SNUtil.WriteToChat("Morale UI initialized, applying sim");
 
         float delta = 0;
         var dT = Time.deltaTime;
@@ -583,7 +583,7 @@ public class MoraleSystem {
         }
 
         if (checkMoraleDebugFlag(MoraleDebugFlags.BIOME))
-            SNUtil.writeToChat("Biome " + bb + " morale ambient " + amb);
+            SNUtil.WriteToChat("Biome " + bb + " morale ambient " + amb);
 
         var env = EnvContext.UNKNOWN;
         if (ep.currentSub) {
@@ -611,7 +611,7 @@ public class MoraleSystem {
             }
 
             if (checkMoraleDebugFlag(MoraleDebugFlags.DECO))
-                SNUtil.writeToChat("Base deco morale " + delta.ToString("0.00") + "/s from " + currentDecoLevel);
+                SNUtil.WriteToChat("Base deco morale " + delta.ToString("0.00") + "/s from " + currentDecoLevel);
 
             delta *= SeaToSeaMod.ModConfig.getFloat(C2CConfig.ConfigEntries.MORALESPEED);
 
@@ -668,7 +668,7 @@ public class MoraleSystem {
                 if (!amt.isActive(ep))
                     continue;
                 if (checkMoraleDebugFlag(MoraleDebugFlags.BASELINE))
-                    SNUtil.writeToChat("Morale effect " + amt);
+                    SNUtil.WriteToChat("Morale effect " + amt);
                 currentMoraleForce += amt.influence.moralePerSecondForce.getValue(ep);
                 currentMoraleBaseline += amt.influence.moraleBaselineShift.getValue(ep);
             }
@@ -694,7 +694,7 @@ public class MoraleSystem {
             }
 
             if (checkMoraleDebugFlag(MoraleDebugFlags.CORE))
-                SNUtil.writeToChat(
+                SNUtil.WriteToChat(
                     "Computed morale baseline " + currentMoraleBaseline.ToString("0.00") + " and force " +
                     currentMoraleForce.ToString("0.00")
                 );
@@ -710,7 +710,7 @@ public class MoraleSystem {
         prawnMoraleCooldown = Mathf.Max(prawnMoraleCooldown - dT / PRAWN_MORALE_COOLDOWN, 0);
 
         if (checkMoraleDebugFlag(MoraleDebugFlags.CORE))
-            SNUtil.writeToChat("Core sim computed to delta " + delta);
+            SNUtil.WriteToChat("Core sim computed to delta " + delta);
 
         var s = ep.GetComponent<Survival>();
         var f = s ? Mathf.Min(s.water, s.food) : 1;
@@ -720,7 +720,7 @@ public class MoraleSystem {
         ); //need both food and water >= 50 and health over 80 for 100%
 
         if (checkMoraleDebugFlag(MoraleDebugFlags.CORE))
-            SNUtil.writeToChat("Max morale " + maxMorale.ToString("0.00") + " from " + f + " & " + ep.liveMixin.health);
+            SNUtil.WriteToChat("Max morale " + maxMorale.ToString("0.00") + " from " + f + " & " + ep.liveMixin.health);
 
         if (ep.GetOxygenAvailable() <= 0.001)
             delta = -20;
@@ -736,7 +736,7 @@ public class MoraleSystem {
         }
 
         if (checkMoraleDebugFlag(MoraleDebugFlags.CORE))
-            SNUtil.writeToChat("Final morale delta " + delta.ToString("0.00") + "/s");
+            SNUtil.WriteToChat("Final morale delta " + delta.ToString("0.00") + "/s");
 
         //SNUtil.writeToChat("Adjusting morale by "+delta.ToString("0.00")+"/s because of "+currentDecoLevel.ToString("0.0"));
         shiftMorale(delta * dT);
@@ -749,16 +749,16 @@ public class MoraleSystem {
 
     public void shiftMorale(float delta) {
         if (checkMoraleDebugFlag(MoraleDebugFlags.SHIFT))
-            SNUtil.writeToChat("Shifting morale by " + delta.ToString("0.0"));
+            SNUtil.WriteToChat("Shifting morale by " + delta.ToString("0.0"));
         setMorale(moralePercentage + delta);
     }
 
     private void setMorale(float f) {
         if (checkMoraleDebugFlag(MoraleDebugFlags.SET)) {
-            SNUtil.writeToChat("Setting morale to " + f.ToString("0.0"));
+            SNUtil.WriteToChat("Setting morale to " + f.ToString("0.0"));
             if (checkMoraleDebugFlag(MoraleDebugFlags.STACKTRACE)) {
-                SNUtil.log("Setting morale to " + f.ToString("0.0"));
-                SNUtil.log(SNUtil.getStacktrace());
+                SNUtil.Log("Setting morale to " + f.ToString("0.0"));
+                SNUtil.Log(SNUtil.GetStacktrace());
             }
         }
 
@@ -809,7 +809,7 @@ public class MoraleSystem {
         }
 
         internal void init(uGUI_WaterBar refBar) {
-            this.copyObject(refBar);
+            this.CopyObject(refBar);
         }
 
         private void updateValue() {
@@ -1010,11 +1010,11 @@ public class MoraleSystem {
         }
 
         private static void save(Player ep, XmlElement e) {
-            e.addProperty("morale", instance.moralePercentage);
+            e.AddProperty("morale", instance.moralePercentage);
         }
 
         private static void load(Player ep, XmlElement e) {
-            instance.moralePercentage = (float)e.getFloat("morale", INITIAL_MORALE);
+            instance.moralePercentage = (float)e.GetFloat("morale", INITIAL_MORALE);
         }
     }
 }

@@ -251,7 +251,7 @@ public class DataCollectionTracker {
 
 	private string generatePDAContent() {
 		if (!Language.main) {
-			SNUtil.log("Initialized DataCollect PDA before language!");
+			SNUtil.Log("Initialized DataCollect PDA before language!");
 			return "ERROR";
 		}
 		buildSet();
@@ -281,23 +281,23 @@ public class DataCollectionTracker {
 
 	private string appendDataList(string desc, string title, Dictionary<string, DataDownloadEntry> li) {
 		if (li == null) {
-			SNUtil.writeToChat("Null data collect map under title=" + title);
+			SNUtil.WriteToChat("Null data collect map under title=" + title);
 			return "ERROR";
 		}
 		desc += title + ":\n";
 		foreach (var kvp in li) {
 			var le = kvp.Value;
 			if (le == null) {
-				SNUtil.writeToChat("Null entry in data collect PDA, key=" + kvp.Key);
+				SNUtil.WriteToChat("Null entry in data collect PDA, key=" + kvp.Key);
 				continue;
 			}
 			if (!le.isVisible())
 				continue;
 			var has = le.isCollected();
 			if (le.location == null)
-				SNUtil.writeToChat("No location for " + le);
+				SNUtil.WriteToChat("No location for " + le);
 			else if (le.location.checkSeen == null)
-				SNUtil.writeToChat("No location check for " + le);
+				SNUtil.WriteToChat("No location check for " + le);
 
 			var seen = le.location != null && (le.location.checkSeen == null || le.location.checkSeen.Invoke());
 			var name = has ? Language.main.Get("Ency_"+le.encyKey) : le.hint;
@@ -353,7 +353,7 @@ public class DataCollectionTracker {
 			hint = h;
 
 			pdaPage = getEncyData();
-			category = pdaPage == null ? "General" : SNUtil.getDescriptiveEncyPageCategoryName(pdaPage);
+			category = pdaPage == null ? "General" : SNUtil.GetDescriptiveEncyPageCategoryName(pdaPage);
 		}
 
 		public void setVisible(string goal) {
@@ -385,7 +385,7 @@ public class DataCollectionTracker {
 		}
 
 		internal void saveToXML(XmlElement n) {
-			n.addProperty("encyKey", encyKey);
+			n.AddProperty("encyKey", encyKey);
 		}
 
 		internal void loadFromXML(XmlElement e) {
@@ -422,7 +422,7 @@ public class DataCollectionTracker {
 		internal void saveToXML(XmlElement n) {
 			//if (location != null)
 			//	n.addProperty("location", location.ToString());
-			n.addProperty("tech", tech.ToString());
+			n.AddProperty("tech", tech.ToString());
 		}
 
 		internal void loadFromXML(XmlElement e) {

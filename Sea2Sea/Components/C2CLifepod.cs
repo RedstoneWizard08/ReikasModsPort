@@ -37,7 +37,7 @@ internal class C2CLifepod : MonoBehaviour {
 		if (!live)
 			live = GetComponent<LiveMixin>();
 		if (body && SeaToSeaMod.ModConfig.getBoolean(C2CConfig.ConfigEntries.PODFAIL)) {
-			currentBiome = BiomeBase.GetBiome(transform.position.setY(Mathf.Min(-3, transform.position.y - 10)));
+			currentBiome = BiomeBase.GetBiome(transform.position.SetY(Mathf.Min(-3, transform.position.y - 10)));
 			var sp = getMovementSpeed();
 			var dT = Time.fixedDeltaTime;
 			if (pathVariation == null)
@@ -85,14 +85,14 @@ internal class C2CLifepod : MonoBehaviour {
 					sink = 2.5F;
 				if (currentBiome == VanillaBiomes.Dunes)
 					sink = 1F;
-				body.velocity = body.velocity.setY(-sink);
+				body.velocity = body.velocity.SetY(-sink);
 				//SNUtil.writeToChat(body.velocity.ToString("F4"));
 			}
 			else if (depth > 10 && tgt < depth) {
 				var rise = 0.2F;
 				if (isStuck())
 					rise = 1.5F * (float)Math.Max(0.1, 1 - movementSpeedXZ.getAverage() * 100);
-				body.velocity = body.velocity.setY(rise);
+				body.velocity = body.velocity.SetY(rise);
 			}
 		}
 		if (transform.position.y < -900) {
@@ -104,7 +104,7 @@ internal class C2CLifepod : MonoBehaviour {
 			}
 			gameObject.destroy(false, delay);
 		}
-		movementSpeedXZ.addValue(Vector3.Distance(transform.position.setY(lastPosition.y), lastPosition));
+		movementSpeedXZ.addValue(Vector3.Distance(transform.position.SetY(lastPosition.y), lastPosition));
 		//SNUtil.writeToChat(movementSpeedXZ.getAverage().ToString("00.0000"));
 		lastPosition = transform.position;
 	}

@@ -52,21 +52,21 @@ public sealed class PodDebris : WorldGenerator {
     }
 
     public override void loadFromXML(XmlElement e) {
-        paperCount = e.getInt("paperCount", paperCount);
-        generateRecognizablePieces = e.getBoolean("generateRecognizablePieces");
-        debrisAmount = (float)e.getFloat("debrisAmount", debrisAmount);
-        debrisScale = (float)e.getFloat("debrisScale", debrisScale);
-        scrapCount = e.getInt("scrapCount", scrapCount);
-        yBaseline = (float)e.getFloat("yBaseline", double.NaN);
+        paperCount = e.GetInt("paperCount", paperCount);
+        generateRecognizablePieces = e.GetBoolean("generateRecognizablePieces");
+        debrisAmount = (float)e.GetFloat("debrisAmount", debrisAmount);
+        debrisScale = (float)e.GetFloat("debrisScale", debrisScale);
+        scrapCount = e.GetInt("scrapCount", scrapCount);
+        yBaseline = (float)e.GetFloat("yBaseline", double.NaN);
     }
 
     public override void saveToXML(XmlElement e) {
-        e.addProperty("paperCount", paperCount);
-        e.addProperty("generateRecognizablePieces", generateRecognizablePieces);
-        e.addProperty("debrisAmount", debrisAmount);
-        e.addProperty("debrisScale", debrisScale);
-        e.addProperty("scrapCount", scrapCount);
-        e.addProperty("yBaseline", yBaseline);
+        e.AddProperty("paperCount", paperCount);
+        e.AddProperty("generateRecognizablePieces", generateRecognizablePieces);
+        e.AddProperty("debrisAmount", debrisAmount);
+        e.AddProperty("debrisScale", debrisScale);
+        e.AddProperty("scrapCount", scrapCount);
+        e.AddProperty("yBaseline", yBaseline);
     }
 
     public override bool generate(List<GameObject> li) {
@@ -216,7 +216,7 @@ public sealed class PropPrefab : GenUtil.CustomPrefabImpl {
         var p = go.GetComponentInChildren<Pickupable>();
         if (p != null) {
             var tt = CraftData.GetTechType(ObjectUtil.lookupPrefab(baseTemplate.prefab));
-            SNUtil.log(ClassID + " had PP, TT = " + tt);
+            SNUtil.Log(ClassID + " had PP, TT = " + tt);
             if (tt != TechType.None)
                 p.SetTechTypeOverride(tt);
         }

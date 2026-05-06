@@ -88,7 +88,7 @@ public class AvoliteSpawner {
         // TODO
         // IngameMenuHandler.Main.RegisterOnLoadEvent(LoadSave);
         // IngameMenuHandler.Main.RegisterOnSaveEvent(Save);
-        SNUtil.migrateSaveDataFolder(_oldSaveDir, ".xml", SaveFileName);
+        SNUtil.MigrateSaveDataFolder(_oldSaveDir, ".xml", SaveFileName);
 
         _avo = CustomMaterials.getItem(CustomMaterials.Materials.PHASE_CRYSTAL).ClassID;
     }
@@ -98,7 +98,7 @@ public class AvoliteSpawner {
     }
 
     private void LoadSave() {
-        var path = Path.Combine(SNUtil.getCurrentSaveDir(), SaveFileName);
+        var path = Path.Combine(SNUtil.GetCurrentSaveDir(), SaveFileName);
         if (File.Exists(path)) {
             var doc = new XmlDocument();
             doc.Load(path);
@@ -114,14 +114,14 @@ public class AvoliteSpawner {
             }
         }
 
-        SNUtil.log("Loaded sunbeam debris cache: ");
-        SNUtil.log(_objects.toDebugString());
-        SNUtil.log("Remaining:");
-        SNUtil.log(_objectCountsToGo.toDebugString());
+        SNUtil.Log("Loaded sunbeam debris cache: ");
+        SNUtil.Log(_objects.ToDebugString());
+        SNUtil.Log("Remaining:");
+        SNUtil.Log(_objectCountsToGo.ToDebugString());
     }
 
     private void Save() {
-        var path = Path.Combine(SNUtil.getCurrentSaveDir(), SaveFileName);
+        var path = Path.Combine(SNUtil.GetCurrentSaveDir(), SaveFileName);
         var doc = new XmlDocument();
         var rootnode = doc.CreateElement("Root");
         doc.AppendChild(rootnode);
@@ -227,9 +227,9 @@ public class AvoliteSpawner {
             return false;
         var biome = WaterBiomeManager.main.GetBiome(pos, false);
         return VanillaBiomes.Mountains.IsInBiome(pos) && pos.x >= C2CHooks.gunCenter.x &&
-               Vector3.Distance(pos.setY(0), _biomeCenter.setY(0)) <= 600 &&
-               Vector3.Distance(pos.setY(0), C2CHooks.gunCenter.setY(0)) >= 200 &&
-               Vector3.Distance(pos.setY(0), C2CHooks.mountainCenter.setY(0)) >= 360;
+               Vector3.Distance(pos.SetY(0), _biomeCenter.SetY(0)) <= 600 &&
+               Vector3.Distance(pos.SetY(0), C2CHooks.gunCenter.SetY(0)) >= 200 &&
+               Vector3.Distance(pos.SetY(0), C2CHooks.mountainCenter.SetY(0)) >= 360;
     }
 
     private void IsItemMapRoomDetectable(ESHooks.ResourceScanCheck rt) {
@@ -331,7 +331,7 @@ public class AvoliteSpawner {
             //SNUtil.writeToChat("SunbeamCheckPlayerRange > "+Story.StoryGoalManager.main.IsGoalComplete("SunbeamCheckPlayerRange"));
             //SNUtil.writeToChat("sunbeamdebrishint > "+Story.StoryGoalManager.main.IsGoalComplete("sunbeamdebrishint"));
             if (Instance.IsValidPosition(transform.position)) return;
-            SNUtil.log("Invalid sunbeam debris location, deleting @ " + transform.position);
+            SNUtil.Log("Invalid sunbeam debris location, deleting @ " + transform.position);
             Destroy();
             /*
             else if (DayNightCycle.main.timePassedAsFloat-lastConversionCheck >= 1) {
@@ -355,10 +355,10 @@ public class AvoliteSpawner {
             if (PDAManager.getPage("sunbeamdebrishint").isUnlocked() && !transform.parent.GetComponent<Pickupable>()) {
                 var pfb = Instance.AllocateItem(gameObject.transform);
                 if (pfb) {
-                    SNUtil.log("Converted sunbeam debris placeholder @ " + transform.position + " to " + pfb);
+                    SNUtil.Log("Converted sunbeam debris placeholder @ " + transform.position + " to " + pfb);
                     transform.parent = pfb.transform;
                 } else {
-                    SNUtil.log("Item set exhausted, deleting @ " + transform.position);
+                    SNUtil.Log("Item set exhausted, deleting @ " + transform.position);
                     Destroy();
                 }
 

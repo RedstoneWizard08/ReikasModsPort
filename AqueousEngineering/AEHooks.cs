@@ -16,7 +16,7 @@ public static class AEHooks {
     private static float lastPlayerRoomCheckTime;
 
     static AEHooks() {
-        SNUtil.log("Initializing AEHooks");
+        SNUtil.Log("Initializing AEHooks");
         DIHooks.OnWorldLoadedEvent += onWorldLoaded;
         DIHooks.OnConstructedEvent += onConstructionComplete;
         DIHooks.OnItemPickedUpEvent += onPickup;
@@ -108,7 +108,7 @@ public static class AEHooks {
             go.SetActive(false);
             flag = bio.container.AddItem(go.GetComponent<Pickupable>()) != null;
         } else {
-            var go = ObjectUtil.lookupPrefab(tt).GetResult();
+            var go = ObjectUtil.lookupPrefab(tt);
             var wp = go.GetComponent<WaterParkCreature>();
             if (wp != null) {
                 WaterParkCreature.Born(

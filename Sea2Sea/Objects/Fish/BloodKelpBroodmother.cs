@@ -136,7 +136,7 @@ internal class BloodKelpBroodmotherTag : MonoBehaviour, DIHooks.IStasisReactant 
             lastTickTime = time;
             transform.localScale = new Vector3(9, 6, 9);
             creature.timeLastJump = time - 0.1F;
-            creature.leashPosition = C2CProgression.Instance.BkelpNestBumps.getClosest(transform.position);
+            creature.leashPosition = C2CProgression.Instance.BkelpNestBumps.GetClosest(transform.position);
         }
 
         if ((creature.leashPosition - transform.position).sqrMagnitude < 2500)

@@ -186,7 +186,7 @@ public class DeIntegrationSystem {
     private TechType FindCreature(string id, bool edible = false) {
         if (!EnumHandler.TryGetValue(id, out TechType tt))
             if (!EnumHandler.TryGetValue(id.ToLowerInvariant(), out tt))
-                EnumHandler.TryGetValue(id.setLeadingCase(false), out tt);
+                EnumHandler.TryGetValue(id.SetLeadingCase(false), out tt);
         if (tt == TechType.None)
             throw new Exception("Could not find DeE TechType for '" + id + "'");
         if (edible) {
@@ -235,7 +235,7 @@ public class DeIntegrationSystem {
         private LastTarget _target;
         private Creature _creature;
 
-        private Vector3 _leash = UnderwaterIslandsFloorBiome.biomeCenter.setY(-200);
+        private Vector3 _leash = UnderwaterIslandsFloorBiome.biomeCenter.SetY(-200);
 
         private void Update() {
             if (!_swim)

@@ -62,7 +62,7 @@ internal class GrandReefPodRandomizer : ManipulationBase {
 		}
 		if (Math.Abs(hoff) > 0.01) {
 			go.transform.position -= new Vector3(0, (float)hoff, 0);
-			SNUtil.writeToChat(id + " > " + hoff);
+			SNUtil.WriteToChat(id + " > " + hoff);
 		}
 	}
 
@@ -86,30 +86,30 @@ internal class GrandReefPodRandomizer : ManipulationBase {
 		}
 		if (Math.Abs(hoff) > 0.01) {
 			go.move(0, hoff, 0);
-			SNUtil.writeToChat(go.prefabName + " > " + hoff);
+			SNUtil.WriteToChat(go.prefabName + " > " + hoff);
 		}
 	}
 
 	public override void loadFromXML(XmlElement e) {
-		randomType = e.getBoolean("randomType", out var type);
+		randomType = e.GetBoolean("randomType", out var type);
 		allowMediumSize = randomType && bool.Parse(type.GetAttribute("medium"));
 		allowLargeSize = randomType && bool.Parse(type.GetAttribute("large"));
 
-		randomHeight = e.getBoolean("randomHeight");
-		referenceY = e.getFloat("referenceY", double.NaN);
-		groundThickness = e.getFloat("groundThickness", double.NaN);
-		maxSinkFraction = e.getFloat("maxSinkFraction", 1);
+		randomHeight = e.GetBoolean("randomHeight");
+		referenceY = e.GetFloat("referenceY", double.NaN);
+		groundThickness = e.GetFloat("groundThickness", double.NaN);
+		maxSinkFraction = e.GetFloat("maxSinkFraction", 1);
 	}
 
 	public override void saveToXML(XmlElement e) {
-		var prop = e.addProperty("randomType", randomType);
+		var prop = e.AddProperty("randomType", randomType);
 		prop.SetAttribute("medium", allowMediumSize.ToString());
 		prop.SetAttribute("large", allowLargeSize.ToString());
 
-		e.addProperty("randomHeight", randomHeight);
-		e.addProperty("referenceY", referenceY);
-		e.addProperty("groundThickness", groundThickness);
-		e.addProperty("maxSinkFraction", maxSinkFraction);
+		e.AddProperty("randomHeight", randomHeight);
+		e.AddProperty("referenceY", referenceY);
+		e.AddProperty("groundThickness", groundThickness);
+		e.AddProperty("maxSinkFraction", maxSinkFraction);
 	}
 
 	private class Pod {

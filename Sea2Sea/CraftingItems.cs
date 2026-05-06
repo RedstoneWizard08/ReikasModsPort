@@ -17,7 +17,7 @@ public static class CraftingItems {
     static CraftingItems() {
         foreach (Items m in Enum.GetValues(typeof(Items))) {
             var id = Enum.GetName(typeof(Items), m);
-            SNUtil.log("Constructing crafting item " + id);
+            SNUtil.Log("Constructing crafting item " + id);
             var attr = getAttr(m);
             var e = SeaToSeaMod.ItemLocale.getEntry(id);
             var item = (BasicCraftingItem)Activator.CreateInstance(
@@ -267,7 +267,7 @@ public static class CraftingItems {
         foreach (var item in mappings.Values) {
             item.Register();
             techs[item.Info.TechType] = item;
-            SNUtil.log(
+            SNUtil.Log(
                 "Registered > " + item + " > {" +
                 RecipeUtil.toString(CraftDataHandler.GetRecipeData(item.Info.TechType)) + "} @ " +
                 string.Join("-", item.StepsToFabricatorTab) + " in " + item.GroupForPDA + "/" + item.CategoryForPDA

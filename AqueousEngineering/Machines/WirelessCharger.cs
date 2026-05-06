@@ -96,7 +96,7 @@ public class WirelessChargerLogic : CustomMachineLogic {
     private float lastSound = -1;
 
     private void Start() {
-        SNUtil.log("Reinitializing base wireless charger");
+        SNUtil.Log("Reinitializing base wireless charger");
         AqueousEngineeringMod.wirelessChargerBlock.initializeMachine(gameObject);
     }
     /*

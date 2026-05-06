@@ -41,7 +41,7 @@ public abstract class DrillableResourceArea : CustomPrefab {
 
     public void register(int scanTime = 20) {
         this.Register();
-        SNUtil.addScanUnlock(Info.TechType, Info.PrefabFileName, scanTime, PDAManager.getPage(locale.pda));
+        SNUtil.AddScanUnlock(Info.TechType, Info.PrefabFileName, scanTime, PDAManager.getPage(locale.pda));
         NODES[Info.ClassID] = this;
         maxRadius = Mathf.Max(maxRadius, radius);
     }
@@ -71,7 +71,7 @@ public abstract class DrillableResourceArea : CustomPrefab {
     }
 
     public GameObject getRandomResource() {
-        return ObjectUtil.lookupPrefab(getRandomResourceType()).GetResult();
+        return ObjectUtil.lookupPrefab(getRandomResourceType());
     }
 
     public GameObject GetGameObject() {
@@ -113,7 +113,7 @@ public abstract class DrillableResourceArea : CustomPrefab {
             };
             return world;
         } else {
-            SNUtil.writeToChat("Could not fetch template GO for " + this);
+            SNUtil.WriteToChat("Could not fetch template GO for " + this);
             return null;
         }
     }

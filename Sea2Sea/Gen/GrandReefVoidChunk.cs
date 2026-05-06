@@ -60,18 +60,18 @@ public sealed class GrandReefVoidChunk : WorldGenerator {
     }
 
     public override void loadFromXML(XmlElement e) {
-        rotation = (float)e.getFloat("rotation", rotation);
-        podCount = e.getInt("podCount", podCount);
-        var sc = e.getVector("scale", true);
+        rotation = (float)e.GetFloat("rotation", rotation);
+        podCount = e.GetInt("podCount", podCount);
+        var sc = e.GetVector("scale", true);
         if (sc != null && sc.HasValue) {
             scale = sc.Value;
         }
     }
 
     public override void saveToXML(XmlElement e) {
-        e.addProperty("rotation", rotation);
-        e.addProperty("podCount", podCount);
-        e.addProperty("scale", scale);
+        e.AddProperty("rotation", rotation);
+        e.AddProperty("podCount", podCount);
+        e.AddProperty("scale", scale);
     }
 
     public override bool generate(List<GameObject> generated) {

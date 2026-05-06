@@ -39,7 +39,7 @@ public class ECMoth : MonoBehaviour {
             body = GetComponent<Rigidbody>();
 
         if (!speedModifier)
-            speedModifier = seamoth.addSpeedModifier();
+            speedModifier = seamoth.AddSpeedModifier();
 
         var time = DayNightCycle.main.timePassedAsFloat;
         while (lightToggles.First != null && time - lightToggles.First.Value > 3) {

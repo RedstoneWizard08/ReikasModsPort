@@ -43,14 +43,14 @@ internal class Scale : GlobalManipulation {
 
 	public override void loadFromXML(XmlElement e) {
 		base.loadFromXML(e);
-		min = e.getVector("min").Value;
-		max = e.getVector("max").Value;
+		min = e.GetVector("min").Value;
+		max = e.GetVector("max").Value;
 	}
 
 	public override void saveToXML(XmlElement e) {
 		base.saveToXML(e);
-		e.addProperty("min", min);
-		e.addProperty("max", max);
+		e.AddProperty("min", min);
+		e.AddProperty("max", max);
 	}
 
 }

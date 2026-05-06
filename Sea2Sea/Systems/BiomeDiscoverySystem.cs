@@ -121,7 +121,7 @@ public class BiomeDiscoverySystem : IStoryGoalListener {
 		if (bb == null || bb == BiomeBase.Unrecognized)
 			return;
 		if (!basicEntryGoal.ContainsKey(bb)) {
-			SNUtil.log("No cached biome goal to apply for biome " + bb);
+			SNUtil.Log("No cached biome goal to apply for biome " + bb);
 			return;
 		}
 		StoryGoal.Execute(basicEntryGoal[bb], Story.GoalType.Story);
@@ -134,7 +134,7 @@ public class BiomeDiscoverySystem : IStoryGoalListener {
 		//	generateBiomeGoalList();
 		//}
 		if (!basicEntryGoal.ContainsKey(bb)) {
-			SNUtil.log("No cached biome goal to check for biome " + bb);
+			SNUtil.Log("No cached biome goal to check for biome " + bb);
 			return true;
 		}
 		return StoryGoalManager.main.IsGoalComplete(basicEntryGoal[bb]);
@@ -146,7 +146,7 @@ public class BiomeDiscoverySystem : IStoryGoalListener {
 		//}
 		foreach (var kvp in basicEntryGoal) {
 			if (!StoryGoalManager.main.IsGoalComplete(kvp.Value)) {
-				SNUtil.writeToChat("Missing biome goal '" + kvp.Value + " for biome " + kvp.Key);
+				SNUtil.WriteToChat("Missing biome goal '" + kvp.Value + " for biome " + kvp.Key);
 				return false;
 			}
 		}

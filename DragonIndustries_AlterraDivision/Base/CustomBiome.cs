@@ -15,7 +15,7 @@ public abstract class CustomBiome : BiomeBase {
 
 	protected CustomBiome(string name, float deco) : base(name, deco, name) {
 		biomeName = name;
-		ownerMod = SNUtil.tryGetModDLL();
+		ownerMod = SNUtil.TryGetModDLL();
 	}
 
 	public abstract double getDistanceToBiome(Vector3 vec);
@@ -28,8 +28,8 @@ public abstract class CustomBiome : BiomeBase {
 
 	public void createDiscoveryStoryGoal(float minStayTime, XMLLocale.LocaleEntry e) {
 		if (e.pda == "#NULL")
-			SNUtil.log("Error - XML entry '" + e.key + "' is missing a sound field: " + e.dump());
-		createDiscoveryStoryGoal(minStayTime, e.desc, SoundManager.registerPDASound(SNUtil.tryGetModDLL(), "BiomeGoal_" + biomeName, e.pda).asset);
+			SNUtil.Log("Error - XML entry '" + e.key + "' is missing a sound field: " + e.dump());
+		createDiscoveryStoryGoal(minStayTime, e.desc, SoundManager.registerPDASound(SNUtil.TryGetModDLL(), "BiomeGoal_" + biomeName, e.pda).asset);
 	}
 
 	public void createDiscoveryStoryGoal(float minStayTime, string text, FMODAsset sound) {
@@ -40,9 +40,9 @@ public abstract class CustomBiome : BiomeBase {
 			biome = biomeName,
 			minStayDuration = minStayTime,
 		};
-		SNUtil.addVOLine(discoveryGoal, text, sound);
+		SNUtil.AddVoLine(discoveryGoal, text, sound);
 		StoryHandler.instance.registerTickedGoal(discoveryGoal);
-		SNUtil.log("Created BiomeGoal for " + this);
+		SNUtil.Log("Created BiomeGoal for " + this);
 	}
 
 	public virtual float getNextMusicSilencePadding() {

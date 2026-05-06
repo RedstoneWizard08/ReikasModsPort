@@ -336,7 +336,7 @@ public class BioprocessorLogic : DiscreteOperationalMachineLogic {
     private float timeThisRecipe;
 
     private void Start() {
-        SNUtil.log("Reinitializing bioproc");
+        SNUtil.Log("Reinitializing bioproc");
         C2CItems.processor.initializeMachine(gameObject);
         setEmissiveColor(new Color(0, 0, 1));
     }
@@ -357,21 +357,21 @@ public class BioprocessorLogic : DiscreteOperationalMachineLogic {
     }
 
     protected override void load(System.Xml.XmlElement data) {
-        operationCooldown = (float)data.getFloat("cooldown", float.NaN);
+        operationCooldown = (float)data.GetFloat("cooldown", float.NaN);
 
-        var rec = data.getProperty("recipe");
-        var inp = string.IsNullOrEmpty(rec) ? TechType.None : SNUtil.getTechType(rec);
+        var rec = data.GetProperty("recipe");
+        var inp = string.IsNullOrEmpty(rec) ? TechType.None : SNUtil.GetTechType(rec);
         currentOperation = inp == TechType.None ? null : Bioprocessor.recipes[inp];
-        nextEnzyTimeRemaining = (float)data.getFloat("countdown", float.NaN);
-        enzyRequired = data.getInt("required", 0, false);
+        nextEnzyTimeRemaining = (float)data.GetFloat("countdown", float.NaN);
+        enzyRequired = data.GetInt("required", 0, false);
     }
 
     protected override void save(System.Xml.XmlElement data) {
-        data.addProperty("cooldown", operationCooldown);
+        data.AddProperty("cooldown", operationCooldown);
 
-        data.addProperty("recipe", currentOperation != null ? currentOperation.inputItem + "" : null);
-        data.addProperty("countdown", nextEnzyTimeRemaining);
-        data.addProperty("required", enzyRequired);
+        data.AddProperty("recipe", currentOperation != null ? currentOperation.inputItem + "" : null);
+        data.AddProperty("countdown", nextEnzyTimeRemaining);
+        data.AddProperty("required", enzyRequired);
     }
 
     public static string defaultPowerErrorKey = null;
@@ -483,7 +483,7 @@ public class BioprocessorLogic : DiscreteOperationalMachineLogic {
                                 //SNUtil.writeToChat("success");
                                 for (var i = 0; i < currentOperation.inputCount; i++) {
                                     var ii = ing.ElementAt(0);
-                                    SNUtil.log(
+                                    SNUtil.Log(
                                         "Removing " + ii.item + " (" + ii.item.gameObject.GetInstanceID() +
                                         ") from bioproc inventory"
                                     );
@@ -501,13 +501,13 @@ public class BioprocessorLogic : DiscreteOperationalMachineLogic {
                                           Language.main.Get(currentOperation.outputItem) + " x" + n + " in " +
                                           timeThisRecipe.ToString("0.00") + "s using a total of " +
                                           powerConsumedThisRecipe.ToString("0.0") + " power";
-                                SNUtil.writeToChat(msg);
+                                SNUtil.WriteToChat(msg);
                                 msg += "\nPower cost factor: " +
                                        (powerConsumedThisRecipe / currentOperation.totalEnergyCost)
                                        .ToString("0.00000") + "x";
                                 msg += "\nTime cost factor: " +
                                        (timeThisRecipe / currentOperation.processTime).ToString("0.00000") + "x";
-                                SNUtil.log(msg);
+                                SNUtil.Log(msg);
                                 setRecipe(null);
                                 resetEmissiveCooldown();
                                 setEmissiveColor(completeColor, cooldown: 4);
@@ -517,14 +517,14 @@ public class BioprocessorLogic : DiscreteOperationalMachineLogic {
                                 );
                                 operationCooldown = 2;
                             } else {
-                                SNUtil.log("Bioprocessor shutdown due to invalid ingredients");
+                                SNUtil.Log("Bioprocessor shutdown due to invalid ingredients");
                                 abort(noRecipeColor);
                             }
                         }
                     }
                 } else {
                     //SNUtil.writeToChat("Insufficient power - only had ");
-                    SNUtil.log(
+                    SNUtil.Log(
                         "Bioprocessor shutdown due to insufficient power during operation; wanted " + drain +
                         ", relay has " + sub.powerRelay.GetPower()
                     );
@@ -569,7 +569,7 @@ public class BioprocessorLogic : DiscreteOperationalMachineLogic {
         if (currentOperation != null) {
             var n = currentOperation.enzyCount - enzyRequired;
             if (n > 0) {
-                SNUtil.log("Refunding " + n + " enzymes");
+                SNUtil.Log("Refunding " + n + " enzymes");
                 addItemToInventory(CraftingItems.getItem(CraftingItems.Items.BioEnzymes).Info.TechType, n);
             }
         }

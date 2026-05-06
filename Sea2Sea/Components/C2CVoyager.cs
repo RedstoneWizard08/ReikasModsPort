@@ -76,7 +76,7 @@ internal class C2CVoyager : MonoBehaviour {
 	}
 
 	private bool shouldSink() {
-		return VanillaBiomes.Void.IsInBiome(transform.position.setY(-5)) || transform.position.y < -16; //once sunk stay sunk
+		return VanillaBiomes.Void.IsInBiome(transform.position.SetY(-5)) || transform.position.y < -16; //once sunk stay sunk
 	}
 
 }

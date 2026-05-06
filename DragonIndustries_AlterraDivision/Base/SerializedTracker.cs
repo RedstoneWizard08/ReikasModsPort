@@ -41,28 +41,28 @@ public class SerializedTracker<E> where E : SerializedTrackedEvent {
 	}
 
 	public string getData() {
-		return data.toDebugString();
+		return data.ToDebugString();
 	}
 
 	public void handleSave() {
-		var path = Path.Combine(SNUtil.getCurrentSaveDir(), saveFileName);
+		var path = Path.Combine(SNUtil.GetCurrentSaveDir(), saveFileName);
 		var content = new XmlDocument();
 		content.AppendChild(content.CreateElement("Root"));
 		data.Sort();
 		foreach (var tt in data) {
-			var e = content.DocumentElement.addChild("Event");
+			var e = content.DocumentElement.AddChild("Event");
 			tt.saveToXML(e);
-			e.addProperty("eventTime", tt.eventTime);
+			e.AddProperty("eventTime", tt.eventTime);
 		}
 		content.Save(path);
 	}
 
 	public void handleLoad(WaitScreenHandler.WaitScreenTask task) {
-		var dir = SNUtil.getCurrentSaveDir();
+		var dir = SNUtil.GetCurrentSaveDir();
 		var path = Path.Combine(dir, saveFileName);
 		if (!File.Exists(path))
 			return;
-		SNUtil.log("Loading saved " + typeof(E).Name + "[] from " + path, SNUtil.diDLL);
+		SNUtil.Log("Loading saved " + typeof(E).Name + "[] from " + path, SNUtil.DiDLL);
 		clear();
 		var ie = File.ReadLines(path);
 		if (ie == null)
@@ -86,7 +86,7 @@ public class SerializedTracker<E> where E : SerializedTrackedEvent {
 					}
 				}
 				catch (Exception ex) {
-					SNUtil.log("Failed to parse " + typeof(E).Name + " from XML '" + e.OuterXml + "': " + ex.ToString(), SNUtil.diDLL);
+					SNUtil.Log("Failed to parse " + typeof(E).Name + " from XML '" + e.OuterXml + "': " + ex.ToString(), SNUtil.DiDLL);
 				}
 			}
 		}

@@ -45,7 +45,7 @@ public class GlassForestWreck : WreckHandler {
 		var n = t.name.ToLowerInvariant();
 		if (!t.GetComponentInChildren<ParticleSystem>() && !n.Contains("modular_wall") && !n.Contains("details") && !n.Contains("virtualentity") && n[0] != 'x' && !n.Contains("crack") && !n.Contains("engine_console") && !n.Contains("wires") && !n.Contains("wall_planter") && !n.Contains("monitor") && !n.Contains("tech_box")) {
 			var cc = t.GetComponentInChildren<Collider>(true);
-			SNUtil.log("Adding gravity to " + n + " in " + t.gameObject.GetFullHierarchyPath().Substring(gameObject.GetFullHierarchyPath().Length) + " @ " + t.position + " (" + (cc != null) + ")");
+			SNUtil.Log("Adding gravity to " + n + " in " + t.gameObject.GetFullHierarchyPath().Substring(gameObject.GetFullHierarchyPath().Length) + " @ " + t.position + " (" + (cc != null) + ")");
 			if (cc) {
 				ObjectUtil.applyGravity(t.gameObject);
 				var prop = t.gameObject.EnsureComponent<GlassForestWreckProp>();

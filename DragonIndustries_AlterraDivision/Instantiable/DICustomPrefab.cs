@@ -48,7 +48,7 @@ public class DICustomPrefab : PositionedPrefab {
     }
 
     static DICustomPrefab() {
-        registerType(TAGNAME, e => new DICustomPrefab(e.getProperty("prefab")));
+        registerType(TAGNAME, e => new DICustomPrefab(e.GetProperty("prefab")));
     }
 
     public static void addPrefabNamespace(string s) {
@@ -71,14 +71,14 @@ public class DICustomPrefab : PositionedPrefab {
     public override void saveToXML(XmlElement e) {
         var n = prefabName;
         if (isBasePiece) {
-            e.addProperty("piece", prefabName);
+            e.AddProperty("piece", prefabName);
             prefabName = "basePart";
         }
 
         base.saveToXML(e);
         prefabName = n;
         if (tech != TechType.None)
-            e.addProperty("tech", Enum.GetName(typeof(TechType), tech));
+            e.AddProperty("tech", Enum.GetName(typeof(TechType), tech));
         if (manipulations.Count > 0) {
             var e1 = e.OwnerDocument.CreateElement("objectManipulation");
             foreach (var mb in manipulations) {
@@ -135,60 +135,60 @@ public class DICustomPrefab : PositionedPrefab {
         } else if (prefabName == "o2pipe") {
             isO2Pipe = true;
             prefabName = "08078333-1a00-42f8-8492-e2640c17a961";
-            manipulations.Add(new PipeReconnection(e.getVector("connection").Value));
-            SNUtil.log("Redirected customprefab to pipe " + prefabName, SNUtil.diDLL);
+            manipulations.Add(new PipeReconnection(e.GetVector("connection").Value));
+            SNUtil.Log("Redirected customprefab to pipe " + prefabName, SNUtil.DiDLL);
         } else if (prefabName == "crate") {
             isCrate = true;
-            var techn = e.getProperty("item");
-            tech = SNUtil.getTechType(techn);
+            var techn = e.GetProperty("item");
+            tech = SNUtil.GetTechType(techn);
             if (tech == TechType.None)
                 throw new Exception("Cannot put nonexistent item '" + techn + "' in crate @ " + position + "!");
-            prefabName = GenUtil.getOrCreateCrate(tech, e.getBoolean("sealed"), e.getProperty("goal", true)).Info
+            prefabName = GenUtil.getOrCreateCrate(tech, e.GetBoolean("sealed"), e.GetProperty("goal", true)).Info
                 .ClassID;
-            SNUtil.log("Redirected customprefab to crate " + prefabName, SNUtil.diDLL);
+            SNUtil.Log("Redirected customprefab to crate " + prefabName, SNUtil.DiDLL);
         } else if (prefabName == "databox") {
             isDatabox = true;
-            var techn = e.getProperty("tech");
-            tech = SNUtil.getTechType(techn);
+            var techn = e.GetProperty("tech");
+            tech = SNUtil.GetTechType(techn);
             prefabName = GenUtil.getOrCreateDatabox(tech).ClassID;
-            SNUtil.log("Redirected customprefab to databox " + prefabName, SNUtil.diDLL);
+            SNUtil.Log("Redirected customprefab to databox " + prefabName, SNUtil.DiDLL);
         } else if (prefabName == "fragment") {
             isFragment = true;
-            var techn = e.getProperty("tech");
-            tech = SNUtil.getTechType(techn);
-            var g = GenUtil.getFragment(tech, e.getInt("index", 0));
+            var techn = e.GetProperty("tech");
+            tech = SNUtil.GetTechType(techn);
+            var g = GenUtil.getFragment(tech, e.GetInt("index", 0));
             if (g == null)
                 throw new Exception("No such fragment!");
             prefabName = g.ClassID;
-            SNUtil.log("Redirected customprefab to fragment " + prefabName, SNUtil.diDLL);
+            SNUtil.Log("Redirected customprefab to fragment " + prefabName, SNUtil.DiDLL);
         } else if (prefabName == "pda") {
             isPDA = true;
-            var pagen = e.getProperty("page");
+            var pagen = e.GetProperty("page");
             var page = PDAManager.getPage(pagen);
             prefabName = page.getPDAClassID();
-            SNUtil.log("Redirected customprefab to pda " + prefabName, SNUtil.diDLL);
+            SNUtil.Log("Redirected customprefab to pda " + prefabName, SNUtil.DiDLL);
         } else if (prefabName == "wreck") {
             isWreck = true;
-            var template = e.getProperty("template");
+            var template = e.GetProperty("template");
             prefabName = template;
-            SNUtil.log("Redirected customprefab to wreck " + prefabName, SNUtil.diDLL);
+            SNUtil.Log("Redirected customprefab to wreck " + prefabName, SNUtil.DiDLL);
         } else if (prefabName == "basePart") {
             isBasePiece = true;
-            prefabName = e.getProperty("piece");
-            var li0 = e.getDirectElementsByTagName("supportData");
+            prefabName = e.GetProperty("piece");
+            var li0 = e.GetDirectElementsByTagName("supportData");
             if (li0.Count == 1)
                 manipulations.Add(new SeabaseLegLengthPreservation(li0[0]));
-            SNUtil.log(
+            SNUtil.Log(
                 "Redirected customprefab to base piece " + prefabName + " >> " + li0.Count + "::" + string.Join(
                     ", ",
                     li0.Select(el => el.OuterXml)
                 ),
-                SNUtil.diDLL
+                SNUtil.DiDLL
             );
         } else if (prefabName == "seabase") {
             prefabName = SeabaseReconstruction.getOrCreatePrefab(e).Info.ClassID;
             isSeabase = true;
-            SNUtil.log("Redirected customprefab to seabase", SNUtil.diDLL);
+            SNUtil.Log("Redirected customprefab to seabase", SNUtil.DiDLL);
         }
 
         //else if (prefabName == "fragment") {
@@ -197,17 +197,17 @@ public class DICustomPrefab : PositionedPrefab {
         //	string techn = e.getProperty("type");
         //	tech = SNUtil.getTechType(techn);
         //}
-        var tech2 = e.getProperty("tech", true);
+        var tech2 = e.GetProperty("tech", true);
         if (tech == TechType.None && tech2 != null && tech2 != "None") {
-            tech = SNUtil.getTechType(tech2);
+            tech = SNUtil.GetTechType(tech2);
         }
 
         var xli = e.OwnerDocument.DocumentElement != null
-            ? e.OwnerDocument.DocumentElement.getAllChildrenIn("transforms")
+            ? e.OwnerDocument.DocumentElement.GetAllChildrenIn("transforms")
             : null;
         if (xli != null)
             loadManipulations(xli, manipulations);
-        var li = e.getDirectElementsByTagName("objectManipulation");
+        var li = e.GetDirectElementsByTagName("objectManipulation");
         if (li.Count == 1) {
             var mod = getManipulatedObject(li[0], this);
             if (mod != null) {
@@ -259,9 +259,9 @@ public class DICustomPrefab : PositionedPrefab {
                 PDAHandler.AddCustomScannerEntry(e);
             }
 
-            SNUtil.log("Created customprefab GO template: " + key + " [" + from + "] > " + pfb, SNUtil.diDLL);
+            SNUtil.Log("Created customprefab GO template: " + key + " [" + from + "] > " + pfb, SNUtil.DiDLL);
         } else {
-            SNUtil.log("Using already-generated prefab for GO template: " + key + " > " + pfb, SNUtil.diDLL);
+            SNUtil.Log("Using already-generated prefab for GO template: " + key + " > " + pfb, SNUtil.DiDLL);
         }
 
         return pfb;
@@ -309,8 +309,8 @@ public class DICustomPrefab : PositionedPrefab {
             }
         } catch (Exception ex) {
             var err = "Could not rebuild manipulation from XML " + e2.Name + "/" + e2.InnerText + ": " + ex;
-            SNUtil.log(err, SNUtil.diDLL);
-            SNUtil.writeToChat(err);
+            SNUtil.Log(err, SNUtil.DiDLL);
+            SNUtil.WriteToChat(err);
             return null;
         }
     }
@@ -334,7 +334,7 @@ public class ModifiedObjectPrefab : GenUtil.CustomPrefabImpl {
     }
 
     public override sealed void prepareGameObject(GameObject go, Renderer[] r) {
-        SNUtil.log("Restoring manipulations on modified prefab " + originalPrefab + ":\n" + mods.toDebugString("\n"));
+        SNUtil.Log("Restoring manipulations on modified prefab " + originalPrefab + ":\n" + mods.ToDebugString("\n"));
         foreach (var mb in mods) {
             mb.applyToObject(go);
         }

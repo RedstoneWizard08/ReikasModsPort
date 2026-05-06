@@ -58,7 +58,7 @@ public class FallingGlassForestWreck : CustomPrefab {
 
     private static void tryRemoveObjects(GameObject go, string name) {
         if (go.removeChildObject(name) <= 0) {
-            SNUtil.log("Failed to find any '" + name + "' objects to remove from " + go.GetFullHierarchyPath() + "!");
+            SNUtil.Log("Failed to find any '" + name + "' objects to remove from " + go.GetFullHierarchyPath() + "!");
             ObjectUtil.dumpObjectData(go, false);
         }
     }
@@ -260,7 +260,7 @@ internal class FallingGFWreckTag : MonoBehaviour {
                 if (groan)
                     intensity *= 0.67F;
                 var dur = Random.Range(2F, 4F);
-                SNUtil.shakeCamera(
+                SNUtil.ShakeCamera(
                     dur,
                     intensity * Random.Range(1F, 2F),
                     Random.Range(2.5F, 4F)

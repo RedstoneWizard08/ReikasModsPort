@@ -60,7 +60,7 @@ public class BasePillarLogic : CustomMachineLogic {
     private bool recomputedStrength;
 
     private void Start() {
-        SNUtil.log("Reinitializing base pillar");
+        SNUtil.Log("Reinitializing base pillar");
         AqueousEngineeringMod.pillarBlock.initializeMachine(gameObject);
     }
 

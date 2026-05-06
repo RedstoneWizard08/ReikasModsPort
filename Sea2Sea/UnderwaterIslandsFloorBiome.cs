@@ -66,7 +66,7 @@ public class UnderwaterIslandsFloorBiome : CustomBiome {
         foreach (var kvp in creatureCounts) {
             for (var i = 0; i < kvp.Value; i++) {
                 var pos = MathUtil.getRandomVectorAround(biomeCenter, new Vector3(biomeRadius, 0, biomeRadius) * 0.5F)
-                    .setY(-UnityEngine.Random.Range(440, 480));
+                    .SetY(-UnityEngine.Random.Range(440, 480));
                 //SNUtil.log("Spawning "+kvp.Key+" @ "+pos);
                 GenUtil.registerWorldgen(new PositionedPrefab(kvp.Key, pos));
             }
@@ -127,7 +127,7 @@ public class UnderwaterIslandsFloorBiome : CustomBiome {
         if (orig == null || pos.y > -minimumDepth)
             return false;
         return VanillaBiomes.Underislands.ContainsID(orig) &&
-               MathUtil.isPointInCylinder(biomeCenter.setY(-400), pos, biomeRadius, 150); //getDistanceToBiome(pos) < 5;
+               MathUtil.isPointInCylinder(biomeCenter.SetY(-400), pos, biomeRadius, 150); //getDistanceToBiome(pos) < 5;
     }
 
     public override double getDistanceToBiome(Vector3 vec) {
