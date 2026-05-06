@@ -10,7 +10,7 @@ namespace ReikaKalseki.Reefbalance;
 
 internal static partial class RBPatches {
     [HarmonyPatch(typeof(Drillable))]
-    [HarmonyPatch("OnDrill")]
+    [HarmonyPatch(nameof(Drillable.OnDrill))]
     public static class PrawnDrillSpeedHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -19,7 +19,7 @@ internal static partial class RBPatches {
                 var idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Ldc_R4, 5F);
                 codes[idx] = InstructionHandlers.createMethodCall(
                     "ReikaKalseki.Reefbalance.ReefbalanceMod",
-                    "getDrillingSpeed",
+                    nameof(ReefbalanceMod.GetDrillingSpeed),
                     false,
                     typeof(Drillable),
                     typeof(Exosuit)

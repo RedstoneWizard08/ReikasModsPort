@@ -10,7 +10,7 @@ namespace ReikaKalseki.Reefbalance;
 
 internal static partial class RBPatches {
     [HarmonyPatch(typeof(Eatable))]
-    [HarmonyPatch("GetFoodValue")]
+    [HarmonyPatch(nameof(Eatable.GetFoodValue))]
     public static class DecayRateAndTimePatch {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -27,7 +27,7 @@ internal static partial class RBPatches {
                 codes.add(OpCodes.Ldfld, InstructionHandlers.convertFieldOperand("Eatable", "foodValue"));
                 codes.invoke(
                     "ReikaKalseki.Reefbalance.ReefbalanceMod",
-                    "getFoodValue",
+                    nameof(ReefbalanceMod.GetFoodValue),
                     false,
                     typeof(Eatable),
                     typeof(float)

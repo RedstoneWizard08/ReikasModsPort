@@ -3149,7 +3149,7 @@ public static class C2CHooks {
     }
 
     public static void mergeDeathrunFragmentScanCount(TechType tt, int amt) {
-        PDAHandler.EditFragmentsToScan(tt, Math.Max(amt, Reefbalance.ReefbalanceMod.getScanCountOverride(tt)));
+        PDAHandler.EditFragmentsToScan(tt, Math.Max(amt, Reefbalance.ReefbalanceMod.GetScanCountOverride(tt)));
     }
 
     public static bool allowSaving(bool orig) {

@@ -11,7 +11,7 @@ namespace ReikaKalseki.Reefbalance;
 
 internal static partial class RBPatches {
     [HarmonyPatch(typeof(ConstructableBase))]
-    [HarmonyPatch("SetState")]
+    [HarmonyPatch(nameof(ConstructableBase.SetState))]
     public static class BuildingDestroyCollidingCheck {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -29,7 +29,7 @@ internal static partial class RBPatches {
                 );
                 codes[idx] = InstructionHandlers.createMethodCall(
                     "ReikaKalseki.Reefbalance.ReefbalanceMod",
-                    "canBuildingDestroyObject",
+                    nameof(ReefbalanceMod.CanBuildingDestroyObject),
                     false,
                     typeof(GameObject)
                 );

@@ -25,7 +25,7 @@ namespace ReikaKalseki.SeaToSea;
 [BepInDependency(AuroresourceMod.ModKey)]
 [BepInDependency(EcoceanMod.MOD_KEY)]
 [BepInDependency(ExscansionMod.MOD_KEY)]
-[BepInDependency(ReefbalanceMod.MOD_KEY)]
+[BepInDependency(ReefbalanceMod.ModKey)]
 public class SeaToSeaMod : BaseUnityPlugin {
     public const string ModKey = "ReikaKalseki.SeaToSea";
 

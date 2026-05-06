@@ -19,7 +19,7 @@ namespace ReikaKalseki.Reefbalance;
 internal static partial class RBPatches {
     /*
     [HarmonyPatch(typeof(Creature))]
-    [HarmonyPatch("Start")]
+    [HarmonyPatch(nameof(Creature.Start))]
     public static class CreatureActivateHook {
 
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {

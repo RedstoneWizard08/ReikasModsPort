@@ -10,7 +10,7 @@ namespace ReikaKalseki.Reefbalance;
 
 internal static partial class RBPatches {
     [HarmonyPatch(typeof(Exosuit))]
-    [HarmonyPatch("UpdateStorageSize")]
+    [HarmonyPatch(nameof(Exosuit.UpdateStorageSize))]
     public static class PrawnStorageBoost {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -24,7 +24,7 @@ internal static partial class RBPatches {
                 codes.add(OpCodes.Ldarg_0);
                 codes.invoke(
                     "ReikaKalseki.Reefbalance.ReefbalanceMod",
-                    "calculatePrawnStorage",
+                    nameof(ReefbalanceMod.CalculatePrawnStorage),
                     false,
                     typeof(Exosuit)
                 );

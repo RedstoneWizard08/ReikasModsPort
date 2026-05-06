@@ -10,7 +10,7 @@ namespace ReikaKalseki.Reefbalance;
 
 internal static partial class RBPatches {
     [HarmonyPatch(typeof(SeamothStorageContainer))]
-    [HarmonyPatch("Init")]
+    [HarmonyPatch(nameof(SeamothStorageContainer.Init))]
     public static class SeamothStorageBoost {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -25,7 +25,7 @@ internal static partial class RBPatches {
                     new CodeInstruction(OpCodes.Ldarg_0),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.Reefbalance.ReefbalanceMod",
-                        "initializeSeamothStorage",
+                        nameof(ReefbalanceMod.InitializeSeamothStorage),
                         false,
                         typeof(SeamothStorageContainer)
                     )

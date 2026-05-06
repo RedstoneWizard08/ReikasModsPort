@@ -25,7 +25,7 @@ public static class C2CIntegration {
     public static Type seaVoyagerComponent;
 
     public static void injectConfigValues() {
-        ReefbalanceMod.config.load();
+        ReefbalanceMod.ModConfig.load();
         AuroresourceMod.ModConfig.load();
         AqueousEngineeringMod.config.load();
         ExscansionMod.config.load();
@@ -34,17 +34,17 @@ public static class C2CIntegration {
         SNUtil.Log("Overriding config entries in support mods", SeaToSeaMod.ModDLL);
         var hard = SeaToSeaMod.ModConfig.getBoolean(C2CConfig.ConfigEntries.HARDMODE);
 
-        ReefbalanceMod.config.attachOverride(RBConfig.ConfigEntries.CHEAP_GLASS, false);
-        ReefbalanceMod.config.attachOverride(RBConfig.ConfigEntries.CHEAP_HUDCHIP, false);
-        ReefbalanceMod.config.attachOverride(RBConfig.ConfigEntries.CHEAP_SEABASE, true);
-        ReefbalanceMod.config.attachOverride(RBConfig.ConfigEntries.COMPACT_DECO, true);
-        ReefbalanceMod.config.attachOverride(RBConfig.ConfigEntries.COMPACT_KELP, true);
-        ReefbalanceMod.config.attachOverride(RBConfig.ConfigEntries.COMPACT_SEEDS, false);
-        ReefbalanceMod.config.attachOverride(RBConfig.ConfigEntries.REINF_GLASS, true);
+        ReefbalanceMod.ModConfig.attachOverride(RBConfig.ConfigEntries.CHEAP_GLASS, false);
+        ReefbalanceMod.ModConfig.attachOverride(RBConfig.ConfigEntries.CHEAP_HUDCHIP, false);
+        ReefbalanceMod.ModConfig.attachOverride(RBConfig.ConfigEntries.CHEAP_SEABASE, true);
+        ReefbalanceMod.ModConfig.attachOverride(RBConfig.ConfigEntries.COMPACT_DECO, true);
+        ReefbalanceMod.ModConfig.attachOverride(RBConfig.ConfigEntries.COMPACT_KELP, true);
+        ReefbalanceMod.ModConfig.attachOverride(RBConfig.ConfigEntries.COMPACT_SEEDS, false);
+        ReefbalanceMod.ModConfig.attachOverride(RBConfig.ConfigEntries.REINF_GLASS, true);
         //ReefbalanceMod.config.attachOverride(RBConfig.ConfigEntries.LARGE_CYCLOCKER, true);
-        ReefbalanceMod.config.attachOverride(RBConfig.ConfigEntries.LANTERN_SPEED, hard ? 0.2F : 0.4F);
-        ReefbalanceMod.config.attachOverride(RBConfig.ConfigEntries.NO_BUILDER_CLEAR, true);
-        ReefbalanceMod.config.attachOverride(RBConfig.ConfigEntries.URANPERROD, hard ? 4 : 3);
+        ReefbalanceMod.ModConfig.attachOverride(RBConfig.ConfigEntries.LANTERN_SPEED, hard ? 0.2F : 0.4F);
+        ReefbalanceMod.ModConfig.attachOverride(RBConfig.ConfigEntries.NO_BUILDER_CLEAR, true);
+        ReefbalanceMod.ModConfig.attachOverride(RBConfig.ConfigEntries.URANPERROD, hard ? 4 : 3);
 
         AuroresourceMod.ModConfig.attachOverride(ARConfig.ConfigEntries.SPEED, f => Mathf.Clamp(f, 0.5F, 1F));
         AuroresourceMod.ModConfig.attachOverride(ARConfig.ConfigEntries.REENTRY_RATE, f => Mathf.Clamp(f, 0.5F, 2F));
@@ -96,7 +96,7 @@ public static class C2CIntegration {
     }
 
     public static void injectLoad() {
-        ReefbalanceMod.scanCountOverridesCalculation += map => {
+        ReefbalanceMod.ScanCountOverridesCalculation += map => {
             var hard = SeaToSeaMod.ModConfig.getBoolean(C2CConfig.ConfigEntries.HARDMODE);
             map[TechType.ConstructorFragment] = hard ? 12 : 8;
             map[TechType.LaserCutterFragment] = hard ? 10 : 5;

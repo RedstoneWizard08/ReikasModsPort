@@ -850,7 +850,7 @@ public static class C2CRecipes {
         RecipeUtil.modifyIngredients(
             TechType.VehicleHullModule1,
             i => {
-                if (i.techType == TechType.Glass) i._techType = ReefbalanceMod.baseGlass.TechType;
+                if (i.techType == TechType.Glass) i._techType = ReefbalanceMod.BaseGlass.TechType;
                 return false;
             }
         );

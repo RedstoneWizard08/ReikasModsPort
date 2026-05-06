@@ -10,7 +10,7 @@ namespace ReikaKalseki.Reefbalance;
 
 internal static partial class RBPatches {
     [HarmonyPatch(typeof(DataboxSpawner))]
-    [HarmonyPatch("Start")]
+    [HarmonyPatch(nameof(DataboxSpawner.Start))]
     public static class DataboxDuplicateRemovalHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -28,7 +28,7 @@ internal static partial class RBPatches {
                 );
                 codes[idx] = InstructionHandlers.createMethodCall(
                     "ReikaKalseki.Reefbalance.ReefbalanceMod",
-                    "deleteDuplicateDatabox",
+                    nameof(ReefbalanceMod.DeleteDuplicateDatabox),
                     false,
                     typeof(TechType)
                 );

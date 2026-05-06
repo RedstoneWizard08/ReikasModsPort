@@ -1,2 +1,2 @@
-ROOT = "../Exscansion/Patches"
-HOOK_CLASS = "ReikaKalseki.Exscansion.ESHooks"
+ROOT = "../Reefbalance/Patches"
+HOOK_CLASS = "ReikaKalseki.Reefbalance.ReefbalanceMod"

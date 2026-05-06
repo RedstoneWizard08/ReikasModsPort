@@ -10,17 +10,17 @@ using UnityEngine; //Needed for most Unity Enginer manipulations: Vectors, GameO
 
 namespace ReikaKalseki.Reefbalance;
 
-[BepInPlugin(MOD_KEY, "Reefbalance", Nautilus.PluginInfo.PLUGIN_VERSION)]
+[BepInPlugin(ModKey, "Reefbalance", Nautilus.PluginInfo.PLUGIN_VERSION)]
 [BepInDependency("com.snmodding.nautilus")]
 [BepInDependency(DIMod.MOD_KEY)]
 public class ReefbalanceMod : BaseUnityPlugin {
-    public const string MOD_KEY = "ReikaKalseki.Reefbalance";
+    public const string ModKey = "ReikaKalseki.Reefbalance";
 
-    public static readonly Assembly modDLL = Assembly.GetExecutingAssembly();
+    public static readonly Assembly ModDLL = Assembly.GetExecutingAssembly();
 
-    public static readonly Config<RBConfig.ConfigEntries> config = new(modDLL);
+    public static readonly Config<RBConfig.ConfigEntries> ModConfig = new(ModDLL);
 
-    private static readonly TechType[] decoratives = [ //does not include aurora as that has no techtype
+    private static readonly TechType[] Decoratives = [ //does not include aurora as that has no techtype
         TechType.ToyCar,
         TechType.LabEquipment1,
         TechType.LabEquipment2,
@@ -28,7 +28,7 @@ public class ReefbalanceMod : BaseUnityPlugin {
         TechType.LabContainer,
     ];
 
-    private static readonly TechType[] smallSeeds = [
+    private static readonly TechType[] SmallSeeds = [
         TechType.BluePalmSeed,
         TechType.EyesPlantSeed,
         TechType.KooshChunk,
@@ -42,26 +42,26 @@ public class ReefbalanceMod : BaseUnityPlugin {
 
     //private static readonly HashSet<TechType> meatFoods = new HashSet<TechType>();
     //private static readonly HashSet<TechType> vegFoods = new HashSet<TechType>();
-    private static readonly Dictionary<TechType, int> scanCountOverrides = new();
+    private static readonly Dictionary<TechType, int> ScanCountOverrides = new();
 
-    public static BasicCraftingItem baseGlass;
+    public static BasicCraftingItem BaseGlass;
 
-    public static event Action<Dictionary<TechType, int>> scanCountOverridesCalculation;
+    public static event Action<Dictionary<TechType, int>> ScanCountOverridesCalculation;
 
     public void Start() {
-        config.load();
+        ModConfig.load();
     }
 
     public void Awake() {
-        var harmony = new HarmonySystem(MOD_KEY, modDLL, typeof(RBPatches));
+        var harmony = new HarmonySystem(ModKey, ModDLL, typeof(RBPatches));
         harmony.apply();
 
-        ModVersionCheck.getFromGitVsInstall("Re(ef)Balance", modDLL, "Reefbalance").register();
+        ModVersionCheck.getFromGitVsInstall("Re(ef)Balance", ModDLL, "Reefbalance").register();
 
         DIHooks.OnFruitPlantTickEvent += fpt => {
             var fp = fpt.GetPlant();
             if (CraftData.GetTechType(fp.gameObject) == TechType.HangingFruitTree)
-                fp.fruitSpawnInterval = fpt.GetBaseGrowthTime() / config.getFloat(RBConfig.ConfigEntries.LANTERN_SPEED);
+                fp.fruitSpawnInterval = fpt.GetBaseGrowthTime() / ModConfig.getFloat(RBConfig.ConfigEntries.LANTERN_SPEED);
         };
 
         DIHooks.OnSkyApplierSpawnEvent += (sk) => {
@@ -75,7 +75,7 @@ public class ReefbalanceMod : BaseUnityPlugin {
                 return;
             }
 
-            if (config.getBoolean(RBConfig.ConfigEntries.LARGE_KYANITE_DROPS) && sk.gameObject) {
+            if (ModConfig.getBoolean(RBConfig.ConfigEntries.LARGE_KYANITE_DROPS) && sk.gameObject) {
                 var d = sk.gameObject.FindAncestor<Drillable>();
                 if (d && d.resources != null && d.resources.Length == 1 &&
                     d.resources[0].techType == TechType.Kyanite) {
@@ -90,7 +90,7 @@ public class ReefbalanceMod : BaseUnityPlugin {
         };
 
         DIHooks.KnifeHarvestEvent += h => {
-            if (h.Drops.Count > 0 && config.getBoolean(RBConfig.ConfigEntries.DOUBLE_THERMAL_CORAL) &&
+            if (h.Drops.Count > 0 && ModConfig.getBoolean(RBConfig.ConfigEntries.DOUBLE_THERMAL_CORAL) &&
                 Inventory.main.GetHeld().GetTechType() == TechType.HeatBlade) {
                 if (h.ObjectType == TechType.BigCoralTubes)
                     h.Drops[h.DefaultDrop] *= 2;
@@ -101,8 +101,8 @@ public class ReefbalanceMod : BaseUnityPlugin {
             }
         };
 
-        if (config.getBoolean(RBConfig.ConfigEntries.REINF_GLASS)) {
-            baseGlass = new BasicCraftingItem(
+        if (ModConfig.getBoolean(RBConfig.ConfigEntries.REINF_GLASS)) {
+            BaseGlass = new BasicCraftingItem(
                 "BaseGlass",
                 "Reinforced Glass",
                 "Laminated glass with titanium reinforcement, suitable for underwater pressure vessels.",
@@ -113,9 +113,9 @@ public class ReefbalanceMod : BaseUnityPlugin {
                 numberCrafted = 2,
                 unlockRequirement = TechType.Unobtanium,
             };
-            baseGlass.addIngredient(TechType.Glass, 1).addIngredient(TechType.Titanium, 1);
-            baseGlass.sprite = TextureManager.getSprite(modDLL, "Textures/Items/baseglass");
-            baseGlass.Register();
+            BaseGlass.addIngredient(TechType.Glass, 1).addIngredient(TechType.Titanium, 1);
+            BaseGlass.sprite = TextureManager.getSprite(ModDLL, "Textures/Items/baseglass");
+            BaseGlass.Register();
 
             HashSet<TechType> set = [TechType.Spotlight, TechType.Techlight];
             for (var tt = TechType.BaseRoom; tt <= TechType.BaseNuclearReactor; tt++) {
@@ -126,18 +126,18 @@ public class ReefbalanceMod : BaseUnityPlugin {
                 if (RecipeUtil.recipeExists(tt)) {
                     var i = RecipeUtil.removeIngredient(tt, TechType.Glass);
                     if (i != null) {
-                        RecipeUtil.addIngredient(tt, baseGlass.Info.TechType, i.amount);
+                        RecipeUtil.addIngredient(tt, BaseGlass.Info.TechType, i.amount);
                     }
                 }
             }
 
-            TechnologyUnlockSystem.instance.addDirectUnlock(TechType.Glass, baseGlass.Info.TechType);
+            TechnologyUnlockSystem.instance.addDirectUnlock(TechType.Glass, BaseGlass.Info.TechType);
 
             RecipeUtil.removeIngredient(TechType.EnameledGlass, TechType.Glass);
-            RecipeUtil.addIngredient(TechType.EnameledGlass, baseGlass.Info.TechType, 1);
+            RecipeUtil.addIngredient(TechType.EnameledGlass, BaseGlass.Info.TechType, 1);
         }
 
-        if (config.getBoolean(RBConfig.ConfigEntries.CHEAP_SEABASE)) {
+        if (ModConfig.getBoolean(RBConfig.ConfigEntries.CHEAP_SEABASE)) {
             RecipeUtil.modifyIngredients(
                 TechType.BaseRoom,
                 i => {
@@ -170,8 +170,8 @@ public class ReefbalanceMod : BaseUnityPlugin {
 
         RecipeUtil.addIngredient(TechType.BasePlanter, TechType.CreepvinePiece, 1);
 
-        adjustItemSizes();
-        if (config.getBoolean(RBConfig.ConfigEntries.CHEAP_GLASS)) {
+        AdjustItemSizes();
+        if (ModConfig.getBoolean(RBConfig.ConfigEntries.CHEAP_GLASS)) {
             RecipeUtil.modifyIngredients(
                 TechType.Glass,
                 i => {
@@ -181,7 +181,7 @@ public class ReefbalanceMod : BaseUnityPlugin {
             );
         }
 
-        if (config.getBoolean(RBConfig.ConfigEntries.CHEAP_HUDCHIP)) {
+        if (ModConfig.getBoolean(RBConfig.ConfigEntries.CHEAP_HUDCHIP)) {
             RecipeUtil.modifyIngredients(TechType.MapRoomHUDChip, i => i.techType == TechType.Magnetite);
             RecipeUtil.addIngredient(TechType.MapRoomHUDChip, TechType.Diamond, 1);
         }
@@ -193,18 +193,18 @@ public class ReefbalanceMod : BaseUnityPlugin {
         TechTypeMappingConfig<int>.loadInline(
             "fragment_scan_requirements",
             TechTypeMappingConfig<int>.IntParser.instance,
-            TechTypeMappingConfig<int>.dictionaryAssign(scanCountOverrides)
+            TechTypeMappingConfig<int>.dictionaryAssign(ScanCountOverrides)
         );
 
-        scanCountOverridesCalculation?.Invoke(scanCountOverrides);
+        ScanCountOverridesCalculation?.Invoke(ScanCountOverrides);
 
-        foreach (var kvp in scanCountOverrides) {
+        foreach (var kvp in ScanCountOverrides) {
             PDAHandler.EditFragmentsToScan(kvp.Key, kvp.Value);
             SNUtil.Log("Setting fragment scan requirement: " + kvp.Key + " = " + kvp.Value);
         }
 
-        var uran = config.getInt(RBConfig.ConfigEntries.URANPERROD);
-        if (uran != (int)config.getEntry(RBConfig.ConfigEntries.URANPERROD).vanillaValue) {
+        var uran = ModConfig.getInt(RBConfig.ConfigEntries.URANPERROD);
+        if (uran != (int)ModConfig.getEntry(RBConfig.ConfigEntries.URANPERROD).vanillaValue) {
             RecipeUtil.modifyIngredients(
                 TechType.ReactorRod,
                 i => {
@@ -226,8 +226,8 @@ public class ReefbalanceMod : BaseUnityPlugin {
         }
     }
 
-    public static int getScanCountOverride(TechType tt) {
-        return scanCountOverrides.ContainsKey(tt) ? scanCountOverrides[tt] : -1;
+    public static int GetScanCountOverride(TechType tt) {
+        return ScanCountOverrides.ContainsKey(tt) ? ScanCountOverrides[tt] : -1;
     }
     /*
     private static void cacheFoodTypes() {
@@ -283,23 +283,23 @@ public class ReefbalanceMod : BaseUnityPlugin {
         vegFoods.Add(TechType.KooshChunk);
     }*/
 
-    private static void adjustItemSizes() {
-        if (config.getBoolean(RBConfig.ConfigEntries.COMPACT_KELP))
+    private static void AdjustItemSizes() {
+        if (ModConfig.getBoolean(RBConfig.ConfigEntries.COMPACT_KELP))
             CraftDataHandler.SetItemSize(TechType.CreepvinePiece, new Vector2int(1, 2)); //1 wide 2 high
 
-        if (config.getBoolean(RBConfig.ConfigEntries.SMALL_TOOLS)) {
+        if (ModConfig.getBoolean(RBConfig.ConfigEntries.SMALL_TOOLS)) {
             CraftDataHandler.SetItemSize(TechType.PropulsionCannon, new Vector2int(2, 1)); //2 wide 1 high     
             CraftDataHandler.SetItemSize(TechType.RepulsionCannon, new Vector2int(2, 1));
             CraftDataHandler.SetItemSize(TechType.Seaglide, new Vector2int(2, 2));
         }
 
-        if (config.getBoolean(RBConfig.ConfigEntries.COMPACT_DECO)) {
-            foreach (var deco in decoratives) {
+        if (ModConfig.getBoolean(RBConfig.ConfigEntries.COMPACT_DECO)) {
+            foreach (var deco in Decoratives) {
                 CraftDataHandler.SetItemSize(deco, new Vector2int(1, 1));
             }
         }
 
-        if (config.getBoolean(RBConfig.ConfigEntries.COMPACT_SEEDS)) {
+        if (ModConfig.getBoolean(RBConfig.ConfigEntries.COMPACT_SEEDS)) {
             for (var i = (int)TechType.TreeMushroomPiece; i < (int)(object)TechType.HangingFruit - 1; i++) {
                 if (Enum.IsDefined(typeof(TechType), i)) {
                     var item = (TechType)i;
@@ -319,13 +319,13 @@ public class ReefbalanceMod : BaseUnityPlugin {
         //CraftDataHandler.SetItemSize(TechType.Shocker, new Vector2int(1, 3));//2,4
     }
 
-    public static float getFoodValue(Eatable e, float baseVal) {
+    public static float GetFoodValue(Eatable e, float baseVal) {
         var ret = baseVal;
         if (e.decomposes) {
-            var ce = getFoodType(e);
+            var ce = GetFoodType(e);
             var elapsed = Mathf.Max(
                 0,
-                DayNightCycle.main.timePassedAsFloat - e.timeDecayStart - 1200 * config.getFloat(ce)
+                DayNightCycle.main.timePassedAsFloat - e.timeDecayStart - 1200 * ModConfig.getFloat(ce)
             ); //1 day = 1200 float units
             if (elapsed > 0)
                 ret = Mathf.Max(baseVal - elapsed * e.kDecayRate, -25f);
@@ -334,7 +334,7 @@ public class ReefbalanceMod : BaseUnityPlugin {
         return ret;
     }
 
-    private static RBConfig.ConfigEntries getFoodType(Eatable e) {
+    private static RBConfig.ConfigEntries GetFoodType(Eatable e) {
         var id = CraftData.GetTechType(e.gameObject);
         var cat = id.getFoodCategory();
         switch (cat) {
@@ -348,17 +348,17 @@ public class ReefbalanceMod : BaseUnityPlugin {
         }
     }
 
-    public static void initializeSeamothStorage(SeamothStorageContainer sc) {
+    public static void InitializeSeamothStorage(SeamothStorageContainer sc) {
         sc.width = 6;
         sc.height = 5;
     }
 
-    public static void calculatePrawnStorage(Exosuit s) {
+    public static void CalculatePrawnStorage(Exosuit s) {
         var height = 4 + s.modules.GetCount(TechType.VehicleStorageModule);
         s.storageContainer.Resize(8, 2 * height);
     }
 
-    public static float getDrillingSpeed(Drillable dr, Exosuit s) {
+    public static float GetDrillingSpeed(Drillable dr, Exosuit s) {
         if (!s) //eg seamoth arm
             return 1;
         s.energyInterface.GetValues(out var charge, out var capacity);
@@ -368,12 +368,12 @@ public class ReefbalanceMod : BaseUnityPlugin {
         return sp;
     }
 
-    public static bool canBuildingDestroyObject(GameObject go) {
-        return !config.getBoolean(RBConfig.ConfigEntries.NO_BUILDER_CLEAR) && Builder.CanDestroyObject(go);
+    public static bool CanBuildingDestroyObject(GameObject go) {
+        return !ModConfig.getBoolean(RBConfig.ConfigEntries.NO_BUILDER_CLEAR) && Builder.CanDestroyObject(go);
     }
 
-    public static bool deleteDuplicateDatabox(TechType tt) {
-        return !config.getBoolean(RBConfig.ConfigEntries.ALWAYS_SPAWN_DB) && KnownTech.Contains(tt);
+    public static bool DeleteDuplicateDatabox(TechType tt) {
+        return !ModConfig.getBoolean(RBConfig.ConfigEntries.ALWAYS_SPAWN_DB) && KnownTech.Contains(tt);
     }
 
     private class ContainmentFacilityDragonRepellent : MonoBehaviour {
