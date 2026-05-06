@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(EnergyMixin))]
-    [HarmonyPatch("SpawnDefault")]
+    [HarmonyPatch(nameof(EnergyMixin.SpawnDefaultAsync))]
     public static class DefaultToolBatteryHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -20,7 +20,7 @@ internal static partial class C2CPatches {
                     new CodeInstruction(OpCodes.Ldarg_0),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.SeaToSea.C2CHooks",
-                        "updateToolDefaultBattery",
+                        nameof(C2CHooks.UpdateToolDefaultBattery),
                         false,
                         typeof(EnergyMixin)
                     )

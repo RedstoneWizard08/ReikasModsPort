@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(SeaMoth))]
-    [HarmonyPatch("OnUpgradeModuleUse")]
+    [HarmonyPatch(nameof(SeaMoth.OnUpgradeModuleUse))]
     public static class ModuleFireCostHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -30,7 +30,7 @@ internal static partial class C2CPatches {
                         new CodeInstruction(OpCodes.Ldarg_0),
                         InstructionHandlers.createMethodCall(
                             "ReikaKalseki.SeaToSea.C2CHooks",
-                            "fireSeamothDefence",
+                            nameof(C2CHooks.FireSeamothDefence),
                             false,
                             typeof(SeaMoth)
                         ),

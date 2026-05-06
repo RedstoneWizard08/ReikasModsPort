@@ -11,7 +11,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(VoidGhostLeviathansSpawner))]
-    [HarmonyPatch("UpdateSpawn")]
+    [HarmonyPatch(nameof(VoidGhostLeviathansSpawner.UpdateSpawn))]
     public static class VoidLeviathanTypeHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -29,7 +29,7 @@ internal static partial class C2CPatches {
                     codes.RemoveAt(idx);
                 codes[idx] = InstructionHandlers.createMethodCall(
                     "ReikaKalseki.SeaToSea.C2CHooks",
-                    "getVoidLeviathan",
+                    nameof(C2CHooks.GetVoidLeviathan),
                     false,
                     typeof(VoidGhostLeviathansSpawner),
                     typeof(Vector3)

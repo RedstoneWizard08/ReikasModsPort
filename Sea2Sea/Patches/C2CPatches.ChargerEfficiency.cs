@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(Charger))]
-    [HarmonyPatch("Update")]
+    [HarmonyPatch(nameof(Charger.Update))]
     public static class ChargerEfficiency {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -32,7 +32,7 @@ internal static partial class C2CPatches {
                 );
                 codes[idx].operand = InstructionHandlers.convertMethodOperand(
                     "ReikaKalseki.SeaToSea.C2CHooks",
-                    "chargerConsumeEnergy",
+                    nameof(C2CHooks.ChargerConsumeEnergy),
                     false,
                     typeof(IPowerInterface),
                     typeof(float),

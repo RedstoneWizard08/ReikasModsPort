@@ -20,7 +20,7 @@ internal class C2Crawler : MonoBehaviour {
 	}
 
 	internal void tick() {
-		if (C2CHooks.skipCrawlerTick)
+		if (C2CHooks.SkipCrawlerTick)
 			return;
 		var at = BiomeBase.GetBiome(transform.position);
 		if (at != biome && (at == VanillaBiomes.Bloodkelp || at == CrashZoneSanctuaryBiome.instance)) {

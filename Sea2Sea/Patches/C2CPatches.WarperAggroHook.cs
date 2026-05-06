@@ -11,7 +11,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(WarperInspectPlayer))]
-    [HarmonyPatch("GetCanInspect")]
+    [HarmonyPatch(nameof(WarperInspectPlayer.GetCanInspect))]
     public static class WarperAggroHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -21,7 +21,7 @@ internal static partial class C2CPatches {
                 codes.add(OpCodes.Ldarg_1);
                 codes.invoke(
                     "ReikaKalseki.SeaToSea.C2CHooks",
-                    "canWarperAggroPlayer",
+                    nameof(C2CHooks.CanWarperAggroPlayer),
                     false,
                     typeof(WarperInspectPlayer),
                     typeof(GameObject)

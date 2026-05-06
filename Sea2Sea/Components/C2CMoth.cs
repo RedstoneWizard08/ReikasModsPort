@@ -157,7 +157,7 @@ internal class C2CMoth : MonoBehaviour {
     }
 
     private void Update() {
-        if (C2CHooks.skipSeamothTick)
+        if (C2CHooks.SkipSeamothTick)
             return;
         if (!stealthEnabledSeamothHUDElement) {
             seamothHUD = FindObjectOfType<uGUI_SeamothHUD>();

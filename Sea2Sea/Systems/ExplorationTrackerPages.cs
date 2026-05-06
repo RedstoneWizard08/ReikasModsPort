@@ -120,7 +120,7 @@ public class ExplorationTrackerPages : IStoryGoalListener {
             TrackerPages.MOUNTAINS,
             new ProgressionTrigger(ep =>
                 BiomeBase.GetBiome(ep.transform.position) == VanillaBiomes.Mountains &&
-                ep.transform.position.x > C2CHooks.mountainCenter.x + 100 && ep.transform.position.y < -50
+                ep.transform.position.x > C2CHooks.MountainCenter.x + 100 && ep.transform.position.y < -50
             )
         );
         p.addFinding("pod", Finding.fromTracker(TrackerPages.MOUNTAINPOD))
@@ -366,7 +366,7 @@ public class ExplorationTrackerPages : IStoryGoalListener {
         if (hard)
             p.addFinding("reaper", Finding.fromScan(TechType.ReaperLeviathan));
 
-        p = addPage(TrackerPages.DEGASIEND, new PositionTrigger(C2CHooks.deepDegasiTablet, 80));
+        p = addPage(TrackerPages.DEGASIEND, new PositionTrigger(C2CHooks.DeepDegasiTablet, 80));
         p.addFinding("end", Finding.fromEncy(StoryGoals.PAUL_DEATH_LOG))
             .addFinding("destroy", Finding.fromEncy(StoryGoals.FINAL_DEGASI_LOG))
             .addFinding("tablet", Finding.fromUnlock(TechType.PrecursorKey_Orange)).addFinding(

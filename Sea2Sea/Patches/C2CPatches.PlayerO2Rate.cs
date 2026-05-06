@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(Player))]
-    [HarmonyPatch("GetBreathPeriod")]
+    [HarmonyPatch(nameof(Player.GetBreathPeriod))]
     public static class PlayerO2Rate {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

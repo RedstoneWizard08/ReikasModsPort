@@ -10,14 +10,14 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(Battery))]
-    [HarmonyPatch("GetChargeValueText")]
+    [HarmonyPatch(nameof(Battery.GetChargeValueText))]
     public static class BatteryTooltipHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
             InsnList codes = [];
             try {
                 codes.add(OpCodes.Ldarg_0);
-                codes.invoke("ReikaKalseki.SeaToSea.C2CHooks", "getBatteryTooltip", false, typeof(Battery));
+                codes.invoke("ReikaKalseki.SeaToSea.C2CHooks", nameof(C2CHooks.GetBatteryTooltip), false, typeof(Battery));
                 codes.add(OpCodes.Ret);
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {

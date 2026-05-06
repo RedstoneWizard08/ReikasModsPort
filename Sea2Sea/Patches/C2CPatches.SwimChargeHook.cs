@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(UpdateSwimCharge))]
-    [HarmonyPatch("FixedUpdate")]
+    [HarmonyPatch(nameof(UpdateSwimCharge.FixedUpdate))]
     public static class SwimChargeHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

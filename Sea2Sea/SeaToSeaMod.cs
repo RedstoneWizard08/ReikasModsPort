@@ -316,7 +316,7 @@ public static SoundManager.SoundData voidspikeLeviAmbient;
         PurpleTabletPartB.Register();
         BrokenAuroraDepthModule = new ExplodingGrabbable(
             "ExplodingAuroraModule",
-            C2CHooks.auroraDepthModule.prefabName
+            C2CHooks.AuroraDepthModule.prefabName
         );
         BrokenAuroraDepthModule.Register();
         _reactorMelter = new BloodKelpBaseNuclearReactorMelter();
@@ -650,7 +650,7 @@ public static SoundManager.SoundData voidspikeLeviAmbient;
         C2CProgression.Instance.PcfSecurityNodes = WorldGen.getCount(SecurityNodeLive.Info.ClassID);
         PipeConsole.setGoal(C2CProgression.PipeTravelEnabled);
 
-        var n = C2CHooks.purpleTabletsToBreak.Count + 1; //+1 for the broken one in front of gun
+        var n = C2CHooks.PurpleTabletsToBreak.Count + 1; //+1 for the broken one in front of gun
         n += WorldGen.getCount("83b61f89-1456-4ff5-815a-ecdc9b6cc9e4");
         n += WorldGen.getCount("PartialPurpleTablet_A");
         n += WorldGen.getCount("PartialPurpleTablet_B");
@@ -670,7 +670,7 @@ public static SoundManager.SoundData voidspikeLeviAmbient;
         DataboxTypingMap.instance.addValue(-317.05, -438.69, -1742.80, TechType.BaseReinforcement);
 
         ESHooks.AddLeviathan(C2CItems.voidSpikeLevi.TechType);
-        ESHooks.ScannabilityEvent += C2CHooks.isItemMapRoomDetectable;
+        ESHooks.ScannabilityEvent += C2CHooks.IsItemMapRoomDetectable;
 
         foreach (BiomeType bb in Enum.GetValues(typeof(BiomeType))) {
             LootDistributionHandler.EditLootDistributionData(VanillaResources.SULFUR.prefab, bb, 0, 1);
@@ -693,7 +693,7 @@ public static SoundManager.SoundData voidspikeLeviAmbient;
         DumpAbandonedBaseTextures();
     }
 
-    private static void InitHandlers() {
+    internal static void InitHandlers() {
         var h = Harmony;
         SaveSystem.addPlayerSaveCallback(
             typeof(LiquidBreathingSystem),

@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(VehicleUpgradeConsoleInput))]
-    [HarmonyPatch("OnHandClick")]
+    [HarmonyPatch(nameof(VehicleUpgradeConsoleInput.OnHandClick))]
     public static class VehicleUpgradesClick {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -19,7 +19,7 @@ internal static partial class C2CPatches {
                 codes.add(OpCodes.Ldarg_0);
                 codes.invoke(
                     "ReikaKalseki.SeaToSea.C2CHooks",
-                    "onClickedVehicleUpgrades",
+                    nameof(C2CHooks.OnClickedVehicleUpgrades),
                     false,
                     typeof(VehicleUpgradeConsoleInput)
                 );

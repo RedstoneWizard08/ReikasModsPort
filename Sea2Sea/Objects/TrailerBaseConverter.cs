@@ -43,8 +43,8 @@ public class TrailerBaseConverter : CustomPrefab {
                 return;
             }
 
-            var go = WorldUtil.getClosest<BaseBioReactorGeometry>(C2CHooks.trailerBaseBioreactor);
-            if (go && Vector3.Distance(go.transform.position, C2CHooks.trailerBaseBioreactor) < 5F) {
+            var go = WorldUtil.getClosest<BaseBioReactorGeometry>(C2CHooks.TrailerBaseBioreactor);
+            if (go && Vector3.Distance(go.transform.position, C2CHooks.TrailerBaseBioreactor) < 5F) {
                 var child = go.gameObject.getChildObject("UI/Canvas/Text");
                 text = child.GetComponent<Text>();
                 go.gameObject.removeChildObject("Bio_reactor/Bio_Reactor_glass_geo");

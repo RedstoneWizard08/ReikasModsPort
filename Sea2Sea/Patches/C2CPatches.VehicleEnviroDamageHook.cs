@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(CrushDamage))]
-    [HarmonyPatch("CrushDamageUpdate")]
+    [HarmonyPatch(nameof(CrushDamage.CrushDamageUpdate))]
     public static class VehicleEnviroDamageHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

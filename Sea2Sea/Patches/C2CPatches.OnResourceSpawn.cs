@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(ResourceTracker))]
-    [HarmonyPatch("Start")]
+    [HarmonyPatch(nameof(ResourceTracker.Start))]
     public static class OnResourceSpawn {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -20,7 +20,7 @@ internal static partial class C2CPatches {
                     new CodeInstruction(OpCodes.Ldarg_0),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.SeaToSea.C2CHooks",
-                        "onResourceSpawn",
+                        nameof(C2CHooks.OnResourceSpawn),
                         false,
                         typeof(ResourceTracker)
                     )

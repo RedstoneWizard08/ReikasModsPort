@@ -13,7 +13,7 @@ internal class Magnetic : MonoBehaviour {
 	private bool searched;
 
 	private void FixedUpdate() {
-		if (C2CHooks.skipMagnetic)
+		if (C2CHooks.SkipMagnetic)
 			return;
 		if (!searched) {
 			try {

@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(KeypadDoorConsole))]
-    [HarmonyPatch("NumberButtonPress")]
+    [HarmonyPatch(nameof(KeypadDoorConsole.NumberButtonPress))]
     public static class OnKeypadButtonPress {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -24,7 +24,7 @@ internal static partial class C2CPatches {
                         new CodeInstruction(OpCodes.Ldarg_0),
                         InstructionHandlers.createMethodCall(
                             "ReikaKalseki.SeaToSea.C2CHooks",
-                            "onKeypadFailed",
+                            nameof(C2CHooks.OnKeypadFailed),
                             false,
                             typeof(KeypadDoorConsole)
                         ),

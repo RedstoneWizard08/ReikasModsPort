@@ -11,7 +11,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(OxygenArea))]
-    [HarmonyPatch("OnTriggerStay")]
+    [HarmonyPatch(nameof(OxygenArea.OnTriggerStay))]
     public static class O2AreaInside {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -22,7 +22,7 @@ internal static partial class C2CPatches {
                     new CodeInstruction(OpCodes.Ldarg_1),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.SeaToSea.C2CHooks",
-                        "onThingInO2Area",
+                        nameof(C2CHooks.OnThingInO2Area),
                         false,
                         typeof(OxygenArea),
                         typeof(Collider)

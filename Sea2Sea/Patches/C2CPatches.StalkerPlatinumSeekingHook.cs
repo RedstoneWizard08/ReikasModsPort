@@ -11,7 +11,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(CollectShiny))]
-    [HarmonyPatch("UpdateShinyTarget")]
+    [HarmonyPatch(nameof(CollectShiny.UpdateShinyTarget))]
     public static class StalkerPlatinumSeekingHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -24,7 +24,7 @@ internal static partial class C2CPatches {
                             i,
                             InstructionHandlers.createMethodCall(
                                 "ReikaKalseki.SeaToSea.C2CHooks",
-                                "getStalkerShinyTarget",
+                                nameof(C2CHooks.GetStalkerShinyTarget),
                                 false,
                                 typeof(GameObject),
                                 typeof(CollectShiny)

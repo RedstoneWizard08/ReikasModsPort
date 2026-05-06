@@ -21,7 +21,7 @@ internal static partial class C2CPatches {
                     new CodeInstruction(OpCodes.Ldarg_1),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.SeaToSea.C2CHooks",
-                        "onSetPlayerACU",
+                        nameof(C2CHooks.OnSetPlayerACU),
                         false,
                         typeof(Player),
                         typeof(WaterPark)

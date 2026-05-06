@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(SkyApplier))]
-    [HarmonyPatch("Start")]
+    [HarmonyPatch(nameof(SkyApplier.Start))]
     public static class WaveBobbingDebrisHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

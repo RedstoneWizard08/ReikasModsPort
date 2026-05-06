@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(GUIHand))]
-    [HarmonyPatch("UpdateActiveTarget")]
+    [HarmonyPatch(nameof(GUIHand.UpdateActiveTarget))]
     public static class VoidSpikeReach {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -19,7 +19,7 @@ internal static partial class C2CPatches {
                 var idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Ldc_R4, 2);
                 codes[idx] = InstructionHandlers.createMethodCall(
                     "ReikaKalseki.SeaToSea.C2CHooks",
-                    "getReachDistance",
+                    nameof(C2CHooks.GetReachDistance),
                     false,
                     new string[0]
                 );

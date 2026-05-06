@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(Stalker))]
-    [HarmonyPatch("CheckLoseTooth")]
+    [HarmonyPatch(nameof(Stalker.CheckLoseTooth))]
     public static class StalkerToothDropHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -28,7 +28,7 @@ internal static partial class C2CPatches {
                 );
                 codes[idx].operand = InstructionHandlers.convertMethodOperand(
                     "ReikaKalseki.SeaToSea.C2CHooks",
-                    "stalkerTryDropTooth",
+                    nameof(C2CHooks.StalkerTryDropTooth),
                     false,
                     typeof(Stalker)
                 );

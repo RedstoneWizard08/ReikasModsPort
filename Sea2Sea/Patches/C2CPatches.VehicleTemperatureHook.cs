@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(Vehicle))]
-    [HarmonyPatch("GetTemperature")]
+    [HarmonyPatch(nameof(Vehicle.GetTemperature))]
     public static class VehicleTemperatureHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

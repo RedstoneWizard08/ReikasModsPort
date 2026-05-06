@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(CollectShiny))]
-    [HarmonyPatch("Perform")]
+    [HarmonyPatch(nameof(CollectShiny.Perform))]
     public static class StalkerAvoidOtherHeldHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -28,7 +28,7 @@ internal static partial class C2CPatches {
                 InstructionHandlers.nullInstructions(codes, idx1, idx2);
                 codes[idx1] = InstructionHandlers.createMethodCall(
                     "ReikaKalseki.SeaToSea.C2CHooks",
-                    "onShinyTargetIsCurrentlyHeldByStalker",
+                    nameof(C2CHooks.OnShinyTargetIsCurrentlyHeldByStalker),
                     false,
                     typeof(CollectShiny)
                 );

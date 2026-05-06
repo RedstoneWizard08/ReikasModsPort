@@ -11,7 +11,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(WorldgenIntegrityChecks))]
-    [HarmonyPatch("checkWorldgenIntegrity")]
+    [HarmonyPatch(nameof(WorldgenIntegrityChecks.checkWorldgenIntegrity))]
     public static class WorldLoadCheck {
         private static IEnumerable<CodeInstruction> Transpiler(
             IEnumerable<CodeInstruction> instructions,

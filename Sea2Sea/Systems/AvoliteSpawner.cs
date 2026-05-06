@@ -226,10 +226,10 @@ public class AvoliteSpawner {
         if (pos.y >= -100 || pos.y <= -400)
             return false;
         var biome = WaterBiomeManager.main.GetBiome(pos, false);
-        return VanillaBiomes.Mountains.IsInBiome(pos) && pos.x >= C2CHooks.gunCenter.x &&
+        return VanillaBiomes.Mountains.IsInBiome(pos) && pos.x >= C2CHooks.GunCenter.x &&
                Vector3.Distance(pos.SetY(0), _biomeCenter.SetY(0)) <= 600 &&
-               Vector3.Distance(pos.SetY(0), C2CHooks.gunCenter.SetY(0)) >= 200 &&
-               Vector3.Distance(pos.SetY(0), C2CHooks.mountainCenter.SetY(0)) >= 360;
+               Vector3.Distance(pos.SetY(0), C2CHooks.GunCenter.SetY(0)) >= 200 &&
+               Vector3.Distance(pos.SetY(0), C2CHooks.MountainCenter.SetY(0)) >= 360;
     }
 
     private void IsItemMapRoomDetectable(ESHooks.ResourceScanCheck rt) {
@@ -246,7 +246,7 @@ public class AvoliteSpawner {
     }
 
     internal void TickMapRoom(MapRoomFunctionality map) {
-        if (C2CHooks.skipScannerTick)
+        if (C2CHooks.SkipScannerTick)
             return;
         if (VanillaBiomes.Mountains.IsInBiome(map.transform.position)) { /*
             float r = map.GetScanRange();

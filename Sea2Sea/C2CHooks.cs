@@ -17,9 +17,9 @@ using UnityEngine;
 namespace ReikaKalseki.SeaToSea;
 
 public static class C2CHooks {
-    internal static readonly Vector3 deepDegasiTablet = new(-638.9F, -506.0F, -941.3F);
+    internal static readonly Vector3 DeepDegasiTablet = new(-638.9F, -506.0F, -941.3F);
 
-    internal static readonly List<Vector3> purpleTabletsToBreak = [
+    internal static readonly List<Vector3> PurpleTabletsToBreak = [
         new Vector3(291.19F, 30.94F, 848.86F), //south island shelf
         new Vector3(363.22F, 54.11F, 1015.80F), //internal island bridge
         new Vector3(383.18F, 18.21F, 1086.94F), //above gun entrance
@@ -30,50 +30,50 @@ public static class C2CHooks {
 
     //internal static readonly Dictionary<Vector3, bool[]> purpleTabletsToRemoveParts = new Dictionary<Vector3, bool[]>();
 
-    internal static readonly Vector3 crashMesa = new(623.8F, -250.0F, -1105.2F);
-    internal static readonly Vector3 mountainBaseGeoCenter = new(953, -344, 1453);
-    internal static readonly Vector3 bkelpBaseGeoCenter = new(-1311.6F, -670.6F, -412.7F);
-    internal static readonly Vector3 bkelpBaseNuclearReactor = new(-1325.67F, -660.60F, -392.70F);
-    internal static readonly Vector3 trailerBaseBioreactor = new(1314.94F, -80.2F, -412.97F);
-    internal static readonly Vector3 lrpowerSealSetpieceCenter = new(-713.45F, -766.37F, -262.74F);
-    internal static readonly Vector3 auroraFront = new(1202.43F, -40.16F, 151.54F);
-    internal static readonly Vector3 auroraRepulsionGunTerminal = new(1029.51F, -8.7F, 35.87F);
-    internal static readonly Vector3 lostRiverCachePanel = new(-1119.5F, -684.4F, -709.7F);
+    internal static readonly Vector3 CrashMesa = new(623.8F, -250.0F, -1105.2F);
+    internal static readonly Vector3 MountainBaseGeoCenter = new(953, -344, 1453);
+    internal static readonly Vector3 BkelpBaseGeoCenter = new(-1311.6F, -670.6F, -412.7F);
+    internal static readonly Vector3 BkelpBaseNuclearReactor = new(-1325.67F, -660.60F, -392.70F);
+    internal static readonly Vector3 TrailerBaseBioreactor = new(1314.94F, -80.2F, -412.97F);
+    internal static readonly Vector3 LrpowerSealSetpieceCenter = new(-713.45F, -766.37F, -262.74F);
+    internal static readonly Vector3 AuroraFront = new(1202.43F, -40.16F, 151.54F);
+    internal static readonly Vector3 AuroraRepulsionGunTerminal = new(1029.51F, -8.7F, 35.87F);
+    internal static readonly Vector3 LostRiverCachePanel = new(-1119.5F, -684.4F, -709.7F);
 
-    internal static readonly Vector3 voidWreckVoidPatch = new(-293.58F, -422.65F, -1753.40F);
+    internal static readonly Vector3 VoidWreckVoidPatch = new(-293.58F, -422.65F, -1753.40F);
 
     //internal static readonly Vector3 gunPoolBarrier = new Vector3(481.81F, -125.03F, 1257.85F);
     //internal static readonly Vector3 gunPoolBarrierTerminal = new Vector3();
-    internal static readonly Vector3 gunCenter = new(460.6F, -99, 1208.4F);
-    internal static readonly Vector3 mountainCenter = new(359.9F, 29F, 985.9F);
+    internal static readonly Vector3 GunCenter = new(460.6F, -99, 1208.4F);
+    internal static readonly Vector3 MountainCenter = new(359.9F, 29F, 985.9F);
 
-    internal static readonly Vector3 lrnest = new(-809, -751, -321);
-    internal static readonly Vector3 lrNestDefender = new(-754, -716, -279); //new Vector3(-761, -753, -285);
+    internal static readonly Vector3 Lrnest = new(-809, -751, -321);
+    internal static readonly Vector3 LrNestDefender = new(-754, -716, -279); //new Vector3(-761, -753, -285);
 
-    internal static readonly Vector3 fcsWreckOpenableDoor = new(88.87F, -420.75F, 1449.10F);
-    internal static readonly Vector3 fcsWreckBlockedDoor = new(93.01F, -421.27F, 1444.71F);
+    internal static readonly Vector3 FcsWreckOpenableDoor = new(88.87F, -420.75F, 1449.10F);
+    internal static readonly Vector3 FcsWreckBlockedDoor = new(93.01F, -421.27F, 1444.71F);
 
-    internal static readonly PositionedPrefab auroraStorageModule = new(
+    internal static readonly PositionedPrefab AuroraStorageModule = new(
         "d290b5da-7370-4fb8-81bc-656c6bde78f8",
         new Vector3(991.5F, 3.21F, -30.99F),
         Quaternion.Euler(14.44F, 353.7F, 341.6F)
     );
 
-    internal static readonly PositionedPrefab auroraCyclopsModule = new(
+    internal static readonly PositionedPrefab AuroraCyclopsModule = new(
         "049d2afa-ae76-4eef-855d-3466828654c4",
         new Vector3(872.5F, 2.69F, -0.66F),
         Quaternion.Euler(357.4F, 224.9F, 21.38F)
     );
 
-    internal static readonly PositionedPrefab auroraDepthModule = new(
+    internal static readonly PositionedPrefab AuroraDepthModule = new(
         "74ec328c-e627-40ad-b373-97e384ec0385",
         new Vector3(903.52F, -0.16F, 16.06F),
         Quaternion.Euler(10.34F, 341.24F, 331.96F)
     );
 
-    private static readonly HashSet<TechType> scanToScannerRoom = [];
+    private static readonly HashSet<TechType> ScanToScannerRoom = [];
 
-    private static readonly HashSet<string> floaterRocks = [
+    private static readonly HashSet<string> FloaterRocks = [
         "44396d05-0910-4b4d-a046-119fab3512a5",
         "7637d968-4878-46a5-adf5-aa9e21fe3ddc",
         "9a9cdb4e-f110-412d-b16b-b9ace904b569",
@@ -83,13 +83,13 @@ public static class C2CHooks {
         "f895696c-cdc6-4427-a87f-2b62666ea0cb",
     ];
 
-    private static readonly HashSet<string> auroraFires = [
+    private static readonly HashSet<string> AuroraFires = [
         "14bbf7f0-4276-48bf-868b-317b366edd16",
         "3877d31d-37a5-4c94-8eef-881a500c58bc",
         "afe53ea1-d2a8-4f76-8ffb-d41ff6046b52",
     ];
 
-    private static readonly Dictionary<string, Color> auroraPrawnFireColors = new() {
+    private static readonly Dictionary<string, Color> AuroraPrawnFireColors = new() {
         { "xFireFlame", new Color(0, 0.67F, 2) },
         { "xFireCurl", new Color(1, 1, 1) },
         { "xAmbiant_Sparks", new Color(0, 1, 1) },
@@ -100,195 +100,195 @@ public static class C2CHooks {
         { "x_Fire_Cylindrical", new Color(0.24F, 0.51F, 1) },
     };
 
-    private static Oxygen playerBaseO2;
+    private static Oxygen _playerBaseO2;
 
-    private static float nextSanctuaryPromptCheckTime = -1;
-    private static float nextBkelpBaseAmbCheckTime = -1;
+    private static float _nextSanctuaryPromptCheckTime = -1;
+    private static float _nextBkelpBaseAmbCheckTime = -1;
 
-    public static bool inBKelpBase { get; private set; }
+    public static bool InBKelpBase { get; private set; }
 
-    private static float nextBkelpBaseAmbTime = -1;
-    private static float nextCameraEMPTime = -1;
+    private static float _nextBkelpBaseAmbTime = -1;
+    private static float _nextCameraEmpTime = -1;
 
-    private static float foodToRestore;
-    private static float waterToRestore;
+    private static float _foodToRestore;
+    private static float _waterToRestore;
 
-    public static bool skipPlayerTick = false;
-    public static bool skipBiomeCheck = false;
-    public static bool skipTemperatureCheck = false;
-    public static bool skipSkyApplierSpawn = false;
-    public static bool skipRadiationLevel = false;
-    public static bool skipFruitPlantTick = false;
-    public static bool skipScannerTick = false;
-    public static bool skipCompassCalc = false;
-    public static bool skipPodTick = false;
-    public static bool skipSeamothTick = false;
-    public static bool skipCrawlerTick = false;
-    public static bool skipTreaderTick = false;
-    public static bool skipVoidLeviTick = false;
-    public static bool skipMagnetic = false;
-    public static bool skipWaveBob = false;
-    public static bool skipRaytrace = false;
-    public static bool skipReach = false;
-    public static bool skipResourceSpawn = false;
-    public static bool skipEnviroDamage = false;
-    public static bool skipO2 = false;
-    public static bool skipStalkerShiny = false;
-    public static bool skipRocketTick = false;
+    public static bool SkipPlayerTick = false;
+    public static bool SkipBiomeCheck = false;
+    public static bool SkipTemperatureCheck = false;
+    public static bool SkipSkyApplierSpawn = false;
+    public static bool SkipRadiationLevel = false;
+    public static bool SkipFruitPlantTick = false;
+    public static bool SkipScannerTick = false;
+    public static bool SkipCompassCalc = false;
+    public static bool SkipPodTick = false;
+    public static bool SkipSeamothTick = false;
+    public static bool SkipCrawlerTick = false;
+    public static bool SkipTreaderTick = false;
+    public static bool SkipVoidLeviTick = false;
+    public static bool SkipMagnetic = false;
+    public static bool SkipWaveBob = false;
+    public static bool SkipRaytrace = false;
+    public static bool SkipReach = false;
+    public static bool SkipResourceSpawn = false;
+    public static bool SkipEnviroDamage = false;
+    public static bool SkipO2 = false;
+    public static bool SkipStalkerShiny = false;
+    public static bool SkipRocketTick = false;
 
-    private static TechType techPistol = TechType.None;
-    private static bool searchedTechPistol;
+    private static TechType _techPistol = TechType.None;
+    private static bool _searchedTechPistol;
 
-    private static float lastO2PipeTime = -1;
+    private static float _lastO2PipeTime = -1;
 
-    private static bool playerDied;
+    private static bool _playerDied;
 
-    private static float lastSaveAlertTime = -1;
+    private static float _lastSaveAlertTime = -1;
 
-    private static float lastCuddlefishPlay = -1;
+    private static float _lastCuddlefishPlay = -1;
 
-    private static TechType loadTechPistol() {
-        if (techPistol == TechType.None && !searchedTechPistol) {
-            techPistol = SNUtil.GetTechType("TechPistol");
+    private static TechType LoadTechPistol() {
+        if (_techPistol == TechType.None && !_searchedTechPistol) {
+            _techPistol = SNUtil.GetTechType("TechPistol");
             if (DIHooks.IsWorldLoaded())
-                searchedTechPistol = true;
+                _searchedTechPistol = true;
         }
 
-        return techPistol;
+        return _techPistol;
     }
 
     static C2CHooks() {
         SNUtil.Log("Initializing C2CHooks");
-        DIHooks.OnWorldLoadedEvent += onWorldLoaded;
-        DIHooks.OnDamageEvent += recalculateDamage;
-        DIHooks.OnItemPickedUpEvent += onItemPickedUp;
-        DIHooks.OnSkyApplierSpawnEvent += onSkyApplierSpawn;
+        DIHooks.OnWorldLoadedEvent += OnWorldLoaded;
+        DIHooks.OnDamageEvent += RecalculateDamage;
+        DIHooks.OnItemPickedUpEvent += OnItemPickedUp;
+        DIHooks.OnSkyApplierSpawnEvent += OnSkyApplierSpawn;
 
-        DIHooks.GetBiomeEvent += getBiomeAt;
-        DIHooks.GetTemperatureEvent += getWaterTemperature;
+        DIHooks.GetBiomeEvent += GetBiomeAt;
+        DIHooks.GetTemperatureEvent += GetWaterTemperature;
 
-        DIHooks.OnBaseTickEvent += tickBase;
-        DIHooks.OnPlayerTickEvent += tickPlayer;
-        DIHooks.GetPlayerInputEvent += controlPlayerInput;
+        DIHooks.OnBaseTickEvent += TickBase;
+        DIHooks.OnPlayerTickEvent += TickPlayer;
+        DIHooks.GetPlayerInputEvent += ControlPlayerInput;
 
-        DIHooks.OnSeamothModulesChangedEvent += updateSeamothModules;
-        DIHooks.OnCyclopsModulesChangedEvent += updateCyclopsModules;
-        DIHooks.OnPrawnModulesChangedEvent += updatePrawnModules;
-        DIHooks.OnSeamothModuleUsedEvent += useSeamothModule;
+        DIHooks.OnSeamothModulesChangedEvent += UpdateSeamothModules;
+        DIHooks.OnCyclopsModulesChangedEvent += UpdateCyclopsModules;
+        DIHooks.OnPrawnModulesChangedEvent += UpdatePrawnModules;
+        DIHooks.OnSeamothModuleUsedEvent += UseSeamothModule;
 
-        DIHooks.SeamothDischargeEvent += pulseSeamothDefence;
-        DIHooks.OnSeamothSonarUsedEvent += pingSeamothSonar;
-        DIHooks.OnTorpedoFireEvent += onTorpedoFired;
-        DIHooks.OnTorpedoExplodeEvent += onTorpedoExploded;
+        DIHooks.SeamothDischargeEvent += PulseSeamothDefence;
+        DIHooks.OnSeamothSonarUsedEvent += PingSeamothSonar;
+        DIHooks.OnTorpedoFireEvent += OnTorpedoFired;
+        DIHooks.OnTorpedoExplodeEvent += OnTorpedoExploded;
 
-        DIHooks.OnSonarUsedEvent += pingAnySonar;
+        DIHooks.OnSonarUsedEvent += PingAnySonar;
 
-        DIHooks.OnEmpHitEvent += onEMPHit;
+        DIHooks.OnEmpHitEvent += OnEmpHit;
 
-        DIHooks.ConstructabilityEvent += applyGeyserFilterBuildability;
-        DIHooks.BreathabilityEvent += canPlayerBreathe;
+        DIHooks.ConstructabilityEvent += ApplyGeyserFilterBuildability;
+        DIHooks.BreathabilityEvent += CanPlayerBreathe;
 
-        DIHooks.GetSwimSpeedEvent += getSwimSpeed;
+        DIHooks.GetSwimSpeedEvent += GetSwimSpeed;
 
-        DIHooks.SpawnTreaderChunk += onTreaderChunkSpawn;
+        DIHooks.SpawnTreaderChunk += OnTreaderChunkSpawn;
 
-        DIHooks.CrashfishExplodeEvent += onCrashfishExplode;
+        DIHooks.CrashfishExplodeEvent += OnCrashfishExplode;
 
         //DIHooks.fogCalculateEvent += interceptChosenFog;
 
         DIHooks.RadiationCheckEvent += (ch) => {
-            if (!skipRadiationLevel)
-                ch.Value = getRadiationLevel(ch);
+            if (!SkipRadiationLevel)
+                ch.Value = GetRadiationLevel(ch);
         };
 
-        DIHooks.ItemTooltipEvent += generateItemTooltips;
-        DIHooks.BulkheadLaserHoverEvent += interceptBulkheadLaserCutter;
+        DIHooks.ItemTooltipEvent += GenerateItemTooltips;
+        DIHooks.BulkheadLaserHoverEvent += InterceptBulkheadLaserCutter;
 
-        DIHooks.KnifeAttemptEvent += tryKnife;
-        DIHooks.OnKnifedEvent += onKnifed;
-        DIHooks.KnifeHarvestEvent += interceptItemHarvest;
+        DIHooks.KnifeAttemptEvent += TryKnife;
+        DIHooks.OnKnifedEvent += OnKnifed;
+        DIHooks.KnifeHarvestEvent += InterceptItemHarvest;
 
-        DIHooks.OnFruitPlantTickEvent += tickFruitPlant;
+        DIHooks.OnFruitPlantTickEvent += TickFruitPlant;
 
-        DIHooks.ReaperGrabVehicleEvent += onReaperGrab;
-        DIHooks.CyclopsDamageEvent += onCyclopsDamage;
+        DIHooks.ReaperGrabVehicleEvent += OnReaperGrab;
+        DIHooks.CyclopsDamageEvent += OnCyclopsDamage;
 
-        DIHooks.VehicleEnterEvent += onVehicleEnter;
+        DIHooks.VehicleEnterEvent += OnVehicleEnter;
 
         DIHooks.ScannerRoomTickEvent += AvoliteSpawner.Instance.TickMapRoom;
 
-        DIHooks.SolarEfficiencyEvent += (ch) => ch.Value = getSolarEfficiencyLevel(ch);
-        DIHooks.DepthCompassEvent += getCompassDepthLevel;
-        DIHooks.PropulsibilityEvent += modifyPropulsibility;
+        DIHooks.SolarEfficiencyEvent += (ch) => ch.Value = GetSolarEfficiencyLevel(ch);
+        DIHooks.DepthCompassEvent += GetCompassDepthLevel;
+        DIHooks.PropulsibilityEvent += ModifyPropulsibility;
         //DIHooks.droppabilityEvent += modifyDroppability;	    	
-        DIHooks.ModuleFireCostEvent += (ch) => ch.Value = getModuleFireCost(ch);
+        DIHooks.ModuleFireCostEvent += (ch) => ch.Value = GetModuleFireCost(ch);
 
-        DIHooks.EquipmentTypeCheckEvent += changeEquipmentCompatibility;
+        DIHooks.EquipmentTypeCheckEvent += ChangeEquipmentCompatibility;
 
-        DIHooks.OnStasisRifleFreezeEvent += (ch) => ch.ApplyKinematicChange = !onStasisFreeze(ch.Sphere, ch.Body);
-        DIHooks.OnStasisRifleUnfreezeEvent += (ch) => ch.ApplyKinematicChange = !onStasisUnFreeze(ch.Sphere, ch.Body);
+        DIHooks.OnStasisRifleFreezeEvent += (ch) => ch.ApplyKinematicChange = !OnStasisFreeze(ch.Sphere, ch.Body);
+        DIHooks.OnStasisRifleUnfreezeEvent += (ch) => ch.ApplyKinematicChange = !OnStasisUnFreeze(ch.Sphere, ch.Body);
 
-        DIHooks.RespawnEvent += onPlayerRespawned;
-        DIHooks.ItemsLostEvent += onItemsLost;
-        DIHooks.SelfScanEvent += onSelfScan;
-        DIHooks.ScanCompleteEvent += onScanComplete;
+        DIHooks.RespawnEvent += OnPlayerRespawned;
+        DIHooks.ItemsLostEvent += OnItemsLost;
+        DIHooks.SelfScanEvent += OnSelfScan;
+        DIHooks.ScanCompleteEvent += OnScanComplete;
 
-        DIHooks.TryEatEvent += tryEat;
+        DIHooks.TryEatEvent += TryEat;
 
-        DIHooks.WaterFilterSpawnEvent += onWaterFilterSpawn;
+        DIHooks.WaterFilterSpawnEvent += OnWaterFilterSpawn;
 
-        DIHooks.OnPlayWithCuddlefish += onCuddlefishPlay;
-        DIHooks.OnRocketStageCompletedEvent += onRocketStageComplete;
-        DIHooks.OnSleepEvent += onSleep;
-        DIHooks.OnEatEvent += onEat;
-        DIHooks.GetFoodRateEvent += affectFoodRate;
+        DIHooks.OnPlayWithCuddlefish += OnCuddlefishPlay;
+        DIHooks.OnRocketStageCompletedEvent += OnRocketStageComplete;
+        DIHooks.OnSleepEvent += OnSleep;
+        DIHooks.OnEatEvent += OnEat;
+        DIHooks.GetFoodRateEvent += AffectFoodRate;
 
-        DIHooks.TargetabilityEvent += checkTargetingSkip;
+        DIHooks.TargetabilityEvent += CheckTargetingSkip;
 
         SNUtil.Log("Finished registering main DI event callbacks");
 
-        KnownTech.onAdd += onTechUnlocked;
+        KnownTech.onAdd += OnTechUnlocked;
 
-        BaseSonarPinger.onBaseSonarPingedEvent += onBaseSonarPinged;
-        BaseDrillableGrinder.onDrillableGrindEvent += getGrinderDrillableDrop;
+        BaseSonarPinger.onBaseSonarPingedEvent += OnBaseSonarPinged;
+        BaseDrillableGrinder.onDrillableGrindEvent += GetGrinderDrillableDrop;
 
-        LavaBombTag.onLavaBombImpactEvent += onLavaBombHit;
-        ExplodingAnchorPod.onExplodingAnchorPodDamageEvent += onAnchorPodExplode;
-        PredatoryBloodvine.onBloodKelpGrabEvent += onBloodKelpGrab;
-        VoidTongueTag.onVoidTongueGrabEvent += onVoidTongueGrab;
-        VoidTongueTag.onVoidTongueReleaseEvent += onVoidTongueRelease;
-        PlanktonCloudTag.onPlanktonActivationEvent += onPlanktonActivated;
-        VoidBubble.voidBubbleSpawnerTickEvent += tickVoidBubbles;
-        VoidBubble.voidBubbleTickEvent += tickVoidBubble;
-        MushroomVaseStrand.vaseStrandFilterCollectEvent += onCollectFromVaseStrand;
+        LavaBombTag.onLavaBombImpactEvent += OnLavaBombHit;
+        ExplodingAnchorPod.onExplodingAnchorPodDamageEvent += OnAnchorPodExplode;
+        PredatoryBloodvine.onBloodKelpGrabEvent += OnBloodKelpGrab;
+        VoidTongueTag.onVoidTongueGrabEvent += OnVoidTongueGrab;
+        VoidTongueTag.onVoidTongueReleaseEvent += OnVoidTongueRelease;
+        PlanktonCloudTag.onPlanktonActivationEvent += OnPlanktonActivated;
+        VoidBubble.voidBubbleSpawnerTickEvent += TickVoidBubbles;
+        VoidBubble.voidBubbleTickEvent += TickVoidBubble;
+        MushroomVaseStrand.vaseStrandFilterCollectEvent += OnCollectFromVaseStrand;
 
-        FallingMaterialSystem.ImpactEvent += onMeteorImpact;
+        FallingMaterialSystem.ImpactEvent += OnMeteorImpact;
 
         SNUtil.Log("Finished registering event callbacks");
 
-        scanToScannerRoom.Add(CustomMaterials.getItem(CustomMaterials.Materials.PLATINUM).TechType);
-        scanToScannerRoom.Add(CustomMaterials.getItem(CustomMaterials.Materials.PRESSURE_CRYSTALS).TechType);
-        scanToScannerRoom.Add(CustomMaterials.getItem(CustomMaterials.Materials.VENT_CRYSTAL).TechType);
-        scanToScannerRoom.Add(CustomMaterials.getItem(CustomMaterials.Materials.OBSIDIAN).TechType);
-        scanToScannerRoom.Add(CustomMaterials.getItem(CustomMaterials.Materials.OXYGENITE).TechType);
-        scanToScannerRoom.Add(C2CItems.voidSpikeLevi.TechType);
-        scanToScannerRoom.Add(C2CItems.alkali.TechType);
-        scanToScannerRoom.Add(C2CItems.healFlower.TechType);
-        scanToScannerRoom.Add(C2CItems.kelp.TechType);
-        scanToScannerRoom.Add(C2CItems.broodmother.TechType);
+        ScanToScannerRoom.Add(CustomMaterials.getItem(CustomMaterials.Materials.PLATINUM).TechType);
+        ScanToScannerRoom.Add(CustomMaterials.getItem(CustomMaterials.Materials.PRESSURE_CRYSTALS).TechType);
+        ScanToScannerRoom.Add(CustomMaterials.getItem(CustomMaterials.Materials.VENT_CRYSTAL).TechType);
+        ScanToScannerRoom.Add(CustomMaterials.getItem(CustomMaterials.Materials.OBSIDIAN).TechType);
+        ScanToScannerRoom.Add(CustomMaterials.getItem(CustomMaterials.Materials.OXYGENITE).TechType);
+        ScanToScannerRoom.Add(C2CItems.voidSpikeLevi.TechType);
+        ScanToScannerRoom.Add(C2CItems.alkali.TechType);
+        ScanToScannerRoom.Add(C2CItems.healFlower.TechType);
+        ScanToScannerRoom.Add(C2CItems.kelp.TechType);
+        ScanToScannerRoom.Add(C2CItems.broodmother.TechType);
     }
 
     //[System.Runtime.InteropServices.DllImport("WorldgenCheck.dll", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
     //public static extern bool handleWorldgenIntegrity(string s);
 
-    public static void onWorldLoaded() {
+    public static void OnWorldLoaded() {
         if (WorldgenIntegrityChecks.checkWorldgenIntegrity(false))
             WorldgenIntegrityChecks.throwError();
 
         MoraleSystem.instance.reset();
 
-        Inventory.main.equipment.onEquip += onEquipmentAdded;
-        Inventory.main.equipment.onUnequip += onEquipmentRemoved;
+        Inventory.main.equipment.onEquip += OnEquipmentAdded;
+        Inventory.main.equipment.onUnequip += OnEquipmentRemoved;
 
         //remove all since field does not serialize
         Inventory.main.container.forEachOfType(
@@ -325,11 +325,11 @@ public static class C2CHooks {
 
         C2CProgression.Instance.OnWorldLoaded();
 
-        moveToExploitable("SeaCrown");
-        moveToExploitable("SpottedLeavesPlant");
-        moveToExploitable("OrangeMushroom");
-        moveToExploitable("SnakeMushroom");
-        moveToExploitable("PurpleVasePlant");
+        MoveToExploitable("SeaCrown");
+        MoveToExploitable("SpottedLeavesPlant");
+        MoveToExploitable("OrangeMushroom");
+        MoveToExploitable("SnakeMushroom");
+        MoveToExploitable("PurpleVasePlant");
 
         foreach (var k in new List<string>(Language.main.strings.Keys)) {
             //SNUtil.log(k+" :>");
@@ -424,7 +424,7 @@ public static class C2CHooks {
             .trigger = SeaToSeaMod.SunbeamCountdownTrigger.key;
     }
 
-    private static void moveToExploitable(string key) {
+    private static void MoveToExploitable(string key) {
         var data = PDAEncyclopedia.mapping[key]; /*
         TreeNode root = PDAEncyclopedia.tree;
         TreeNode node = root;
@@ -441,7 +441,7 @@ public static class C2CHooks {
         data.nodes = PDAEncyclopedia.ParsePath(data.path);
     }
 
-    public static void tickBase(BaseRoot sub) {
+    public static void TickBase(BaseRoot sub) {
         if (sub.IsLeaking()) {
             var leak = EnvironmentalDamageSystem.instance.getLRPowerLeakage(sub.gameObject); //ranges from 1 to 1.75
             var f = 1 + leak * 4; //1/s base, LR 5-8/s
@@ -457,21 +457,21 @@ public static class C2CHooks {
         }
     }
 
-    public static void tickPlayer(Player ep) {
-        if (playerDied) {
+    public static void TickPlayer(Player ep) {
+        if (_playerDied) {
             C2CUtil.setupDeathScreen();
             return;
         }
 
-        if (skipPlayerTick || !ep || !DIHooks.IsWorldLoaded())
+        if (SkipPlayerTick || !ep || !DIHooks.IsWorldLoaded())
             return;
 
         //SNUtil.writeToChat(WorldUtil.getRegionalDescription(ep.transform.position));
 
-        if (playerBaseO2 == null) {
+        if (_playerBaseO2 == null) {
             foreach (Oxygen o in Player.main.oxygenMgr.sources) {
                 if (o.isPlayer) {
-                    playerBaseO2 = o;
+                    _playerBaseO2 = o;
                     break;
                 }
             }
@@ -492,14 +492,14 @@ public static class C2CHooks {
 
         if (IngameMenu.main &&
             Time.timeSinceLevelLoad - IngameMenu.main.lastSavedStateTime >=
-            SeaToSeaMod.ModConfig.getFloat(C2CConfig.ConfigEntries.SAVETHRESH) * 60F && time - lastSaveAlertTime >=
-            SeaToSeaMod.ModConfig.getFloat(C2CConfig.ConfigEntries.SAVECOOL) * 60F && allowSaving(true)) {
+            SeaToSeaMod.ModConfig.getFloat(C2CConfig.ConfigEntries.SAVETHRESH) * 60F && time - _lastSaveAlertTime >=
+            SeaToSeaMod.ModConfig.getFloat(C2CConfig.ConfigEntries.SAVECOOL) * 60F && AllowSaving(true)) {
             SNUtil.WriteToChat(
                 "It has been " +
                 Utils.PrettifyTime((int)(Time.timeSinceLevelLoad - IngameMenu.main.lastSavedStateTime)) +
                 " since you last saved; you should do so again soon."
             );
-            lastSaveAlertTime = time;
+            _lastSaveAlertTime = time;
         }
 
         // TODO: FCS Compat
@@ -526,18 +526,18 @@ public static class C2CHooks {
         if (LiquidBreathingSystem.instance.hasTankButNoMask()) {
             var ox = Inventory.main.equipment.GetItemInSlot("Tank").item.gameObject.GetComponent<Oxygen>();
             ep.oxygenMgr.UnregisterSource(ox);
-            ep.oxygenMgr.UnregisterSource(playerBaseO2);
+            ep.oxygenMgr.UnregisterSource(_playerBaseO2);
         } else if (LiquidBreathingSystem.instance.hasLiquidBreathing()) {
             //SNUtil.writeToChat("Tick liquid breathing: "+LiquidBreathingSystem.instance.isLiquidBreathingActive(ep));
             var ox = Inventory.main.equipment.GetItemInSlot("Tank").item.gameObject.GetComponent<Oxygen>();
             if (LiquidBreathingSystem.instance.isLiquidBreathingActive(ep)) {
                 LiquidBreathingSystem.instance.tickLiquidBreathing(true, true);
-                ep.oxygenMgr.UnregisterSource(playerBaseO2);
+                ep.oxygenMgr.UnregisterSource(_playerBaseO2);
                 ep.oxygenMgr.RegisterSource(ox);
             } else {
                 LiquidBreathingSystem.instance.tickLiquidBreathing(true, false);
                 ep.oxygenMgr.UnregisterSource(ox);
-                ep.oxygenMgr.RegisterSource(playerBaseO2);
+                ep.oxygenMgr.RegisterSource(_playerBaseO2);
                 var add = Mathf.Min(ep.oxygenMgr.oxygenUnitsPerSecondSurface, ox.oxygenCapacity - ox.oxygenAvailable) *
                           Time.deltaTime;
                 if (add > 0.01) {
@@ -549,7 +549,7 @@ public static class C2CHooks {
             }
         } else {
             LiquidBreathingSystem.instance.tickLiquidBreathing(false, false);
-            ep.oxygenMgr.RegisterSource(playerBaseO2);
+            ep.oxygenMgr.RegisterSource(_playerBaseO2);
             if (time - LiquidBreathingSystem.instance.getLastUnequippedTime() < 0.5)
                 ep.oxygenMgr.RemoveOxygen(ep.oxygenMgr.GetOxygenAvailable());
         }
@@ -565,12 +565,12 @@ public static class C2CHooks {
         //if (PDAMessagePrompts.instance.isTriggered(PDAMessages.getAttr(PDAMessages.Messages.DuneArchPrompt).key))
         //C2CProgression.spawnPOIMarker("duneArch", POITeleportSystem.getPOI("dunearch"));
 
-        var distsq = (ep.transform.position - crashMesa).sqrMagnitude - 400;
-        if (time >= nextSanctuaryPromptCheckTime &&
+        var distsq = (ep.transform.position - CrashMesa).sqrMagnitude - 400;
+        if (time >= _nextSanctuaryPromptCheckTime &&
             !PDAMessagePrompts.instance.isTriggered(PDAMessages.getAttr(PDAMessages.Messages.SanctuaryPrompt).key)) {
-            nextSanctuaryPromptCheckTime = time + 1;
-            if (distsq < 2500 || Vector3.Distance(ep.transform.position, auroraFront) < 144 ||
-                Vector3.Distance(ep.transform.position, trailerBaseBioreactor) < 200 || Vector3.Distance(
+            _nextSanctuaryPromptCheckTime = time + 1;
+            if (distsq < 2500 || Vector3.Distance(ep.transform.position, AuroraFront) < 144 ||
+                Vector3.Distance(ep.transform.position, TrailerBaseBioreactor) < 200 || Vector3.Distance(
                     ep.transform.position,
                     CrashZoneSanctuaryBiome.biomeCenter
                 ) < 200) {
@@ -583,17 +583,17 @@ public static class C2CHooks {
                                  0.075F * Time.timeScale * (distsq <= 10000 ? 2.5F : 1))) {
             var tgt = EcoRegionManager.main.FindNearestTarget(
                 EcoTargetType.Leviathan,
-                crashMesa,
+                CrashMesa,
                 eco => eco.GetGameObject().GetComponent<ReaperLeviathan>(),
                 6
             );
-            if (tgt != null && (tgt.GetPosition() - crashMesa).sqrMagnitude >= Mathf.Max(distsq, 225)) {
+            if (tgt != null && (tgt.GetPosition() - CrashMesa).sqrMagnitude >= Mathf.Max(distsq, 225)) {
                 var go = tgt.GetGameObject();
                 var v = ep.GetVehicle();
                 var hit = v ? v.gameObject : ep.gameObject;
                 var pos = distsq <= 2500
                     ? hit.transform.position
-                    : MathUtil.getRandomVectorAround(crashMesa, 40).SetY(crashMesa.y);
+                    : MathUtil.getRandomVectorAround(CrashMesa, 40).SetY(CrashMesa.y);
                 go.EnsureComponent<C2CReaper>().forceAggression(hit, pos);
             }
         }
@@ -637,15 +637,15 @@ public static class C2CHooks {
             }
         }
 
-        if (time >= nextBkelpBaseAmbCheckTime) {
-            nextBkelpBaseAmbCheckTime = time + UnityEngine.Random.Range(0.5F, 2.5F);
-            inBKelpBase = Vector3.Distance(ep.transform.position, bkelpBaseGeoCenter) <= 60;
-            if (inBKelpBase) {
+        if (time >= _nextBkelpBaseAmbCheckTime) {
+            _nextBkelpBaseAmbCheckTime = time + UnityEngine.Random.Range(0.5F, 2.5F);
+            InBKelpBase = Vector3.Distance(ep.transform.position, BkelpBaseGeoCenter) <= 60;
+            if (InBKelpBase) {
                 StoryGoal.Execute("SeeBkelpBase", Story.GoalType.Story);
-                if (time >= nextBkelpBaseAmbTime) {
+                if (time >= _nextBkelpBaseAmbTime) {
                     SNUtil.Log("Queuing bkelp base ambience @ " + ep.transform.position);
                     VanillaMusic.WRECK.play();
-                    nextBkelpBaseAmbTime = DayNightCycle.main.timePassedAsFloat + UnityEngine.Random.Range(60F, 90F);
+                    _nextBkelpBaseAmbTime = DayNightCycle.main.timePassedAsFloat + UnityEngine.Random.Range(60F, 90F);
                 }
             } else {
                 VanillaMusic.WRECK.disable();
@@ -653,44 +653,44 @@ public static class C2CHooks {
         }
     }
 
-    public static void onEquipmentAdded(string slot, InventoryItem item) {
+    public static void OnEquipmentAdded(string slot, InventoryItem item) {
         if (item.item.GetTechType() == C2CItems.liquidTank.TechType)
             LiquidBreathingSystem.instance.onEquip();
     }
 
-    public static void onEquipmentRemoved(string slot, InventoryItem item) {
+    public static void OnEquipmentRemoved(string slot, InventoryItem item) {
         if (item.item.GetTechType() == C2CItems.liquidTank.TechType)
             LiquidBreathingSystem.instance.onUnequip();
     }
 
-    public static void tickO2Bar(uGUI_OxygenBar gui) {
-        if (skipO2)
+    public static void TickO2Bar(uGUI_OxygenBar gui) {
+        if (SkipO2)
             return;
         LiquidBreathingSystem.instance.updateOxygenGUI(gui);
     }
 
-    public static float getO2RedPulseTime(float orig) {
-        return skipO2 ? orig : LiquidBreathingSystem.instance.isO2BarFlashingRed() ? 6 : orig;
+    public static float GetO2RedPulseTime(float orig) {
+        return SkipO2 ? orig : LiquidBreathingSystem.instance.isO2BarFlashingRed() ? 6 : orig;
     }
 
-    public static void canPlayerBreathe(DIHooks.BreathabilityCheck ch) {
-        if (skipO2)
+    public static void CanPlayerBreathe(DIHooks.BreathabilityCheck ch) {
+        if (SkipO2)
             return;
         //SNUtil.writeToChat(orig+": "+p.IsUnderwater()+" > "+Inventory.main.equipment.GetCount(SeaToSeaMod.rebreatherV2.TechType));
         if (!LiquidBreathingSystem.instance.isO2BarAbleToFill(ch.Player))
             ch.Breathable = false;
     }
 
-    public static float addO2ToPlayer(OxygenManager mgr, float f) {
-        if (skipO2)
+    public static float AddO2ToPlayer(OxygenManager mgr, float f) {
+        if (SkipO2)
             return f;
         if (!LiquidBreathingSystem.instance.isO2BarAbleToFill(Player.main))
             f = 0;
         return f;
     }
 
-    public static void addOxygenAtSurfaceMaybe(OxygenManager mgr, float time) {
-        if (skipO2)
+    public static void AddOxygenAtSurfaceMaybe(OxygenManager mgr, float time) {
+        if (SkipO2)
             return;
         if (LiquidBreathingSystem.instance.isO2BarAbleToFill(Player.main)) {
             //SNUtil.writeToChat("Add surface O2");
@@ -698,8 +698,8 @@ public static class C2CHooks {
         }
     }
 
-    public static void getBiomeAt(DIHooks.BiomeCheck b) {
-        if (skipBiomeCheck)
+    public static void GetBiomeAt(DIHooks.BiomeCheck b) {
+        if (SkipBiomeCheck)
             return;
         if (VoidSpikesBiome.instance.IsInBiome(b.Position)) {
             b.SetValue(VoidSpikesBiome.instance.biomeName);
@@ -720,13 +720,13 @@ public static class C2CHooks {
             b.LockValue();
             //if (BiomeBase.logBiomeFetch)
             //	SNUtil.writeToChat("Biome WBM fetch overridden to "+UnderwaterIslandsFloorBiome.biomeName);
-        } else if (Vector3.Distance(b.Position, voidWreckVoidPatch) <= 40) {
+        } else if (Vector3.Distance(b.Position, VoidWreckVoidPatch) <= 40) {
             b.SetValue(VanillaBiomes.Void.MainID);
             b.LockValue();
         }
     }
 
-    public static void getSwimSpeed(DIHooks.SwimSpeedCalculation ch) {
+    public static void GetSwimSpeed(DIHooks.SwimSpeedCalculation ch) {
         if (GameModeUtils.currentGameMode != GameModeOption.Survival)
             return;
         var morale = MoraleSystem.instance.moralePercentage;
@@ -741,16 +741,16 @@ public static class C2CHooks {
             ch.SetValue(ch.GetValue() - 0.1F); //was 0.25
         if (WorldUtil.isInDRF(Player.main.transform.position))
             ch.SetValue(ch.GetValue() * 0.5F);
-        if ((Player.main.transform.position - crashMesa).sqrMagnitude <= 2500) {
+        if ((Player.main.transform.position - CrashMesa).sqrMagnitude <= 2500) {
             ch.SetValue(ch.GetValue() * 0.4F);
         }
     }
 
-    public static float getSeaglideSpeed(float f) { //1.45 by default
+    public static float GetSeaglideSpeed(float f) { //1.45 by default
         if (SeaToSeaMod.FastSeaglideCheatActive)
             return 40;
         //SNUtil.writeToChat("Get SG speed, was "+f+", has="+Mathf.Approximately(e.battery.capacity, C2CItems.t2Battery.capacity));
-        if (isHeldToolAzuritePowered()) {
+        if (IsHeldToolAzuritePowered()) {
             var bonus = 0.75F; //was 0.55 then 0.95
             var depth = Player.main.GetDepth();
             var depthFactor = depth <= 50 ? 1 : 1 - (depth - 50) / 350F;
@@ -764,8 +764,8 @@ public static class C2CHooks {
         return f;
     }
 
-    public static float getScannerSpeed(float f) { //f is a divisor, scanTime
-        if (isHeldToolAzuritePowered()) {
+    public static float GetScannerSpeed(float f) { //f is a divisor, scanTime
+        if (IsHeldToolAzuritePowered()) {
             f *= 0.5F; //double speed
         }
 
@@ -779,27 +779,27 @@ public static class C2CHooks {
         return f;
     }*/
 
-    public static float getLaserCutterSpeed(LaserCutter lc) { //25 by default
+    public static float GetLaserCutterSpeed(LaserCutter lc) { //25 by default
         var amt = lc.healthPerWeld;
-        if (isHeldToolAzuritePowered())
+        if (IsHeldToolAzuritePowered())
             amt *= 1.5F;
         return amt;
     }
 
-    public static float getRepairSpeed(Welder lc) { //10 by default
+    public static float GetRepairSpeed(Welder lc) { //10 by default
         var amt = lc.healthPerWeld;
-        if (isHeldToolAzuritePowered())
+        if (IsHeldToolAzuritePowered())
             amt *= 2F;
         return amt;
     }
 
-    public static float getConstructableSpeed() {
+    public static float GetConstructableSpeed() {
         return NoCostConsoleCommand.main.fastBuildCheat ? 0.01F :
             !GameModeUtils.RequiresIngredients() ? 0.2F :
             StoryGoalManager.main.IsGoalComplete(SeaToSeaMod.AuroraTerminal.key) ? 0.67F : 1F;
     }
 
-    public static float getVehicleConstructionSpeed(ConstructorInput inp, TechType made, float time) {
+    public static float GetVehicleConstructionSpeed(ConstructorInput inp, TechType made, float time) {
         if (StoryGoalManager.main.IsGoalComplete(SeaToSeaMod.AuroraTerminal.key))
             time *= made == TechType.RocketBase ? 0.8F : 0.5F;
         else
@@ -807,12 +807,12 @@ public static class C2CHooks {
         return time;
     }
 
-    public static float getRocketConstructionSpeed(float time) {
+    public static float GetRocketConstructionSpeed(float time) {
         time *= StoryGoalManager.main.IsGoalComplete(SeaToSeaMod.AuroraTerminal.key) ? 0.8F : 1.6F;
         return time;
     }
 
-    public static bool getFabricatorTime(DIHooks.CraftTimeCalculation calc) {
+    public static bool GetFabricatorTime(DIHooks.CraftTimeCalculation calc) {
         if (StoryGoalManager.main.IsGoalComplete(SeaToSeaMod.AuroraTerminal.key)) {
             calc.CraftingDuration *= (float)MathUtil.linterpolate(calc.CraftingDuration, 1, 2, 1, 0.5, true);
             calc.CraftingDuration = Mathf.Min(calc.CraftingDuration, 10);
@@ -841,7 +841,7 @@ public static class C2CHooks {
         return true;
     }
 
-    public static float getRadialTabAnimSpeed(float orig) {
+    public static float GetRadialTabAnimSpeed(float orig) {
         if (GameModeUtils.currentGameMode != GameModeOption.Survival)
             return orig;
         var morale = MoraleSystem.instance.moralePercentage;
@@ -857,9 +857,9 @@ public static class C2CHooks {
         return f * orig;
     }
 
-    public static float getPropulsionCannonForce(PropulsionCannon prop) {
+    public static float GetPropulsionCannonForce(PropulsionCannon prop) {
         var ret = prop.attractionForce;
-        if (isHeldToolAzuritePowered())
+        if (IsHeldToolAzuritePowered())
             ret *= 3;
         var temp = WaterTemperatureSimulation.main.GetTemperature(Player.main.transform.position);
         if (temp >= 100)
@@ -867,22 +867,22 @@ public static class C2CHooks {
         return ret;
     }
 
-    public static float getPropulsionCannonThrowForce(PropulsionCannon prop) {
+    public static float GetPropulsionCannonThrowForce(PropulsionCannon prop) {
         var ret = prop.shootForce;
-        if (isHeldToolAzuritePowered())
+        if (IsHeldToolAzuritePowered())
             ret *= 1.5F;
         return ret;
     }
 
-    public static float getRepulsionCannonThrowForce(RepulsionCannon prop) {
+    public static float GetRepulsionCannonThrowForce(RepulsionCannon prop) {
         var ret = RepulsionCannon.shootForce;
-        if (isHeldToolAzuritePowered())
+        if (IsHeldToolAzuritePowered())
             ret *= 4;
         return ret;
     }
 
-    public static void onRepulsionCannonTryHit(RepulsionCannon prop, Rigidbody rb) {
-        if (isHeldToolAzuritePowered() && rb.gameObject.GetFullHierarchyPath().Contains("CaptainsQuarters_Keypad")) {
+    public static void OnRepulsionCannonTryHit(RepulsionCannon prop, Rigidbody rb) {
+        if (IsHeldToolAzuritePowered() && rb.gameObject.GetFullHierarchyPath().Contains("CaptainsQuarters_Keypad")) {
             var s = rb.GetComponent<StarshipDoor>();
             //SNUtil.writeToChat("S: "+s);
             if (s) {
@@ -909,14 +909,14 @@ public static class C2CHooks {
                 rb2.velocity = MainCamera.camera.transform.forward * 30F + Vector3.up * 7.5F;
                 rb2.angularVelocity = MathUtil.getRandomVectorAround(Vector3.zero, 2.5F);
                 var fd = door.EnsureComponent<FlyingDoor>();
-                fd.Invoke("solidify", 0.05F);
-                fd.Invoke("thump", 0.15F);
+                fd.Invoke("Solidify", 0.05F);
+                fd.Invoke("Thump", 0.15F);
             }
         }
     }
 
     private class FlyingDoor : MonoBehaviour {
-        private static readonly SoundManager.SoundData impactSound = SoundManager.registerSound(
+        private static readonly SoundManager.SoundData ImpactSound = SoundManager.registerSound(
             SeaToSeaMod.ModDLL,
             "doorhit",
             "Sounds/doorhit.ogg",
@@ -924,19 +924,19 @@ public static class C2CHooks {
             s => { SoundManager.setup3D(s, 200); }
         );
 
-        private void solidify() {
+        private void Solidify() {
             foreach (var c in GetComponentsInChildren<Collider>()) {
                 c.enabled = true;
             }
         }
 
-        private void thump() {
-            SoundManager.playSoundAt(impactSound, transform.position, false, 40, 2);
-            SoundManager.playSoundAt(impactSound, transform.position, false, 40, 2);
+        private void Thump() {
+            SoundManager.playSoundAt(ImpactSound, transform.position, false, 40, 2);
+            SoundManager.playSoundAt(ImpactSound, transform.position, false, 40, 2);
         }
     }
 
-    public static void modifyPropulsibility(DIHooks.PropulsibilityCheck ch) {
+    public static void ModifyPropulsibility(DIHooks.PropulsibilityCheck ch) {
         if (ch.Obj.FindAncestor<Rigidbody>().name.StartsWith(
                 "ExplorableWreck",
                 StringComparison.InvariantCultureIgnoreCase
@@ -952,11 +952,11 @@ public static class C2CHooks {
                 ch.Value = 99999999;
         }
 
-        if (isHeldToolAzuritePowered())
+        if (IsHeldToolAzuritePowered())
             ch.Value *= ch.IsMass ? 6 : 4;
     }
 
-    public static bool isHeldToolAzuritePowered() {
+    public static bool IsHeldToolAzuritePowered() {
         if (Inventory.main == null)
             return false;
         var held = Inventory.main.GetHeld();
@@ -966,9 +966,9 @@ public static class C2CHooks {
         return e && e.battery != null && Mathf.Approximately(e.battery.capacity, C2CItems.t2Battery.capacity);
     }
 
-    public static void onThingInO2Area(OxygenArea a, Collider obj) {
+    public static void OnThingInO2Area(OxygenArea a, Collider obj) {
         if (obj.isPlayer()) {
-            lastO2PipeTime = DayNightCycle.main.timePassedAsFloat;
+            _lastO2PipeTime = DayNightCycle.main.timePassedAsFloat;
             var o2ToAdd = Math.Min(
                 a.oxygenPerSecond * Time.deltaTime,
                 Player.main.GetOxygenCapacity() - Player.main.GetOxygenAvailable()
@@ -981,13 +981,13 @@ public static class C2CHooks {
         }
     }
 
-    public static void updateToolDefaultBattery(EnergyMixin mix) {
+    public static void UpdateToolDefaultBattery(EnergyMixin mix) {
         var p = mix.gameObject.GetComponent<Pickupable>();
         //SNUtil.writeToChat("update tool default battery: "+p+" > "+(p == null ? "" : ""+p.GetTechType()));
         if (p == null)
             return;
-        addT2BatteryAllowance(mix);
-        if (p.GetTechType() == loadTechPistol()) {
+        AddT2BatteryAllowance(mix);
+        if (p.GetTechType() == LoadTechPistol()) {
             mix.defaultBattery = C2CItems.t2Battery.TechType;
             return;
         }
@@ -1000,7 +1000,7 @@ public static class C2CHooks {
         }
     }
 
-    public static void addT2BatteryAllowance(EnergyMixin mix) {
+    public static void AddT2BatteryAllowance(EnergyMixin mix) {
         if (mix.compatibleBatteries.Contains(TechType.Battery) &&
             !mix.compatibleBatteries.Contains(C2CItems.t2Battery.TechType)) {
             mix.compatibleBatteries.Add(C2CItems.t2Battery.TechType); /*
@@ -1012,13 +1012,13 @@ public static class C2CHooks {
         }
     }
 
-    public static GameObject onSpawnBatteryForEnergyMixin(GameObject go) {
+    public static GameObject OnSpawnBatteryForEnergyMixin(GameObject go) {
         //SNUtil.writeToChat("Spawned a "+go);
         go.SetActive(false);
         return go;
     }
 
-    public static IEnumerator collectTimeCapsule(TimeCapsule tc) {
+    public static IEnumerator CollectTimeCapsule(TimeCapsule tc) {
         var someBlocked = false;
         try {
             PDAEncyclopedia.AddTimeCapsule(tc.id, true);
@@ -1048,7 +1048,7 @@ public static class C2CHooks {
         }
     }
 
-    public static void setPingAlpha(uGUI_Ping ico, float orig, PingInstance inst, bool text) {
+    public static void SetPingAlpha(uGUI_Ping ico, float orig, PingInstance inst, bool text) {
         /*
         if (Player.main != null && VoidSpikesBiome.instance.isInBiome(Player.main.transform.position)) {
             return inst.pingType == PingType.Seamoth;
@@ -1060,7 +1060,7 @@ public static class C2CHooks {
             ico.SetIconAlpha(a);
     }
 
-    public static Vector3 getApparentPingPosition(PingInstance inst) {
+    public static Vector3 GetApparentPingPosition(PingInstance inst) {
         if (!inst || !inst.origin)
             return Vector3.zero;
         var pos = inst.origin.position;
@@ -1077,13 +1077,13 @@ public static class C2CHooks {
         return pos;
     }
 
-    public static void recalculateDamage(DIHooks.DamageToDeal dmg) {
+    public static void RecalculateDamage(DIHooks.DamageToDeal dmg) {
         //if (type == DamageType.Acid && dealer == null && target.GetComponentInParent<SeaMoth>() != null)
         //	return 0;
         //SNUtil.writeToChat(dmg.target.name);
         var p = dmg.Target.FindAncestor<Player>();
         if (p != null) {
-            if (dmg.Type == DamageType.Heat && Vector3.Distance(p.transform.position, mountainBaseGeoCenter) <= 27) {
+            if (dmg.Type == DamageType.Heat && Vector3.Distance(p.transform.position, MountainBaseGeoCenter) <= 27) {
                 dmg.SetValue(0);
             } else {
                 var flag = C2CItems.hasSealedOrReinforcedSuit(out var seal, out var reinf);
@@ -1151,7 +1151,7 @@ public static class C2CHooks {
                     dmg.LockValue();
                 }
 
-                if (Vector3.Distance(dmg.Target.transform.position, bkelpBaseGeoCenter) <= 60 &&
+                if (Vector3.Distance(dmg.Target.transform.position, BkelpBaseGeoCenter) <= 60 &&
                     !dmg.Target.FindAncestor<Vehicle>()) {
                     dmg.SetValue(0);
                 }
@@ -1176,7 +1176,7 @@ public static class C2CHooks {
         }
     }
 
-    public static float getVehicleRechargeAmount(Vehicle v) {
+    public static float GetVehicleRechargeAmount(Vehicle v) {
         var baseline = 0.0025F;
         var b = v.GetComponentInParent<SubRoot>();
         if (b && b.isBase && b.currPowerRating > 0) {
@@ -1186,23 +1186,23 @@ public static class C2CHooks {
         return baseline;
     }
 
-    public static float getPlayerO2Rate(Player ep) {
+    public static float GetPlayerO2Rate(Player ep) {
         return EnvironmentalDamageSystem.instance.getPlayerO2Rate(ep);
     }
 
-    public static float getPlayerO2Use(Player ep, float breathingInterval, int depthClass) {
+    public static float GetPlayerO2Use(Player ep, float breathingInterval, int depthClass) {
         return EnvironmentalDamageSystem.instance.getPlayerO2Use(ep, breathingInterval, depthClass);
     }
 
-    public static void tickPlayerEnviroAlerts(RebreatherDepthWarnings warn) {
+    public static void TickPlayerEnviroAlerts(RebreatherDepthWarnings warn) {
         EnvironmentalDamageSystem.instance.tickPlayerEnviroAlerts(warn);
     }
 
-    public static void doEnvironmentalDamage(TemperatureDamage dmg) {
+    public static void DoEnvironmentalDamage(TemperatureDamage dmg) {
         EnvironmentalDamageSystem.instance.tickTemperatureDamages(dmg);
     }
 
-    public static void onSetPlayerACU(Player ep, WaterPark w) {
+    public static void OnSetPlayerACU(Player ep, WaterPark w) {
         if (w) {
             foreach (var wp in w.items) {
                 LifeformScanningSystem.instance.onObjectSeen(wp.gameObject, true, true);
@@ -1210,11 +1210,11 @@ public static class C2CHooks {
         }
     }
 
-    public static void onCrashfishExplode(Crash c) {
+    public static void OnCrashfishExplode(Crash c) {
         LifeformScanningSystem.instance.onObjectSeen(c.gameObject, false);
     }
 
-    public static void onItemPickedUp(DIHooks.ItemPickup ip) {
+    public static void OnItemPickedUp(DIHooks.ItemPickup ip) {
         var p = ip.Item;
         AvoliteSpawner.Instance.CleanPickedUp(p);
         p.gameObject.removeComponent<SinkingGroundChunk>();
@@ -1275,13 +1275,13 @@ public static class C2CHooks {
             }
         } else if (CustomEgg.GetEgg(TechType.SpineEel).Includes(tt)) {
             //SNUtil.writeToChat((Player.main.transform.position - lrnest).magnitude.ToString());
-            if ((Player.main.transform.position - lrnest).magnitude <= 50) {
+            if ((Player.main.transform.position - Lrnest).magnitude <= 50) {
                 StoryGoal.Execute("LRNest", Story.GoalType.Story);
-                var set = WorldUtil.getObjectsNearWithComponent<SpineEel>(lrnest, 120);
+                var set = WorldUtil.getObjectsNearWithComponent<SpineEel>(Lrnest, 120);
                 //SNUtil.writeToChat(set.Count.ToString());
                 for (var i = set.Count; i < 6; i++) {
                     var go = ObjectUtil.createWorldObject(VanillaCreatures.RIVERPROWLER.prefab);
-                    go.transform.position = MathUtil.getRandomVectorAround(lrNestDefender, 100);
+                    go.transform.position = MathUtil.getRandomVectorAround(LrNestDefender, 100);
                     set.Add(go.GetComponent<SpineEel>());
                 }
 
@@ -1336,19 +1336,19 @@ public static class C2CHooks {
         }
     }
 
-    public static float getReachDistance() {
-        return skipRaytrace || Player.main.GetVehicle() ? 2 :
-            (Player.main.transform.position - lostRiverCachePanel).sqrMagnitude <= 100 ? 4F :
+    public static float GetReachDistance() {
+        return SkipRaytrace || Player.main.GetVehicle() ? 2 :
+            (Player.main.transform.position - LostRiverCachePanel).sqrMagnitude <= 100 ? 4F :
             VoidSpikesBiome.instance.IsInBiome(Player.main.transform.position) ? 3.5F : 2;
     }
 
-    public static void checkTargetingSkip(DIHooks.TargetabilityCheck ch) {
-        if (skipRaytrace)
+    public static void CheckTargetingSkip(DIHooks.TargetabilityCheck ch) {
+        if (SkipRaytrace)
             return;
         //SNUtil.log("Checking targeting skip of "+id+" > "+id.ClassId);
         if (ch.Prefab.ClassId == "b250309e-5ad0-43ca-9297-f79e22915db6" && Vector3.Distance(
                 Player.main.transform.position,
-                lrpowerSealSetpieceCenter
+                LrpowerSealSetpieceCenter
             ) <= 8) { //to allow to hit the things inside the mouth
             ch.AllowTargeting = false;
         } else if (VoidSpike.isSpike(ch.Prefab.ClassId) && VoidSpikesBiome.instance.IsInBiome(ch.Transform.position)) {
@@ -1356,26 +1356,26 @@ public static class C2CHooks {
         }
     }
 
-    public static EntityCell getEntityCellForInt3(Array3<EntityCell> data, Int3 raw, BatchCells batch) {
+    public static EntityCell GetEntityCellForInt3(Array3<EntityCell> data, Int3 raw, BatchCells batch) {
         var n = data.GetLength(0) / 2;
         var real = raw + new Int3(n, n, n);
         return data.Get(real);
     }
 
-    public static void setEntityCellForInt3(Array3<EntityCell> data, Int3 raw, EntityCell put, BatchCells batch) {
+    public static void SetEntityCellForInt3(Array3<EntityCell> data, Int3 raw, EntityCell put, BatchCells batch) {
         var n = data.GetLength(0) / 2;
         var real = raw + new Int3(n, n, n);
         data.Set(real, put);
     }
 
-    public static void initBatchCells(BatchCells b) { //default 10 5 5 5
+    public static void InitBatchCells(BatchCells b) { //default 10 5 5 5
         b.cellsTier0 = new Array3<EntityCell>(20);
         b.cellsTier1 = new Array3<EntityCell>(10);
         b.cellsTier2 = new Array3<EntityCell>(10);
         b.cellsTier3 = new Array3<EntityCell>(10);
     }
 
-    public static void onDataboxActivate(BlueprintHandTarget c) {
+    public static void OnDataboxActivate(BlueprintHandTarget c) {
         var over = DataboxTypingMap.instance.getOverride(c);
         if (over == TechType.None && c.unlockTechType == TechType.RepulsionCannon)
             over = AqueousEngineeringMod.wirelessChargerBlock.TechType;
@@ -1405,7 +1405,7 @@ public static class C2CHooks {
         }
     }
 
-    public static void onTreaderChunkSpawn(SinkingGroundChunk chunk) {
+    public static void OnTreaderChunkSpawn(SinkingGroundChunk chunk) {
         if (UnityEngine.Random.Range(0F, 1F) <
             (SeaToSeaMod.ModConfig.getBoolean(C2CConfig.ConfigEntries.HARDMODE) ? 0.92 : 0.88))
             return;
@@ -1431,8 +1431,8 @@ public static class C2CHooks {
         owner.destroy(false);
     }
 
-    public static void onResourceSpawn(ResourceTracker p) {
-        if (skipResourceSpawn)
+    public static void OnResourceSpawn(ResourceTracker p) {
+        if (SkipResourceSpawn)
             return;
         var pi = p.GetComponent<PrefabIdentifier>();
         if (pi && pi.ClassId == VanillaResources.LARGE_SULFUR.prefab) {
@@ -1441,12 +1441,12 @@ public static class C2CHooks {
         }
     }
 
-    public static void doEnviroVehicleDamage(CrushDamage dmg) {
+    public static void DoEnviroVehicleDamage(CrushDamage dmg) {
         EnvironmentalDamageSystem.instance.tickCyclopsDamage(dmg);
     }
 
-    public static void getWaterTemperature(DIHooks.WaterTemperatureCalculation calc) {
-        if (skipTemperatureCheck)
+    public static void GetWaterTemperature(DIHooks.WaterTemperatureCalculation calc) {
+        if (SkipTemperatureCheck)
             return;
         if (EnvironmentalDamageSystem.instance.TEMPERATURE_OVERRIDE >= 0) {
             calc.SetValue(EnvironmentalDamageSystem.instance.TEMPERATURE_OVERRIDE);
@@ -1455,10 +1455,10 @@ public static class C2CHooks {
         }
 
         //SNUtil.writeToChat("C2C: Checking water temp @ "+calc.position+" def="+calc.originalValue);
-        if (Vector3.Distance(calc.Position, mountainBaseGeoCenter) <= 20) {
+        if (Vector3.Distance(calc.Position, MountainBaseGeoCenter) <= 20) {
             calc.SetValue(Mathf.Min(calc.GetTemperature(), 45));
         } else {
-            var bdist = Vector3.Distance(calc.Position, bkelpBaseNuclearReactor);
+            var bdist = Vector3.Distance(calc.Position, BkelpBaseNuclearReactor);
             if (bdist <= 12)
                 calc.SetValue(Mathf.Max(calc.GetTemperature(), 90 - bdist * 6F));
         }
@@ -1531,7 +1531,7 @@ public static class C2CHooks {
             calc.setValue(C2CMoth.getOverrideTemperature(calc.getTemperature()));*/
     }
 
-    public static void onPrecursorDoorSpawn(PrecursorKeyTerminal pk) {
+    public static void OnPrecursorDoorSpawn(PrecursorKeyTerminal pk) {
         try {
             var parent = pk.transform.parent;
             var pi = parent == null ? null : parent.GetComponent<PrefabIdentifier>();
@@ -1592,7 +1592,7 @@ public static class C2CHooks {
         }*/
     }
 
-    public static GameObject getCrafterGhostModel(GameObject ret, TechType tech) {
+    public static GameObject GetCrafterGhostModel(GameObject ret, TechType tech) {
         SNUtil.Log("Crafterghost for " + tech + ": " + ret);
         if (tech == TechType.PrecursorKey_Red || tech == TechType.PrecursorKey_White) {
             ret = ObjectUtil.lookupPrefab(CraftData.GetClassIdForTechType(tech));
@@ -1608,13 +1608,13 @@ public static class C2CHooks {
         return ret;
     }
 
-    public static void onSpawnLifepod(EscapePod pod) {
+    public static void OnSpawnLifepod(EscapePod pod) {
         pod.gameObject.EnsureComponent<C2CLifepod>();
         pod.gameObject.EnsureComponent<Magnetic>();
     }
 
-    public static void onSkyApplierSpawn(SkyApplier pk) {
-        if (skipSkyApplierSpawn)
+    public static void OnSkyApplierSpawn(SkyApplier pk) {
+        if (SkipSkyApplierSpawn)
             return;
         var go = pk.gameObject;
         if (go.name.StartsWith("Seamoth", StringComparison.InvariantCultureIgnoreCase) && go.name.EndsWith(
@@ -1630,10 +1630,10 @@ public static class C2CHooks {
 
         var pi = go.FindAncestor<PrefabIdentifier>();
         if (SNUtil.Match(pi, "d79ab37f-23b6-42b9-958c-9a1f4fc64cfd") &&
-            Vector3.Distance(fcsWreckOpenableDoor, go.transform.position) <= 0.5) {
+            Vector3.Distance(FcsWreckOpenableDoor, go.transform.position) <= 0.5) {
             new WreckDoorSwaps.DoorSwap(go.transform.position, "Handle").applyTo(go);
         } else if (SNUtil.Match(pi, "055b3160-f57b-46ba-80f5-b708d0c8180e") &&
-                   Vector3.Distance(fcsWreckBlockedDoor, go.transform.position) <= 0.5) {
+                   Vector3.Distance(FcsWreckBlockedDoor, go.transform.position) <= 0.5) {
             new WreckDoorSwaps.DoorSwap(go.transform.position, "Blocked").applyTo(go);
         } else if (SNUtil.Match(pi, VanillaCreatures.SEA_TREADER.prefab)) {
             //go.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.Global;
@@ -1732,7 +1732,7 @@ public static class C2CHooks {
         else if (SNUtil.match(pi, "SeaVoyager")) {
             go.EnsureComponent<C2CVoyager>();
         }*/ else if (SNUtil.Match(pi, "172d9440-2670-45a3-93c7-104fee6da6bc")) {
-            if (Vector3.Distance(go.transform.position, lostRiverCachePanel) < 2) {
+            if (Vector3.Distance(go.transform.position, LostRiverCachePanel) < 2) {
                 var r = go.getChildObject("Precursor_Lab_infoframe/Precursor_Lab_infoframe_glass")
                     .GetComponent<Renderer>();
                 r.materials[0].SetColor("_Color", new Color(1, 1, 1, /*0.43F*/0.24F));
@@ -1779,9 +1779,9 @@ public static class C2CHooks {
         } /*
         else if (SNUtil.match(pi, VanillaCreatures.GHOST_LEVIATHAN && pi.GetComponentInChildren<GhostLeviatanVoid>()) {
             ***
-        }*/ else if (pi && auroraFires.Contains(pi.ClassId) &&
+        }*/ else if (pi && AuroraFires.Contains(pi.ClassId) &&
                      EnvironmentalDamageSystem.instance.isPositionInAuroraPrawnBay(pi.transform.position)) {
-            blueAuroraPrawnFire(go);
+            BlueAuroraPrawnFire(go);
         } else if (SNUtil.Match(pi, "b86d345e-0517-4f6e-bea4-2c5b40f623b4") && pi.transform.parent &&
                    pi.transform.parent.name.Contains("ExoRoom_Weldable")) {
             var inner = go.getChildObject("Starship_doors_manual_01/Starship_doors_automatic");
@@ -1807,9 +1807,9 @@ public static class C2CHooks {
             d.unlockedTexture = TextureManager.getTexture(SeaToSeaMod.ModDLL, "Textures/FireDoor2_Illum");
             //WeldableWallPanelGeneric panel = go.transform.parent.GetComponentInChildren<WeldableWallPanelGeneric>();
             var pt = /*panel.sendMessageFrom*/go.transform.parent.gameObject.EnsureComponent<PrawnBayDoorTriggers>();
-            pt.door = d.GetComponent<StarshipDoor>();
+            pt.Door = d.GetComponent<StarshipDoor>();
             var ht = inner.EnsureComponent<GenericHandTarget>();
-            pt.hoverHint = ht;
+            pt.HoverHint = ht;
             ht.onHandHover = new HandTargetEvent();
             ht.onHandHover.AddListener(hte => {
                     HandReticle.main.SetIcon(HandReticle.IconType.Info, 1f);
@@ -1835,7 +1835,7 @@ public static class C2CHooks {
             fire.transform.parent = go.transform;
             fire.transform.position = Vector3.Lerp(p1, p2, 0.5F) + new Vector3(1.3F, -0.05F, -1.7F);
             fire.transform.localScale = new Vector3(1.8F, 1, 1.8F);
-            blueAuroraPrawnFire(fire);
+            BlueAuroraPrawnFire(fire);
             //fire.removeComponent<VFXExtinguishableFire>();
             var lv = fire.GetComponent<LiveMixin>();
             lv.invincible = true;
@@ -1870,15 +1870,15 @@ public static class C2CHooks {
             go.EnsureComponent<BrineCoralTag>();
             d.onDrilled += (dr) => { dr.GetComponent<BrineCoralTag>().onDrilled(); };
         } else if (SNUtil.Match(pi, "58247109-68b9-411f-b90f-63461df9753a") &&
-                   Vector3.Distance(deepDegasiTablet, go.transform.position) <= 0.2) {
+                   Vector3.Distance(DeepDegasiTablet, go.transform.position) <= 0.2) {
             var go2 = ObjectUtil.createWorldObject(C2CItems.brokenOrangeTablet.ClassID);
             go2.transform.position = go.transform.position;
             go2.transform.rotation = go.transform.rotation;
             go.destroy(false);
         } else if (pi && (pi.ClassId == "92fb421e-a3f6-4b0b-8542-fd4faee4202a" ||
                           pi.classId == "53ffa3e8-f2f7-43b8-a5c7-946e766aff64")) {
-            for (var i = 0; i < purpleTabletsToBreak.Count; i++) {
-                var pos = purpleTabletsToBreak[i];
+            for (var i = 0; i < PurpleTabletsToBreak.Count; i++) {
+                var pos = PurpleTabletsToBreak[i];
                 if (Vector3.Distance(pos, go.transform.position) <= 0.2) {
                     var go2 = ObjectUtil.createWorldObject(
                         i == 2 ? SeaToSeaMod.PurpleTabletPartA.ClassID : "83b61f89-1456-4ff5-815a-ecdc9b6cc9e4"
@@ -1952,14 +1952,14 @@ public static class C2CHooks {
             go.transform.position = auroraStorageModule.position;
             go.transform.rotation = auroraStorageModule.rotation;
         }*/
-        else if (SNUtil.Match(pi, auroraDepthModule.prefabName) &&
-                 Vector3.Distance(auroraDepthModule.position, go.transform.position) <= 0.2) {
+        else if (SNUtil.Match(pi, AuroraDepthModule.prefabName) &&
+                 Vector3.Distance(AuroraDepthModule.position, go.transform.position) <= 0.2) {
             var go2 = ObjectUtil.createWorldObject(SeaToSeaMod.BrokenAuroraDepthModule.ClassID);
             go2.transform.position = go.transform.position;
             go2.transform.rotation = go.transform.rotation;
             go.destroy(false);
         } else if (SNUtil.Match(pi, "bc9354f8-2377-411b-be1f-01ea1914ec49") &&
-                   Vector3.Distance(auroraRepulsionGunTerminal, go.transform.position) <= 0.2) {
+                   Vector3.Distance(AuroraRepulsionGunTerminal, go.transform.position) <= 0.2) {
             pi.GetComponent<StoryHandTarget>().goal = SeaToSeaMod.AuroraTerminal;
         } else if (pi && pi.GetComponent<BlueprintHandTarget>()) {
             DamagedDataboxSystem.instance.onDataboxSpawn(go);
@@ -1987,7 +1987,7 @@ public static class C2CHooks {
             go.EnsureComponent<AttackRelay>();
         }
 
-        if (pi && !floaterRocks.Contains(pi.ClassId) && CraftData.GetTechType(go) != TechType.FloatingStone &&
+        if (pi && !FloaterRocks.Contains(pi.ClassId) && CraftData.GetTechType(go) != TechType.FloatingStone &&
             go.GetComponent<Drillable>()) {
             var rb = go.FindAncestor<Rigidbody>();
             if (rb)
@@ -2002,7 +2002,7 @@ public static class C2CHooks {
             panel.liveMixin.data.canResurrect = true;
     }
 
-    public static void onFireSpawn(VFXExtinguishableFire fire) { /*
+    public static void OnFireSpawn(VFXExtinguishableFire fire) { /*
         SNUtil.log("Spawned fire "+fire+" @ "+fire.transform.position);
         PrefabIdentifier pi = fire.gameObject.FindAncestor<PrefabIdentifier>();
         SNUtil.log("pi: "+(pi ? pi.classId : "null"));
@@ -2012,7 +2012,7 @@ public static class C2CHooks {
         fire.gameObject.EnsureComponent<AuroraFireChecker>();
     }
 
-    private static void blueAuroraPrawnFire(GameObject fire) {
+    private static void BlueAuroraPrawnFire(GameObject fire) {
         fire.EnsureComponent<AuroraFireBluer>();
     }
 
@@ -2020,7 +2020,7 @@ public static class C2CHooks {
         private void Update() {
             var pi = gameObject.FindAncestor<PrefabIdentifier>();
             if (pi) {
-                if (auroraFires.Contains(pi.ClassId) &&
+                if (AuroraFires.Contains(pi.ClassId) &&
                     EnvironmentalDamageSystem.instance.isPositionInAuroraPrawnBay(pi.transform.position)) {
                     pi.gameObject.EnsureComponent<AuroraFireBluer>();
                 }
@@ -2031,22 +2031,22 @@ public static class C2CHooks {
     }
 
     private class AuroraFireBluer : MonoBehaviour {
-        private float age;
+        private float _age;
 
         private void Update() {
-            age += Time.deltaTime;
+            _age += Time.deltaTime;
             var flag = false;
             //SNUtil.log("Trying to blue prawn bay fire "+gameObject.name+" @ "+transform.position);
             foreach (var r in GetComponentsInChildren<Renderer>(true)) {
                 if (!r || r.name == null || r.materials == null || r.materials.Length == 0)
                     continue;
                 //SNUtil.log("Checking renderer "+r.name+" in "+r.gameObject.GetFullHierarchyPath());
-                if (auroraPrawnFireColors.ContainsKey(r.name)) {
+                if (AuroraPrawnFireColors.ContainsKey(r.name)) {
                     foreach (var m in r.materials) {
                         //SNUtil.log("Setting color to "+auroraPrawnFireColors[r.name]);
                         if (!m)
                             continue;
-                        m.color = auroraPrawnFireColors[r.name];
+                        m.color = AuroraPrawnFireColors[r.name];
                         flag = true;
                     }
                 }
@@ -2055,7 +2055,7 @@ public static class C2CHooks {
             var l = GetComponentInChildren<Light>();
             if (l)
                 l.color = new Color(0.55F, 0.67F, 1F);
-            if (flag && age >= 0.5F) {
+            if (flag && _age >= 0.5F) {
                 var l2 = gameObject.addLight(0.4F, 32F, l.color).setName("BlueFireLight");
                 //SNUtil.log("Bluing complete. Destroying component.");
                 this.destroy(false);
@@ -2063,34 +2063,34 @@ public static class C2CHooks {
         }
     }
 
-    public static void onStartWaterFilter(FiltrationMachine fm) {
+    public static void OnStartWaterFilter(FiltrationMachine fm) {
         fm.storageContainer.Resize(2, 3); //add another row for byproducts
-        fm.gameObject.EnsureComponent<C2CWaterFilter>().machine = fm;
+        fm.gameObject.EnsureComponent<C2CWaterFilter>().Machine = fm;
     }
 
     private class C2CWaterFilter : MonoBehaviour {
-        internal FiltrationMachine machine;
+        internal FiltrationMachine Machine;
 
-        private float lastBiomeCheck;
+        private float _lastBiomeCheck;
 
-        private BiomeBase biome;
+        private BiomeBase _biome;
 
         private void Update() {
-            if (!machine)
-                machine = GetComponent<FiltrationMachine>();
+            if (!Machine)
+                Machine = GetComponent<FiltrationMachine>();
             var time = DayNightCycle.main.timePassedAsFloat;
-            if (time - lastBiomeCheck >= 30) {
-                biome = BiomeBase.GetBiome(machine.transform.position);
-                lastBiomeCheck = time;
+            if (time - _lastBiomeCheck >= 30) {
+                _biome = BiomeBase.GetBiome(Machine.transform.position);
+                _lastBiomeCheck = time;
             }
 
-            if (biome == VanillaBiomes.Lostriver || biome == VanillaBiomes.Cove) {
-                machine.timeRemainingSalt -= Time.deltaTime * 1.5F; //2.5x salt rate in lost river
-                if (machine.timeRemainingSalt <= 0 &&
-                    machine.storageContainer.container.GetCount(TechType.Salt) < machine.maxSalt) { //need to recheck
-                    machine.timeRemainingSalt = -1f;
-                    machine.Spawn(machine.saltPrefab);
-                    machine.TryFilterSalt();
+            if (_biome == VanillaBiomes.Lostriver || _biome == VanillaBiomes.Cove) {
+                Machine.timeRemainingSalt -= Time.deltaTime * 1.5F; //2.5x salt rate in lost river
+                if (Machine.timeRemainingSalt <= 0 &&
+                    Machine.storageContainer.container.GetCount(TechType.Salt) < Machine.maxSalt) { //need to recheck
+                    Machine.timeRemainingSalt = -1f;
+                    Machine.Spawn(Machine.saltPrefab);
+                    Machine.TryFilterSalt();
                 }
             }
         }
@@ -2109,8 +2109,8 @@ public static class C2CHooks {
         }
     }
 
-    public static void tickFruitPlant(DIHooks.FruitPlantTag fpt) {
-        if (skipFruitPlantTick)
+    public static void TickFruitPlant(DIHooks.FruitPlantTag fpt) {
+        if (SkipFruitPlantTick)
             return;
         var fp = fpt.GetPlant();
         if (fp && fp.gameObject.isFarmedPlant() && WorldUtil.isPlantInNativeBiome(fp.gameObject)) {
@@ -2119,27 +2119,27 @@ public static class C2CHooks {
     }
 
     private class PrawnBayDoorTriggers : MonoBehaviour {
-        internal GenericHandTarget hoverHint;
+        internal GenericHandTarget HoverHint;
 
-        internal StarshipDoor door;
+        internal StarshipDoor Door;
 
-        private bool wasOpen;
+        private bool _wasOpen;
 
         public void UnlockDoor() {
-            if (hoverHint)
-                hoverHint.destroy();
+            if (HoverHint)
+                HoverHint.destroy();
         }
 
         private void Update() {
-            if (door && door.doorOpen && !wasOpen) {
-                wasOpen = true;
+            if (Door && Door.doorOpen && !_wasOpen) {
+                _wasOpen = true;
                 EnvironmentalDamageSystem.instance.triggerAuroraPrawnBayWarning();
                 Player.main.liveMixin.TakeDamage(5, Player.main.transform.position, DamageType.Heat, gameObject);
             }
         }
     }
 
-    public static void updateSeamothModules(SeaMoth sm, int slotID, TechType tt, bool added) {
+    public static void UpdateSeamothModules(SeaMoth sm, int slotID, TechType tt, bool added) {
         sm.gameObject.EnsureComponent<C2CMoth>().recalculateModules();
         sm.gameObject.EnsureComponent<BrightLightController>().recalculateModule();
         sm.gameObject.EnsureComponent<SeamothTetherController>().recalculateModule();
@@ -2147,7 +2147,7 @@ public static class C2CHooks {
             ItemUnlockLegitimacySystem.instance.validateModule(sm, slotID, tt);
     }
 
-    public static void updateCyclopsModules(SubRoot sm) {
+    public static void UpdateCyclopsModules(SubRoot sm) {
         if (C2CIntegration.seaVoyager != TechType.None && sm.GetType() == C2CIntegration.seaVoyagerComponent) {
             //this is the load hook as it has no SkyAppliers
             sm.gameObject.EnsureComponent<C2CVoyager>();
@@ -2160,20 +2160,20 @@ public static class C2CHooks {
             ItemUnlockLegitimacySystem.instance.validateModules(sm);
     }
 
-    public static void updatePrawnModules(Exosuit sm, int slotID, TechType tt, bool added) {
+    public static void UpdatePrawnModules(Exosuit sm, int slotID, TechType tt, bool added) {
         sm.gameObject.EnsureComponent<BrightLightController>().recalculateModule();
         if (added && GameModeUtils.currentEffectiveMode != GameModeOption.Creative && !SNUtil.CanUseDebug())
             ItemUnlockLegitimacySystem.instance.validateModule(sm, slotID, tt);
     }
 
-    public static void useSeamothModule(SeaMoth sm, TechType tt, int slotID) {
+    public static void UseSeamothModule(SeaMoth sm, TechType tt, int slotID) {
     }
 
-    public static float getVehicleTemperature(Vehicle v) {
+    public static float GetVehicleTemperature(Vehicle v) {
         return C2CMoth.getOverrideTemperature(v, WaterTemperatureSimulation.main.GetTemperature(v.transform.position));
     }
 
-    public static bool isSpawnableVoid(string biome) {
+    public static bool IsSpawnableVoid(string biome) {
         var ret = VoidSpikeLeviathanSystem.instance.isSpawnableVoid(biome);
         if (ret && Player.main.IsSwimming() && !Player.main.GetVehicle() &&
             VoidGhostLeviathansSpawner.main.spawnedCreatures.Count < 3 &&
@@ -2184,17 +2184,17 @@ public static class C2CHooks {
         return ret;
     }
 
-    public static GameObject getVoidLeviathan(VoidGhostLeviathansSpawner spawner, Vector3 pos) {
+    public static GameObject GetVoidLeviathan(VoidGhostLeviathansSpawner spawner, Vector3 pos) {
         return VoidSpikeLeviathanSystem.instance.getVoidLeviathan(spawner, pos);
     }
 
-    public static void tickVoidLeviathan(GhostLeviatanVoid gv) {
-        if (skipVoidLeviTick)
+    public static void TickVoidLeviathan(GhostLeviatanVoid gv) {
+        if (SkipVoidLeviTick)
             return;
         VoidSpikeLeviathanSystem.instance.tickVoidLeviathan(gv);
     }
 
-    public static void pingSeamothSonar(SeaMoth sm) {
+    public static void PingSeamothSonar(SeaMoth sm) {
         var vv = VanillaBiomes.Void.IsInBiome(sm.transform.position);
         VoidSpikeLeviathanSystem.instance.temporarilyDisableSeamothStealth(sm, vv ? 30 : 10);
         if (vv) {
@@ -2207,7 +2207,7 @@ public static class C2CHooks {
         }
     }
 
-    public static void onTorpedoFired(Bullet b, Vehicle v) {
+    public static void OnTorpedoFired(Bullet b, Vehicle v) {
         if (v is SeaMoth moth)
             VoidSpikeLeviathanSystem.instance.temporarilyDisableSeamothStealth(
                 moth,
@@ -2215,7 +2215,7 @@ public static class C2CHooks {
             );
     }
 
-    public static void onTorpedoExploded(SeamothTorpedo p, Transform result) {
+    public static void OnTorpedoExploded(SeamothTorpedo p, Transform result) {
         var v = Player.main.GetVehicle();
         if (v is SeaMoth moth)
             VoidSpikeLeviathanSystem.instance.temporarilyDisableSeamothStealth(
@@ -2224,17 +2224,17 @@ public static class C2CHooks {
             );
     }
 
-    public static void pingAnySonar(SNCameraRoot cam) {
+    public static void PingAnySonar(SNCameraRoot cam) {
         if (VoidSpikesBiome.instance.IsInBiome(cam.transform.position)) {
             VoidSpikeLeviathanSystem.instance.triggerEMInterference();
         }
     }
 
-    public static void pulseSeamothDefence(SeaMoth sm) {
+    public static void PulseSeamothDefence(SeaMoth sm) {
         VoidSpikeLeviathanSystem.instance.temporarilyDisableSeamothStealth(sm, 12);
     }
 
-    public static void onBaseSonarPinged(GameObject go) {
+    public static void OnBaseSonarPinged(GameObject go) {
         if (VoidSpikesBiome.instance.IsInBiome(go.transform.position)) {
             var ep = Player.main;
             var v = ep.GetVehicle();
@@ -2243,7 +2243,7 @@ public static class C2CHooks {
         }
     }
 
-    public static void getGrinderDrillableDrop(DrillableGrindingResult res) {
+    public static void GetGrinderDrillableDrop(DrillableGrindingResult res) {
         if (res.materialTech == TechType.Sulphur) {
             //SNUtil.writeToChat("Intercepting grinding sulfur");
             StoryGoal.Execute("GrabSulfur", Story.GoalType.Story);
@@ -2252,7 +2252,7 @@ public static class C2CHooks {
         }
     }
 
-    public static void onLavaBombHit(LavaBombTag bomb, GameObject hit) {
+    public static void OnLavaBombHit(LavaBombTag bomb, GameObject hit) {
         if (hit) {
             var cm = hit.FindAncestor<C2CMoth>();
             if (cm)
@@ -2274,30 +2274,30 @@ public static class C2CHooks {
         }
     }
 
-    public static void onAnchorPodExplode(ExplodingAnchorPodDamage dmg) {
+    public static void OnAnchorPodExplode(ExplodingAnchorPodDamage dmg) {
         if (VoidSpikesBiome.instance.IsInBiome(dmg.toDamage.transform.position) &&
             dmg.toDamage.gameObject.FindAncestor<Player>()) {
             dmg.damageAmount *= 0.67F;
         }
     }
 
-    public static void onBloodKelpGrab(PredatoryBloodvine kelp, GameObject tgt) {
+    public static void OnBloodKelpGrab(PredatoryBloodvine kelp, GameObject tgt) {
         MoraleSystem.instance.shiftMorale(tgt.isPlayer() ? -40 : -10);
     }
 
-    public static void onVoidTongueGrab(VoidTongueTag tag, Rigidbody rb) {
+    public static void OnVoidTongueGrab(VoidTongueTag tag, Rigidbody rb) {
         if (rb.isPlayer() || rb.GetComponent<Vehicle>() || rb.GetComponent<SubRoot>())
             MoraleSystem.instance.shiftMorale(-200);
         else if (rb.GetComponent<GhostLeviatanVoid>())
             MoraleSystem.instance.shiftMorale(-10);
     }
 
-    public static void onVoidTongueRelease(VoidTongueTag tag, Rigidbody rb) {
+    public static void OnVoidTongueRelease(VoidTongueTag tag, Rigidbody rb) {
         if (rb.isPlayer() || rb.GetComponent<Vehicle>() || rb.GetComponent<SubRoot>())
             MoraleSystem.instance.shiftMorale(50);
     }
 
-    public static void onPlanktonActivated(PlanktonCloudTag cloud, GameObject hit) {
+    public static void OnPlanktonActivated(PlanktonCloudTag cloud, GameObject hit) {
         var sm = hit.GetComponent<SeaMoth>();
         if (sm) {
             var hard = SeaToSeaMod.ModConfig.getBoolean(C2CConfig.ConfigEntries.HARDMODE);
@@ -2307,7 +2307,7 @@ public static class C2CHooks {
         }
     }
 
-    public static void tickVoidBubbles(VoidBubbleSpawnerTick t) {
+    public static void TickVoidBubbles(VoidBubbleSpawnerTick t) {
         var dist = VoidSpikesBiome.instance.getDistanceToBiome(t.player.transform.position, true) -
                    VoidSpikesBiome.biomeVolumeRadius;
         var f = (float)MathUtil.linterpolate(dist, 50, 300, 0, 1, true);
@@ -2315,7 +2315,7 @@ public static class C2CHooks {
         t.spawnChance *= f;
     }
 
-    public static void tickVoidBubble(VoidBubbleTag t) {
+    public static void TickVoidBubble(VoidBubbleTag t) {
         var dist = VoidSpikesBiome.instance.getDistanceToBiome(Player.main.transform.position, true) -
                    VoidSpikesBiome.biomeVolumeRadius;
         if (dist <= 120) {
@@ -2323,7 +2323,7 @@ public static class C2CHooks {
         }
     }
 
-    public static ClipMapManager.Settings modifyWorldMeshSettings(ClipMapManager.Settings values) {
+    public static ClipMapManager.Settings ModifyWorldMeshSettings(ClipMapManager.Settings values) {
         var baseline = values.levels[0];
 
         for (var i = 1; i < values.levels.Length - 2; i++) {
@@ -2340,13 +2340,13 @@ public static class C2CHooks {
         return values;
     }
 
-    public static string getO2Tooltip(Oxygen ox) {
+    public static string GetO2Tooltip(Oxygen ox) {
         return ox.GetComponent<Pickupable>().GetTechType() == C2CItems.liquidTank.TechType
             ? ox.GetSecondsLeft() + "s fluid stored in supply tank"
             : LanguageCache.GetOxygenText(ox.GetSecondsLeft());
     }
 
-    public static string getBatteryTooltip(Battery ox) {
+    public static string GetBatteryTooltip(Battery ox) {
         return ox.GetComponent<Pickupable>().GetTechType() == C2CItems.liquidTank.TechType
             ? Mathf.RoundToInt(ox.charge) + "s fluid stored in primary tank"
             : Language.main.GetFormat(
@@ -2357,13 +2357,13 @@ public static class C2CHooks {
             );
     }
 
-    public static void onClickedVehicleUpgrades(VehicleUpgradeConsoleInput v) {
+    public static void OnClickedVehicleUpgrades(VehicleUpgradeConsoleInput v) {
         if (v.docked || SeaToSeaMod.AnywhereSeamothModuleCheatActive ||
             GameModeUtils.currentEffectiveMode == GameModeOption.Creative)
             v.OpenPDA();
     }
 
-    public static void onHoverVehicleUpgrades(VehicleUpgradeConsoleInput v) {
+    public static void OnHoverVehicleUpgrades(VehicleUpgradeConsoleInput v) {
         var main = HandReticle.main;
         if (!v.docked && !SeaToSeaMod.AnywhereSeamothModuleCheatActive &&
             GameModeUtils.currentEffectiveMode != GameModeOption.Creative) {
@@ -2375,7 +2375,7 @@ public static class C2CHooks {
         }
     }
 
-    public static void tryKnife(DIHooks.KnifeAttempt k) {
+    public static void TryKnife(DIHooks.KnifeAttempt k) {
         LifeformScanningSystem.instance.onObjectSeen(k.Target.gameObject, false);
         var tt = CraftData.GetTechType(k.Target.gameObject);
         if (tt == TechType.BlueAmoeba || tt == SeaToSeaMod.GelFountain.TechType) {
@@ -2390,8 +2390,8 @@ public static class C2CHooks {
         }
     }
 
-    public static GameObject getStalkerShinyTarget(GameObject def, CollectShiny cc) {
-        if (skipStalkerShiny)
+    public static GameObject GetStalkerShinyTarget(GameObject def, CollectShiny cc) {
+        if (SkipStalkerShiny)
             return def;
         if (cc.shinyTarget && cc.GetComponent<DeepStalkerTag>()) {
             bool hasPlat = cc.shinyTarget.GetComponent<PlatinumTag>();
@@ -2402,8 +2402,8 @@ public static class C2CHooks {
         return def;
     }
 
-    public static void onShinyTargetIsCurrentlyHeldByStalker(CollectShiny cc) {
-        if (skipStalkerShiny)
+    public static void OnShinyTargetIsCurrentlyHeldByStalker(CollectShiny cc) {
+        if (SkipStalkerShiny)
             return;
         if (cc.shinyTarget && cc.shinyTarget.GetComponent<PlatinumTag>()) {
             var ds = cc.GetComponent<DeepStalkerTag>();
@@ -2414,18 +2414,18 @@ public static class C2CHooks {
         }
     }
 
-    public static bool stalkerTryDropTooth(Stalker s) {
+    public static bool StalkerTryDropTooth(Stalker s) {
         return (!s.GetComponent<DeepStalkerTag>() || UnityEngine.Random.Range(0F, 1F) > 0.8) &&
                (!s.GetComponent<WaterParkCreature>() || PDAScanner.complete.Contains(TechType.StalkerTooth)) &&
                s.LoseTooth();
     }
 
-    public static void tryEat(DIHooks.EatAttempt ea) {
+    public static void TryEat(DIHooks.EatAttempt ea) {
         if (LiquidBreathingSystem.instance.hasLiquidBreathing())
             ea.AllowEat = false;
     }
 
-    public static void tryLaunchRocket(LaunchRocket r) {
+    public static void TryLaunchRocket(LaunchRocket r) {
         if (!r.IsRocketReady())
             return;
         if (LaunchRocket.launchStarted)
@@ -2469,7 +2469,7 @@ public static class C2CHooks {
         FinalLaunchAdditionalRequirementSystem.instance.forceLaunch(r);
     }
 
-    public static void onEMPHit(EMPBlast e, GameObject go) {
+    public static void OnEmpHit(EMPBlast e, GameObject go) {
         VoidSpikeLeviathanSystem.instance.onObjectEMPHit(e, go);
     }
     /*
@@ -2492,11 +2492,11 @@ public static class C2CHooks {
         }
     }*/
 
-    public static float getRadiationLevel(DIHooks.RadiationCheck ch) {
+    public static float GetRadiationLevel(DIHooks.RadiationCheck ch) {
         //SNUtil.writeToChat(ch.originalValue+" @ "+VoidSpikesBiome.instance.getDistanceToBiome(ch.position));
         if (VoidSpikesBiome.instance.getDistanceToBiome(ch.Position) <= VoidSpikesBiome.biomeVolumeRadius + 75)
             return 0;
-        var dd = Vector3.Distance(ch.Position, bkelpBaseGeoCenter);
+        var dd = Vector3.Distance(ch.Position, BkelpBaseGeoCenter);
         if (dd <= 80) {
             var ret = (float)MathUtil.linterpolate(dd, 60, 80, 0.25F, 0, true);
             if (Inventory.main.equipment.GetCount(TechType.RadiationSuit) > 0)
@@ -2512,7 +2512,7 @@ public static class C2CHooks {
         return ch.Value;
     }
 
-    public static float getSolarEfficiencyLevel(DIHooks.SolarEfficiencyCheck ch) {
+    public static float GetSolarEfficiencyLevel(DIHooks.SolarEfficiencyCheck ch) {
         if (!SeaToSeaMod.ModConfig.getBoolean(C2CConfig.ConfigEntries.HARDMODE))
             return ch.Value;
         var depth = Mathf.Max(0F, Ocean.GetDepthOf(ch.Panel.gameObject));
@@ -2528,7 +2528,7 @@ public static class C2CHooks {
         return ch.Panel.depthCurve.Evaluate(f) * ch.Panel.GetSunScalar();
     }
 
-    public static float getModuleFireCost(DIHooks.ModuleFireCostCheck ch) {
+    public static float GetModuleFireCost(DIHooks.ModuleFireCostCheck ch) {
         var hard = SeaToSeaMod.ModConfig.getBoolean(C2CConfig.ConfigEntries.HARDMODE);
         if (hard)
             ch.Value *= 1.5F;
@@ -2537,13 +2537,13 @@ public static class C2CHooks {
         return ch.Value;
     }
 
-    public static void fireSeamothDefence(SeaMoth sm) {
+    public static void FireSeamothDefence(SeaMoth sm) {
         VoidSpikeLeviathanSystem.instance.temporarilyDisableSeamothStealth(sm, 10); //x1.5 on hard already
         sm.energyInterface.ConsumeEnergy(SeaToSeaMod.ModConfig.getBoolean(C2CConfig.ConfigEntries.HARDMODE) ? 5 : 3);
     }
 
-    public static void generateItemTooltips(StringBuilder sb, TechType tt, GameObject go) {
-        if (tt == TechType.LaserCutter && hasLaserCutterUpgrade()) {
+    public static void GenerateItemTooltips(StringBuilder sb, TechType tt, GameObject go) {
+        if (tt == TechType.LaserCutter && HasLaserCutterUpgrade()) {
             TooltipFactory.WriteDescription(
                 sb,
                 "\nCutting Temperature upgraded to allow cutting selected seabase structural elements"
@@ -2558,16 +2558,16 @@ public static class C2CHooks {
         }
     }
 
-    public static void interceptBulkheadLaserCutter(DIHooks.BulkheadLaserCutterHoverCheck ch) {
-        if (!hasLaserCutterUpgrade())
+    public static void InterceptBulkheadLaserCutter(DIHooks.BulkheadLaserCutterHoverCheck ch) {
+        if (!HasLaserCutterUpgrade())
             ch.RefusalLocaleKey = "Need_laserCutterBulkhead_Chit";
     }
 
-    public static bool hasLaserCutterUpgrade() {
+    public static bool HasLaserCutterUpgrade() {
         return StoryGoalManager.main.completedGoals.Contains(SeaToSeaMod.LaserCutterBulkhead.goal.key);
     }
 
-    public static void onKnifed(GameObject go) {
+    public static void OnKnifed(GameObject go) {
         var tt = CraftData.GetTechType(go);
         if (tt == TechType.BlueAmoeba)
             DIHooks.FireKnifeHarvest(
@@ -2583,7 +2583,7 @@ public static class C2CHooks {
             go.GetComponent<GelFountainTag>().onKnifed();
     }
 
-    public static void interceptItemHarvest(DIHooks.KnifeHarvest h) {
+    public static void InterceptItemHarvest(DIHooks.KnifeHarvest h) {
         if (h.Drops.Count > 0) {
             if (h.ObjectType == C2CItems.kelp.TechType) {
                 var tag = h.Hit.FindAncestor<GlowKelpTag>();
@@ -2606,7 +2606,7 @@ public static class C2CHooks {
         }
     }
 
-    public static void onReaperGrab(ReaperLeviathan r, Vehicle v) {
+    public static void OnReaperGrab(ReaperLeviathan r, Vehicle v) {
         MoraleSystem.instance.shiftMorale(v == Player.main.GetVehicle() ? -40 : -20);
         if (SeaToSeaMod.ModConfig.getBoolean(C2CConfig.ConfigEntries.HARDMODE) &&
             KnownTech.Contains(TechType.BaseUpgradeConsole) && !KnownTech.Contains(TechType.SeamothElectricalDefense)) {
@@ -2615,7 +2615,7 @@ public static class C2CHooks {
         }
     }
 
-    public static void onCyclopsDamage(SubRoot r, DamageInfo di) { /*
+    public static void OnCyclopsDamage(SubRoot r, DamageInfo di) { /*
         if (SeaToSeaMod.config.getBoolean(C2CConfig.ConfigEntries.HARDMODE) && !KnownTech.Contains(TechType.CyclopsShieldModule)) {
             float healthFraction = r.live.GetHealthFraction();
             float num = (100f - r.damageManager.overshieldPercentage) / 100f;
@@ -2626,25 +2626,25 @@ public static class C2CHooks {
         }*/
     }
 
-    public static bool chargerConsumeEnergy(IPowerInterface pi, float amt, out float consumed, Charger c) {
+    public static bool ChargerConsumeEnergy(IPowerInterface pi, float amt, out float consumed, Charger c) {
         if (SeaToSeaMod.ModConfig.getBoolean(C2CConfig.ConfigEntries.HARDMODE) &&
             (c is PowerCellCharger || c.GetType().Name.Contains("FCS")))
             amt *= 1.5F;
         return pi.ConsumeEnergy(amt, out consumed);
     }
 
-    public static void tickScannerCamera(MapRoomCamera cam) {
+    public static void TickScannerCamera(MapRoomCamera cam) {
         cam.gameObject.EnsureComponent<CameraLeviathanAttractor>();
         var campos = cam.transform.position;
         if (VoidSpikesBiome.instance.getDistanceToBiome(campos, true) < 200) {
             var time = DayNightCycle.main.timePassedAsFloat;
-            if (time > nextCameraEMPTime) {
+            if (time > _nextCameraEmpTime) {
                 var d = UnityEngine.Random.Range(96F, 150F);
                 var pos = campos + cam.transform.forward * d;
                 pos = MathUtil.getRandomVectorAround(pos, 45);
                 pos = campos + (pos - campos).SetLength(d);
                 VoidSpikeLeviathanSystem.instance.spawnEMPBlast(pos);
-                nextCameraEMPTime = time + UnityEngine.Random.Range(1.2F, 2.5F);
+                _nextCameraEmpTime = time + UnityEngine.Random.Range(1.2F, 2.5F);
             }
         }
 
@@ -2662,7 +2662,7 @@ public static class C2CHooks {
         }
     }
 
-    public static float getCrushDamage(CrushDamage dmg) {
+    public static float GetCrushDamage(CrushDamage dmg) {
         float f = 1;
         if (SeaToSeaMod.ModConfig.getBoolean(C2CConfig.ConfigEntries.HARDMODE)) {
             var ratio = dmg.GetDepth() / dmg.crushDepth;
@@ -2681,7 +2681,7 @@ public static class C2CHooks {
         return dmg.damagePerCrush * f;
     }
 
-    internal static void isItemMapRoomDetectable(ESHooks.ResourceScanCheck rt) {
+    internal static void IsItemMapRoomDetectable(ESHooks.ResourceScanCheck rt) {
         if (rt.Resource.techType == CustomMaterials.getItem(CustomMaterials.Materials.IRIDIUM).TechType) {
             rt.IsDetectable = PDAScanner.complete.Contains(rt.Resource.techType) ||
                               StoryGoalManager.main.completedGoals.Contains(
@@ -2690,7 +2690,7 @@ public static class C2CHooks {
         } else if (rt.Resource.techType == CustomMaterials.getItem(CustomMaterials.Materials.PHASE_CRYSTAL).TechType) {
             rt.IsDetectable = PDAScanner.complete.Contains(rt.Resource.techType) ||
                               PDAManager.getPage("sunbeamdebrishint").isUnlocked();
-        } else if (scanToScannerRoom.Contains(rt.Resource.techType)) {
+        } else if (ScanToScannerRoom.Contains(rt.Resource.techType)) {
             rt.IsDetectable = PDAScanner.complete.Contains(rt.Resource.techType);
         } else if (rt.Resource.techType == SeaToSeaMod.MushroomBioFragment.TechType) {
             rt.IsDetectable = SNUtil.GetFragmentScanCount(rt.Resource.techType) >
@@ -2706,14 +2706,14 @@ public static class C2CHooks {
         }
     }
 
-    private static void onVehicleEnter(Vehicle v, Player ep) { /*
+    private static void OnVehicleEnter(Vehicle v, Player ep) { /*
         if (v is SeaMoth) {
             VoidSpikesBiome.instance.onSeamothEntered((SeaMoth)v, ep);
         }*/
     }
 
-    public static void getCompassDepthLevel(DIHooks.DepthCompassCheck ch) {
-        if (skipCompassCalc)
+    public static void GetCompassDepthLevel(DIHooks.DepthCompassCheck ch) {
+        if (SkipCompassCalc)
             return;
         if (VoidSpikeLeviathanSystem.instance.isVoidFlashActive(true)) {
             ch.Value = VoidSpikeLeviathanSystem.instance.getRandomDepthForDisplay();
@@ -2721,7 +2721,7 @@ public static class C2CHooks {
         }
     }
 
-    public static bool onStasisFreeze(StasisSphere s, Rigidbody c) {
+    public static bool OnStasisFreeze(StasisSphere s, Rigidbody c) {
         var pi = c.GetComponent<PrefabIdentifier>();
         //SNUtil.writeToChat("Froze "+pi??pi.ClassId);
         if (pi && pi.ClassId == C2CItems.alkali.ClassID) {
@@ -2732,7 +2732,7 @@ public static class C2CHooks {
         return false;
     }
 
-    public static bool onStasisUnFreeze(StasisSphere s, Rigidbody c) {
+    public static bool OnStasisUnFreeze(StasisSphere s, Rigidbody c) {
         var pi = c.GetComponent<PrefabIdentifier>();
         //SNUtil.writeToChat("Unfroze "+pi??pi.ClassId);
         if (pi && pi.ClassId == C2CItems.alkali.ClassID) {
@@ -2743,7 +2743,7 @@ public static class C2CHooks {
         return false;
     }
 
-    public static float get3AxisSpeed(float orig, Vehicle v, Vector3 input) {
+    public static float Get3AxisSpeed(float orig, Vehicle v, Vector3 input) {
         if (orig <= 0 || input.magnitude < 0.01F)
             return orig;
         //vanilla is float d = Mathf.Abs(vector.x) * this.sidewardForce + Mathf.Max(0f, vector.z) * this.forwardForce + Mathf.Max(0f, -vector.z) * this.backwardForce + Mathf.Abs(vector.y * this.verticalForce);
@@ -2760,20 +2760,20 @@ public static class C2CHooks {
     }
 
     //Not called anymore, because kick to main menu when die now
-    public static void onPlayerRespawned(Survival s, Player ep, bool post) {
+    public static void OnPlayerRespawned(Survival s, Player ep, bool post) {
         if (post) {
             var hard = SeaToSeaMod.ModConfig.getBoolean(C2CConfig.ConfigEntries.HARDMODE);
-            s.water = Mathf.Max(hard ? 5 : 15, waterToRestore);
-            s.food = Mathf.Max(hard ? 5 : 15, foodToRestore);
+            s.water = Mathf.Max(hard ? 5 : 15, _waterToRestore);
+            s.food = Mathf.Max(hard ? 5 : 15, _foodToRestore);
             MoraleSystem.instance.reset();
         } else {
-            waterToRestore = s.water;
-            foodToRestore = s.food;
+            _waterToRestore = s.water;
+            _foodToRestore = s.food;
             EnvironmentalDamageSystem.instance.resetCooldowns();
         }
     }
 
-    public static void onItemsLost() {
+    public static void OnItemsLost() {
         /* no longer necessary because kick to main menu instead
         foreach (InventoryItem ii in ((IEnumerable<InventoryItem>)Inventory.main.container)) {
             if (ii != null && ii.item && ii.item.GetTechType() == CustomMaterials.getItem(CustomMaterials.Materials.IRIDIUM).TechType) {
@@ -2782,14 +2782,14 @@ public static class C2CHooks {
         }*/
     }
 
-    public static void onDeath() {
+    public static void OnDeath() {
         //SNUtil.writeToChat("You died);
         //IngameMenu.main.QuitGame(true);
-        playerDied = true;
+        _playerDied = true;
         C2CUtil.setupDeathScreen();
     }
 
-    public static void onSelfScan() {
+    public static void OnSelfScan() {
         var msg = SeaToSeaMod.ModConfig.getBoolean(C2CConfig.ConfigEntries.HARDMODE)
             ? PDAMessages.Messages.LiquidBreathingSelfScanHard
             : PDAMessages.Messages.LiquidBreathingSelfScanEasy;
@@ -2798,14 +2798,14 @@ public static class C2CHooks {
         }
     }
 
-    public static void onScanComplete(PDAScanner.EntryData data) {
+    public static void OnScanComplete(PDAScanner.EntryData data) {
         C2CProgression.Instance.OnScanComplete(data);
         LifeformScanningSystem.instance.onScanComplete(data);
         DataCollectionTracker.instance.onScanComplete(data);
         MoraleSystem.instance.shiftMorale(1);
     }
 
-    public static void onTechUnlocked(TechType tech, bool vb) { /*
+    public static void OnTechUnlocked(TechType tech, bool vb) { /*
     if (tech == TechType.PrecursorKey_Orange) {
         Story.StoryGoal.Execute(SeaToSeaMod.crashMesaRadio.key, SeaToSeaMod.crashMesaRadio.goalType);
     }
@@ -2816,7 +2816,7 @@ public static class C2CHooks {
         MoraleSystem.instance.shiftMorale(2.5F);
     }
 
-    public static void onDataboxTooltipCalculate(BlueprintHandTarget tgt) {
+    public static void OnDataboxTooltipCalculate(BlueprintHandTarget tgt) {
         var lv = tgt.GetComponent<LiveMixin>();
         if (lv && lv.health < lv.maxHealth) {
             HandReticle.main.SetInteractText("NeedRepairDataBox");
@@ -2824,7 +2824,7 @@ public static class C2CHooks {
         }
     }
 
-    public static bool onDataboxClick(BlueprintHandTarget tgt) { //return true to prevent use
+    public static bool OnDataboxClick(BlueprintHandTarget tgt) { //return true to prevent use
         if (tgt.used)
             return true;
         if (tgt.unlockTechType == TechType.BaseReinforcement) {
@@ -2835,7 +2835,7 @@ public static class C2CHooks {
         return lv && lv.health < lv.maxHealth;
     }
 
-    public static void applyGeyserFilterBuildability(DIHooks.BuildabilityCheck check) {
+    public static void ApplyGeyserFilterBuildability(DIHooks.BuildabilityCheck check) {
         if (VoidSpikesBiome.instance.IsInBiome(Player.main.transform.position) ||
             (Player.main.transform.position - VoidSpikesBiome.signalLocation).sqrMagnitude <= 40000) {
             check.Placeable = false;
@@ -2854,7 +2854,7 @@ public static class C2CHooks {
             check.Placeable = false;
     }
 
-    public static void onHandSend(GameObject target, HandTargetEventType e, GUIHand hand) { /*
+    public static void OnHandSend(GameObject target, HandTargetEventType e, GUIHand hand) { /*
         SNUtil.writeToChat("Hand send fired for GO "+target+"$"+target.activeInHierarchy+"::"+target.GetFullHierarchyPath()+" @ "+target.transform.position+"#"+target.GetInstanceID()+" of type "+e+", on hand "+hand+", TT="+target.GetComponent<IHandTarget>());
         if (Input.GetKeyDown(KeyCode.LeftAlt)) {
             IHandTarget iht = target.GetComponent<IHandTarget>();
@@ -2872,11 +2872,11 @@ public static class C2CHooks {
         }
     }
 
-    public static void onKeypadFailed(KeypadDoorConsole con) {
+    public static void OnKeypadFailed(KeypadDoorConsole con) {
         KeypadCodeSwappingSystem.instance.onCodeFailed(con);
     }
 
-    public static void changeEquipmentCompatibility(DIHooks.EquipmentTypeCheck ch) {
+    public static void ChangeEquipmentCompatibility(DIHooks.EquipmentTypeCheck ch) {
         if (ch.Item == C2CItems.lightModule.TechType && Player.main.currentSub && Player.main.currentSub.isCyclops &&
             Vector3.Distance(
                 Player.main.currentSub.GetComponentInChildren<CyclopsVehicleStorageTerminalManager>().transform
@@ -2904,7 +2904,7 @@ public static class C2CHooks {
     //     return orig && canFCSDrillOperate(drill);
     // }
 
-    private static float lastDrillDepletionTime = -1;
+    private static float _lastDrillDepletionTime = -1;
 
     // TODO: FCS Compat
     // public static bool canFCSDrillOperate(MonoBehaviour drill) {
@@ -3053,7 +3053,7 @@ public static class C2CHooks {
     //     return val;
     // }
 
-    public static void controlPlayerInput(DIHooks.PlayerInput pi) {
+    public static void ControlPlayerInput(DIHooks.PlayerInput pi) {
         Drunk.manageDrunkenness(pi);
     }
 
@@ -3100,20 +3100,20 @@ public static class C2CHooks {
     //     return sp * 1.2F * FCSIntegrationSystem.instance.getCurrentGeneratorPowerFactor(generator);
     // }
 
-    public static void onMeteorImpact(GameObject meteor, Pickupable drop) {
+    public static void OnMeteorImpact(GameObject meteor, Pickupable drop) {
         if (!PDAMessagePrompts.instance.isTriggered(PDAMessages.getAttr(PDAMessages.Messages.MeteorPrompt).key)) {
             StoryGoal.Execute(C2CProgression.MeteorGoal, Story.GoalType.Story);
         }
     }
 
-    public static void buildDisplayMonitorButton(MonoBehaviour screen, uGUI_ItemIcon icon) {
+    public static void BuildDisplayMonitorButton(MonoBehaviour screen, uGUI_ItemIcon icon) {
         icon.transform.localScale = new Vector3(0.5F, 0.45F, 1);
         var grid = screen.gameObject.getChildObject("Canvas/Screens/MainScreen/ActualScreen/MainGrid");
         var grp = grid.GetComponent<UnityEngine.UI.GridLayoutGroup>();
         grp.cellSize = new Vector2(100, 90);
     }
 
-    public static bool isStorageVisibleToDisplayMonitor(bool skip, StorageContainer sc) {
+    public static bool IsStorageVisibleToDisplayMonitor(bool skip, StorageContainer sc) {
         //SNUtil.writeToChat("checking SC="+sc+": "+skip);
         skip |= sc && sc.gameObject.FindAncestor<MapRoomFunctionality>();
         skip |= sc && sc.GetComponent<BioprocessorLogic>();
@@ -3121,7 +3121,7 @@ public static class C2CHooks {
         return skip;
     }
 
-    public static void mergeDeathrunRecipeChange(TechType tt, RecipeData td) {
+    public static void MergeDeathrunRecipeChange(TechType tt, RecipeData td) {
         RecipeData real = RecipeUtil.getRecipe(tt);
         if (real == null) {
             SNUtil.Log("Discarding deathrun " + tt + " recipe, as there is no vanilla recipe");
@@ -3148,11 +3148,11 @@ public static class C2CHooks {
         );
     }
 
-    public static void mergeDeathrunFragmentScanCount(TechType tt, int amt) {
+    public static void MergeDeathrunFragmentScanCount(TechType tt, int amt) {
         PDAHandler.EditFragmentsToScan(tt, Math.Max(amt, Reefbalance.ReefbalanceMod.GetScanCountOverride(tt)));
     }
 
-    public static bool allowSaving(bool orig) {
+    public static bool AllowSaving(bool orig) {
         if (!orig)
             return false;
         if (GameModeUtils.currentEffectiveMode == GameModeOption.Creative)
@@ -3171,7 +3171,7 @@ public static class C2CHooks {
                                         Inventory.main.equipment.GetCount(TechType.RadiationGloves) > 0 &&
                                         Inventory.main.equipment.GetCount(TechType.RadiationHelmet) > 0))
             return false;
-        if (DayNightCycle.main && DayNightCycle.main.timePassedAsFloat - lastO2PipeTime <= 0.5)
+        if (DayNightCycle.main && DayNightCycle.main.timePassedAsFloat - _lastO2PipeTime <= 0.5)
             return true;
         if (ep.IsSwimming() && ep.transform.position.y < 0)
             return false;
@@ -3193,7 +3193,7 @@ public static class C2CHooks {
         return false;
     }
 
-    public static void onWaterFilterSpawn(DIHooks.WaterFilterSpawn sp) {
+    public static void OnWaterFilterSpawn(DIHooks.WaterFilterSpawn sp) {
         var id = TechType.None;
         var refpt = sp.Filter.transform.position; //basically right above the brine
         var bb = BiomeBase.GetBiome(refpt);
@@ -3244,7 +3244,7 @@ public static class C2CHooks {
         }
     }
 
-    public static void tickSwimCharge(UpdateSwimCharge ch) {
+    public static void TickSwimCharge(UpdateSwimCharge ch) {
         var active = Inventory.main.equipment.GetCount(TechType.SwimChargeFins) > 0;
         var relay = active && Inventory.main.equipment.GetCount(C2CItems.chargeFinRelay.TechType) > 0;
         var charging = false;
@@ -3289,7 +3289,7 @@ public static class C2CHooks {
             BatteryChargeIndicatorHandler.resyncChargeIndicators();
     }
 
-    public static void onStartInvUI(uGUI_InventoryTab gui) {
+    public static void OnStartInvUI(uGUI_InventoryTab gui) {
         RescueSystem.createRescuePDAButton();
     }
 
@@ -3315,29 +3315,29 @@ public static class C2CHooks {
 
     }
     */
-    public static void onCollectFromVaseStrand(MushroomVaseStrand.MushroomVaseStrandTag plant, TechType item) {
+    public static void OnCollectFromVaseStrand(MushroomVaseStrand.MushroomVaseStrandTag plant, TechType item) {
         if (item == CraftingItems.getItem(CraftingItems.Items.Tungsten).TechType) {
             StoryGoal.Execute(C2CProgression.TungstenGoal, Story.GoalType.Story);
         }
     }
 
-    private static void onRocketStageComplete(Rocket r, int stage, bool anyComplete) {
+    private static void OnRocketStageComplete(Rocket r, int stage, bool anyComplete) {
         MoraleSystem.instance.shiftMorale(anyComplete ? 20 : 5);
     }
 
-    private static void onCuddlefishPlay(
+    private static void OnCuddlefishPlay(
         CuteFishHandTarget target,
         Player player,
         CuteFishHandTarget.CuteFishCinematic cinematic
     ) {
         var time = DayNightCycle.main.timePassedAsFloat;
-        if (time - lastCuddlefishPlay < 600) //10 min
+        if (time - _lastCuddlefishPlay < 600) //10 min
             return;
-        lastCuddlefishPlay = time;
+        _lastCuddlefishPlay = time;
         MoraleSystem.instance.shiftMorale(25);
     }
 
-    public static void onSleep(Bed bed) {
+    public static void OnSleep(Bed bed) {
         float f = 1;
         switch (bed.GetComponent<PrefabIdentifier>().ClassId) {
             case "c3994649-d0da-4f8c-bb77-1590f50838b9":
@@ -3353,7 +3353,7 @@ public static class C2CHooks {
         );
     }
 
-    public static void onEat(Survival s, GameObject go) {
+    public static void OnEat(Survival s, GameObject go) {
         if (go) {
             var pp = go.GetComponent<Pickupable>();
             if (pp) {
@@ -3437,7 +3437,7 @@ public static class C2CHooks {
         }
     }
 
-    public static void affectFoodRate(DIHooks.FoodRateCalculation calc) {
+    public static void AffectFoodRate(DIHooks.FoodRateCalculation calc) {
         if (GameModeUtils.currentGameMode != GameModeOption.Survival)
             return;
         var morale = MoraleSystem.instance.moralePercentage;
@@ -3448,7 +3448,7 @@ public static class C2CHooks {
         }
     }
 
-    public static float getAmbientHealAmount(float orig) {
+    public static float GetAmbientHealAmount(float orig) {
         if (GameModeUtils.currentGameMode != GameModeOption.Survival)
             return orig;
         var ret = orig;
@@ -3464,8 +3464,8 @@ public static class C2CHooks {
         return ret;
     }
 
-    public static bool canWarperAggroPlayer(WarperInspectPlayer warp, GameObject target) {
-        if (target.isPlayer() && inBKelpBase && !WorldUtil.lineOfSight(target, warp.gameObject))
+    public static bool CanWarperAggroPlayer(WarperInspectPlayer warp, GameObject target) {
+        if (target.isPlayer() && InBKelpBase && !WorldUtil.lineOfSight(target, warp.gameObject))
             return false;
         if (Vector3.Distance(target.transform.position, warp.transform.position) > warp.maxDistance) {
             return false;
@@ -3479,7 +3479,7 @@ public static class C2CHooks {
         return !(component != null) || component.GetInfectedAmount() <= 0.33f;
     }
 
-    public static void unfoldKeyTerminal(PrecursorKeyTerminal pk) {
+    public static void UnfoldKeyTerminal(PrecursorKeyTerminal pk) {
         if (pk.acceptKeyType == PrecursorKeyTerminal.PrecursorKeyType.PrecursorKey_Blue &&
             !C2CProgression.Instance.IsPcfAccessible()) {
             PDAMessagePrompts.instance.trigger(PDAMessages.getAttr(PDAMessages.Messages.NeedPCFSecurityMessage).key);
@@ -3492,7 +3492,7 @@ public static class C2CHooks {
         }
     }
 
-    public static bool cannotClickKeyTerminal(PrecursorKeyTerminal pk) {
+    public static bool CannotClickKeyTerminal(PrecursorKeyTerminal pk) {
         return pk.slotted || (pk.acceptKeyType == PrecursorKeyTerminal.PrecursorKeyType.PrecursorKey_Blue &&
                               !C2CProgression.Instance.IsPcfAccessible());
     }

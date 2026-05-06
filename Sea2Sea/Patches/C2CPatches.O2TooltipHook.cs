@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(Oxygen))]
-    [HarmonyPatch("GetSecondaryTooltip")]
+    [HarmonyPatch(nameof(Oxygen.GetSecondaryTooltip))]
     public static class O2TooltipHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(Survival))]
-    [HarmonyPatch("UpdateHunger")]
+    [HarmonyPatch(nameof(Survival.UpdateHunger))]
     public static class AmbientHealHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -21,7 +21,7 @@ internal static partial class C2CPatches {
                     idx + 1,
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.SeaToSea.C2CHooks",
-                        "getAmbientHealAmount",
+                        nameof(C2CHooks.GetAmbientHealAmount),
                         false,
                         typeof(float)
                     )

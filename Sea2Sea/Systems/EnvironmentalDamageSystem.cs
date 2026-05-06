@@ -181,7 +181,7 @@ if (!prawnBayHeatRippleCylinder) {/*
             }*/
 
     public void tickTemperatureDamages(TemperatureDamage dmg) {
-        if (C2CHooks.skipEnviroDamage)
+        if (C2CHooks.SkipEnviroDamage)
             return;
         if (DIHooks.GetWorldAge() < 0.25F)
             return;
@@ -451,14 +451,14 @@ if (!prawnBayHeatRippleCylinder) {/*
     }
 
     public void tickCyclopsDamage(CrushDamage dmg) {
-        if (C2CHooks.skipEnviroDamage)
+        if (C2CHooks.SkipEnviroDamage)
             return;
         if (!dmg.gameObject.activeInHierarchy || !dmg.enabled) {
             return;
         }
 
         if (dmg.GetCanTakeCrushDamage() && dmg.GetDepth() > dmg.crushDepth) {
-            dmg.liveMixin.TakeDamage(C2CHooks.getCrushDamage(dmg), dmg.transform.position, DamageType.Pressure, null);
+            dmg.liveMixin.TakeDamage(C2CHooks.GetCrushDamage(dmg), dmg.transform.position, DamageType.Pressure, null);
             if (dmg.soundOnDamage) {
                 dmg.soundOnDamage.Play();
             }
@@ -638,7 +638,7 @@ if (!prawnBayHeatRippleCylinder) {/*
     }
 
     public float getPlayerO2Rate(Player ep) {
-        if (C2CHooks.skipO2)
+        if (C2CHooks.SkipO2)
             return 3F;
         var mode = ep.mode;
         if (mode != Player.Mode.Normal && mode - Player.Mode.Piloting <= 1) {
@@ -667,7 +667,7 @@ if (!prawnBayHeatRippleCylinder) {/*
     }
 
     public float getPlayerO2Use(Player ep, float breathingInterval, int depthClass) {
-        if (C2CHooks.skipO2)
+        if (C2CHooks.SkipO2)
             return 1;
         if (!GameModeUtils.RequiresOxygen())
             return 0;
@@ -728,7 +728,7 @@ if (!prawnBayHeatRippleCylinder) {/*
     }
 
     public void tickPlayerEnviroAlerts(RebreatherDepthWarnings warn) {
-        if (C2CHooks.skipEnviroDamage)
+        if (C2CHooks.SkipEnviroDamage)
             return;
         if (!(warn.alerts[0] is EnviroAlert))
             upgradeAlertSystem(warn);

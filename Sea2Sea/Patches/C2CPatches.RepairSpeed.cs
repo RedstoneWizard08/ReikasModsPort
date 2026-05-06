@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(Welder))]
-    [HarmonyPatch("Weld")]
+    [HarmonyPatch(nameof(Welder.Weld))]
     public static class RepairSpeed {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -19,7 +19,7 @@ internal static partial class C2CPatches {
                 var idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Ldfld, "Welder", "healthPerWeld");
                 codes[idx] = InstructionHandlers.createMethodCall(
                     "ReikaKalseki.SeaToSea.C2CHooks",
-                    "getRepairSpeed",
+                    nameof(C2CHooks.GetRepairSpeed),
                     false,
                     typeof(Welder)
                 );

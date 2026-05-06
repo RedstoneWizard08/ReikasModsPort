@@ -34,7 +34,7 @@ internal class C2CTreader : MonoBehaviour {
 	}
 
 	internal void tick() {
-		if (C2CHooks.skipTreaderTick)
+		if (C2CHooks.SkipTreaderTick)
 			return;
 		var ep = Player.main;
 		if (ep) {

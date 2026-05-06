@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(Player))]
-    [HarmonyPatch("GetOxygenPerBreath")]
+    [HarmonyPatch(nameof(Player.GetOxygenPerBreath))]
     public static class PlayerO2Use {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -21,7 +21,7 @@ internal static partial class C2CPatches {
                 codes.add(OpCodes.Ldarg_2);
                 codes.invoke(
                     "ReikaKalseki.SeaToSea.C2CHooks",
-                    "getPlayerO2Use",
+                    nameof(C2CHooks.GetPlayerO2Use),
                     false,
                     typeof(Player),
                     typeof(float),

@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(uGUI_Pings))]
-    [HarmonyPatch("OnWillRenderCanvases")]
+    [HarmonyPatch(nameof(uGUI_Pings.UpdatePings))]
     public static class PingPositionHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -19,7 +19,7 @@ internal static partial class C2CPatches {
                 var idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Ldfld, "PingInstance", "origin");
                 codes[idx] = InstructionHandlers.createMethodCall(
                     "ReikaKalseki.SeaToSea.C2CHooks",
-                    "getApparentPingPosition",
+                    nameof(C2CHooks.GetApparentPingPosition),
                     false,
                     typeof(PingInstance)
                 );

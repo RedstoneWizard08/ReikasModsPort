@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(EscapePod))]
-    [HarmonyPatch("Awake")]
+    [HarmonyPatch(nameof(EscapePod.Awake))]
     public static class EscapePodSpawnHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -20,7 +20,7 @@ internal static partial class C2CPatches {
                     new CodeInstruction(OpCodes.Ldarg_0),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.SeaToSea.C2CHooks",
-                        "onSpawnLifepod",
+                        nameof(C2CHooks.OnSpawnLifepod),
                         false,
                         typeof(EscapePod)
                     )

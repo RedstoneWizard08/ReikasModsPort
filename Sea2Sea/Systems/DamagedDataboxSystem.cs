@@ -11,8 +11,8 @@ public class DamagedDataboxSystem {
 	private readonly Dictionary<Vector3, DamagedDatabox> data = new();
 
 	private DamagedDataboxSystem() {
-		data[C2CHooks.crashMesa] = new DamagedDatabox(20, 0, 10, d: 4);
-		data[C2CHooks.trailerBaseBioreactor] = new DamagedDatabox(30, 0, 30, d: 2);
+		data[C2CHooks.CrashMesa] = new DamagedDatabox(20, 0, 10, d: 4);
+		data[C2CHooks.TrailerBaseBioreactor] = new DamagedDatabox(30, 0, 30, d: 2);
 		data[VoidSpikesBiome.signalLocation] = new DamagedDatabox(20, 0.33F, 60, d: 0.5F);
 		data[SeaToSeaMod.TreaderSignal.initialPosition] = new DamagedDatabox(30, 0.15F, 10, d: 2.5F);
 		data[new Vector3(-114.6F, -234.5F, 854)] = new DamagedDatabox(20, 0.4F); //autofarmer

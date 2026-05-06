@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(VFXExtinguishableFire))]
-    [HarmonyPatch("Start")]
+    [HarmonyPatch(nameof(VFXExtinguishableFire.Start))]
     public static class FireSpawnHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -20,7 +20,7 @@ internal static partial class C2CPatches {
                     new CodeInstruction(OpCodes.Ldarg_0),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.SeaToSea.C2CHooks",
-                        "onFireSpawn",
+                        nameof(C2CHooks.OnFireSpawn),
                         false,
                         typeof(VFXExtinguishableFire)
                     )

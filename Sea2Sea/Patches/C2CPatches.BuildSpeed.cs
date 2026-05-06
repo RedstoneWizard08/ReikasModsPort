@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(Constructable))]
-    [HarmonyPatch("GetConstructInterval")]
+    [HarmonyPatch(nameof(Constructable.GetConstructInterval))]
     public static class BuildSpeed {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

@@ -11,7 +11,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(GUIHand))]
-    [HarmonyPatch("Send")]
+    [HarmonyPatch(nameof(GUIHand.Send))]
     public static class HandSendCheckHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -23,7 +23,7 @@ internal static partial class C2CPatches {
                     new CodeInstruction(OpCodes.Ldarg_2),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.SeaToSea.C2CHooks",
-                        "onHandSend",
+                        nameof(C2CHooks.OnHandSend),
                         false,
                         typeof(GameObject),
                         typeof(HandTargetEventType),

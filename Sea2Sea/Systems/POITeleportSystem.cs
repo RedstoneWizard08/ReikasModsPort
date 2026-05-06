@@ -24,15 +24,15 @@ public class POITeleportSystem {
 		addPOI("degasi1", WorldUtil.DEGASI_JELLY_BASE);
 		addPOI("degasi2", WorldUtil.DEGASI_DGR_BASE);
 		addPOI("treaderpod", SeaToSeaMod.TreaderSignal.initialPosition + Vector3.up * 10);
-		addPOI("crashmesa", C2CHooks.crashMesa);
+		addPOI("crashmesa", C2CHooks.CrashMesa);
 		addPOI("voidpod", VoidSpikesBiome.signalLocation);
 		addPOI("pod6base", new Vector3(338.5F, -110, 286.5F));
 		addPOI("keen", new Vector3(-822, -290, -873));
-		addPOI("bkelpbase", C2CHooks.bkelpBaseGeoCenter + Vector3.up * 30);
-		addPOI("trailerbase", C2CHooks.trailerBaseBioreactor + Vector3.up * 20);
+		addPOI("bkelpbase", C2CHooks.BkelpBaseGeoCenter + Vector3.up * 30);
+		addPOI("trailerbase", C2CHooks.TrailerBaseBioreactor + Vector3.up * 20);
 		addPOI("dunearch", new Vector3(-1610, -334, 92));
 		addPOI("mountainpod", new Vector3(993, -260, 1379));
-		addPOI("mountainbase", C2CHooks.mountainBaseGeoCenter);
+		addPOI("mountainbase", C2CHooks.MountainBaseGeoCenter);
 		addPOI("sunbeamsite", WorldUtil.SUNBEAM_SITE);
 		addPOI("islandwreck", WorldUtil.DEGASI_FLOATING_BASE);
 		addPOI("cragwreck", new Vector3(330, -266, -1451));
@@ -41,7 +41,7 @@ public class POITeleportSystem {
 		addPOI("redkey", new Vector3(156.5F, -200, 951));
 		addPOI("lrcache", new Vector3(-1120, -682, -694));
 		addPOI("drf", new Vector3(-248, -800, 281));
-		addPOI("lrnest", C2CHooks.lrnest);
+		addPOI("lrnest", C2CHooks.Lrnest);
 		addPOI("khasar", new Vector3(-925, -178, 500));
 		addPOI("mushtree", new Vector3(-870, -93, 591));
 		addPOI("mushkoosh", new Vector3(712.84F, -222.55F, 532.76F));
@@ -55,7 +55,7 @@ public class POITeleportSystem {
 		addPOI("dunesgeode", new Vector3(-1419, -585, 376));
 		addPOI("geysercave", C2CProgression.Instance.DronePdaCaveEntrance + new Vector3(5, 0, 5));
 		addPOI("glassforest", UnderwaterIslandsFloorBiome.wreckCtrPos1.SetY(-480));
-		addPOI("voidwreck", C2CHooks.voidWreckVoidPatch);
+		addPOI("voidwreck", C2CHooks.VoidWreckVoidPatch);
 		addPOI("voidspikes", VoidSpikesBiome.end500m);
 		addPOI("postcove", new Vector3(-1114, -1000, 525));
 		addPOI("pod12", C2CProgression.Instance.Pod12Location + Vector3.up * 20);

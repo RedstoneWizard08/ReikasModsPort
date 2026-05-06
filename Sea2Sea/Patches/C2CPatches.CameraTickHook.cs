@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(MapRoomCamera))]
-    [HarmonyPatch("Update")]
+    [HarmonyPatch(nameof(MapRoomCamera.Update))]
     public static class CameraTickHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -20,7 +20,7 @@ internal static partial class C2CPatches {
                     new CodeInstruction(OpCodes.Ldarg_0),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.SeaToSea.C2CHooks",
-                        "tickScannerCamera",
+                        nameof(C2CHooks.TickScannerCamera),
                         false,
                         typeof(MapRoomCamera)
                     )

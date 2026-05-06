@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(GhostLeviatanVoid))]
-    [HarmonyPatch("UpdateVoidBehaviour")]
+    [HarmonyPatch(nameof(GhostLeviatanVoid.UpdateVoidBehaviour))]
     public static class VoidLeviathanBehaviorHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

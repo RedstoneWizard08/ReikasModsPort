@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(PropulsionCannon))]
-    [HarmonyPatch("FixedUpdate")]
+    [HarmonyPatch(nameof(PropulsionCannon.FixedUpdate))]
     public static class PropulsionCannonForce {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -26,7 +26,7 @@ internal static partial class C2CPatches {
                 );
                 codes[idx] = InstructionHandlers.createMethodCall(
                     "ReikaKalseki.SeaToSea.C2CHooks",
-                    "getPropulsionCannonForce",
+                    nameof(C2CHooks.GetPropulsionCannonForce),
                     false,
                     typeof(PropulsionCannon)
                 );

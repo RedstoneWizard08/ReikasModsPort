@@ -11,7 +11,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(Vehicle))]
-    [HarmonyPatch("ApplyPhysicsMove")]
+    [HarmonyPatch(nameof(Vehicle.ApplyPhysicsMove))]
     public static class SeamothThreeAxisRemoval {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -34,7 +34,7 @@ internal static partial class C2CPatches {
                 li.add(OpCodes.Ldloc_1);
                 li.invoke(
                     "ReikaKalseki.SeaToSea.C2CHooks",
-                    "get3AxisSpeed",
+                    nameof(C2CHooks.Get3AxisSpeed),
                     false,
                     typeof(float),
                     typeof(Vehicle),

@@ -251,7 +251,7 @@ public class VoidSpikesBiome : CustomBiome { //FIXME: 3. disappearing spikes 4. 
     }
 
     internal static WaveBob checkAndAddWaveBob(GameObject go, bool force) {
-        if (C2CHooks.skipWaveBob)
+        if (C2CHooks.SkipWaveBob)
             return null;
         if (!force) {
             double distsq = (go.transform.position - signalLocation).sqrMagnitude;

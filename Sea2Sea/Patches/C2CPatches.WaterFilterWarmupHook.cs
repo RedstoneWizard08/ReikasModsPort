@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(FiltrationMachine))]
-    [HarmonyPatch("DelayedStart")]
+    [HarmonyPatch(nameof(FiltrationMachine.DelayedStart))]
     public static class WaterFilterWarmupHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -20,7 +20,7 @@ internal static partial class C2CPatches {
                     new CodeInstruction(OpCodes.Ldarg_0),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.SeaToSea.C2CHooks",
-                        "onStartWaterFilter",
+                        nameof(C2CHooks.OnStartWaterFilter),
                         false,
                         typeof(FiltrationMachine)
                     )

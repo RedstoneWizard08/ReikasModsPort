@@ -9,7 +9,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(PrecursorKeyTerminal))]
-    [HarmonyPatch("OnHandHover")]
+    [HarmonyPatch(nameof(PrecursorKeyTerminal.OnHandHover))]
     public static class PrecursorDoorHoverHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(VoidGhostLeviathansSpawner))]
-    [HarmonyPatch("IsVoidBiome")]
+    [HarmonyPatch(nameof(VoidGhostLeviathansSpawner.IsVoidBiome))]
     public static class VoidLeviathanHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

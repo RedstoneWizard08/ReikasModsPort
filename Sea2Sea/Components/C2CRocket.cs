@@ -25,7 +25,7 @@ internal class C2CRocket : MonoBehaviour {
 	}
 
 	private void Update() {
-		if (C2CHooks.skipRocketTick)
+		if (C2CHooks.SkipRocketTick)
 			return;
 		if (!rocket)
 			rocket = GetComponent<Rocket>();

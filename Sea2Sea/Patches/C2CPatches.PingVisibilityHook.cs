@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(uGUI_Pings))]
-    [HarmonyPatch("OnWillRenderCanvases")]
+    [HarmonyPatch(nameof(uGUI_Pings.UpdatePings))]
     public static class PingVisibilityHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -53,7 +53,7 @@ internal static partial class C2CPatches {
             //int idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Ldfld, "uGUI_Ping", "SetIconAlpha");
             codes[idx] = InstructionHandlers.createMethodCall(
                 "ReikaKalseki.SeaToSea.C2CHooks",
-                "setPingAlpha",
+                nameof(C2CHooks.SetPingAlpha),
                 false,
                 typeof(uGUI_Ping),
                 typeof(float),

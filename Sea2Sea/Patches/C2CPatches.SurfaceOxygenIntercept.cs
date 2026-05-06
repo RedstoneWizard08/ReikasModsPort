@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(OxygenManager))]
-    [HarmonyPatch("Update")]
+    [HarmonyPatch(nameof(OxygenManager.Update))]
     public static class SurfaceOxygenIntercept {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -28,7 +28,7 @@ internal static partial class C2CPatches {
                 );
                 codes[idx] = InstructionHandlers.createMethodCall(
                     "ReikaKalseki.SeaToSea.C2CHooks",
-                    "addOxygenAtSurfaceMaybe",
+                    nameof(C2CHooks.AddOxygenAtSurfaceMaybe),
                     false,
                     typeof(OxygenManager),
                     typeof(float)

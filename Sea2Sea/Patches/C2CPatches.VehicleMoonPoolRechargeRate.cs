@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(Vehicle))]
-    [HarmonyPatch("UpdateEnergyRecharge")]
+    [HarmonyPatch(nameof(Vehicle.UpdateEnergyRecharge))]
     public static class VehicleMoonPoolRechargeRate {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -19,7 +19,7 @@ internal static partial class C2CPatches {
                 var idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Ldc_R4, "0.0025");
                 codes[idx] = InstructionHandlers.createMethodCall(
                     "ReikaKalseki.SeaToSea.C2CHooks",
-                    "getVehicleRechargeAmount",
+                    nameof(C2CHooks.GetVehicleRechargeAmount),
                     false,
                     typeof(Vehicle)
                 );

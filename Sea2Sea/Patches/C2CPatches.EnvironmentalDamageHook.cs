@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(TemperatureDamage))]
-    [HarmonyPatch("UpdateDamage")]
+    [HarmonyPatch(nameof(TemperatureDamage.UpdateDamage))]
     public static class EnvironmentalDamageHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -19,7 +19,7 @@ internal static partial class C2CPatches {
                 codes.add(OpCodes.Ldarg_0);
                 codes.invoke(
                     "ReikaKalseki.SeaToSea.C2CHooks",
-                    "doEnvironmentalDamage",
+                    nameof(C2CHooks.DoEnvironmentalDamage),
                     false,
                     typeof(TemperatureDamage)
                 );

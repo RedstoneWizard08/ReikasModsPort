@@ -29,8 +29,8 @@ public class BloodKelpBaseNuclearReactorMelter : CustomPrefab {
             if (triggered)
                 return;
             var go =
-                WorldUtil.getClosest<BaseNuclearReactorGeometry>(C2CHooks.bkelpBaseNuclearReactor);
-            if (go && Vector3.Distance(go.transform.position, C2CHooks.bkelpBaseNuclearReactor) < 5F) {
+                WorldUtil.getClosest<BaseNuclearReactorGeometry>(C2CHooks.BkelpBaseNuclearReactor);
+            if (go && Vector3.Distance(go.transform.position, C2CHooks.BkelpBaseNuclearReactor) < 5F) {
                 /*
                 LeakingRadiation lr = go.EnsureComponent<LeakingRadiation>();
                 lr.leaks = new List<RadiationLeak>();

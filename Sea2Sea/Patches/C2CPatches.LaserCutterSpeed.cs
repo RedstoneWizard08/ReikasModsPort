@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(LaserCutter))]
-    [HarmonyPatch("LaserCut")]
+    [HarmonyPatch(nameof(LaserCutter.LaserCut))]
     public static class LaserCutterSpeed {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -26,7 +26,7 @@ internal static partial class C2CPatches {
                 );
                 codes[idx] = InstructionHandlers.createMethodCall(
                     "ReikaKalseki.SeaToSea.C2CHooks",
-                    "getLaserCutterSpeed",
+                    nameof(C2CHooks.GetLaserCutterSpeed),
                     false,
                     typeof(LaserCutter)
                 );

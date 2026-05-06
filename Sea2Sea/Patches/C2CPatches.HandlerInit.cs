@@ -11,7 +11,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(SeaToSeaMod))]
-    [HarmonyPatch("initHandlers")]
+    [HarmonyPatch(nameof(SeaToSeaMod.InitHandlers))]
     public static class HandlerInit {
         private static IEnumerable<CodeInstruction> Transpiler(
             IEnumerable<CodeInstruction> instructions,

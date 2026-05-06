@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(RebreatherDepthWarnings))]
-    [HarmonyPatch("Update")]
+    [HarmonyPatch(nameof(RebreatherDepthWarnings.Update))]
     public static class PlayerEnviroWarnings {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -19,7 +19,7 @@ internal static partial class C2CPatches {
                 codes.add(OpCodes.Ldarg_0);
                 codes.invoke(
                     "ReikaKalseki.SeaToSea.C2CHooks",
-                    "tickPlayerEnviroAlerts",
+                    nameof(C2CHooks.TickPlayerEnviroAlerts),
                     false,
                     typeof(RebreatherDepthWarnings)
                 );

@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(LaunchRocket))]
-    [HarmonyPatch("OnHandClick")]
+    [HarmonyPatch(nameof(LaunchRocket.OnHandClick))]
     public static class RocketLaunchAttemptIntercept {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

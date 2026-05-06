@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(RocketConstructor))]
-    [HarmonyPatch("StartRocketConstruction")]
+    [HarmonyPatch(nameof(RocketConstructor.StartRocketConstruction))]
     public static class RocketBuildSpeed {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -33,7 +33,7 @@ internal static partial class C2CPatches {
                     idx,
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.SeaToSea.C2CHooks",
-                        "getRocketConstructionSpeed",
+                        nameof(C2CHooks.GetRocketConstructionSpeed),
                         false,
                         typeof(float)
                     )

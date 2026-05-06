@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(OxygenManager))]
-    [HarmonyPatch("AddOxygen")]
+    [HarmonyPatch(nameof(OxygenManager.AddOxygen))]
     public static class OxygenIntercept {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -21,7 +21,7 @@ internal static partial class C2CPatches {
                     new CodeInstruction(OpCodes.Ldarg_1),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.SeaToSea.C2CHooks",
-                        "addO2ToPlayer",
+                        nameof(C2CHooks.AddO2ToPlayer),
                         false,
                         typeof(OxygenManager),
                         typeof(float)

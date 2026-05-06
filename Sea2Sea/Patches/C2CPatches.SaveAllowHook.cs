@@ -9,7 +9,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(IngameMenu))]
-    [HarmonyPatch("GetAllowSaving")]
+    [HarmonyPatch(nameof(IngameMenu.GetAllowSaving))]
     public static class SaveAllowHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -18,7 +18,7 @@ internal static partial class C2CPatches {
                 codes.patchEveryReturnPre(
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.SeaToSea.C2CHooks",
-                        "allowSaving",
+                        nameof(C2CHooks.AllowSaving),
                         false,
                         typeof(bool)
                     )

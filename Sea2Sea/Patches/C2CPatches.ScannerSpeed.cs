@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(PDAScanner))]
-    [HarmonyPatch("Scan")]
+    [HarmonyPatch(nameof(PDAScanner.Scan))]
     public static class ScannerSpeed {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -21,7 +21,7 @@ internal static partial class C2CPatches {
                     idx + 1,
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.SeaToSea.C2CHooks",
-                        "getScannerSpeed",
+                        nameof(C2CHooks.GetScannerSpeed),
                         false,
                         typeof(float)
                     )

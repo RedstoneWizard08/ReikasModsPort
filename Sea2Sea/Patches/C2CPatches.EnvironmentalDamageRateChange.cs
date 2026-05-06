@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(TemperatureDamage))]
-    [HarmonyPatch("Start")]
+    [HarmonyPatch(nameof(TemperatureDamage.Start))]
     public static class EnvironmentalDamageRateChange {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

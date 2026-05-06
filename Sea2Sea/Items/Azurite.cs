@@ -98,7 +98,7 @@ internal abstract class AzuriteSparker : MonoBehaviour {
         return gameObject.FindAncestor<AqueousEngineering.ItemDisplayLogic>()
             ? false
             : (body && !body.isKinematic) ||
-              Vector3.Distance(C2CHooks.mountainBaseGeoCenter, transform.position) <= 40 ||
+              Vector3.Distance(C2CHooks.MountainBaseGeoCenter, transform.position) <= 40 ||
               gameObject.FindAncestor<Player>();
     }
 }

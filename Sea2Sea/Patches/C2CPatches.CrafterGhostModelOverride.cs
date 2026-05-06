@@ -33,7 +33,7 @@ internal static partial class C2CPatches {
                 idx,
                 InstructionHandlers.createMethodCall(
                     "ReikaKalseki.SeaToSea.C2CHooks",
-                    "getCrafterGhostModel",
+                    nameof(C2CHooks.GetCrafterGhostModel),
                     false,
                     typeof(GameObject),
                     typeof(TechType)

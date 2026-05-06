@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 internal static partial class C2CPatches {
     /*
 [HarmonyPatch(typeof(GhostCrafter))]
-[HarmonyPatch("Craft")]
+[HarmonyPatch(nameof(GhostCrafter.Craft))]
 public static class CraftingSpeed {
 
     static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {

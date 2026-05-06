@@ -11,7 +11,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(RepulsionCannon))]
-    [HarmonyPatch("OnToolUseAnim")]
+    [HarmonyPatch(nameof(RepulsionCannon.OnToolUseAnim))]
     public static class RepulsionCannonShootForce {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -20,7 +20,7 @@ internal static partial class C2CPatches {
                 var idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Ldc_R4, 70F);
                 codes[idx] = InstructionHandlers.createMethodCall(
                     "ReikaKalseki.SeaToSea.C2CHooks",
-                    "getRepulsionCannonThrowForce",
+                    nameof(C2CHooks.GetRepulsionCannonThrowForce),
                     false,
                     typeof(RepulsionCannon)
                 );

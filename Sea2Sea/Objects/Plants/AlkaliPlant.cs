@@ -108,7 +108,7 @@ internal class AlkaliPlantTag : MonoBehaviour {
             renderer = GetComponentInChildren<Renderer>();
         var ep = Player.main;
         if (!isFrozen && ep &&
-            (!isGrown || Vector3.Distance(transform.position, C2CHooks.mountainBaseGeoCenter) <= 30)) {
+            (!isGrown || Vector3.Distance(transform.position, C2CHooks.MountainBaseGeoCenter) <= 30)) {
             var dT = Time.deltaTime;
             var v = ep.GetVehicle();
             if ((v && v.useRigidbody ? v.useRigidbody : ep.rigidBody).velocity.magnitude > 0.05F)

@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(BlueprintHandTarget))]
-    [HarmonyPatch("UnlockBlueprint")]
+    [HarmonyPatch(nameof(BlueprintHandTarget.UnlockBlueprint))]
     public static class DataboxRepairClickHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -19,7 +19,7 @@ internal static partial class C2CPatches {
                 var idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Ldfld, "BlueprintHandTarget", "used");
                 codes[idx] = InstructionHandlers.createMethodCall(
                     "ReikaKalseki.SeaToSea.C2CHooks",
-                    "onDataboxClick",
+                    nameof(C2CHooks.OnDataboxClick),
                     false,
                     typeof(BlueprintHandTarget)
                 );

@@ -24,7 +24,7 @@ internal class C2CLifepod : MonoBehaviour {
 	private static readonly float MAX_ROTATE_SPEED = 2F;
 
 	private void FixedUpdate() {
-		if (C2CHooks.skipPodTick)
+		if (C2CHooks.SkipPodTick)
 			return;
 		if (!pod)
 			pod = GetComponent<EscapePod>();

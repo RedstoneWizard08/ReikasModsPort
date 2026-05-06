@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(ConstructorInput))]
-    [HarmonyPatch("OnCraftingBegin")]
+    [HarmonyPatch(nameof(ConstructorInput.OnCraftingBegin))]
     public static class VehicleBuildSpeed {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -22,7 +22,7 @@ internal static partial class C2CPatches {
                     new CodeInstruction(OpCodes.Ldarg_2),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.SeaToSea.C2CHooks",
-                        "getVehicleConstructionSpeed",
+                        nameof(C2CHooks.GetVehicleConstructionSpeed),
                         false,
                         typeof(ConstructorInput),
                         typeof(TechType),

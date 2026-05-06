@@ -10,7 +10,7 @@ namespace ReikaKalseki.SeaToSea;
 
 internal static partial class C2CPatches {
     [HarmonyPatch(typeof(UnderwaterMotor))]
-    [HarmonyPatch("UpdateMove")]
+    [HarmonyPatch(nameof(UnderwaterMotor.UpdateMove))]
     public static class AffectSeaglideSpeed {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -21,7 +21,7 @@ internal static partial class C2CPatches {
                     idx + 1,
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.SeaToSea.C2CHooks",
-                        "getSeaglideSpeed",
+                        nameof(C2CHooks.GetSeaglideSpeed),
                         false,
                         typeof(float)
                     )
