@@ -21,7 +21,7 @@ internal static partial class DIPatches {
                     new CodeInstruction(OpCodes.Ldarg_2),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
-                        nameof(DIHooks.onCuddlefishPlayed),
+                        nameof(DIHooks.OnCuddlefishPlayed),
                         false,
                         typeof(CuteFishHandTarget),
                         typeof(Player),

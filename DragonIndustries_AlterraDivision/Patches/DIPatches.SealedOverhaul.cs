@@ -19,7 +19,7 @@ internal static partial class DIPatches {
                 codes.add(OpCodes.Ldarg_1);
                 codes.invoke(
                     "ReikaKalseki.DIAlterra.DIHooks",
-                    nameof(DIHooks.tickLaserCutting),
+                    nameof(DIHooks.TickLaserCutting),
                     false,
                     typeof(Sealed),
                     typeof(float)

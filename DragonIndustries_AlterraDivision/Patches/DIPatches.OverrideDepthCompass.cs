@@ -43,7 +43,7 @@ internal static partial class DIPatches {
 
                 codes[idx].operand = InstructionHandlers.convertMethodOperand(
                     "ReikaKalseki.DIAlterra.DIHooks",
-                    nameof(DIHooks.getCompassDepth),
+                    nameof(DIHooks.GetCompassDepth),
                     false,
                     typeof(uGUI_DepthCompass),
                     typeof(int).MakeByRefType(),

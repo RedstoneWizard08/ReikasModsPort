@@ -23,7 +23,7 @@ internal static partial class DIPatches {
                         new CodeInstruction(OpCodes.Ldarg_0),
                         InstructionHandlers.createMethodCall(
                             "ReikaKalseki.DIAlterra.DIHooks",
-                            nameof(DIHooks.onTorpedoExploded),
+                            nameof(DIHooks.OnTorpedoExploded),
                             false,
                             new Type[] { typeof(Transform), typeof(SeamothTorpedo) }
                         ),

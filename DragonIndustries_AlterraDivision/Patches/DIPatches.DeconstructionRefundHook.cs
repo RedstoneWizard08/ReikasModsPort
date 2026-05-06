@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(Constructable))]
-    [HarmonyPatch(nameof(Constructable.Deconstruct))]
+    [HarmonyPatch(nameof(Constructable.DeconstructAsync))]
     public static class DeconstructionRefundHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);

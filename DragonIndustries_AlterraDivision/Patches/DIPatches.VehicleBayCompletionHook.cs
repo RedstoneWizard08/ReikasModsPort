@@ -21,7 +21,7 @@ internal static partial class DIPatches {
                     new CodeInstruction(OpCodes.Ldarg_1),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
-                        nameof(DIHooks.onVehicleBayFinish),
+                        nameof(DIHooks.OnVehicleBayFinish),
                         false,
                         new Type[] { typeof(Constructor), typeof(GameObject) }
                     )

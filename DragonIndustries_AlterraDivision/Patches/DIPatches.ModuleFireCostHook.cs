@@ -31,7 +31,7 @@ internal static partial class DIPatches {
                         new CodeInstruction(OpCodes.Ldarg_0), new CodeInstruction(OpCodes.Ldarg_1),
                         InstructionHandlers.createMethodCall(
                             "ReikaKalseki.DIAlterra.DIHooks",
-                            nameof(DIHooks.getModuleFireCost),
+                            nameof(DIHooks.GetModuleFireCost),
                             false,
                             typeof(float),
                             typeof(Vehicle),

@@ -8,25 +8,26 @@ using HarmonyLib;
 namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
-    [HarmonyPatch(typeof(WaterParkCreature))]
-    [HarmonyPatch(nameof(WaterParkCreature.GetParameters))]
-    public static class GetWPCP {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = [];
-            try {
-                codes.add(OpCodes.Ldarg_0);
-                codes.invoke("ReikaKalseki.DIAlterra.DIHooks", "GetWPCP", false, new Type[] { typeof(TechType) });
-                codes.add(OpCodes.Ret);
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
-            } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
-                FileLog.Log(e.Message);
-                FileLog.Log(e.StackTrace);
-                FileLog.Log(e.ToString());
-            }
-
-            return codes.AsEnumerable();
-        }
-    }
+    // TODO? Things no longer work this way though
+    // [HarmonyPatch(typeof(WaterParkCreature))]
+    // [HarmonyPatch(nameof(WaterParkCreature.GetParameters))]
+    // public static class GetWPCP {
+    //     private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+    //         InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+    //         InsnList codes = [];
+    //         try {
+    //             codes.add(OpCodes.Ldarg_0);
+    //             codes.invoke("ReikaKalseki.DIAlterra.DIHooks", nameof(DIHooks.GetWPCP), false, new Type[] { typeof(TechType) });
+    //             codes.add(OpCodes.Ret);
+    //             InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+    //         } catch (Exception e) {
+    //             InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+    //             FileLog.Log(e.Message);
+    //             FileLog.Log(e.StackTrace);
+    //             FileLog.Log(e.ToString());
+    //         }
+    //
+    //         return codes.AsEnumerable();
+    //     }
+    // }
 }

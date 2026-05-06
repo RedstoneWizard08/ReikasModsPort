@@ -20,7 +20,7 @@ internal static partial class DIPatches {
                     new CodeInstruction(OpCodes.Ldarg_1),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
-                        nameof(DIHooks.onCommandUse),
+                        nameof(DIHooks.OnCommandUse),
                         false,
                         new Type[] { typeof(DevConsole), typeof(string) }
                     )

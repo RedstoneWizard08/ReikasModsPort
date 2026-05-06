@@ -9,7 +9,7 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(GrowingPlant))]
-    [HarmonyPatch(nameof(GrowingPlant.Update))]
+    [HarmonyPatch(nameof(GrowingPlant.ManagedUpdate))]
     public static class TickGrowingPlant {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -20,7 +20,7 @@ internal static partial class DIPatches {
                     new CodeInstruction(OpCodes.Ldarg_0),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
-                        nameof(DIHooks.getGrowingPlantProgressInTick),
+                        nameof(DIHooks.GetGrowingPlantProgressInTick),
                         false,
                         new Type[] { typeof(float), typeof(GrowingPlant) }
                     ),

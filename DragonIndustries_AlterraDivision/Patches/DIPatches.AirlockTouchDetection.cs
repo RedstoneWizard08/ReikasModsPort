@@ -20,7 +20,7 @@ internal static partial class DIPatches {
                 codes.add(OpCodes.Ldarg_1);
                 codes.invoke(
                     "ReikaKalseki.DIAlterra.DIHooks",
-                    nameof(DIHooks.onAirlockTouched),
+                    nameof(DIHooks.OnAirlockTouched),
                     false,
                     typeof(PrecursorDoorMotorModeSetter),
                     typeof(Collider)

@@ -27,7 +27,7 @@ internal static partial class DIPatches {
                     idx,
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
-                        nameof(DIHooks.getSwimSpeed),
+                        nameof(DIHooks.GetSwimSpeed),
                         false,
                         typeof(float)
                     )

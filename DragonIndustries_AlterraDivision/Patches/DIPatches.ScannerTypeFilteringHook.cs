@@ -17,7 +17,7 @@ internal static partial class DIPatches {
             try {
                 var call = InstructionHandlers.createMethodCall(
                     "ReikaKalseki.DIAlterra.DIHooks",
-                    nameof(DIHooks.filterScannerRoomResourceList),
+                    nameof(DIHooks.FilterScannerRoomResourceList),
                     false,
                     typeof(uGUI_MapRoomScanner)
                 );

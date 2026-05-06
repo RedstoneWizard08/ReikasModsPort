@@ -21,7 +21,7 @@ internal static partial class DIPatches {
                     idx,
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
-                        nameof(DIHooks.onFarmedPlantGrowingSpawn),
+                        nameof(DIHooks.OnFarmedPlantGrowingSpawn),
                         false,
                         typeof(Plantable),
                         typeof(GameObject)
@@ -46,7 +46,7 @@ internal static partial class DIPatches {
                 idx,
                 InstructionHandlers.createMethodCall(
                     "ReikaKalseki.DIAlterra.DIHooks",
-                    nameof(DIHooks.onFarmedPlantGrowDone),
+                    nameof(DIHooks.OnFarmedPlantGrowDone),
                     false,
                     typeof(GrowingPlant),
                     typeof(GameObject)

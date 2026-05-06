@@ -21,7 +21,7 @@ internal static partial class DIPatches {
             );
             codes[idx] = InstructionHandlers.createMethodCall(
                 "ReikaKalseki.DIAlterra.DIHooks",
-                "isEquipmentApplicable",
+                "IsEquipmentApplicable",
                 false,
                 typeof(EquipmentType),
                 typeof(EquipmentType),
@@ -38,7 +38,7 @@ internal static partial class DIPatches {
             add.add(mass ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0);
             add.invoke(
                 "ReikaKalseki.DIAlterra.DIHooks",
-                "getMaxPropulsible",
+                "GetMaxPropulsible",
                 false,
                 typeof(float),
                 typeof(GameObject),
@@ -68,10 +68,10 @@ internal static partial class DIPatches {
             for (var i = codes.Count - 1; i >= 0; i--) {
                 if (codes[i].opcode == OpCodes.Call) {
                     var m = (MethodInfo)codes[i].operand;
-                    if (m != null && m.DeclaringType.Name == "CraftData" && m.Name == "GetItemSize") {
+                    if (m != null && m.DeclaringType.Name == "TechData" && m.Name == "GetItemSize") {
                         var call = InstructionHandlers.convertMethodOperand(
                             "ReikaKalseki.DIAlterra.DIHooks",
-                            "getItemDisplaySize",
+                            "GetItemDisplaySize",
                             false,
                             args
                         );
@@ -103,7 +103,7 @@ internal static partial class DIPatches {
             );
             codes[idx].operand = InstructionHandlers.convertMethodOperand(
                 "ReikaKalseki.DIAlterra.DIHooks",
-                "addPowerToSeabaseDelegate",
+                "AddPowerToSeabaseDelegate",
                 false,
                 typeof(IPowerInterface),
                 typeof(float),
@@ -120,7 +120,7 @@ internal static partial class DIPatches {
                 idx + 1,
                 InstructionHandlers.createMethodCall(
                     "ReikaKalseki.DIAlterra.DIHooks",
-                    "onEMPHit",
+                    "OnEmpHit",
                     false,
                     typeof(EMPBlast),
                     typeof(MonoBehaviour)

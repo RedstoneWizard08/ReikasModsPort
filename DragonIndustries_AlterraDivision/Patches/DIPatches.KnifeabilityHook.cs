@@ -16,7 +16,7 @@ internal static partial class DIPatches {
             InsnList codes = [];
             try {
                 codes.add(OpCodes.Ldarg_0);
-                codes.invoke("ReikaKalseki.DIAlterra.DIHooks", "isObjectKnifeable", false, typeof(LiveMixin));
+                codes.invoke("ReikaKalseki.DIAlterra.DIHooks", "IsObjectKnifeable", false, typeof(LiveMixin));
                 codes.add(OpCodes.Ret);
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {

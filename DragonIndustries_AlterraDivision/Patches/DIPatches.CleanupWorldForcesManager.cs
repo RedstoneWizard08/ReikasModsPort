@@ -27,7 +27,7 @@ internal static partial class DIPatches {
                 );
                 codes[idx] = InstructionHandlers.createMethodCall(
                     "ReikaKalseki.DIAlterra.DIHooks",
-                    nameof(DIHooks.tickWorldForces),
+                    nameof(DIHooks.TickWorldForces),
                     false,
                     typeof(WorldForces)
                 );

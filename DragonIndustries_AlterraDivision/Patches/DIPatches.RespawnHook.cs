@@ -20,7 +20,7 @@ internal static partial class DIPatches {
                         new CodeInstruction(OpCodes.Ldarg_0), new CodeInstruction(OpCodes.Ldarg_1),
                         InstructionHandlers.createMethodCall(
                             "ReikaKalseki.DIAlterra.DIHooks",
-                            nameof(DIHooks.onRespawnPre),
+                            nameof(DIHooks.OnRespawnPre),
                             false,
                             typeof(Survival),
                             typeof(Player)
@@ -32,7 +32,7 @@ internal static partial class DIPatches {
                         new CodeInstruction(OpCodes.Ldarg_0), new CodeInstruction(OpCodes.Ldarg_1),
                         InstructionHandlers.createMethodCall(
                             "ReikaKalseki.DIAlterra.DIHooks",
-                            nameof(DIHooks.onRespawnPost),
+                            nameof(DIHooks.OnRespawnPost),
                             false,
                             typeof(Survival),
                             typeof(Player)

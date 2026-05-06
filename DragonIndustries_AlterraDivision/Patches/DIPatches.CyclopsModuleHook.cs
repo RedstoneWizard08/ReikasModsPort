@@ -33,7 +33,7 @@ internal static partial class DIPatches {
                 idx,
                 InstructionHandlers.createMethodCall(
                     "ReikaKalseki.DIAlterra.DIHooks",
-                    nameof(DIHooks.updateCyclopsModules),
+                    nameof(DIHooks.UpdateCyclopsModules),
                     false,
                     typeof(SubRoot)
                 )

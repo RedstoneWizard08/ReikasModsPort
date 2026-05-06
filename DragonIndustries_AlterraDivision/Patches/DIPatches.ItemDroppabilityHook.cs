@@ -27,7 +27,7 @@ internal static partial class DIPatches {
                 );
                 codes[idx] = InstructionHandlers.createMethodCall(
                     "ReikaKalseki.DIAlterra.DIHooks",
-                    nameof(DIHooks.isItemDroppable),
+                    nameof(DIHooks.IsItemDroppable),
                     false,
                     typeof(Pickupable),
                     typeof(bool)

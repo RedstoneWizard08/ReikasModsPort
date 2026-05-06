@@ -19,7 +19,7 @@ internal static partial class DIPatches {
                     new CodeInstruction(OpCodes.Ldarg_0),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
-                        nameof(DIHooks.onSkyApplierSpawn),
+                        nameof(DIHooks.OnSkyApplierSpawn),
                         false,
                         typeof(SkyApplier)
                     )

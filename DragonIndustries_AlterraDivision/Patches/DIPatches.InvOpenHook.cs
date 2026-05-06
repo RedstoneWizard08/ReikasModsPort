@@ -20,7 +20,7 @@ internal static partial class DIPatches {
                     new CodeInstruction(OpCodes.Ldarg_0),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
-                        nameof(DIHooks.onInvOpened),
+                        nameof(DIHooks.OnInvOpened),
                         false,
                         new Type[] { typeof(StorageContainer) }
                     )

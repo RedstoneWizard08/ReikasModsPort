@@ -30,7 +30,7 @@ internal static partial class DIPatches {
                     idx,
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
-                        nameof(DIHooks.onItemPickedUp),
+                        nameof(DIHooks.OnItemPickedUp),
                         false,
                         typeof(Pickupable)
                     )

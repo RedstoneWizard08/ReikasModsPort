@@ -29,7 +29,7 @@ internal static partial class DIPatches {
                     idx + 1,
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
-                        nameof(DIHooks.onSelfScan),
+                        nameof(DIHooks.OnSelfScan),
                         false,
                         new Type[0]
                     )

@@ -20,7 +20,7 @@ internal static partial class DIPatches {
                     new CodeInstruction(OpCodes.Ldarg_1),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
-                        nameof(DIHooks.interceptScattering),
+                        nameof(DIHooks.InterceptScattering),
                         false,
                         typeof(Vector4),
                         typeof(WaterscapeVolume.Settings)

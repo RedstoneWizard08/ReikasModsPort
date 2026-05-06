@@ -16,7 +16,12 @@ internal static partial class DIPatches {
             InsnList codes = [];
             try {
                 codes.add(OpCodes.Ldarg_0);
-                codes.invoke("ReikaKalseki.DIAlterra.DIHooks", "clickStoryHandTarget", false, typeof(StoryHandTarget));
+                codes.invoke(
+                    "ReikaKalseki.DIAlterra.DIHooks",
+                    nameof(DIHooks.ClickStoryHandTarget),
+                    false,
+                    typeof(StoryHandTarget)
+                );
                 codes.add(OpCodes.Ret);
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));

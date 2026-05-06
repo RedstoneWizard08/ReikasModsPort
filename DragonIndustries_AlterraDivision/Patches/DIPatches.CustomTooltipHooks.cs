@@ -22,7 +22,7 @@ internal static partial class DIPatches {
                     new CodeInstruction(OpCodes.Ldarg_2),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
-                        nameof(DIHooks.appendItemTooltip),
+                        nameof(DIHooks.AppendItemTooltip),
                         false,
                         typeof(System.Text.StringBuilder),
                         typeof(TechType),

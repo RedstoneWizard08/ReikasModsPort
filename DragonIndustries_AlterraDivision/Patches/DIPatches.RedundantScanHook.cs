@@ -32,7 +32,7 @@ internal static partial class DIPatches {
                     idx0 + 1,
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
-                        nameof(DIHooks.onRedundantFragmentScan),
+                        nameof(DIHooks.OnRedundantFragmentScan),
                         false,
                         new Type[0]
                     )

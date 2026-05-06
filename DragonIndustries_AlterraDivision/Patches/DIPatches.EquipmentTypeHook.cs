@@ -8,8 +8,8 @@ using HarmonyLib;
 namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
-    [HarmonyPatch(typeof(CraftData))]
-    [HarmonyPatch(nameof(CraftData.GetEquipmentType))]
+    [HarmonyPatch(typeof(TechData))]
+    [HarmonyPatch(nameof(TechData.GetEquipmentType))]
     public static class EquipmentTypeHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
@@ -19,7 +19,7 @@ internal static partial class DIPatches {
                     new CodeInstruction(OpCodes.Ldarg_0),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
-                        nameof(DIHooks.getOverriddenEquipmentType),
+                        nameof(DIHooks.GetOverriddenEquipmentType),
                         false,
                         typeof(EquipmentType),
                         typeof(TechType)

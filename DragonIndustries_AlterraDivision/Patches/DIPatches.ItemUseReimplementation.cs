@@ -18,7 +18,7 @@ internal static partial class DIPatches {
             try {
                 codes.add(OpCodes.Ldarg_0);
                 codes.add(OpCodes.Ldarg_1);
-                codes.invoke("ReikaKalseki.DIAlterra.DIHooks", "useItem", false, typeof(Survival), typeof(GameObject));
+                codes.invoke("ReikaKalseki.DIAlterra.DIHooks", "UseItem", false, typeof(Survival), typeof(GameObject));
                 codes.add(OpCodes.Ret);
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {

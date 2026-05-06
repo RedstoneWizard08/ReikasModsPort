@@ -20,7 +20,7 @@ internal static partial class DIPatches {
             codes.Insert(idx, InstructionHandlers.createMethodCall("ReikaKalseki.DIAlterra.DIHooks", "getBulkheadMouseoverText", false, typeof(string), typeof(BulkheadDoor)));
             FileLog.Log("Codes are "+InstructionHandlers.toString(codes));*/
                 codes.add(OpCodes.Ldarg_0);
-                codes.invoke("ReikaKalseki.DIAlterra.DIHooks", "getBulkheadMouseoverText", false, typeof(BulkheadDoor));
+                codes.invoke("ReikaKalseki.DIAlterra.DIHooks", nameof(DIHooks.GetBulkheadMouseoverText), false, typeof(BulkheadDoor));
                 codes.add(OpCodes.Ret);
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {

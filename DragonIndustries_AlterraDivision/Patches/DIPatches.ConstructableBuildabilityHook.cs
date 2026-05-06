@@ -27,7 +27,7 @@ internal static partial class DIPatches {
                 );
                 codes[idx].operand = InstructionHandlers.convertMethodOperand(
                     "ReikaKalseki.DIAlterra.DIHooks",
-                    nameof(DIHooks.interceptConstructability),
+                    nameof(DIHooks.InterceptConstructability),
                     false,
                     new Type[0]
                 );

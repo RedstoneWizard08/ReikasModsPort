@@ -25,7 +25,7 @@ internal static partial class DIPatches {
                 codes.Insert(idx, new CodeInstruction(OpCodes.Ldarg_0));
                 */
                 codes.add(OpCodes.Ldarg_0);
-                codes.invoke("ReikaKalseki.DIAlterra.DIHooks", "updateSolarPanel", false, typeof(SolarPanel));
+                codes.invoke("ReikaKalseki.DIAlterra.DIHooks", "UpdateSolarPanel", false, typeof(SolarPanel));
                 codes.add(OpCodes.Ret);
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));

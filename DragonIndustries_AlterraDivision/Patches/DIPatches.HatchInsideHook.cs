@@ -16,7 +16,7 @@ internal static partial class DIPatches {
             InsnList codes = [];
             try {
                 codes.add(OpCodes.Ldarg_0);
-                codes.invoke("ReikaKalseki.DIAlterra.DIHooks", "isInsideForHatch", false, typeof(UseableDiveHatch));
+                codes.invoke("ReikaKalseki.DIAlterra.DIHooks", "IsInsideForHatch", false, typeof(UseableDiveHatch));
                 codes.add(OpCodes.Ret);
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {

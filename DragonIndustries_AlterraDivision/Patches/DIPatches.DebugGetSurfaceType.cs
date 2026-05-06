@@ -20,7 +20,7 @@ internal static partial class DIPatches {
                     new CodeInstruction(OpCodes.Ldarg_0),
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
-                        nameof(DIHooks.debugGetSurfaceType),
+                        nameof(DIHooks.DebugGetSurfaceType),
                         false,
                         new Type[] { typeof(SurfaceType), typeof(Vector3) }
                     )

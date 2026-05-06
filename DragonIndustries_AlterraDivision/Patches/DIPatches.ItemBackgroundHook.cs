@@ -28,7 +28,7 @@ internal static partial class DIPatches {
                 );
                 codes[idx] = InstructionHandlers.createMethodCall(
                     "ReikaKalseki.DIAlterra.DIHooks",
-                    nameof(DIHooks.applyItemBackground),
+                    nameof(DIHooks.ApplyItemBackground),
                     false,
                     new Type[] { typeof(uGUI_ItemIcon), typeof(Sprite), typeof(InventoryItem) }
                 );

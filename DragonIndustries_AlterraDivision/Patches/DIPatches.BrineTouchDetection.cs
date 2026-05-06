@@ -20,7 +20,7 @@ internal static partial class DIPatches {
                 codes.add(OpCodes.Ldarg_1);
                 codes.invoke(
                     "ReikaKalseki.DIAlterra.DIHooks",
-                    nameof(DIHooks.onAcidTriggerCollided),
+                    nameof(DIHooks.OnAcidTriggerCollided),
                     false,
                     typeof(AcidicBrineDamageTrigger),
                     typeof(Collider)

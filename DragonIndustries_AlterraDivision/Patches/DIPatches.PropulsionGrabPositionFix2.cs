@@ -28,7 +28,7 @@ internal static partial class DIPatches {
                     idx,
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
-                        nameof(DIHooks.getPropulsionTargetCenter),
+                        nameof(DIHooks.GetPropulsionTargetCenter),
                         false,
                         typeof(Vector3),
                         typeof(GameObject)

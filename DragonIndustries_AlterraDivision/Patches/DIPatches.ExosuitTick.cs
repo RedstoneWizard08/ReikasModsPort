@@ -14,7 +14,7 @@ internal static partial class DIPatches {
             InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try {
-                PatchLib.injectTickHook(codes, "tickPrawn", typeof(Exosuit));
+                PatchLib.injectTickHook(codes, "TickPrawn", typeof(Exosuit));
                 InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {
                 InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());

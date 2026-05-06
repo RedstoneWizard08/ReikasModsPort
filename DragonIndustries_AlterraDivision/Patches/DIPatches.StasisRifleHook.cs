@@ -28,7 +28,7 @@ internal static partial class DIPatches {
                 );
                 codes[idx] = InstructionHandlers.createMethodCall(
                     "ReikaKalseki.DIAlterra.DIHooks",
-                    nameof(DIHooks.onStasisFreeze),
+                    nameof(DIHooks.OnStasisFreeze),
                     false,
                     typeof(StasisSphere),
                     typeof(Collider),
@@ -47,7 +47,7 @@ internal static partial class DIPatches {
                 );
                 codes[idx] = InstructionHandlers.createMethodCall(
                     "ReikaKalseki.DIAlterra.DIHooks",
-                    nameof(DIHooks.onStasisUnfreeze),
+                    nameof(DIHooks.OnStasisUnfreeze),
                     false,
                     typeof(StasisSphere),
                     typeof(Rigidbody)

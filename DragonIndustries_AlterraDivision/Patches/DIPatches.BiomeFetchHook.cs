@@ -32,7 +32,7 @@ internal static partial class DIPatches {
                 idx,
                 InstructionHandlers.createMethodCall(
                     "ReikaKalseki.DIAlterra.DIHooks",
-                    nameof(DIHooks.getBiomeAt),
+                    nameof(DIHooks.GetBiomeAt),
                     false,
                     typeof(string),
                     typeof(Vector3)

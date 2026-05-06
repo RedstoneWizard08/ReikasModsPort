@@ -20,7 +20,7 @@ internal static partial class DIPatches {
                     idx,
                     InstructionHandlers.createMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
-                        nameof(DIHooks.getRadiationLevel),
+                        nameof(DIHooks.GetRadiationLevel),
                         false,
                         typeof(Player),
                         typeof(float)

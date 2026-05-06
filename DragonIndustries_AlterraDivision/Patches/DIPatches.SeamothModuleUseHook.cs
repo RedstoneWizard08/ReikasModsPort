@@ -35,7 +35,7 @@ internal static partial class DIPatches {
             codes.add(OpCodes.Ldarg_2);
             codes.invoke(
                 "ReikaKalseki.DIAlterra.DIHooks",
-                nameof(DIHooks.useSeamothModule),
+                nameof(DIHooks.UseSeamothModule),
                 false,
                 typeof(SeaMoth),
                 typeof(TechType),
