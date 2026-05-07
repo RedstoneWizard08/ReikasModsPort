@@ -28,7 +28,7 @@ public class LiquidBreathingSystem {
     private Texture2D _baseO2BubbleTexture;
     private float _baseOverlayAlpha2;
     private float _baseOverlayAlpha1;
-    private string _baseLabel;
+    private Sprite _baseLabel;
 
     private float _lastRechargeRebreatherTime = -1;
     private float _rechargingTintStrength;
@@ -215,12 +215,9 @@ public class LiquidBreathingSystem {
         }
     }
 
-    public static GameObject GetO2Label(uGUI_OxygenBar gui) {
-        return gui.gameObject.getChildObject("Icon/Text");
-    }
-
     public void UpdateOxygenGUI(uGUI_OxygenBar gui) {
         var bar = gui.bar;
+        var s = gui.gameObject.getChildObject("Icon/Icon").GetComponent<Image>();
         // var t = GetO2Label(gui).GetComponent<TextMeshProUGUI>();
         var tn = gui.text;
         if (_baseO2BarTexture == null) {
@@ -229,6 +226,7 @@ public class LiquidBreathingSystem {
             _baseO2BubbleTexture = bar.overlay;
             _baseOverlayAlpha1 = gui.overlay1Alpha;
             _baseOverlayAlpha2 = gui.overlay2Alpha;
+            _baseLabel = s.sprite;
             // _baseLabel = t.text; //O<size=30>2</size>
             //RenderUtil.dumpTexture("o2bar_core", baseO2BarTexture);
             //RenderUtil.dumpTexture("o2bar_bubble", baseO2BubbleTexture);
@@ -247,7 +245,16 @@ public class LiquidBreathingSystem {
             : _baseO2BubbleTexture;
         bar.overlay1Alpha = pink ? Math.Min(1, _baseOverlayAlpha1 * 2) : _baseOverlayAlpha1;
         bar.overlay2Alpha = pink ? Math.Min(1, _baseOverlayAlpha2 * 2) : _baseOverlayAlpha2;
+        s.sprite = pink ? TextureManager.getSprite(SeaToSeaMod.ModDLL, "Textures/HUD/bar_icons") : _baseLabel;
+        var scale = s.gameObject.transform.localScale;
+        var target = pink ? 2.75f : 0.75f;
+        if (!Mathf.Approximately(scale.x, target)) {
+            scale.x = target;
+            s.gameObject.transform.localScale = scale;
+        }
+
         // TODO: This is an icon now
+        // CF<size=30>X</size>•O<size=30>Y</size>
         // t.text = pink ? CustomHUDText /*"O<size=30>2</size><size=20>(aq)</size>"*/ : _baseLabel;
         var inactive = !IsLiquidBreathingActive(Player.main);
         var tc = Color.white;
@@ -476,13 +483,13 @@ public class LiquidBreathingSystem {
             }
 
             if (!Timer) {
-                var lbl = GetO2Label(gameObject.FindAncestor<uGUI_OxygenBar>()).clone().setName("SideBarText");
+                var lbl = gameObject.FindAncestor<uGUI_OxygenBar>().text.clone().setName("SideBarText");
                 Timer = lbl.GetComponent<TextMeshProUGUI>();
                 Timer.transform.SetParent(transform, false);
                 Timer.transform.localPosition = Vector3.zero;
                 Timer.transform.rotation = Quaternion.identity;
                 Timer.alignment = LeftSide ? TextAlignmentOptions.MidlineLeft : TextAlignmentOptions.MidlineRight;
-                // Timer.resizeTextForBestFit = false;
+                Timer.enableAutoSizing = true;
                 Timer.fontSize = 30;
             }
 
