@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Nautilus.Utility;
 using ReikaKalseki.DIAlterra;
 using UnityEngine;
 
@@ -140,13 +141,12 @@ public abstract class PassiveSonarEntity : MonoBehaviour {
 
     protected void createRadarSphere(GameObject go, Vector3 scale) {
         SNUtil.Log("Creating radar sphere for " + go.GetFullHierarchyPath());
-        GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere).setName("RadarHalo");
+        var sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere).setName("RadarHalo");
         sphere.transform.localScale = Vector3.Scale(getRadarSphereSize(), scale);
         sphere.transform.SetParent(go.transform);
         sphere.transform.localPosition = getRadarSphereOffset();
         sphere.removeComponent<Collider>();
-        // TODO
-        // ECCHelpers.ApplySNShaders(sphere, new UBERMaterialProperties(0, 0, 5));
+        MaterialUtils.ApplySNShaders(sphere, 0, 0, 5);
         var r = sphere.GetComponentInChildren<Renderer>();
         r.receiveShadows = false;
         r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;

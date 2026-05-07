@@ -32,7 +32,7 @@ public class MushroomDiskRain : MonoBehaviour {
             refC.size.z * 0.9F
         ); //new Vector3(0.6F, 1.6F, 0.6F);
         collider.center = refC.center + Vector3.down * 2F; //Vector3.down * 0.8F;
-        GameObject fx = gameObject.getChildObject("Particles");
+        var fx = gameObject.getChildObject("Particles");
         if (!fx) {
             fx = ObjectUtil.lookupPrefab("0e67804e-4a59-449d-929a-cd3fc2bef82c").GetComponent<ParticleSystem>()
                 .gameObject.clone();
@@ -43,7 +43,7 @@ public class MushroomDiskRain : MonoBehaviour {
             fx.removeComponent<CreatureUtils>();
             fx.removeComponent<LiveMixin>();
             fx.removeComponent<BehaviourLOD>();
-            // fx.removeComponent<LastScarePosition>(); // TODO
+            fx.removeComponent<FleeWhenScared>();
             fx.removeComponent<WorldForces>();
             fx.removeComponent<SwimBehaviour>();
             fx.removeComponent<SplineFollowing>();
@@ -69,7 +69,7 @@ public class MushroomDiskRain : MonoBehaviour {
         sh.shapeType = ParticleSystemShapeType.Circle;
         sh.rotation = new Vector3(0, 0, 0);
         sh.radius = Mathf.Max(collider.size.x, collider.size.z) * 1.2F;
-        Color c = renderColor.Exponent(1.25F).WithAlpha(1);
+        var c = renderColor.Exponent(1.25F).WithAlpha(1);
         clr.color = c;
         main.startColor = c;
         emit.rateOverTimeMultiplier = 2.5F;
@@ -105,39 +105,37 @@ public class MushroomDiskRain : MonoBehaviour {
     }
 
     private void OnTriggerStay(Collider other) {
-        if (rainOn) {
-            if (other.name == "RainHolder" || other.name == "Mouth")
-                return;
-            else if (other.isTrigger && other.GetComponent<MushroomDiskRain>())
-                return;
-            else if (other.isPlayer()) {
-                var e = Player.main.gameObject.EnsureComponent<FoodEffectSystem.VisualDistortionEffect>();
-                e.intensity = 2;
-                e.timeRemaining = 10;
-                e.effectColor = renderColor.ToVectorA().Exponent(4F);
-                e.tintIntensity = 0.32F; //0.28
-                e.tintColor = (renderColor.Exponent(2) * 4).WithAlpha(1);
-            } else {
-                //if (other.isTrigger)
-                //	SNUtil.writeToChat("Touching "+other.gameObject.GetFullHierarchyPath());
-                var sm = other.isTrigger ? null : other.gameObject.FindAncestor<SeaMoth>();
-                if (sm) {
-                    SeamothPlanktonScoop.checkAndTryScoop(
-                        sm,
-                        Time.deltaTime,
-                        EcoceanMod.treeMushroomSpores.TechType,
-                        out var drop
-                    );
-                }
-
-                var area = other.isTrigger ? other.gameObject.FindAncestor<PlanktonClearingArea>() : null;
-                if (area) {
-                    area.setProperty("mushdisk", true);
-                    area.setProperty("dropBias", EcoceanMod.treeMushroomSpores.TechType);
-                    area.setProperty("dropBiasChance", 0.5F);
-                    area.tickExternal(4);
-                }
+        if (!rainOn) return;
+        if (other.name is "RainHolder" or "Mouth")
+            return;
+        if (other.isTrigger && other.GetComponent<MushroomDiskRain>())
+            return;
+        if (other.isPlayer()) {
+            var e = Player.main.gameObject.EnsureComponent<FoodEffectSystem.VisualDistortionEffect>();
+            e.intensity = 2;
+            e.timeRemaining = 10;
+            e.effectColor = renderColor.ToVectorA().Exponent(4F);
+            e.tintIntensity = 0.32F; //0.28
+            e.tintColor = (renderColor.Exponent(2) * 4).WithAlpha(1);
+        } else {
+            //if (other.isTrigger)
+            //	SNUtil.writeToChat("Touching "+other.gameObject.GetFullHierarchyPath());
+            var sm = other.isTrigger ? null : other.gameObject.FindAncestor<SeaMoth>();
+            if (sm) {
+                SeamothPlanktonScoop.checkAndTryScoop(
+                    sm,
+                    Time.deltaTime,
+                    EcoceanMod.treeMushroomSpores.TechType,
+                    out var drop
+                );
             }
+
+            var area = other.isTrigger ? other.gameObject.FindAncestor<PlanktonClearingArea>() : null;
+            if (!area) return;
+            area.setProperty("mushdisk", true);
+            area.setProperty("dropBias", EcoceanMod.treeMushroomSpores.TechType);
+            area.setProperty("dropBiasChance", 0.5F);
+            area.tickExternal(4);
         }
     }
 }

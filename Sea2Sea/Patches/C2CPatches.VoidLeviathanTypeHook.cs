@@ -14,11 +14,10 @@ internal static partial class C2CPatches {
     [HarmonyPatch(nameof(VoidGhostLeviathansSpawner.UpdateSpawn))]
     public static class VoidLeviathanTypeHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try {
-                var idx = InstructionHandlers.getInstruction(
-                    codes,
+                var idx = codes.GetInstruction(
                     0,
                     0,
                     OpCodes.Ldfld,
@@ -27,7 +26,7 @@ internal static partial class C2CPatches {
                 ) - 1;
                 while (!(codes[idx].opcode == OpCodes.Call && ((MethodInfo)codes[idx].operand).Name == "Instantiate"))
                     codes.RemoveAt(idx);
-                codes[idx] = InstructionHandlers.createMethodCall(
+                codes[idx] = InstructionHandlers.CreateMethodCall(
                     "ReikaKalseki.SeaToSea.C2CHooks",
                     nameof(C2CHooks.GetVoidLeviathan),
                     false,
@@ -37,9 +36,9 @@ internal static partial class C2CPatches {
                 codes.Insert(idx, new CodeInstruction(OpCodes.Ldloc_2));
                 codes.Insert(idx, new CodeInstruction(OpCodes.Ldarg_0));
                 //FileLog.Log("levitype Codes are "+InstructionHandlers.toString(codes));
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

@@ -284,11 +284,11 @@ public static class DIExtensions {
                 var min = li[0].GetInt("min", 0, true);
                 var max = li[0].GetInt("max", -1, false);
                 return UnityEngine.Random.Range(min, max);
-            } else {
-                throw new Exception(
-                    "You must have exactly one matching named element for getRandomInt '" + name + "'! " + xml.Format()
-                );
             }
+
+            throw new Exception(
+                "You must have exactly one matching named element for getRandomInt '" + name + "'! " + xml.Format()
+            );
         }
 
         public float GetRandomFloat(string name) {
@@ -297,11 +297,11 @@ public static class DIExtensions {
                 var min = li[0].GetFloat("min", double.NaN);
                 var max = li[0].GetFloat("max", double.NaN);
                 return UnityEngine.Random.Range((float)min, (float)max);
-            } else {
-                throw new Exception(
-                    "You must have exactly one matching named element for getRandomFloat '" + name + "'! " + xml.Format()
-                );
             }
+
+            throw new Exception(
+                "You must have exactly one matching named element for getRandomFloat '" + name + "'! " + xml.Format()
+            );
         }
 
         public string GetProperty(string name, out XmlElement elem, bool allowNull = false) {
@@ -309,14 +309,16 @@ public static class DIExtensions {
             if (li.Count == 1) {
                 elem = li[0];
                 return li[0].InnerText;
-            } else if (li.Count == 0 && allowNull) {
+            }
+
+            if (li.Count == 0 && allowNull) {
                 elem = null;
                 return null;
-            } else {
-                throw new Exception(
-                    "You must have exactly one matching named tag for getProperty '" + name + "'! " + xml.Format()
-                );
             }
+
+            throw new Exception(
+                "You must have exactly one matching named tag for getProperty '" + name + "'! " + xml.Format()
+            );
         }
 
         public Vector3? GetVector(string name, bool allowNull = false) {
@@ -344,14 +346,16 @@ public static class DIExtensions {
                 var z = li[0].GetFloat("z", double.NaN);
                 elem = li[0];
                 return new Vector3((float)x, (float)y, (float)z);
-            } else if (li.Count == 0 && allowNull) {
+            }
+
+            if (li.Count == 0 && allowNull) {
                 elem = null;
                 return null;
-            } else {
-                throw new Exception(
-                    "You must have exactly one matching named element for getVector '" + name + "'! " + xml.Format()
-                );
             }
+
+            throw new Exception(
+                "You must have exactly one matching named element for getVector '" + name + "'! " + xml.Format()
+            );
         }
 
         public Quaternion? GetQuaternion(string name, bool allowNull = false) {
@@ -362,13 +366,13 @@ public static class DIExtensions {
                 var z = li[0].GetFloat("z", double.NaN);
                 var w = li[0].GetFloat("w", double.NaN);
                 return new Quaternion((float)x, (float)y, (float)z, (float)w);
-            } else {
-                return li.Count == 0 && allowNull
-                    ? null
-                    : throw new Exception(
-                        "You must have exactly one matching named element for getQuaternion '" + name + "'! " + xml.Format()
-                    );
             }
+
+            return li.Count == 0 && allowNull
+                ? null
+                : throw new Exception(
+                    "You must have exactly one matching named element for getQuaternion '" + name + "'! " + xml.Format()
+                );
         }
 
         public Color? GetColor(string name, bool includeAlpha, bool allowNull = false) {
@@ -379,13 +383,13 @@ public static class DIExtensions {
                 var b = li[0].GetFloat("b", double.NaN);
                 var a = includeAlpha ? li[0].GetFloat("a", double.NaN) : 1;
                 return new Color((float)r, (float)g, (float)b, (float)a);
-            } else {
-                return li.Count == 0 && allowNull
-                    ? null
-                    : throw new Exception(
-                        "You must have exactly one matching named element for getColor '" + name + "'! " + xml.Format()
-                    );
             }
+
+            return li.Count == 0 && allowNull
+                ? null
+                : throw new Exception(
+                    "You must have exactly one matching named element for getColor '" + name + "'! " + xml.Format()
+                );
         }
 
         public List<XmlElement> GetDirectElementsByTagName(string name) {
@@ -494,11 +498,11 @@ public static class DIExtensions {
     public static string Stringify(object obj) {
         if (obj == null)
             return "null";
-        else if (obj.IsDictionary())
+        if (obj.IsDictionary())
             return "dict:" + ((IDictionary<object, object>)obj).ToDebugString();
-        else if (obj.IsEnumerable())
+        if (obj.IsEnumerable())
             return "enumerable:" + ((IEnumerable<object>)obj).ToDebugString();
-        else if (obj is Attribute ar)
+        if (obj is Attribute ar)
             return "attr '" + ar.GetType().Name + "'";
         return obj.ToString();
     }

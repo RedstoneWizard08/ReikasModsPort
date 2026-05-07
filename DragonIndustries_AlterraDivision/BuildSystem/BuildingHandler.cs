@@ -288,7 +288,7 @@ public class BuildingHandler {
     }
 
     public string dumpObjectChildren(string file, GameObject go) {
-        return dumpObjects(file, ObjectUtil.getChildObjects(go));
+        return dumpObjects(file, go.getChildObjects());
     }
 
     public string dumpObjects(string file, IEnumerable<GameObject> li) {
@@ -469,18 +469,18 @@ public class BuildingHandler {
         var pre = go.GetComponentInParent<BuilderPlaced>();
         if (pre != null) {
             return pre.placement;
-        } else {
-            SNUtil.WriteToChat(
-                "Game object " + go + " (" + genID(go) + ") was not was not placed by the builder system."
-            );
-            return null;
         }
+
+        SNUtil.WriteToChat(
+            "Game object " + go + " (" + genID(go) + ") was not was not placed by the builder system."
+        );
+        return null;
     }
 
     public void select(GameObject go) {
         var pre = getPlacement(go);
         if (go != null && pre == null)
-            ObjectUtil.dumpObjectData(go);
+            go.dumpObjectData();
         if (pre != null) {
             select(pre);
         }

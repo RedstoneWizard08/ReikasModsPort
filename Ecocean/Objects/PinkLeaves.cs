@@ -44,11 +44,11 @@ public class PinkLeaves : BasicCustomPlant, MultiTexturePrefab {
         go.EnsureComponent<LiveMixin>()
             .CopyObject<LiveMixin>(ObjectUtil.lookupPrefab(TechType.SeaCrown).GetComponent<LiveMixin>());
 
-        GameObject pfb = ObjectUtil.lookupPrefab(DecoPlants.BANANA_LEAF.prefab);
+        var pfb = ObjectUtil.lookupPrefab(DecoPlants.BANANA_LEAF.prefab);
         foreach (var r in pfb.GetComponentsInChildren<Renderer>()) {
             if (!r || r.name.Contains("LOD"))
                 continue;
-            GameObject rg = r.gameObject.clone();
+            var rg = r.gameObject.clone();
             rg.transform.SetParent(mdl);
             rg.transform.localPosition = r.transform.localPosition;
             rg.transform.localRotation = r.transform.localRotation;
@@ -74,7 +74,7 @@ public class PinkLeaves : BasicCustomPlant, MultiTexturePrefab {
             }
         }
 
-        Light l = go.addLight(0.5F, 8, new Color(1F, 153 / 255F, 1F, 1F));
+        var l = go.addLight(0.5F, 8, new Color(1F, 153 / 255F, 1F, 1F));
         l.lightShadowCasterMode = LightShadowCasterMode.Default;
         l.shadows = LightShadows.Soft;
 

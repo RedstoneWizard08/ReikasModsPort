@@ -456,8 +456,8 @@ public static class SNUtil {
                             color = Dialog.DialogColor.Red
                         });
         */
-        var patcher = InstructionHandlers.getTypeBySimpleName("QModManager.Patching.Patcher");
-        var dlgType = InstructionHandlers.getTypeBySimpleName("QModManager.Utility.Dialog");
+        var patcher = InstructionHandlers.GetTypeBySimpleName("QModManager.Patching.Patcher");
+        var dlgType = InstructionHandlers.GetTypeBySimpleName("QModManager.Utility.Dialog");
         var btnType = dlgType.GetNestedType("Button", BindingFlags.NonPublic);
         var dialogs = (IList)patcher.GetProperty("Dialogs", BindingFlags.Static | BindingFlags.NonPublic)
             ?.GetValue(null);
@@ -557,7 +557,7 @@ public static class SNUtil {
     }
 
     public static MapRoomCamera GetControllingCamera(Player ep) {
-        foreach (MapRoomCamera cam in MapRoomCamera.cameras) {
+        foreach (var cam in MapRoomCamera.cameras) {
             // if (cam && cam.controllingPlayer == ep)
             //     return cam;
 
@@ -636,7 +636,7 @@ public static class SNUtil {
     public static UnityEngine.UI.Button CreatePdauiButton(Texture2D ico, Action onClick, uGUI_PDATab tab = null) {
         if (!uGUI_PDA.main)
             return null;
-        var go = uGUI_PDA.main.gameObject.getChildObject("Content/PingManagerTab/Content/ButtonAll");
+        var go = uGUI_PDA.main.gameObject.getChildObject("Content/PingTab/Content/ButtonAll");
         var go2 = go.clone();
         var t = uGUI_PDA.main.transform;
         if (tab) {

@@ -12,7 +12,7 @@ public class PiezoCrystal : InteractableSpawnable {
     }
 
     public override GameObject GetGameObject() {
-        GameObject world =
+        var world =
             ObjectUtil.createWorldObject( /*VanillaResources.DIAMOND.prefab*/"30fb51ee-73b6-4609-8e02-2804201987fb");
         world.removeChildObject("Starship_exploded_debris_13");
         world.removeChildObject("Cube");
@@ -28,7 +28,7 @@ public class PiezoCrystal : InteractableSpawnable {
         angs[angs.Length - 1] = new Vector3(Random.Range(-30F, 30F), Random.Range(0, 360F), 0);
         angs[angs.Length - 2] = new Vector3(Random.Range(150F, 210F), Random.Range(0, 360F), 0);
         foreach (var ang in angs) {
-            GameObject go = ObjectUtil.createWorldObject(VanillaResources.DIAMOND.prefab).setName("CrystalChunk");
+            var go = ObjectUtil.createWorldObject(VanillaResources.DIAMOND.prefab).setName("CrystalChunk");
             go.transform.SetParent(world.transform);
             go.transform.localPosition = Vector3.zero;
             go.transform.localRotation = Quaternion.Euler(ang.x, ang.y, ang.z); //UnityEngine.Random.rotationUniform;
@@ -204,10 +204,10 @@ public class PiezoCrystalTag : MonoBehaviour, ReactsOnDrilled {
             SoundManager.playSoundAt(dischargeSound, transform.position, false, 60, 1);
         }
 
-        GameObject pfb = ObjectUtil.lookupPrefab(VanillaCreatures.CRABSQUID.prefab).GetComponent<EMPAttack>()
+        var pfb = ObjectUtil.lookupPrefab(VanillaCreatures.CRABSQUID.prefab).GetComponent<EMPAttack>()
             .ammoPrefab;
         for (var i = 0; i < 180; i += 30) {
-            GameObject emp = pfb.clone().setName("PiezoCrystal_EMPulse" + i);
+            var emp = pfb.clone().setName("PiezoCrystal_EMPulse" + i);
             emp.transform.position = transform.position;
             emp.transform.localRotation = Quaternion.Euler(i, 0, 0);
             var r = emp.GetComponentInChildren<Renderer>();
@@ -243,7 +243,7 @@ public class PiezoCrystalTag : MonoBehaviour, ReactsOnDrilled {
             transform.rotation
         );
         SoundManager.playSoundAt(explodeSound, transform.position, false, 60, 1);
-        HashSet<LiveMixin> set = WorldUtil.getObjectsNearWithComponent<LiveMixin>(transform.position, 35);
+        var set = WorldUtil.getObjectsNearWithComponent<LiveMixin>(transform.position, 35);
         set.Add(Player.main.liveMixin);
         var v = Player.main.GetVehicle();
         if (v)

@@ -140,8 +140,7 @@ public class PostCoveDomeGenerator : WorldGenerator {
         private void OnBreakResource() {
             var wr = isHot ? resourceTableHot : resourceTableCool;
 
-            // TODO
-            // res.SpawnResourceFromPrefab(ObjectUtil.lookupPrefab(wr.getRandomEntry())); //use their spawn code
+            res.SpawnResourceFromPrefab(ObjectUtil.lookupPrefab(wr.getRandomEntry())); //use their spawn code
         }
     }
 
@@ -174,8 +173,7 @@ public class PostCoveDomeGenerator : WorldGenerator {
                 failed++;
                 if (failed > 50)
                     break;
-                else
-                    continue;
+                continue;
             }
         }
 

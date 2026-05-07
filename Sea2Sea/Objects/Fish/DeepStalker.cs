@@ -387,10 +387,9 @@ internal class DeepStalkerTag : MonoBehaviour {
         if (isNew) {
             platinumGrabTime = time;
             //SNUtil.writeToChat(this+" aimed at "+target);
-        } else {
-            //SNUtil.writeToChat(this+" is seeking "+target);
         }
 
+        //SNUtil.writeToChat(this+" is seeking "+target);
         currentForcedTarget = target;
         if (creatureComponent && creatureComponent.liveMixin && creatureComponent.liveMixin.IsAlive()) {
             creatureComponent.Aggression.Add(isNew ? 0.3F : 0.1F);

@@ -200,7 +200,7 @@ internal class RepellentFin : MonoBehaviour {
     }
 
     private void OnCollisionStay(Collision c) {
-        if (root && root.isFunctional() && c.collider && ObjectUtil.isPlayerOrCreature(c.collider, true)) {
+        if (root && root.isFunctional() && c.collider && c.collider.isPlayerOrCreature(true)) {
             var live = c.gameObject.FindAncestor<LiveMixin>();
             if (live)
                 live.TakeDamage(8 * Time.deltaTime, c.contacts[0].point, DamageType.Electrical, gameObject);

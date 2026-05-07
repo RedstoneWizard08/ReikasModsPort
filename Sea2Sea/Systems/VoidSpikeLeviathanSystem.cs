@@ -618,10 +618,10 @@ public class VoidSpikeLeviathanSystem {
             if (false) {
                 gv.Aggression.Value = 0;
                 gv.lastTarget.target = getOrCreateTarget();
-            } else {
-                gv.Aggression.Add(spike ? 2.5F : 1);
-                gv.lastTarget.target = main.gameObject;
             }
+
+            gv.Aggression.Add(spike ? 2.5F : 1);
+            gv.lastTarget.target = main.gameObject;
         } else {
             var a = gv.transform.position - main.transform.position;
             var vector = gv.transform.position + a * gv.maxDistanceToPlayer;

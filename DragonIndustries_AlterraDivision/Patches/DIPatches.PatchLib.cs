@@ -8,9 +8,8 @@ namespace ReikaKalseki.DIAlterra;
 
 internal static partial class DIPatches {
     private static class PatchLib {
-        internal static void addEquipmentAllowedHook(InsnList codes, params CodeInstruction[] getItem) {
-            var idx = InstructionHandlers.getInstruction(
-                codes,
+        internal static void AddEquipmentAllowedHook(InsnList codes, params CodeInstruction[] getItem) {
+            var idx = codes.GetInstruction(
                 0,
                 0,
                 OpCodes.Call,
@@ -19,7 +18,7 @@ internal static partial class DIPatches {
                 false,
                 new Type[] { typeof(EquipmentType), typeof(EquipmentType) }
             );
-            codes[idx] = InstructionHandlers.createMethodCall(
+            codes[idx] = InstructionHandlers.CreateMethodCall(
                 "ReikaKalseki.DIAlterra.DIHooks",
                 "IsEquipmentApplicable",
                 false,
@@ -32,11 +31,11 @@ internal static partial class DIPatches {
             codes.Insert(idx, new CodeInstruction(OpCodes.Ldarg_0));
         }
 
-        internal static void patchPropulsability(InsnList codes, int idx, bool mass, CodeInstruction go = null) {
+        internal static void PatchPropulsability(InsnList codes, int idx, bool mass, CodeInstruction go = null) {
             InsnList add = [go == null ? new CodeInstruction(OpCodes.Ldarg_1) : go];
-            add.add(OpCodes.Ldarg_0);
-            add.add(mass ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0);
-            add.invoke(
+            add.Add(OpCodes.Ldarg_0);
+            add.Add(mass ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0);
+            add.Invoke(
                 "ReikaKalseki.DIAlterra.DIHooks",
                 "GetMaxPropulsible",
                 false,
@@ -48,8 +47,8 @@ internal static partial class DIPatches {
             codes.InsertRange(idx + 1, add);
         }
 
-        internal static void patchVisualItemSize(InsnList codes, bool useSelfContainer = false) {
-            patchVisualItemSize(
+        internal static void PatchVisualItemSize(InsnList codes, bool useSelfContainer = false) {
+            PatchVisualItemSize(
                 codes,
                 useSelfContainer,
                 true,
@@ -59,7 +58,7 @@ internal static partial class DIPatches {
             );
         }
 
-        internal static void patchVisualItemSize(
+        internal static void PatchVisualItemSize(
             InsnList codes,
             bool ldSelf = false,
             bool ldArg1 = true,
@@ -69,7 +68,7 @@ internal static partial class DIPatches {
                 if (codes[i].opcode == OpCodes.Call) {
                     var m = (MethodInfo)codes[i].operand;
                     if (m != null && m.DeclaringType.Name == "TechData" && m.Name == "GetItemSize") {
-                        var call = InstructionHandlers.convertMethodOperand(
+                        var call = InstructionHandlers.ConvertMethodOperand(
                             "ReikaKalseki.DIAlterra.DIHooks",
                             "GetItemDisplaySize",
                             false,
@@ -90,9 +89,8 @@ internal static partial class DIPatches {
             codes.Insert(idx, new CodeInstruction(OpCodes.Ldarg_1));*/
         }
 
-        internal static void redirectPowerHook(InsnList codes) {
-            var idx = InstructionHandlers.getInstruction(
-                codes,
+        internal static void RedirectPowerHook(InsnList codes) {
+            var idx = codes.GetInstruction(
                 0,
                 0,
                 OpCodes.Call,
@@ -101,7 +99,7 @@ internal static partial class DIPatches {
                 false,
                 new Type[] { typeof(IPowerInterface), typeof(float), typeof(float).MakeByRefType() }
             );
-            codes[idx].operand = InstructionHandlers.convertMethodOperand(
+            codes[idx].operand = InstructionHandlers.ConvertMethodOperand(
                 "ReikaKalseki.DIAlterra.DIHooks",
                 "AddPowerToSeabaseDelegate",
                 false,
@@ -113,12 +111,12 @@ internal static partial class DIPatches {
             codes.Insert(idx, new CodeInstruction(OpCodes.Ldarg_0));
         }
 
-        internal static void injectEMPHook(InsnList codes, int idx) {
+        internal static void InjectEmpHook(InsnList codes, int idx) {
             var arg = codes[idx - 3]; //-1 is getfield time, -2 is loadarg0 to get that field
             idx -= 4;
             codes.Insert(
                 idx + 1,
-                InstructionHandlers.createMethodCall(
+                InstructionHandlers.CreateMethodCall(
                     "ReikaKalseki.DIAlterra.DIHooks",
                     "OnEmpHit",
                     false,
@@ -130,10 +128,10 @@ internal static partial class DIPatches {
             codes.Insert(idx + 1, new CodeInstruction(OpCodes.Ldarg_0));
         }
 
-        internal static void injectTickHook(InsnList codes, string name, Type arg) {
-            codes.patchInitialHook(
+        internal static void InjectTickHook(InsnList codes, string name, Type arg) {
+            codes.PatchInitialHook(
                 new CodeInstruction(OpCodes.Ldarg_0),
-                InstructionHandlers.createMethodCall("ReikaKalseki.DIAlterra.DIHooks", name, false, arg)
+                InstructionHandlers.CreateMethodCall("ReikaKalseki.DIAlterra.DIHooks", name, false, arg)
             );
         }
     }

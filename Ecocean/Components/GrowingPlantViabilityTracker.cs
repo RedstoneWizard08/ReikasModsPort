@@ -38,7 +38,7 @@ public class GrowingPlantViabilityTracker : MonoBehaviour {
 
     private void die() {
         if (growbed.storageContainer.forceRemoveItem(plant.seed.pickupable)) {
-            GameObject go = ObjectUtil.createWorldObject(EcoceanMod.deadBlighted.Info.TechType);
+            var go = ObjectUtil.createWorldObject(EcoceanMod.deadBlighted.Info.TechType);
             go.SetActive(false);
             growbed.storageContainer.container.AddItem(go.GetComponent<Pickupable>());
         }

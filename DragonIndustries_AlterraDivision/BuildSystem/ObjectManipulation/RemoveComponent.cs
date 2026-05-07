@@ -26,7 +26,7 @@ public sealed class RemoveComponent : ManipulationBase {
 	}
 
 	public override void loadFromXML(XmlElement e) {
-		type = InstructionHandlers.getTypeBySimpleName(e.InnerText);
+		type = InstructionHandlers.GetTypeBySimpleName(e.InnerText);
 	}
 
 	public override void saveToXML(XmlElement e) {

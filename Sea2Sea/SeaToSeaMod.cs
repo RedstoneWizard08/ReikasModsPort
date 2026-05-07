@@ -682,8 +682,7 @@ public static SoundManager.SoundData voidspikeLeviAmbient;
                 0,
                 1
             );
-            if (bb == BiomeType.BonesField_Lake_Floor || bb == BiomeType.BonesField_LakePit_Floor ||
-                bb == BiomeType.BonesField_LakePit_Wall || bb == BiomeType.BonesField_Cave_Ground) continue;
+            if (bb is BiomeType.BonesField_Lake_Floor or BiomeType.BonesField_LakePit_Floor or BiomeType.BonesField_LakePit_Wall or BiomeType.BonesField_Cave_Ground) continue;
             foreach (var s in LrCoralClusters)
                 LootDistributionHandler.EditLootDistributionData(s, bb, 0, 1);
         }

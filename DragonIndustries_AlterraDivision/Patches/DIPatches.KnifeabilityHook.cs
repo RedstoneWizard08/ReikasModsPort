@@ -12,15 +12,15 @@ internal static partial class DIPatches {
     [HarmonyPatch(nameof(Knife.IsValidTarget))]
     public static class KnifeabilityHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             InsnList codes = [];
             try {
-                codes.add(OpCodes.Ldarg_0);
-                codes.invoke("ReikaKalseki.DIAlterra.DIHooks", "IsObjectKnifeable", false, typeof(LiveMixin));
-                codes.add(OpCodes.Ret);
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                codes.Add(OpCodes.Ldarg_0);
+                codes.Invoke("ReikaKalseki.DIAlterra.DIHooks", "IsObjectKnifeable", false, typeof(LiveMixin));
+                codes.Add(OpCodes.Ret);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

@@ -29,8 +29,8 @@ public sealed class ScatteredPiezoGenerator : WorldGenerator {
 
     public override bool generate(List<GameObject> generated) {
         for (var i = 0; i < numberToGen; i++) {
-            Vector3 pos = MathUtil.getRandomVectorAround(position, scatterRange);
-            GameObject go = spawner(EcoceanMod.piezo.Info.ClassID);
+            var pos = MathUtil.getRandomVectorAround(position, scatterRange);
+            var go = spawner(EcoceanMod.piezo.Info.ClassID);
             go.transform.position = pos;
             go.transform.rotation = Random.rotationUniform;
             generated.Add(go);

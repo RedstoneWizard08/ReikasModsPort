@@ -86,7 +86,7 @@ public class MushroomStack : BasicCustomPlant {
 
     private GameObject getOrCreateStem(GameObject go, int i) {
         var nm = STEM_NAME + i;
-        GameObject child = go.getChildObject(nm);
+        var child = go.getChildObject(nm);
         if (!child) {
             child = new GameObject(nm) {
                 transform = {
@@ -111,7 +111,7 @@ public class MushroomStack : BasicCustomPlant {
         out float tilt
     ) {
         var nm = CHILD_NAME + i0;
-        GameObject child = go.getChildObject(nm);
+        var child = go.getChildObject(nm);
         if (!child) {
             child = ObjectUtil.createWorldObject(pfb);
             prepareObject(child);

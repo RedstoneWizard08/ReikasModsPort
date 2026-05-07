@@ -12,13 +12,13 @@ internal static partial class DIPatches {
     [HarmonyPatch(nameof(StorageContainer.OnHandHover))]
     public static class StorageContainerMouseoverHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try {
-                codes.patchEveryReturnPre(
+                codes.PatchEveryReturnPre(
                     new InsnList() {
                         new CodeInstruction(OpCodes.Ldarg_0), new CodeInstruction(OpCodes.Ldarg_1),
-                        InstructionHandlers.createMethodCall(
+                        InstructionHandlers.CreateMethodCall(
                             "ReikaKalseki.DIAlterra.DIHooks",
                             nameof(DIHooks.OnStorageContainerHover),
                             false,
@@ -27,9 +27,9 @@ internal static partial class DIPatches {
                         ),
                     }
                 );
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

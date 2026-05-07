@@ -141,10 +141,10 @@ batch_id = (19, 17, 16)
             if (go != null)
                 go.transform.position = pos;
             return go;
-        } else {
-            SNUtil.Log("NO SUCH ITEM TO DROP: " + item);
-            return null;
         }
+
+        SNUtil.Log("NO SUCH ITEM TO DROP: " + item);
+        return null;
     }
 
     public static mset.Sky getSkybox(string biome, bool allowNotFoundError = true) {

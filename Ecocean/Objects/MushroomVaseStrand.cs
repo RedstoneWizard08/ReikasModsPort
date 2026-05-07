@@ -70,9 +70,9 @@ public class MushroomVaseStrand : BasicCustomPlant, CustomHarvestBehavior {
         foreach (var r in r0)
             r.gameObject.destroy(false);
 
-        GameObject pfb = ObjectUtil.lookupPrefab(DecoPlants.MUSHROOM_VASE_STRANDS.prefab);
+        var pfb = ObjectUtil.lookupPrefab(DecoPlants.MUSHROOM_VASE_STRANDS.prefab);
         var a = pfb.GetComponentInChildren<Animator>();
-        GameObject rg = a.gameObject.clone();
+        var rg = a.gameObject.clone();
         rg.transform.SetParent(mdl);
         rg.transform.localPosition = Vector3.zero;
         rg.transform.localRotation = Quaternion.Euler(90, 0, 0);
@@ -162,7 +162,7 @@ public class MushroomVaseStrand : BasicCustomPlant, CustomHarvestBehavior {
                     flag = true;
                     bc.gameObject.EnsureComponent<MushroomVaseStrandTagInteractRelay>().owner = this;
                 } else {
-                    GameObject cdr = gameObject.getChildObject("Capsule");
+                    var cdr = gameObject.getChildObject("Capsule");
                     if (cdr) {
                         var cc = cdr.GetComponent<CapsuleCollider>();
                         if (cc) {
@@ -187,7 +187,7 @@ public class MushroomVaseStrand : BasicCustomPlant, CustomHarvestBehavior {
                 }
 
                 if (!planktonClearingArea) {
-                    GameObject go = gameObject.getChildObject(PLANKTON_AOE);
+                    var go = gameObject.getChildObject(PLANKTON_AOE);
                     if (!go) {
                         go = new GameObject(PLANKTON_AOE);
                         go.transform.SetParent(transform);
@@ -370,7 +370,7 @@ public class MushroomVaseStrand : BasicCustomPlant, CustomHarvestBehavior {
 
         private void pickResource() {
             if (resourceGenerationProgress >= 1) {
-                TechType tt = filterDrops.getRandomEntry();
+                var tt = filterDrops.getRandomEntry();
                 var bias = planktonClearingMgr.getProperty<TechType>("dropBias");
                 if (bias != TechType.None && UnityEngine.Random.Range(0F, 1F) <=
                     planktonClearingMgr.getProperty<float>("dropBiasChance"))

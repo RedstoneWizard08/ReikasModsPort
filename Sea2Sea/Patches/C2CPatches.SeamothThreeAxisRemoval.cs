@@ -14,11 +14,10 @@ internal static partial class C2CPatches {
     [HarmonyPatch(nameof(Vehicle.ApplyPhysicsMove))]
     public static class SeamothThreeAxisRemoval {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try {
-                var idx = InstructionHandlers.getInstruction(
-                    codes,
+                var idx = codes.GetInstruction(
                     0,
                     0,
                     OpCodes.Callvirt,
@@ -28,11 +27,11 @@ internal static partial class C2CPatches {
                     new Type[0]
                 );
                 //idx = InstructionHandlers.getLastOpcodeBefore(codes, idx, OpCodes.Stloc_2);
-                idx = InstructionHandlers.getInstruction(codes, idx, 0, OpCodes.Ldloc_2) + 1;
+                idx = codes.GetInstruction(idx, 0, OpCodes.Ldloc_2) + 1;
                 InsnList li = [];
-                li.add(OpCodes.Ldarg_0);
-                li.add(OpCodes.Ldloc_1);
-                li.invoke(
+                li.Add(OpCodes.Ldarg_0);
+                li.Add(OpCodes.Ldloc_1);
+                li.Invoke(
                     "ReikaKalseki.SeaToSea.C2CHooks",
                     nameof(C2CHooks.Get3AxisSpeed),
                     false,
@@ -42,9 +41,9 @@ internal static partial class C2CPatches {
                 );
                 codes.InsertRange(idx, li);
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

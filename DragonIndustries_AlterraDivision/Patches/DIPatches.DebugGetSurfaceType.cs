@@ -13,21 +13,21 @@ internal static partial class DIPatches {
     [HarmonyPatch(nameof(Builder.GetSurfaceType))]
     public static class DebugGetSurfaceType {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try {
-                codes.patchEveryReturnPre(
+                codes.PatchEveryReturnPre(
                     new CodeInstruction(OpCodes.Ldarg_0),
-                    InstructionHandlers.createMethodCall(
+                    InstructionHandlers.CreateMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
                         nameof(DIHooks.DebugGetSurfaceType),
                         false,
                         new Type[] { typeof(SurfaceType), typeof(Vector3) }
                     )
                 );
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

@@ -94,9 +94,8 @@ public class DrillDepletionSystem {
                     aoe.radius * 1.5F + 10
                 )) {
                 return DrillableResourceArea.getResourceNode(d.GetComponent<PrefabIdentifier>().ClassId);
-            } else {
-                //SNUtil.writeToChat("motherlode too far away @ "+ctr+" for "+drill.transform.position+" R="+aoe.radius);
             }
+            //SNUtil.writeToChat("motherlode too far away @ "+ctr+" for "+drill.transform.position+" R="+aoe.radius);
         }
 
         return null;

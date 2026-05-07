@@ -104,8 +104,7 @@ public static class SoundManager {
                 var dist = Vector3.Distance(position, Player.main.transform.position);
                 if (dist >= distanceFalloff)
                     return;
-                else
-                    vol *= 1 - dist / distanceFalloff;
+                vol *= 1 - dist / distanceFalloff;
             }
 
             FMODUWE.PlayOneShot(snd, position, vol);
@@ -135,8 +134,7 @@ public static class SoundManager {
             var dist = Vector3.Distance(position, Player.main.transform.position);
             if (dist >= distanceFalloff)
                 return null;
-            else
-                vol *= 1 - dist / distanceFalloff;
+            vol *= 1 - dist / distanceFalloff;
         }
 
         if (vol <= 0)

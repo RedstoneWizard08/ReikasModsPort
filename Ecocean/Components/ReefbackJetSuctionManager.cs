@@ -19,7 +19,7 @@ internal class ReefbackJetSuctionManager : MonoBehaviour {
 
     private SphereCollider ensureAoE(SphereCollider c, string nm) {
         if (!c) {
-            GameObject go = gameObject.getChildObject(nm);
+            var go = gameObject.getChildObject(nm);
             if (!go) {
                 float sign = nm.Contains("left") ? -1 : 1;
                 go = new GameObject(nm);

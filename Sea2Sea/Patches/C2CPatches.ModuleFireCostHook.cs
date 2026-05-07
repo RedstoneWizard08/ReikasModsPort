@@ -13,11 +13,10 @@ internal static partial class C2CPatches {
     [HarmonyPatch(nameof(SeaMoth.OnUpgradeModuleUse))]
     public static class ModuleFireCostHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try {
-                var idx = InstructionHandlers.getInstruction(
-                    codes,
+                var idx = codes.GetInstruction(
                     0,
                     0,
                     OpCodes.Stfld,
@@ -28,7 +27,7 @@ internal static partial class C2CPatches {
                     idx,
                     new InsnList {
                         new CodeInstruction(OpCodes.Ldarg_0),
-                        InstructionHandlers.createMethodCall(
+                        InstructionHandlers.CreateMethodCall(
                             "ReikaKalseki.SeaToSea.C2CHooks",
                             nameof(C2CHooks.FireSeamothDefence),
                             false,
@@ -36,9 +35,9 @@ internal static partial class C2CPatches {
                         ),
                     }
                 );
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

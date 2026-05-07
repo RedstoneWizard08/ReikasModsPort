@@ -6,34 +6,31 @@ using System.Reflection.Emit;
 using HarmonyLib;
 using ReikaKalseki.DIAlterra;
 
-namespace ReikaKalseki.SeaToSea;
+namespace ReikaKalseki.Exscansion;
 
-internal static partial class C2CPatches {
-    [HarmonyPatch(typeof(BlueprintHandTarget))]
-    [HarmonyPatch(nameof(BlueprintHandTarget.HoverBlueprint))]
-    public static class DataboxRepairTooltipHook {
+internal static partial class ESPatches {
+    [HarmonyPatch(typeof(uGUI_ResourceTracker))]
+    [HarmonyPatch(nameof(uGUI_ResourceTracker.UpdateBlips))]
+    public static class PingHUDVisibility {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try {
-                codes.PatchEveryReturnPre(
-                    new CodeInstruction(OpCodes.Ldarg_0),
-                    InstructionHandlers.CreateMethodCall(
-                        "ReikaKalseki.SeaToSea.C2CHooks",
-                        nameof(C2CHooks.OnDataboxTooltipCalculate),
-                        false,
-                        typeof(BlueprintHandTarget)
-                    )
+                var call = InstructionHandlers.CreateMethodCall(
+                    "ReikaKalseki.Exscansion.ESHooks",
+                    nameof(ESHooks.UpdatePingHUDVisibility),
+                    false,
+                    typeof(uGUI_ResourceTracker)
                 );
+                codes.PatchEveryReturnPre(new CodeInstruction(OpCodes.Ldarg_0), call);
                 InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
-                //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
             } catch (Exception e) {
                 InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());
             }
-
+    
             return codes.AsEnumerable();
         }
     }

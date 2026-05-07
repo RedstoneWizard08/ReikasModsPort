@@ -121,8 +121,7 @@ public class PredatoryBloodvine : MonoBehaviour {
         if (v) {
             if (v.docked)
                 return;
-            else
-                amt *= 2;
+            amt *= 2;
         }
 
         amt *= EcoceanMod.config.getFloat(ECConfig.ConfigEntries.BLOODDMG);

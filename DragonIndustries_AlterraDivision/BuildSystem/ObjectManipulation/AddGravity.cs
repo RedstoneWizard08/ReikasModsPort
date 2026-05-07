@@ -15,7 +15,7 @@ namespace ReikaKalseki.DIAlterra;
 internal sealed class AddGravity : ManipulationBase {
 
 	public override void applyToObject(GameObject go) {
-		ObjectUtil.applyGravity(go);
+		go.applyGravity();
 	}
 
 	public override void applyToObject(PlacedObject go) {

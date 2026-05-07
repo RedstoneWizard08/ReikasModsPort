@@ -36,10 +36,10 @@ internal class CreepvineCollisionDetector : MonoBehaviour {
                         foreach (var pp in gameObject.FindAncestor<PrefabIdentifier>()
                                      .GetComponentsInChildren<PickPrefab>()) {
                             if (!pp.GetPickedState() && Random.Range(0F, 1F) < 0.5F + f) {
-                                GameObject go = PrefabUtil.GetPrefabForTechType(pp.pickTech);
+                                var go = PrefabUtil.GetPrefabForTechType(pp.pickTech);
                                 pp.SetPickedUp();
                                 if (go) {
-                                    GameObject go2 = go.clone();
+                                    var go2 = go.clone();
                                     go2.transform.position = MathUtil.getRandomVectorAround(transform.position, 1.5F);
                                     go2.transform.localScale = Vector3.one * 2.5F;
                                     var seed = go2.GetComponent<Rigidbody>();
@@ -64,7 +64,7 @@ internal class CreepvineCollisionDetector : MonoBehaviour {
     internal static GameObject addCreepvineSeedCollision(GameObject go) {
         //FruitPlant fp = go.GetComponent<FruitPlant>(); average of centers
         var light = go.GetComponentInChildren<Light>().gameObject;
-        GameObject put = light.getChildObject("SeedSphere");
+        var put = light.getChildObject("SeedSphere");
         if (!put) {
             put = new GameObject("SeedSphere");
             put.transform.SetParent(light.transform);

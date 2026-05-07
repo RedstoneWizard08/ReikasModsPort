@@ -77,7 +77,8 @@ public class ConfigEntry : Attribute {
 		if (type == typeof(string)) {
 			return 0;
 		}
-		else if (type == typeof(bool)) {
+
+		if (type == typeof(bool)) {
 			return text.ToLowerInvariant() == "true" ? 1 : 0;
 		}
 		return float.Parse(text);
@@ -87,7 +88,8 @@ public class ConfigEntry : Attribute {
 		if (type == typeof(bool)) {
 			return (value > 0).ToString();
 		}
-		else if (type == typeof(int) || type == typeof(uint) || type == typeof(byte) || type == typeof(long) || type == typeof(ulong)) {
+
+		if (type == typeof(int) || type == typeof(uint) || type == typeof(byte) || type == typeof(long) || type == typeof(ulong)) {
 			return ((int)value).ToString();
 		}
 		return value.ToString("0.00");

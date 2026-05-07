@@ -56,7 +56,7 @@ public abstract class DrillableResourceArea : CustomPrefab {
             );
         }
 
-        if (InstructionHandlers.getTypeBySimpleName(
+        if (InstructionHandlers.GetTypeBySimpleName(
                 "FCS_ProductionSolutions.Mods.DeepDriller.HeavyDuty.Mono.FCSDeepDrillerOreGenerator"
             ) != null)
             page.append("\n\n" + locale.getString("fcsNote"));
@@ -112,10 +112,10 @@ public abstract class DrillableResourceArea : CustomPrefab {
                 d.GetComponentsInChildren<MeshRenderer>(true)[0].gameObject.SetActive(true);
             };
             return world;
-        } else {
-            SNUtil.WriteToChat("Could not fetch template GO for " + this);
-            return null;
         }
+
+        SNUtil.WriteToChat("Could not fetch template GO for " + this);
+        return null;
     }
 
     public class DrillableResourceAreaTag : SpecialDrillable {

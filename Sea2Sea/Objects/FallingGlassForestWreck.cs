@@ -59,7 +59,7 @@ public class FallingGlassForestWreck : CustomPrefab {
     private static void tryRemoveObjects(GameObject go, string name) {
         if (go.removeChildObject(name) <= 0) {
             SNUtil.Log("Failed to find any '" + name + "' objects to remove from " + go.GetFullHierarchyPath() + "!");
-            ObjectUtil.dumpObjectData(go, false);
+            go.dumpObjectData(false);
         }
     }
 }

@@ -12,13 +12,13 @@ internal static partial class DIPatches {
     [HarmonyPatch(nameof(GrowingPlant.ManagedUpdate))]
     public static class TickGrowingPlant {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try {
-                var idx = InstructionHandlers.getMethodCallByName(codes, 0, 0, "GrowingPlant", "GetProgress");
+                var idx = codes.GetMethodCallByName(0, 0, "GrowingPlant", "GetProgress");
                 InsnList inject = [
                     new CodeInstruction(OpCodes.Ldarg_0),
-                    InstructionHandlers.createMethodCall(
+                    InstructionHandlers.CreateMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
                         nameof(DIHooks.GetGrowingPlantProgressInTick),
                         false,
@@ -26,9 +26,9 @@ internal static partial class DIPatches {
                     ),
                 ];
                 codes.InsertRange(idx + 1, inject);
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

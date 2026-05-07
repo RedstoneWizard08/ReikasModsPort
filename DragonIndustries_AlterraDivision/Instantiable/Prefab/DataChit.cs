@@ -71,7 +71,7 @@ public sealed class DataChit : CustomPrefab {
         tgt.primaryTooltip = Info.PrefabFileName;
         tgt.informGameObject = world;
         if (showOnScannerRoom)
-            ObjectUtil.makeMapRoomScannable(world, scannerRoomChitType);
+            world.makeMapRoomScannable(scannerRoomChitType);
         else
             world.removeComponent<ResourceTracker>();
         world.EnsureComponent<DataChitTag>();
@@ -95,7 +95,7 @@ public sealed class DataChit : CustomPrefab {
     private class DataChitTag : MonoBehaviour {
         private void Start() {
             if (GetComponent<ResourceTracker>())
-                ObjectUtil.makeMapRoomScannable(gameObject, scannerRoomChitType).Register();
+                gameObject.makeMapRoomScannable(scannerRoomChitType).Register();
         }
 
         private void OnStoryHandTarget() {

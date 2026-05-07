@@ -13,16 +13,16 @@ internal static partial class ESPatches {
     [HarmonyPatch(nameof(ResourceTracker.Register))]
     public static class ScannerFilteringHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try { /*
             codes.add(OpCodes.Ldarg_0);
             codes.invoke("ReikaKalseki.Exscansion.ESHooks", "registerResourceTracker", false, typeof(ResourceTracker));
             codes.add(OpCodes.Ret);*/
                 var br = codes[2];
-                codes.patchInitialHook(
+                codes.PatchInitialHook(
                     new CodeInstruction(OpCodes.Ldarg_0),
-                    InstructionHandlers.createMethodCall(
+                    InstructionHandlers.CreateMethodCall(
                         "ReikaKalseki.Exscansion.ESHooks",
                         nameof(ESHooks.IsObjectVisibleToScannerRoom),
                         false,
@@ -30,9 +30,9 @@ internal static partial class ESPatches {
                     ),
                     new CodeInstruction(OpCodes.Brfalse, br.operand)
                 );
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

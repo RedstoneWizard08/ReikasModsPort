@@ -74,16 +74,16 @@ public sealed class HolographicControl : CustomPrefab {
                 new Vector2(0, 0)
             );
             return setIcons(off, on);
-        } else {
-            icons = [
-                Sprite.Create(
-                    TextureManager.getTexture(ownerMod, pathAndName),
-                    new Rect(0, 0, size, size),
-                    new Vector2(0, 0)
-                ),
-            ];
-            return this;
         }
+
+        icons = [
+            Sprite.Create(
+                TextureManager.getTexture(ownerMod, pathAndName),
+                new Rect(0, 0, size, size),
+                new Vector2(0, 0)
+            ),
+        ];
+        return this;
     }
 
     public HolographicControl setIcons(Sprite off, Sprite on) {
@@ -134,8 +134,7 @@ public sealed class HolographicControl : CustomPrefab {
                 var tag = pi.GetComponentInChildren<HolographicControlTag>();
                 if (tag)
                     return tag;
-                else
-                    pi.gameObject.destroy(false);
+                pi.gameObject.destroy(false);
             }
         }
 

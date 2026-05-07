@@ -38,7 +38,7 @@ internal abstract class GlobalManipulation : ManipulationBase {
 		var li = e.GetDirectElementsByTagName("local");
 		if (li.Count == 1) {
 			var typeName = "ReikaKalseki.SeaToSea."+li[0].GetProperty("type");
-			var tt = InstructionHandlers.getTypeBySimpleName(typeName);
+			var tt = InstructionHandlers.GetTypeBySimpleName(typeName);
 			if (tt == null)
 				throw new Exception("No class found for '" + typeName + "'!");
 			localApply = (LocalCheck)Activator.CreateInstance(tt);

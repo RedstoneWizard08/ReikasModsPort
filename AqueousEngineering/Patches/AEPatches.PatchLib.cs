@@ -9,8 +9,7 @@ namespace ReikaKalseki.AqueousEngineering;
 public static partial class AEPatches {
     private static class PatchLib {
         internal static void addPowerGenHook(string caller, InsnList codes) {
-            var idx = InstructionHandlers.getInstruction(
-                codes,
+            var idx = codes.GetInstruction(
                 0,
                 0,
                 OpCodes.Call,
@@ -23,7 +22,7 @@ public static partial class AEPatches {
                 idx + 1,
                 new InsnList {
                     new CodeInstruction(OpCodes.Ldarg_0),
-                    InstructionHandlers.createMethodCall(
+                    InstructionHandlers.CreateMethodCall(
                         "ReikaKalseki.AqueousEngineering.AEHooks",
                         nameof(AEHooks.GetReactorGeneration),
                         false,

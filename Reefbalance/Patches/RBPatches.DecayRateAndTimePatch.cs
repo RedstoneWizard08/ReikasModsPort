@@ -13,7 +13,7 @@ internal static partial class RBPatches {
     [HarmonyPatch(nameof(Eatable.GetFoodValue))]
     public static class DecayRateAndTimePatch {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try { /*
             int sub = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Sub);
@@ -22,21 +22,21 @@ internal static partial class RBPatches {
             codes.InsertRange(sub+1, inject);
             */
                 codes.Clear();
-                codes.add(OpCodes.Ldarg_0);
-                codes.add(OpCodes.Ldarg_0);
-                codes.add(OpCodes.Ldfld, InstructionHandlers.convertFieldOperand("Eatable", "foodValue"));
-                codes.invoke(
+                codes.Add(OpCodes.Ldarg_0);
+                codes.Add(OpCodes.Ldarg_0);
+                codes.Add(OpCodes.Ldfld, InstructionHandlers.ConvertFieldOperand("Eatable", "foodValue"));
+                codes.Invoke(
                     "ReikaKalseki.Reefbalance.ReefbalanceMod",
                     nameof(ReefbalanceMod.GetFoodValue),
                     false,
                     typeof(Eatable),
                     typeof(float)
                 );
-                codes.add(OpCodes.Ret);
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                codes.Add(OpCodes.Ret);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

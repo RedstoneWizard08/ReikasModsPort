@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using Nautilus.Utility;
 using ReikaKalseki.DIAlterra;
 using UnityEngine;
 
@@ -47,8 +48,7 @@ public class LifeformScanningSystem {
 
     public void register() {
         //loaded on first use, not load event IngameMenuHandler.Main.RegisterOnLoadEvent(loadSave);
-        // TODO
-        // IngameMenuHandler.Main.RegisterOnSaveEvent(save);
+        SaveUtils.RegisterOnSaveEvent(save);
     }
 
     public void tick(float time) {
@@ -202,21 +202,21 @@ public class LifeformScanningSystem {
         var hard = SeaToSeaMod.ModConfig.getBoolean(C2CConfig.ConfigEntries.HARDMODE);
         if (tt == C2CItems.brineCoral || tt == C2CItems.emperorRootCommon)
             return true;
-        else if (tt == Ecocean.EcoceanMod.lavaBomb.TechType)
+        if (tt == Ecocean.EcoceanMod.lavaBomb.TechType)
             return hard;
-        else if (CustomMaterials.getItemByTech(tt) != null)
+        if (CustomMaterials.getItemByTech(tt) != null)
             return true;
-        else if (BasicCustomPlant.getPlant(tt) != null)
+        if (BasicCustomPlant.getPlant(tt) != null)
             return true;
-        else if (tt == Ecocean.EcoceanMod.glowOil.TechType ||
-                 tt == Ecocean.EcoceanMod.tongue.TechType) //NOT the hand collected one or the abyssal terror!
+        if (tt == Ecocean.EcoceanMod.glowOil.TechType ||
+            tt == Ecocean.EcoceanMod.tongue.TechType) //NOT the hand collected one or the abyssal terror!
             return false;
-        else if (tt == Ecocean.EcoceanMod.naturalOil.TechType || tt == Ecocean.EcoceanMod.celeryTree ||
-                 tt == Ecocean.EcoceanMod.piezo.TechType || tt == Ecocean.EcoceanMod.plankton.TechType ||
-                 tt == Ecocean.EcoceanMod.voidBubble.TechType)
+        if (tt == Ecocean.EcoceanMod.naturalOil.TechType || tt == Ecocean.EcoceanMod.celeryTree ||
+            tt == Ecocean.EcoceanMod.piezo.TechType || tt == Ecocean.EcoceanMod.plankton.TechType ||
+            tt == Ecocean.EcoceanMod.voidBubble.TechType)
             return true;
-        else if (DeIntegrationSystem.Instance.IsLoaded() &&
-                 tt == DeIntegrationSystem.Instance.GetVoidThalassacean().TechType)
+        if (DeIntegrationSystem.Instance.IsLoaded() &&
+            tt == DeIntegrationSystem.Instance.GetVoidThalassacean().TechType)
             return true;
         var pfb = CraftData.GetClassIdForTechType(tt);
         if (pfb != null && VanillaFlora.getFromID(pfb) != null)
@@ -225,7 +225,7 @@ public class LifeformScanningSystem {
             return true;
         if (hard && additionalScans.Contains(tt))
             return true;
-        GameObject prefab = ObjectUtil.lookupPrefab(tt);
+        var prefab = ObjectUtil.lookupPrefab(tt);
         if (prefab) {
             if (prefab.GetComponent<Creature>())
                 return true;
@@ -311,11 +311,11 @@ public class LifeformScanningSystem {
                 category = "Fauna Eggs";
 
             hint = getHint(false);
-            GameObject pfb = ObjectUtil.lookupPrefab(tt);
+            var pfb = ObjectUtil.lookupPrefab(tt);
             if (pfb) {
                 var c = pfb.GetComponent<Creature>();
-                var leviA = c is ReaperLeviathan || c is GhostLeviatanVoid || c is GhostLeviathan || c is SeaDragon;
-                var leviP = c is Reefback || c is SeaEmperorJuvenile || c is SeaEmperorBaby;
+                var leviA = c is ReaperLeviathan or GhostLeviatanVoid or GhostLeviathan or SeaDragon;
+                var leviP = c is Reefback or SeaEmperorJuvenile or SeaEmperorBaby;
                 if (DeIntegrationSystem.Instance.IsLoaded())
                     leviA |= tt == DeIntegrationSystem.Instance.GetVoidThalassacean().TechType ||
                              tt == DeIntegrationSystem.Instance.GetGulper();

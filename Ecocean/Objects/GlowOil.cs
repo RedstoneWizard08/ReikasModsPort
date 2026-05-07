@@ -47,7 +47,7 @@ public class GlowOil : CustomPrefab {
     }
 
     public GameObject GetGameObject() {
-        GameObject
+        var
             world = ObjectUtil.createWorldObject(
                 "18229b4b-3ed3-4b35-ae30-43b1c31a6d8d"
             ); //enzyme 42: "505e7eff-46b3-4ad2-84e1-0fadb7be306c"
@@ -72,7 +72,7 @@ public class GlowOil : CustomPrefab {
         //world.removeComponent<EnzymeBall>();
         //world.removeComponent<Plantable>();
         var p = world.GetComponent<Plantable>();
-        GameObject jellyseed = ObjectUtil.lookupPrefab(TechType.SnakeMushroomSpore);
+        var jellyseed = ObjectUtil.lookupPrefab(TechType.SnakeMushroomSpore);
         var p2 = jellyseed.GetComponent<Plantable>();
         p.plantTechType = p2.plantTechType;
         p.growingPlant = p2.growingPlant;
@@ -87,7 +87,7 @@ public class GlowOil : CustomPrefab {
         BasicCustomPlant.setPlantSeed(this, EcoceanMod.glowShroom);
         var g = world.EnsureComponent<GlowOilTag>();
         world.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.VeryFar;
-        Light l = world.addLight(0, MAX_RADIUS, new Color(0.5F, 0.8F, 1F, 1F));
+        var l = world.addLight(0, MAX_RADIUS, new Color(0.5F, 0.8F, 1F, 1F));
         l.bounceIntensity *= 2;
         var r = world.GetComponentInChildren<Renderer>();
         RenderUtil.setEmissivity(r.materials[0], 0);
@@ -234,8 +234,8 @@ internal class GlowOilTag : MonoBehaviour {
             return;
         var hash = prefab.Id.GetHashCode();
         while (isNatural() && lightCones.Count < 9) {
-            GameObject main = ObjectUtil.createWorldObject("4e8d9640-dd23-46ca-99f2-6924fcf250a4");
-            GameObject go = main.getChildObject("spotlight");
+            var main = ObjectUtil.createWorldObject("4e8d9640-dd23-46ca-99f2-6924fcf250a4");
+            var go = main.getChildObject("spotlight");
             if (!go)
                 continue;
             var l = go.GetComponent<Light>();
@@ -254,7 +254,7 @@ internal class GlowOilTag : MonoBehaviour {
         }
 
         while (seeds.Count < 4 + (hash % 5 + 5) % 5) {
-            GameObject go = ObjectUtil.createWorldObject("18229b4b-3ed3-4b35-ae30-43b1c31a6d8d");
+            var go = ObjectUtil.createWorldObject("18229b4b-3ed3-4b35-ae30-43b1c31a6d8d");
             if (!go)
                 continue;
             go.convertToModel();
@@ -312,7 +312,7 @@ internal class GlowOilTag : MonoBehaviour {
         dT = Time.deltaTime;
         if (time - lastRepelTime >= 0.5) {
             lastRepelTime = time;
-            foreach (GlowOilTag g in WorldUtil.getObjectsNearWithComponent<GlowOilTag>(transform.position, 8)) {
+            foreach (var g in WorldUtil.getObjectsNearWithComponent<GlowOilTag>(transform.position, 8)) {
                 if (g != this && g.mainBody)
                     repel(g, dT);
             }

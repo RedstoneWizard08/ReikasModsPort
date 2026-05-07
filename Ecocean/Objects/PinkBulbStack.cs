@@ -45,11 +45,11 @@ public class PinkBulbStack : BasicCustomPlant {
         cc.height *= 0.875F;
         cc.isTrigger = false;
 
-        GameObject pfb = ObjectUtil.lookupPrefab(DecoPlants.PINK_BULB_STACK.prefab);
+        var pfb = ObjectUtil.lookupPrefab(DecoPlants.PINK_BULB_STACK.prefab);
         foreach (var r in pfb.GetComponentsInChildren<Renderer>()) {
             if (r.name.Contains("LOD"))
                 continue;
-            GameObject rg = r.gameObject.clone();
+            var rg = r.gameObject.clone();
             rg.transform.SetParent(mdl);
             rg.transform.localPosition = r.transform.localPosition;
             rg.transform.localRotation = r.transform.localRotation;

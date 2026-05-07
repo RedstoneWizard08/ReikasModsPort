@@ -13,15 +13,15 @@ internal static partial class DIPatches {
     [HarmonyPatch(nameof(SeamothTorpedo.Explode))]
     public static class TorpedoExplodeHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try {
-                var idx = InstructionHandlers.getFirstOpcode(codes, 0, OpCodes.Callvirt);
+                var idx = InstructionHandlers.GetFirstOpcode(codes, 0, OpCodes.Callvirt);
                 codes.InsertRange(
                     idx + 1,
                     new InsnList {
                         new CodeInstruction(OpCodes.Ldarg_0),
-                        InstructionHandlers.createMethodCall(
+                        InstructionHandlers.CreateMethodCall(
                             "ReikaKalseki.DIAlterra.DIHooks",
                             nameof(DIHooks.OnTorpedoExploded),
                             false,
@@ -29,9 +29,9 @@ internal static partial class DIPatches {
                         ),
                     }
                 );
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

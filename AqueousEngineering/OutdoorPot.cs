@@ -88,9 +88,9 @@ public class OutdoorPot : CustomPrefab {
             p.isIndoor = false;
             world.SetActive(true);
             return world;
-        } else {
-            SNUtil.WriteToChat("Could not fetch template GO for " + this);
-            return null;
         }
+
+        SNUtil.WriteToChat("Could not fetch template GO for " + this);
+        return null;
     }
 }

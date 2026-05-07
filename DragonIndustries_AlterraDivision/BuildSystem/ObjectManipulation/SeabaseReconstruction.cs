@@ -319,7 +319,7 @@ public static class SeabaseReconstruction {
 
                 //SNUtil.writeToChat("Set skies: "+skyAt+" @ "+baseCenter);
                 lastSkyTime = time;
-                ObjectUtil.setActive<Animator>(gameObject, false);
+                gameObject.setActive<Animator>(false);
                 //GetComponent<LightingController>().state = LightingController.LightingState.Damaged;
             } /*
             if (planters == null) {
@@ -473,7 +473,7 @@ public static class SeabaseReconstruction {
         private void Update() {
             if (!hatch) {
                 hatch = gameObject.GetComponent<UseableDiveHatch>();
-                ObjectUtil.setActive<Animator>(gameObject, true);
+                gameObject.setActive<Animator>(true);
             }
 
             if (!cleanedModel)

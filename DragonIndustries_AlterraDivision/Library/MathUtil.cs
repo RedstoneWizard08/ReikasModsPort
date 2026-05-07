@@ -125,7 +125,7 @@ public static class MathUtil {
 	public static double linterpolate(double x, double x1, double x2, double y1, double y2, bool clamp = false) {
 		if (clamp && x <= x1)
 			return y1;
-		else if (clamp && x >= x2)
+		if (clamp && x >= x2)
 			return y2;
 		return y1 + (x - x1) / (x2 - x1) * (y2 - y1);
 	}

@@ -98,7 +98,7 @@ public static class C2CRecipes {
         );
 
         var qi = C2CItems.getIngot(TechType.Quartz);
-        RecipeData glassRec = RecipeUtil.getRecipe(TechType.Glass);
+        var glassRec = RecipeUtil.getRecipe(TechType.Glass);
         rec = new RecipeData();
         rec.Ingredients.Add(new Ingredient(qi.ingot, glassRec.Ingredients[0].amount));
         quartzIngotToGlass = new DuplicateRecipeDelegateWithRecipe(TechType.Glass, rec);
@@ -239,7 +239,7 @@ public static class C2CRecipes {
         C2CItems.addCraftingItems();
 
         rec = RecipeUtil.copyRecipe(bacteria.getRecipe());
-        foreach (Ingredient i in rec.Ingredients) {
+        foreach (var i in rec.Ingredients) {
             if (i.techType == enzyT.TechType) {
                 i._amount *= 2;
             } else if (i.techType == TechType.SeaCrownSeed) {
@@ -256,7 +256,7 @@ public static class C2CRecipes {
         bacteriaAlternate.Register();
 
         rec = RecipeUtil.copyRecipe(enzy.getRecipe());
-        foreach (Ingredient i in rec.Ingredients) {
+        foreach (var i in rec.Ingredients) {
             if (i.techType == TechType.DisinfectedWater) {
                 i._techType = TechType.BigFilteredWater;
                 i._amount *= 2;
@@ -507,9 +507,8 @@ public static class C2CRecipes {
 
         rec = RecipeUtil.copyRecipe(C2CItems.t2Battery.getRecipe());
         for (var idx = rec.Ingredients.Count - 1; idx >= 0; idx--) {
-            Ingredient i = rec.Ingredients[idx];
-            if (i.techType == TechType.Polyaniline || i.techType == TechType.Battery ||
-                i.techType == TechType.Silicone) {
+            var i = rec.Ingredients[idx];
+            if (i.techType is TechType.Polyaniline or TechType.Battery or TechType.Silicone) {
                 rec.Ingredients.RemoveAt(idx);
             } else if (i.techType == CraftingItems.getItem(CraftingItems.Items.DenseAzurite).TechType) {
                 i._techType = CustomMaterials.getItem(CustomMaterials.Materials.VENT_CRYSTAL).TechType;
@@ -600,7 +599,7 @@ public static class C2CRecipes {
             TechType.ReinforcedDiveSuit,
             i => {
                 if (i.techType == TechType.Diamond) i._amount = 4;
-                return i.techType == TechType.Titanium || i.techType == TechType.AramidFibers;
+                return i.techType is TechType.Titanium or TechType.AramidFibers;
             }
         );
         addItemToRecipe(
@@ -701,7 +700,7 @@ public static class C2CRecipes {
             i => {
                 if (i.techType == TechType.Lead)
                     i._amount = 6;
-                return i.techType == TechType.TitaniumIngot || i.techType == TechType.ComputerChip;
+                return i.techType is TechType.TitaniumIngot or TechType.ComputerChip;
             }
         );
         addItemToRecipe(TechType.RocketBaseLadder, TechType.WiringKit, 4);
@@ -724,7 +723,7 @@ public static class C2CRecipes {
         );
         RecipeUtil.modifyIngredients(
             TechType.RocketStage2,
-            i => i.techType == TechType.Kyanite || i.techType == TechType.Sulphur
+            i => i.techType is TechType.Kyanite or TechType.Sulphur
         );
         addItemToRecipe(TechType.RocketStage2, tankWall.TechType, hard ? 3 : 2);
         addItemToRecipe(TechType.RocketStage2, fuel.TechType, hard ? 6 : 4);
@@ -779,9 +778,9 @@ public static class C2CRecipes {
                     if (i.techType == TechType.Lubricant) {
                         amt = i.amount;
                         return true;
-                    } else {
-                        return false;
                     }
+
+                    return false;
                 }
             );
             addItemToRecipe(kvp.Key, motor.TechType, Math.Max(kvp.Value, amt));
@@ -795,9 +794,9 @@ public static class C2CRecipes {
                     if (i.techType == TechType.JeweledDiskPiece) {
                         amt = i.amount;
                         return true;
-                    } else {
-                        return false;
                     }
+
+                    return false;
                 }
             );
             addItemToRecipe(kvp.Key, traceMetal.TechType, Math.Max(kvp.Value, amt));
@@ -863,7 +862,7 @@ public static class C2CRecipes {
         RecipeUtil.modifyIngredients(
             TechType.VehicleHullModule2,
             i => {
-                if (i.techType == TechType.EnameledGlass || i.techType == TechType.Magnetite) i._amount *= 4;
+                if (i.techType is TechType.EnameledGlass or TechType.Magnetite) i._amount *= 4;
                 return false;
             }
         );
@@ -1072,7 +1071,7 @@ public static class C2CRecipes {
                      BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static
                  )) {
             if (f.FieldType.IsSubclassOf(typeof(CustomPrefab))) {
-                CustomPrefab pfb = (CustomPrefab)f.GetValue(null);
+                var pfb = (CustomPrefab)f.GetValue(null);
                 if (pfb == null)
                     continue;
                 specialRecipes.Add(pfb.TechType);
@@ -1119,7 +1118,7 @@ public static class C2CRecipes {
     }
 
     public static void lockRecipe(TechType tt, bool allowAdd = true) {
-        RecipeData r = CraftDataHandler.GetRecipeData(tt);
+        var r = CraftDataHandler.GetRecipeData(tt);
         if (r == null || r.Ingredients is LockedRecipeList)
             return;
         r.Ingredients = new LockedRecipeList(r, allowAdd);
@@ -1134,7 +1133,7 @@ public static class C2CRecipes {
         int amt = 10,
         string name = "Ingot"
     ) {
-        string n = ((CustomPrefab)item).ClassID;
+        var n = ((CustomPrefab)item).ClassID;
         createCompressedIngot(
             ((CustomPrefab)item).TechType,
             pfbMdl,
@@ -1194,12 +1193,12 @@ public static class C2CRecipes {
             //else
             RenderUtil.swapTextures(SeaToSeaMod.ModDLL, r, "Textures/Items/World/Ingot/" + item);
             RenderUtil.setGlossiness(r, specInt, shiny, fresnel);
-            if (item == TechType.Quartz || item == TechType.Diamond) {
+            if (item is TechType.Quartz or TechType.Diamond) {
                 RenderUtil.makeTransparent(r);
                 r.materials[0].EnableKeyword("UWE_DETAILMAP");
             }
 
-            if (item == TechType.Quartz || item == TechType.AluminumOxide || item == TechType.Kyanite) {
+            if (item is TechType.Quartz or TechType.AluminumOxide or TechType.Kyanite) {
                 var f = item == TechType.Quartz ? 0.3F : item == TechType.Kyanite ? 9 : 6;
                 RenderUtil.setEmissivity(r, f * 0.67F, f);
             }
@@ -1257,7 +1256,7 @@ public static class C2CRecipes {
 
     private class SaltGrindable : CustomGrindable {
         public override GameObject chooseRandomResource() {
-            TechType tt = Ecocean.MushroomVaseStrand.filterDrops.getRandomEntry();
+            var tt = Ecocean.MushroomVaseStrand.filterDrops.getRandomEntry();
             while (tt == CraftingItems.getItem(CraftingItems.Items.Tungsten).TechType &&
                    !Story.StoryGoalManager.main.IsGoalComplete(C2CProgression.TungstenGoal))
                 tt = Ecocean.MushroomVaseStrand.filterDrops.getRandomEntry();

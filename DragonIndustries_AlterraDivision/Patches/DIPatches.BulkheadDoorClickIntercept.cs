@@ -12,16 +12,16 @@ internal static partial class DIPatches {
     [HarmonyPatch(nameof(BulkheadDoor.OnHandClick))]
     public static class BulkheadDoorClickIntercept {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             InsnList codes = [];
             try {
-                codes.add(OpCodes.Ldarg_0);
-                codes.invoke("ReikaKalseki.DIAlterra.DIHooks", nameof(DIHooks.OnBulkheadClick), false, typeof(BulkheadDoor));
-                codes.add(OpCodes.Ret);
+                codes.Add(OpCodes.Ldarg_0);
+                codes.Invoke("ReikaKalseki.DIAlterra.DIHooks", nameof(DIHooks.OnBulkheadClick), false, typeof(BulkheadDoor));
+                codes.Add(OpCodes.Ret);
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

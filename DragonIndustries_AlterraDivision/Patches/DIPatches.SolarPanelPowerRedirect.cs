@@ -12,7 +12,7 @@ internal static partial class DIPatches {
     [HarmonyPatch(nameof(SolarPanel.Update))]
     public static class SolarPanelPowerRedirect {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             InsnList codes = [];
             try { /* BZ code
             int idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Callvirt, "PowerRelay", "ModifyPower", true, new Type[]{typeof(float), typeof(float).MakeByRefType()});
@@ -24,13 +24,13 @@ internal static partial class DIPatches {
                 codes[idx] = InstructionHandlers.createMethodCall("ReikaKalseki.DIAlterra.DIHooks", "addPowerToSeabaseDelegateViaPowerSourceSet", false, typeof(PowerSource), typeof(float), typeof(MonoBehaviour));
                 codes.Insert(idx, new CodeInstruction(OpCodes.Ldarg_0));
                 */
-                codes.add(OpCodes.Ldarg_0);
-                codes.invoke("ReikaKalseki.DIAlterra.DIHooks", "UpdateSolarPanel", false, typeof(SolarPanel));
-                codes.add(OpCodes.Ret);
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                codes.Add(OpCodes.Ldarg_0);
+                codes.Invoke("ReikaKalseki.DIAlterra.DIHooks", "UpdateSolarPanel", false, typeof(SolarPanel));
+                codes.Add(OpCodes.Ret);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

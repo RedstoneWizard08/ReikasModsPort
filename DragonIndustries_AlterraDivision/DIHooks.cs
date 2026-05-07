@@ -996,9 +996,9 @@ public static class DIHooks {
             var calc = new WaterTemperatureCalculation(ret, sim, pos);
             GetTemperatureEvent.Invoke(calc);
             return calc.Temperature;
-        } else {
-            return ret;
         }
+
+        return ret;
     }
 
     public static int DamageDebugLevel = 0;
@@ -1013,7 +1013,7 @@ public static class DIHooks {
         //}
         var pi = target.GetComponent<PrefabIdentifier>();
         if (pi && pi.ClassId == CustomEgg.GetEgg(TechType.SpineEel).Info.ClassID &&
-            (type == DamageType.Acid || type == DamageType.Poison))
+            type is DamageType.Acid or DamageType.Poison)
             return 0;
         if (OnDamageEvent != null) {
             var deal = new DamageToDeal(damage, type, target, dealer);
@@ -1024,11 +1024,11 @@ public static class DIHooks {
                     "Adjusting damage type " + type + " yield from " + deal.OriginalAmount + " to " + deal.Amount
                 );
             return deal.Amount;
-        } else {
-            if (DamageDebugLevel > 2)
-                SNUtil.WriteToChat("Applying unchanged damage amount " + damage);
-            return damage;
         }
+
+        if (DamageDebugLevel > 2)
+            SNUtil.WriteToChat("Applying unchanged damage amount " + damage);
+        return damage;
     }
 
     public static string GetBiomeAt(string orig, Vector3 pos) {
@@ -1036,9 +1036,9 @@ public static class DIHooks {
             var deal = new BiomeCheck(orig, pos);
             GetBiomeEvent.Invoke(deal);
             return deal.Biome;
-        } else {
-            return orig;
         }
+
+        return orig;
     }
 
     public static void DoKnifeHarvest(Knife caller, GameObject target, bool isAlive, bool wasAlive) {
@@ -1911,10 +1911,10 @@ public static class DIHooks {
                     : amt >= 0.25
                         ? "Showing signs of infection."
                         : "Elevated bacterial levels detected.";
-        } else {
-            var lv = mix.GetComponent<LiveMixin>();
-            return !lv || lv.IsAlive() ? "Status: Healthy." : null;
         }
+
+        var lv = mix.GetComponent<LiveMixin>();
+        return !lv || lv.IsAlive() ? "Status: Healthy." : null;
     }
     /*
     public static WaterscapeVolume.Settings currentRenderVolume = new WaterscapeVolume.Settings();
@@ -1988,9 +1988,8 @@ public static class DIHooks {
             } else if (get is Texture2D texture2D) {
                 SNUtil.WriteToChat("Dumping Texture2D WaterBiomeManager::" + f.Name);
                 RenderUtil.dumpTexture(SNUtil.DiDLL, f.Name, texture2D);
-            } else {
-                //SNUtil.writeToChat("Skipping non-texture object "+get);
             }
+            //SNUtil.writeToChat("Skipping non-texture object "+get);
         }
     }
     /*
@@ -2629,16 +2628,16 @@ public static class DIHooks {
             ConsumableTracker.instance.onConsume(go, true);
             OnEatEvent?.Invoke(s, go);
             return true;
-        } else {
-            SoundManager.playSoundAt(
-                SoundManager.buildSound("event:/interface/select"),
-                Player.main.transform.position,
-                false,
-                -1,
-                1
-            );
-            return false;
         }
+
+        SoundManager.playSoundAt(
+            SoundManager.buildSound("event:/interface/select"),
+            Player.main.transform.position,
+            false,
+            -1,
+            1
+        );
+        return false;
     }
 
     public static float GetSwimSpeed(float f) {
@@ -2648,9 +2647,9 @@ public static class DIHooks {
             var calc = new SwimSpeedCalculation(f);
             GetSwimSpeedEvent.Invoke(calc);
             return calc.Speed;
-        } else {
-            return f;
         }
+
+        return f;
     }
 
     public static float GetWalkSpeed(float f) {
@@ -3021,9 +3020,8 @@ public static class DIHooks {
                 _teleportWithPlayer.transform.position = Player.main.transform.position + _relativeGrabPosition;
                 _activePropulsionGun.GrabObject(_teleportWithPlayer);
                 //SNUtil.writeToChat("Teleporting "+teleportWithPlayer+" with player, post");
-            } else {
-                //SNUtil.writeToChat("Object to teleport with player does not yet exist");
             }
+            //SNUtil.writeToChat("Object to teleport with player does not yet exist");
         }
 
         _teleportWithPlayer = null;

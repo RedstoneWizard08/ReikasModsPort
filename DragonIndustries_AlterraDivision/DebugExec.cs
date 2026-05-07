@@ -12,7 +12,7 @@ public static class DebugExec {
 
 	public static void run(string opcode, string type, string member, string instField) {
 		try {
-			var t = InstructionHandlers.getTypeBySimpleName(type);
+			var t = InstructionHandlers.GetTypeBySimpleName(type);
 			object inst = null;
 			var main = t.GetField(instField);
 			if (main != null && main.IsStatic && main.FieldType == t)
@@ -41,15 +41,16 @@ public static class DebugExec {
 		if (o == null) {
 			return "null";
 		}
-		else if (o.IsDictionary()) {
+
+		if (o.IsDictionary()) {
 			return o.ToString();//((IDictionary)o).toDebugString();
 		}
-		else if (o.IsEnumerable()) {
+
+		if (o.IsEnumerable()) {
 			return o.ToString();//((IEnumerable)o).toDebugString();
 		}
-		else {
-			return o.ToString();
-		}
+
+		return o.ToString();
 	}
 
 	public static void tempCode() {

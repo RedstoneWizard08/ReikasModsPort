@@ -124,7 +124,7 @@ public static class C2CIntegration {
             seaVoyager = TechType.None;
             if (EnumHandler.TryGetValue("SeaVoyager", out seaVoyager)) {
                 map[seaVoyager] = hard ? 18 : 12;
-                seaVoyagerComponent = InstructionHandlers.getTypeBySimpleName("ShipMod.Ship.SeaVoyager");
+                seaVoyagerComponent = InstructionHandlers.GetTypeBySimpleName("ShipMod.Ship.SeaVoyager");
             }
         };
 
@@ -205,67 +205,67 @@ public static class C2CIntegration {
         AcuTheming.RegisterGrassProp(sanctuary, null, 25, 0.6F); //null is default texture
         AcuTheming.RegisterProp(sanctuary, SeaToSeaMod.CrashSanctuaryFern.ClassID, 20, true, 0.7F);
 
-        ACUEcosystems.addFood(new ACUEcosystems.PlantFood(C2CItems.alkali, 0.15F, BiomeRegions.Other));
-        ACUEcosystems.addFood(new ACUEcosystems.PlantFood(C2CItems.healFlower, 0.15F, BiomeRegions.RedGrass));
-        ACUEcosystems.addFood(new ACUEcosystems.PlantFood(C2CItems.kelp, 0.08F, glassForest));
-        ACUEcosystems.addFood(new ACUEcosystems.PlantFood(C2CItems.mountainGlow, 0.3F, BiomeRegions.Other));
-        ACUEcosystems.addFood(new ACUEcosystems.PlantFood(C2CItems.sanctuaryPlant, 0.2F, sanctuary));
-        ACUEcosystems.addFood(
+        ACUEcosystems.AddFood(new ACUEcosystems.PlantFood(C2CItems.alkali, 0.15F, BiomeRegions.Other));
+        ACUEcosystems.AddFood(new ACUEcosystems.PlantFood(C2CItems.healFlower, 0.15F, BiomeRegions.RedGrass));
+        ACUEcosystems.AddFood(new ACUEcosystems.PlantFood(C2CItems.kelp, 0.08F, glassForest));
+        ACUEcosystems.AddFood(new ACUEcosystems.PlantFood(C2CItems.mountainGlow, 0.3F, BiomeRegions.Other));
+        ACUEcosystems.AddFood(new ACUEcosystems.PlantFood(C2CItems.sanctuaryPlant, 0.2F, sanctuary));
+        ACUEcosystems.AddFood(
             new ACUEcosystems.AnimalFood(
                 C2CItems.purpleBoomerang,
-                ACUEcosystems.AnimalFood.calculateFoodValue(TechType.Boomerang),
+                ACUEcosystems.AnimalFood.CalculateFoodValue(TechType.Boomerang),
                 glassForest
             )
         );
-        ACUEcosystems.addFood(
+        ACUEcosystems.AddFood(
             new ACUEcosystems.AnimalFood(
                 C2CItems.purpleHoopfish,
-                ACUEcosystems.AnimalFood.calculateFoodValue(TechType.Spinefish),
+                ACUEcosystems.AnimalFood.CalculateFoodValue(TechType.Spinefish),
                 glassForest
             )
         );
-        ACUEcosystems.addFood(
+        ACUEcosystems.AddFood(
             new ACUEcosystems.AnimalFood(
                 C2CItems.voltaicBladderfish,
-                ACUEcosystems.AnimalFood.calculateFoodValue(TechType.Bladderfish) * 0.3F,
+                ACUEcosystems.AnimalFood.CalculateFoodValue(TechType.Bladderfish) * 0.3F,
                 BiomeRegions.BloodKelp
             )
         );
-        var met = ACUEcosystems.getMetabolismForAnimal(TechType.RabbitRay);
-        ACUEcosystems.addPredatorType(
+        var met = ACUEcosystems.GetMetabolismForAnimal(TechType.RabbitRay);
+        ACUEcosystems.AddPredatorType(
             C2CItems.purpleHolefish.TechType,
-            met.relativeValue * 2F,
-            met.metabolismPerSecond,
-            met.normalizedPoopChance,
+            met.RelativeValue * 2F,
+            met.MetabolismPerSecond,
+            met.NormalizedPoopChance,
             false,
             glassForest
         );
-        met = ACUEcosystems.getMetabolismForAnimal(TechType.Jellyray);
-        ACUEcosystems.addPredatorType(
+        met = ACUEcosystems.GetMetabolismForAnimal(TechType.Jellyray);
+        ACUEcosystems.AddPredatorType(
             C2CItems.sanctuaryray.TechType,
-            met.relativeValue * 1.25F,
-            met.metabolismPerSecond,
-            met.normalizedPoopChance,
+            met.RelativeValue * 1.25F,
+            met.MetabolismPerSecond,
+            met.NormalizedPoopChance,
             false,
             sanctuary
         );
-        met = ACUEcosystems.getMetabolismForAnimal(TechType.Stalker);
-        ACUEcosystems.addPredatorType(
+        met = ACUEcosystems.GetMetabolismForAnimal(TechType.Stalker);
+        ACUEcosystems.AddPredatorType(
             C2CItems.deepStalker.TechType,
-            met.relativeValue * 1.5F,
-            met.metabolismPerSecond * 0.5F,
-            met.normalizedPoopChance * 1.25F,
+            met.RelativeValue * 1.5F,
+            met.MetabolismPerSecond * 0.5F,
+            met.NormalizedPoopChance * 1.25F,
             true,
             BiomeRegions.GrandReef
         );
-        ACUEcosystems.getMetabolismForAnimal(TechType.BoneShark).addBiome(glassForest);
-        ACUEcosystems.getMetabolismForAnimal(TechType.Gasopod).addBiome(sanctuary);
-        ACUEcosystems.getMetabolismForAnimal(TechType.Mesmer).addBiome(sanctuary);
-        ACUEcosystems.getAnimalFood(TechType.Bladderfish).addBiome(sanctuary);
-        ACUEcosystems.getAnimalFood(TechType.Boomerang).addBiome(sanctuary);
-        ACUEcosystems.getAnimalFood(TechType.Hoopfish).addBiome(sanctuary);
-        ACUEcosystems.getPlantFood(VanillaFlora.SPOTTED_DOCKLEAF.getPrefabID()).addBiome(sanctuary);
-        ACUEcosystems.getPlantFood(VanillaFlora.PAPYRUS.getPrefabID()).addBiome(sanctuary);
+        ACUEcosystems.GetMetabolismForAnimal(TechType.BoneShark).AddBiome(glassForest);
+        ACUEcosystems.GetMetabolismForAnimal(TechType.Gasopod).AddBiome(sanctuary);
+        ACUEcosystems.GetMetabolismForAnimal(TechType.Mesmer).AddBiome(sanctuary);
+        ACUEcosystems.GetAnimalFood(TechType.Bladderfish).AddBiome(sanctuary);
+        ACUEcosystems.GetAnimalFood(TechType.Boomerang).AddBiome(sanctuary);
+        ACUEcosystems.GetAnimalFood(TechType.Hoopfish).AddBiome(sanctuary);
+        ACUEcosystems.GetPlantFood(VanillaFlora.SPOTTED_DOCKLEAF.getPrefabID()).AddBiome(sanctuary);
+        ACUEcosystems.GetPlantFood(VanillaFlora.PAPYRUS.getPrefabID()).AddBiome(sanctuary);
         //ACUEcosystems.getAnimalFood(TechType.CaveCrawler).addBiome(sanctuary);
 
         AcuCallbackSystem.AddStalkerToy(CustomMaterials.getItem(CustomMaterials.Materials.PLATINUM).TechType, 1.0F);
@@ -379,7 +379,7 @@ public static class C2CIntegration {
 
         //GenUtil.registerWorldgen(new PositionedPrefab(ExscansionMod.alienBase.ClassID, new Vector3())); //step cave
 
-        CustomPrefab baseglass = ItemRegistry.instance.getItem("BaseGlass");
+        var baseglass = ItemRegistry.instance.getItem("BaseGlass");
         var rem = RecipeUtil.removeIngredient(
             TechType.BaseWaterPark,
             baseglass != null ? baseglass.TechType : TechType.Glass
@@ -618,11 +618,11 @@ public static class C2CIntegration {
             RecipeUtil.addIngredient(tt, CustomMaterials.getItem(CustomMaterials.Materials.PLATINUM).TechType, 1);
             RecipeUtil.addIngredient(tt, TechType.AluminumOxide, 2);
 
-            t = InstructionHandlers.getTypeBySimpleName("ResourceMonitor.Components.ResourceMonitorDisplay");
+            t = InstructionHandlers.GetTypeBySimpleName("ResourceMonitor.Components.ResourceMonitorDisplay");
             var fi = t.GetField("ITEMS_PER_PAGE", BindingFlags.Static | BindingFlags.NonPublic);
             fi.SetValue(null, 48); //originally 12 = 2x6, make 4x12
 
-            InstructionHandlers.patchMethod(
+            InstructionHandlers.PatchMethod(
                 SeaToSeaMod.Harmony,
                 t,
                 "CreateAndAddItemDisplay",
@@ -631,7 +631,7 @@ public static class C2CIntegration {
             );
 
             t = t.Assembly.GetType("ResourceMonitor.Components.ResourceMonitorLogic");
-            InstructionHandlers.patchMethod(
+            InstructionHandlers.PatchMethod(
                 SeaToSeaMod.Harmony,
                 t,
                 "TrackStorageContainer",
@@ -641,15 +641,15 @@ public static class C2CIntegration {
         }
 
         //buggy with C2C apparently
-        t = InstructionHandlers.getTypeBySimpleName("EasyCraft.Options");
+        t = InstructionHandlers.GetTypeBySimpleName("EasyCraft.Options");
         if (t != null) {
-            InstructionHandlers.patchMethod(
+            InstructionHandlers.PatchMethod(
                 SeaToSeaMod.Harmony,
                 t,
                 "OnAutoCraftChanged",
                 SeaToSeaMod.ModDLL,
                 codes => {
-                    codes[InstructionHandlers.getFirstOpcode(codes, 0, OpCodes.Ldarg_1)].opcode = OpCodes.Ldc_I4_0;
+                    codes[InstructionHandlers.GetFirstOpcode(codes, 0, OpCodes.Ldarg_1)].opcode = OpCodes.Ldc_I4_0;
                 }
             );
             t = t.Assembly.GetType("EasyCraft.Main");
@@ -699,16 +699,15 @@ public static class C2CIntegration {
         );
         //ItemUnlockLegitimacySystem.instance.add("SeamothArms", "SeamothPropulsionArmModule", () => Story.StoryGoalManager.main.completedGoals.Contains(?));
 
-        t = InstructionHandlers.getTypeBySimpleName("SlotExtender.Configuration.SEConfig");
+        t = InstructionHandlers.GetTypeBySimpleName("SlotExtender.Configuration.SEConfig");
         if (t != null) {
-            InstructionHandlers.patchMethod(
+            InstructionHandlers.PatchMethod(
                 SeaToSeaMod.Harmony,
                 t,
                 "Config_Load",
                 SeaToSeaMod.ModDLL,
                 codes => {
-                    var idx = InstructionHandlers.getInstruction(
-                        codes,
+                    var idx = codes.GetInstruction(
                         0,
                         0,
                         OpCodes.Stsfld,
@@ -726,22 +725,22 @@ public static class C2CIntegration {
             );
         }
 
-        t = InstructionHandlers.getTypeBySimpleName("DeathRun.DeathRun");
+        t = InstructionHandlers.GetTypeBySimpleName("DeathRun.DeathRun");
         if (t != null)
-            InstructionHandlers.patchMethod(SeaToSeaMod.Harmony, t, "Patch", SeaToSeaMod.ModDLL, filterDeathrun);
+            InstructionHandlers.PatchMethod(SeaToSeaMod.Harmony, t, "Patch", SeaToSeaMod.ModDLL, filterDeathrun);
 
-        t = InstructionHandlers.getTypeBySimpleName("Agony.RadialTabs.GhostMoving");
+        t = InstructionHandlers.GetTypeBySimpleName("Agony.RadialTabs.GhostMoving");
         if (t != null) {
-            InstructionHandlers.patchMethod(
+            InstructionHandlers.PatchMethod(
                 SeaToSeaMod.Harmony,
                 t,
                 "OnUpdate",
                 SeaToSeaMod.ModDLL,
                 codes => {
-                    var idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Ldfld, t.FullName, "_speed");
+                    var idx = codes.GetInstruction(0, 0, OpCodes.Ldfld, t.FullName, "_speed");
                     codes.Insert(
                         idx + 1,
-                        InstructionHandlers.createMethodCall(
+                        InstructionHandlers.CreateMethodCall(
                             "ReikaKalseki.SeaToSea.C2CHooks",
                             "getRadialTabAnimSpeed",
                             false,
@@ -785,7 +784,7 @@ public static class C2CIntegration {
             if (ci.opcode == OpCodes.Call) {
                 var call = (MethodInfo)ci.operand;
                 if (call.Name == "SetTechData") {
-                    codes[i] = InstructionHandlers.createMethodCall(
+                    codes[i] = InstructionHandlers.CreateMethodCall(
                         "ReikaKalseki.SeaToSea.C2CHooks",
                         "mergeDeathrunRecipeChange",
                         false,
@@ -795,7 +794,7 @@ public static class C2CIntegration {
                         }
                     );
                 } else if (call.Name == "EditFragmentsToScan") {
-                    codes[i] = InstructionHandlers.createMethodCall(
+                    codes[i] = InstructionHandlers.CreateMethodCall(
                         "ReikaKalseki.SeaToSea.C2CHooks",
                         "mergeDeathrunFragmentScanCount",
                         false,
@@ -812,12 +811,12 @@ public static class C2CIntegration {
     }
 
     private static void filterStorageContainerInteract(InsnList codes) {
-        var idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Ldloc_1);
+        var idx = codes.GetInstruction(0, 0, OpCodes.Ldloc_1);
         codes.InsertRange(
             idx + 1,
             new InsnList {
                 new CodeInstruction(OpCodes.Ldarg_1),
-                InstructionHandlers.createMethodCall(
+                InstructionHandlers.CreateMethodCall(
                     "ReikaKalseki.SeaToSea.C2CHooks",
                     "isStorageVisibleToDisplayMonitor",
                     false,
@@ -831,13 +830,13 @@ public static class C2CIntegration {
     }
 
     private static void shrinkItemDisplay(InsnList codes) {
-        var idx = InstructionHandlers.getLastOpcodeBefore(codes, codes.Count, OpCodes.Ret);
+        var idx = codes.GetLastOpcodeBefore(codes.Count, OpCodes.Ret);
         codes.InsertRange(
             idx,
             new InsnList {
                 new CodeInstruction(OpCodes.Ldarg_0),
                 new CodeInstruction(OpCodes.Ldloc_2),
-                InstructionHandlers.createMethodCall(
+                InstructionHandlers.CreateMethodCall(
                     "ReikaKalseki.SeaToSea.C2CHooks",
                     "buildDisplayMonitorButton",
                     false,

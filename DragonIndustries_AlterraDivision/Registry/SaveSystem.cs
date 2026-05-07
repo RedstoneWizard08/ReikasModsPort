@@ -129,7 +129,7 @@ public static class SaveSystem {
             doc.Load(path);
             saveData.Clear();
             foreach (XmlElement e in doc.DocumentElement.ChildNodes) {
-                saveData[e.Name == "player" || e.Name == "components" ? e.Name : e.GetAttribute("objectID")] = e;
+                saveData[e.Name is "player" or "components" ? e.Name : e.GetAttribute("objectID")] = e;
             }
 
             SNUtil.Log("Loaded " + saveData.Count + " object entries from disk", SNUtil.DiDLL);
@@ -168,7 +168,7 @@ public static class SaveSystem {
             var e = saveData["components"];
             foreach (XmlElement e2 in e.ChildNodes) {
                 try {
-                    var t = InstructionHandlers.getTypeBySimpleName(e2.Name);
+                    var t = InstructionHandlers.GetTypeBySimpleName(e2.Name);
                     if (t == null) {
                         SNUtil.Log(
                             "Could not reinstantiate custom serialized component: no type found for '" + e2.Name + "'",

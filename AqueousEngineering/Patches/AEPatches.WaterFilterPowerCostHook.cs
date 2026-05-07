@@ -13,7 +13,7 @@ public static partial class AEPatches {
     [HarmonyPatch(nameof(FiltrationMachine.UpdateFiltering))]
     public static class WaterFilterPowerCostHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try {
                 for (var i = codes.Count - 1; i >= 0; i--) {
@@ -22,7 +22,7 @@ public static partial class AEPatches {
                             i + 1,
                             new InsnList {
                                 new CodeInstruction(OpCodes.Ldarg_0),
-                                InstructionHandlers.createMethodCall(
+                                InstructionHandlers.CreateMethodCall(
                                     "ReikaKalseki.AqueousEngineering.AEHooks",
                                     nameof(AEHooks.GetWaterFilterPowerCost),
                                     false,
@@ -34,9 +34,9 @@ public static partial class AEPatches {
                     }
                 }
 
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

@@ -205,7 +205,7 @@ public sealed class PropPrefab : GenUtil.CustomPrefabImpl {
         prev.enabled = true;
         prev.inEscapePod = true;
         if (useGravity) {
-            ObjectUtil.applyGravity(go);
+            go.applyGravity();
         } else {
             var b = go.GetComponentInChildren<Rigidbody>();
             //b.detectCollisions = false;

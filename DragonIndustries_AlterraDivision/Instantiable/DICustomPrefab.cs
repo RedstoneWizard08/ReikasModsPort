@@ -113,9 +113,9 @@ public class DICustomPrefab : PositionedPrefab {
             }
 
             return go;
-        } else {
-            return base.createWorldObject();
         }
+
+        return base.createWorldObject();
     }
 
     public override void loadFromXML(XmlElement e) {
@@ -287,7 +287,7 @@ public class DICustomPrefab : PositionedPrefab {
                 throw new Exception("Null XML elem");
             Type t = null;
             foreach (var s in prefabNamespaces) {
-                t = InstructionHandlers.getTypeBySimpleName(s + "." + e2.Name);
+                t = InstructionHandlers.GetTypeBySimpleName(s + "." + e2.Name);
                 if (t != null)
                     break;
             }

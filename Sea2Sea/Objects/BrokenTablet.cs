@@ -143,9 +143,9 @@ public class BrokenTablet : CustomPrefab {
             */
 
             return world;
-        } else {
-            SNUtil.WriteToChat("Could not fetch template GO for " + this);
-            return null;
         }
+
+        SNUtil.WriteToChat("Could not fetch template GO for " + this);
+        return null;
     }
 }

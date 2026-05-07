@@ -13,20 +13,20 @@ internal static partial class C2CPatches {
     [HarmonyPatch(nameof(BlueprintHandTarget.UnlockBlueprint))]
     public static class DataboxRepairClickHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try {
-                var idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Ldfld, "BlueprintHandTarget", "used");
-                codes[idx] = InstructionHandlers.createMethodCall(
+                var idx = codes.GetInstruction(0, 0, OpCodes.Ldfld, "BlueprintHandTarget", "used");
+                codes[idx] = InstructionHandlers.CreateMethodCall(
                     "ReikaKalseki.SeaToSea.C2CHooks",
                     nameof(C2CHooks.OnDataboxClick),
                     false,
                     typeof(BlueprintHandTarget)
                 );
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

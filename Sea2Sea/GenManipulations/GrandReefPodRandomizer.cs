@@ -42,7 +42,7 @@ internal class GrandReefPodRandomizer : ManipulationBase {
 	private double maxSinkFraction = 1;
 
 	public override void applyToObject(GameObject go) {
-		var id = ObjectUtil.getPrefabID(go);
+		var id = go.getPrefabID();
 		double hoff = 0;
 		if (randomType) {
 			var old = prefabs[id];

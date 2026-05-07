@@ -23,7 +23,7 @@ public class VoidBubble : InteractableSpawnable {
     }
 
     public override GameObject GetGameObject() {
-        GameObject world = ObjectUtil.createAirBubble();
+        var world = ObjectUtil.createAirBubble();
         world.removeComponent<Bubble>();
         //world.removeComponent<LiveMixin>();
         //world.removeComponent<WorldForces>();
@@ -39,7 +39,7 @@ public class VoidBubble : InteractableSpawnable {
             .GetComponent<Floater>().jointHelper.jointType;
         world.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.VeryFar;
         world.layer = LayerID.Useable;
-        Light l = world.addLight(3, 24, COLOR);
+        var l = world.addLight(3, 24, COLOR);
         var r = world.GetComponentInChildren<Renderer>();
         r.material.SetFloat("_SpecInt", 12);
         r.material.SetFloat("_Shininess", 6);
@@ -67,7 +67,7 @@ public class VoidBubble : InteractableSpawnable {
     internal void tickSpawner(Player ep, float time, float dT) {
         if (time - lastIterateTime >= 5) {
             lastIterateTime = time;
-            foreach (VoidBubbleTag tag in WorldUtil.getObjectsNearWithComponent<VoidBubbleTag>(
+            foreach (var tag in WorldUtil.getObjectsNearWithComponent<VoidBubbleTag>(
                          ep.transform.position,
                          250
                      ))
@@ -90,11 +90,11 @@ public class VoidBubble : InteractableSpawnable {
         //SNUtil.writeToChat(densityNoise.getValue(ctr).ToString("0.000")+" > "+f.ToString("0.000")+" > "+(0.94F+f).ToString("0.000"));
         if (UnityEngine.Random.Range(0F, 1F) < 0.94F + f)
             return;
-        Vector3 pos = MathUtil.getRandomVectorAround(ctr, 90).SetY(ctr.y - 140 + UnityEngine.Random.Range(0F, 30F));
+        var pos = MathUtil.getRandomVectorAround(ctr, 90).SetY(ctr.y - 140 + UnityEngine.Random.Range(0F, 30F));
         if (VanillaBiomes.Void.IsInBiome(pos) &&
             (pos.y >= -50 || VanillaBiomes.Void.IsInBiome(pos + Vector3.up * 50)) &&
             !ECHooks.IsVoidHeatColumn(pos, out var trash)) {
-            GameObject go = ObjectUtil.createWorldObject(Info.ClassID);
+            var go = ObjectUtil.createWorldObject(Info.ClassID);
             go.transform.position = pos;
             //go.transform.localScale = new Vector3(UnityEngine.Random.Range(2F, 3F), UnityEngine.Random.Range(2F, 3F), UnityEngine.Random.Range(2F, 3F));
             go.fullyEnable();
@@ -305,7 +305,7 @@ public class VoidBubbleTag : MonoBehaviour {
     }
 
     private float evalSizeNoise(NoiseGeneratorBase gen, Vector3 vec) {
-        double val = gen.getValue(vec);
+        var val = gen.getValue(vec);
         return 2.25F + (float)(0.25 * val);
     }
 

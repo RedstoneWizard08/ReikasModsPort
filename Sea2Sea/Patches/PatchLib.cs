@@ -33,8 +33,8 @@ internal static class PatchLib {
         }
     }*/
     internal static void hookKeyTerminalInteractable(InsnList codes) {
-        var idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Ldfld, "PrecursorKeyTerminal", "slotted");
-        codes[idx] = InstructionHandlers.createMethodCall(
+        var idx = codes.GetInstruction(0, 0, OpCodes.Ldfld, "PrecursorKeyTerminal", "slotted");
+        codes[idx] = InstructionHandlers.CreateMethodCall(
             "ReikaKalseki.SeaToSea.C2CHooks",
             nameof(C2CHooks.CannotClickKeyTerminal),
             false,

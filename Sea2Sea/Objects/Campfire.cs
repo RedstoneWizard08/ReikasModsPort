@@ -144,26 +144,29 @@ public class SmokedFish : CustomPrefab {
         sprite.texture = repl;*/
         var path = "Textures/Items/SmokedFish/" + rawFish.AsString().ToLowerInvariant();
         sprite = TextureManager.getSprite(SeaToSeaMod.ModDLL, path);
-        // TODO
-        // if (TextureManager.isTextureNotFound(path)) { //generate one if a manual one does not exist
-        // 	CustomPrefab from = (CustomPrefab)cookedFish.getModPrefabByTechType();
-        // 	Texture2D tex = from.getPrefabSprite().texture;
-        // 	tex = tex.duplicateTexture();
-        // 	NativeArray<Color32> arr = tex.GetRawTextureData<Color32>();
-        // 	for (int i = 0; i < arr.Length; i++) {
-        // 		Color32 c = arr[i];
-        // 		Color.RGBToHSV(c.toColor(), out float h, out float s, out float v);
-        // 		h = 18/360F;
-        // 		s = 0.41F;
-        // 		v *= 0.75F;
-        // 		Color32 c2 = Color.HSVToRGB(h, s, v).toColor32();
-        // 		c2.a = c.a;
-        // 		arr[i] = c2;
-        // 	}
-        // 	tex.Apply();
-        // 	sprite = ImageUtils.LoadSpriteFromTexture(tex);
-        // 	SNUtil.log("Created runtime sprite for smoked " + rawFish.AsString()+" ["+arr.Length+" texels] = "+tex.width+"x"+tex.height);
-        // }
+        if (TextureManager.isTextureNotFound(path)) { //generate one if a manual one does not exist
+            var from = ModSprite.ModSprites[SpriteManager.Group.None][cookedFish.ToString()];
+            var tex = from.texture;
+            tex = tex.duplicateTexture();
+            var arr = tex.GetRawTextureData<Color32>();
+            for (var i = 0; i < arr.Length; i++) {
+                var c = arr[i];
+                Color.RGBToHSV(c.ToColor(), out var h, out var s, out var v);
+                h = 18 / 360F;
+                s = 0.41F;
+                v *= 0.75F;
+                var c2 = Color.HSVToRGB(h, s, v).ToColor32();
+                c2.a = c.a;
+                arr[i] = c2;
+            }
+
+            tex.Apply();
+            sprite = ImageUtils.LoadSpriteFromTexture(tex);
+            SNUtil.Log(
+                "Created runtime sprite for smoked " + rawFish.AsString() + " [" + arr.Length + " texels] = " +
+                tex.width + "x" + tex.height
+            );
+        }
 
         // typeof(ModPrefab).GetField("Mod", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(this, SeaToSeaMod.modDLL);
         AddOnRegister(() => { CraftDataHandler.SetItemSize(Info.TechType, rawFish.GetItemSize()); });

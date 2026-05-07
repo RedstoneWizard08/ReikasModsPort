@@ -439,7 +439,7 @@ public class AqueousEngineeringMod : BaseUnityPlugin {
                 typeof(AqueousEngineeringMod); //replace with a non-MB class that will never be present
 
         // PostLoad
-        CustomPrefab azurite = ItemRegistry.instance.getItem("VENT_CRYSTAL");
+        var azurite = ItemRegistry.instance.getItem("VENT_CRYSTAL");
         if (azurite != null) {
             RecipeUtil.addIngredient(repellentBlock.TechType, azurite.TechType, 2);
             RecipeUtil.addIngredient(stasisBlock.TechType, azurite.TechType, 6);
@@ -448,14 +448,14 @@ public class AqueousEngineeringMod : BaseUnityPlugin {
             RecipeUtil.addIngredient(stasisBlock.TechType, TechType.StasisRifle, 1);
         }
 
-        CustomPrefab platinum = ItemRegistry.instance.getItem("PLATINUM");
+        var platinum = ItemRegistry.instance.getItem("PLATINUM");
         if (platinum != null) {
             RecipeUtil.addIngredient(toy.TechType, platinum.TechType, 1);
         } else {
             RecipeUtil.addIngredient(toy.TechType, TechType.Silver, 1);
         }
 
-        CustomPrefab luminol = ItemRegistry.instance.getItem("Luminol");
+        var luminol = ItemRegistry.instance.getItem("Luminol");
         if (luminol != null) { //c2c is loaded
             RecipeUtil.addIngredient(sonarBlock.TechType, luminol.TechType, 2);
             RecipeUtil.removeIngredient(sonarBlock.TechType, TechType.CyclopsSonarModule); //cyclops gates it too late
@@ -464,7 +464,7 @@ public class AqueousEngineeringMod : BaseUnityPlugin {
             RecipeUtil.addIngredient(sonarBlock.TechType, TechType.WiringKit, 1);
         }
 
-        CustomPrefab motor = ItemRegistry.instance.getItem("Motor");
+        var motor = ItemRegistry.instance.getItem("Motor");
         if (motor != null) {
             RecipeUtil.addIngredient(acuCleanerBlock.TechType, motor.TechType, 1);
             RecipeUtil.addIngredient(farmerBlock.TechType, motor.TechType, 2);
@@ -478,32 +478,32 @@ public class AqueousEngineeringMod : BaseUnityPlugin {
             RecipeUtil.addIngredient(distributorBlock.TechType, TechType.Lubricant, 3);
         }
 
-        CustomPrefab plating = ItemRegistry.instance.getItem("HullPlating");
+        var plating = ItemRegistry.instance.getItem("HullPlating");
         if (plating != null) { //c2c is loaded
             RecipeUtil.addIngredient(atpTapBlock.TechType, plating.TechType, 4);
         } else {
             RecipeUtil.addIngredient(atpTapBlock.TechType, TechType.PlasteelIngot, 2);
         }
 
-        CustomPrefab drone = ItemRegistry.instance.getItem("LathingDrone");
+        var drone = ItemRegistry.instance.getItem("LathingDrone");
         if (drone != null) { //c2c is loaded
             RecipeUtil.addIngredient(repairBlock.TechType, drone.TechType, 1);
         } else {
             RecipeUtil.addIngredient(repairBlock.TechType, TechType.Welder, 2);
         }
 
-        CustomPrefab glowOil = ItemRegistry.instance.getItem("GlowOil");
+        var glowOil = ItemRegistry.instance.getItem("GlowOil");
         if (glowOil != null) {
             RecipeUtil.addIngredient(atpTapBlock.TechType, glowOil.TechType, 3);
         }
 
-        CustomPrefab sealf = ItemRegistry.instance.getItem("SealFabric");
+        var sealf = ItemRegistry.instance.getItem("SealFabric");
         if (sealf != null)
             RecipeUtil.addIngredient(ampeelAntennaBlock.TechType, sealf.TechType, 2);
         else
             RecipeUtil.addIngredient(ampeelAntennaBlock.TechType, TechType.Silicone, 3);
 
-        CustomPrefab bgl = ItemRegistry.instance.getItem("BaseGlass");
+        var bgl = ItemRegistry.instance.getItem("BaseGlass");
         if (bgl != null)
             RecipeUtil.addIngredient(displayBlock.TechType, bgl.TechType, 1);
         else
@@ -515,7 +515,7 @@ public class AqueousEngineeringMod : BaseUnityPlugin {
         else
             RecipeUtil.addIngredient(ionCubeBlock.TechType, TechType.TitaniumIngot, 3);
         */
-        CustomPrefab plankton = ItemRegistry.instance.getItem("planktonItem");
+        var plankton = ItemRegistry.instance.getItem("planktonItem");
         if (plankton != null) {
             SNUtil.Log("Found plankton item. Adding compat machinery.");
             PlanktonFeeder.fuel = (WorldCollectedItem)plankton;
@@ -533,7 +533,7 @@ public class AqueousEngineeringMod : BaseUnityPlugin {
             SNUtil.Log("Plankton item not found.");
         }
 
-        CustomPrefab mushdisk = ItemRegistry.instance.getItem("treeMushroomSpores");
+        var mushdisk = ItemRegistry.instance.getItem("treeMushroomSpores");
         if (mushdisk != null) {
             SNUtil.Log("Found mushroom disk spore item. Adding compat.");
             ACUBooster.fuels[mushdisk.ClassID] = new ACUFuel((WorldCollectedItem)mushdisk, 5, 2);
@@ -541,7 +541,7 @@ public class AqueousEngineeringMod : BaseUnityPlugin {
             SNUtil.Log("Plankton item not found.");
         }
 
-        ACUEcosystems.addPost();
+        ACUEcosystems.AddPost();
 
         BaseRoomSpecializationSystem.instance.registerModdedObject(
             acuBoosterBlock,

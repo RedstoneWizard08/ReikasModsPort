@@ -1,4 +1,5 @@
 ﻿using System;
+using Nautilus.Utility;
 using ReikaKalseki.DIAlterra;
 using UnityEngine;
 
@@ -17,7 +18,7 @@ public class CreepvineSonarScatterer : MonoBehaviour {
             if (time - lastSonarFloraCleanupTime >= 1) {
                 //SNUtil.log("Removing cheap creepvine sonar halo");
                 lastSonarFloraCleanupTime = time;
-                GameObject capsule = gameObject.getChildObject("SonarHalo");
+                var capsule = gameObject.getChildObject("SonarHalo");
                 if (capsule)
                     capsule.destroy(false);
             }
@@ -26,7 +27,7 @@ public class CreepvineSonarScatterer : MonoBehaviour {
                 if (!sonarFlora) {
                     //SNUtil.log("Adding expensive creepvine sonar halo");
                     var extents = getRenderBox();
-                    GameObject go = ObjectUtil.createWorldObject(EcoceanMod.sonarFlora.ClassID);
+                    var go = ObjectUtil.createWorldObject(EcoceanMod.sonarFlora.ClassID);
                     //Light l = GetComponentInChildren<Light>();
                     go.transform.SetParent( /*l ? l.transform : */transform);
                     go.transform.localPosition =
@@ -51,7 +52,7 @@ public class CreepvineSonarScatterer : MonoBehaviour {
             if (cheapController) {
                 if (cheapController.renderers.Count == 0) {
                     //SNUtil.log("Adding cheap creepvine sonar halo");
-                    GameObject capsule = gameObject.getChildObject("SonarHalo");
+                    var capsule = gameObject.getChildObject("SonarHalo");
                     if (!capsule) {
                         //SNUtil.log("Constructing new object");
                         var extents = getRenderBox();
@@ -60,8 +61,7 @@ public class CreepvineSonarScatterer : MonoBehaviour {
                         capsule.transform.localPosition = extents.center - transform.position;
                         capsule.transform.localRotation = Quaternion.identity;
                         capsule.transform.localScale = extents.extents + Vector3.one;
-                        // TODO
-                        // ECCHelpers.ApplySNShaders(capsule, new UBERMaterialProperties(0, 10, 5));
+                        MaterialUtils.ApplySNShaders(capsule, 0, 10, 5);
                         capsule.removeComponent<Collider>();
                     }
 

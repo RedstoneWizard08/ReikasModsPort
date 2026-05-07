@@ -130,7 +130,7 @@ public class ExplodingAnchorPod : PassiveSonarEntity {
         float thresh = 4;
         var cc = collider.gameObject.FindAncestor<Creature>();
         if (cc)
-            thresh = cc is ReaperLeviathan || cc is GhostLeviathan /* || cc is GhostLeviatanVoid*/ ? 6 : 10;
+            thresh = cc is ReaperLeviathan or GhostLeviathan /* || cc is GhostLeviatanVoid*/ ? 6 : 10;
         var sub = collider.gameObject.FindAncestor<SubRoot>();
         if (sub && sub.isCyclops)
             thresh = 1F;
@@ -141,8 +141,8 @@ public class ExplodingAnchorPod : PassiveSonarEntity {
     private void spawnParticleShell(string prefab, float dur, Vector3 offset) {
         if (Vector3.Distance(transform.position, Player.main.transform.position) <= 100) {
             for (var i = 0; i < 8; i++) {
-                Vector3 pos = MathUtil.getRandomVectorAround(effectivePodCenter + Vector3.down * 3.5F + offset, 7.5F);
-                ParticleSystem go = WorldUtil.spawnParticlesAt(pos, prefab, dur); //burst FX
+                var pos = MathUtil.getRandomVectorAround(effectivePodCenter + Vector3.down * 3.5F + offset, 7.5F);
+                var go = WorldUtil.spawnParticlesAt(pos, prefab, dur); //burst FX
                 if (go) {
                     var sz = go.sizeOverLifetime;
                     sz.sizeMultiplier *= 2;
@@ -184,8 +184,8 @@ public class ExplodingAnchorPod : PassiveSonarEntity {
 
         var n = UnityEngine.Random.Range(8, 12);
         for (var i = 0; i < n; i++) {
-            Vector3 pos = MathUtil.getRandomVectorAround(effectivePodCenter, 4F);
-            GameObject go = ObjectUtil.createAirBubble();
+            var pos = MathUtil.getRandomVectorAround(effectivePodCenter, 4F);
+            var go = ObjectUtil.createAirBubble();
             go.transform.position = pos;
             var f = UnityEngine.Random.Range(1.5F, 3F);
             go.transform.localScale = Vector3.one * f;
@@ -197,7 +197,7 @@ public class ExplodingAnchorPod : PassiveSonarEntity {
         }
 
         SoundManager.playSoundAt(explosionSound, effectivePodCenter, false, 64);
-        HashSet<GameObject> set = WorldUtil.getObjectsNear(effectivePodCenter, 35);
+        var set = WorldUtil.getObjectsNear(effectivePodCenter, 35);
         HashSet<int> used = [];
         foreach (var go in set) {
             if (used.Contains(go.GetInstanceID()))
@@ -242,7 +242,7 @@ public class ExplodingAnchorPod : PassiveSonarEntity {
             }
 
             var c = go.GetComponent<Creature>();
-            if (c && (c is GhostLeviathan || c is GhostLeviatanVoid || c is ReaperLeviathan || c is SeaDragon)) {
+            if (c && c is GhostLeviathan or GhostLeviatanVoid or ReaperLeviathan or SeaDragon) {
                 c.Aggression.Add(-1F);
                 foreach (var lt in go.GetComponentsInChildren<LastTarget>())
                     lt.SetTarget(null);
@@ -272,7 +272,7 @@ public class ExplodingAnchorPod : PassiveSonarEntity {
         var v = go.GetComponent<Vehicle>();
         if (v && v is SeaMoth)
             return 15;
-        else if (v && v is Exosuit)
+        if (v && v is Exosuit)
             return 30;
         return 15;
     }

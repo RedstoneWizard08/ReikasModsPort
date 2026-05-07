@@ -40,7 +40,7 @@ public class BKelpBumpWorm : InteractableSpawnable {
         sc.transform.localPosition += Vector3.up * 0.4F;
         sc.gameObject.EnsureComponent<BKelpBumpWormInteractTag>();
         go.EnsureComponent<BKelpBumpWormTag>();
-        ObjectUtil.makeMapRoomScannable(go, C2CItems.bkelpBumpWormItem.Info.TechType);
+        go.makeMapRoomScannable(C2CItems.bkelpBumpWormItem.Info.TechType);
         return go;
     }
 

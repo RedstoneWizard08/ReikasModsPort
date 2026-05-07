@@ -43,7 +43,7 @@ public class SeaTreaderTunnelLocker : WorldGenerator {
 				go.GetComponent<Rigidbody>().isKinematic = false;
 				go.transform.localRotation = Random.rotationUniform;
 				if (kvp.Key != TechType.FirstAidKit)
-					go.transform.localScale = Vector3.one * (kvp.Key == TechType.CuredSpadefish || kvp.Key == TechType.CookedBladderfish ? 0.67F : 0.25F);
+					go.transform.localScale = Vector3.one * (kvp.Key is TechType.CuredSpadefish or TechType.CookedBladderfish ? 0.67F : 0.25F);
 				var prop = go.EnsureComponent<SeaTreaderTunnelBaseItem>();
 				prop.Invoke("fixInPlace", 45);
 			}

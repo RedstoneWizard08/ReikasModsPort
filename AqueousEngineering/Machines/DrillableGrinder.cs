@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Nautilus.Crafting;
+using Nautilus.Extensions;
 using ReikaKalseki.DIAlterra;
 using UnityEngine;
 
@@ -91,19 +92,20 @@ public class BaseDrillableGrinder : CustomMachine<BaseDrillableGrinderLogic> {
         if (generatedUncraftingList)
             return;
 
-        // TODO
-        // foreach (KeyValuePair<TechType, CraftData.TechData> rec in CraftData.techData) {
-        //     if (uncraftingList.ContainsKey(rec.Key)) //do not overwrite existing recipe
-        //         continue;
-        //     if (uncraftabilityFlags.ContainsKey(rec.Key) && !uncraftabilityFlags[rec.Key])
-        //         continue;
-        //     if (rec.Value.linkedItemCount > 0)
-        //         continue;
-        //     RecipeUtil.getRecipeCategory(rec.Key, out var grp, out var cat);
-        //     if (uncraftableCategories.Contains(cat)) {
-        //         registerUncrafting(UncraftingRecipe.createBasicUncrafting(rec.Key, rec.Value));
-        //     }
-        // }
+        foreach (var rec in TechData.entries) {
+            var recipe = rec.Value.ConvertToRecipeData();
+            if (recipe == null) continue;
+            if (uncraftingList.ContainsKey(rec.Key)) //do not overwrite existing recipe
+                continue;
+            if (uncraftabilityFlags.ContainsKey(rec.Key) && !uncraftabilityFlags[rec.Key])
+                continue;
+            if (recipe.linkedItemCount > 0)
+                continue;
+            RecipeUtil.getRecipeCategory(rec.Key, out var grp, out var cat);
+            if (uncraftableCategories.Contains(cat)) {
+                registerUncrafting(UncraftingRecipe.createBasicUncrafting(rec.Key, recipe));
+            }
+        }
 
         foreach (var r in uncraftingList.Values) {
             r.buildRecursiveYields();
@@ -169,7 +171,7 @@ public class BaseDrillableGrinder : CustomMachine<BaseDrillableGrinderLogic> {
 
         public static UncraftingRecipe createBasicUncrafting(TechType tt, RecipeData td) {
             var r = new UncraftingRecipe(tt);
-            foreach (Ingredient i in td.Ingredients) {
+            foreach (var i in td.Ingredients) {
                 r.directYields[i.techType] = getDefaultYield(i.techType, i.amount);
             }
 
@@ -356,9 +358,8 @@ public class BaseDrillableGrinderLogic : CustomMachineLogic, DIHooks.IStasisReac
                             if (drop) {
                                 var res = new DrillableGrindingResult(this, cg.techType, cg, drop);
                                 doDrop(res);
-                            } else {
-                                //SNUtil.writeToChat("Custom Grindable resulted in null drop");
                             }
+                            //SNUtil.writeToChat("Custom Grindable resulted in null drop");
                         }
                     }
 
@@ -378,7 +379,7 @@ public class BaseDrillableGrinderLogic : CustomMachineLogic, DIHooks.IStasisReac
                     }
 
                     foreach (var kvp in r.yields) {
-                        GameObject drop = ObjectUtil.lookupPrefab(kvp.Key);
+                        var drop = ObjectUtil.lookupPrefab(kvp.Key);
                         if (drop) {
                             var res = new DrillableGrindingResult(this, tt, pp, drop);
                             var n = (int)kvp.Value;
@@ -472,9 +473,8 @@ public class BaseDrillableGrinderLogic : CustomMachineLogic, DIHooks.IStasisReac
                 rb.isKinematic = false;
                 rb.AddForce(transform.forward.normalized * 12);
             }
-        } else {
-            //SNUtil.writeToChat("Rock Crusher received null drop after event");
         }
+        //SNUtil.writeToChat("Rock Crusher received null drop after event");
     }
 }
 

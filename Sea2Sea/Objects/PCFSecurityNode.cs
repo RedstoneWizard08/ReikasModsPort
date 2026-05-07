@@ -62,7 +62,7 @@ public class PCFSecurityNode : InteractableSpawnable {
 			baseObj.EnsureComponent<BrokenPCFSecurityNodeTag>();
 		baseObj.GetComponentInChildren<BoxCollider>().gameObject.EnsureComponent<PCFSecurityNodeRelay>();
 		baseObj.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.VeryFar;
-		ObjectUtil.makeMapRoomScannable(baseObj, Exscansion.ExscansionMod.alienBase.TechType);
+		baseObj.makeMapRoomScannable(Exscansion.ExscansionMod.alienBase.TechType);
 		return baseObj;
 	}
 

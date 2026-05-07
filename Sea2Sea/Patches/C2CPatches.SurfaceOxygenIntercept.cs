@@ -13,11 +13,10 @@ internal static partial class C2CPatches {
     [HarmonyPatch(nameof(OxygenManager.Update))]
     public static class SurfaceOxygenIntercept {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try {
-                var idx = InstructionHandlers.getInstruction(
-                    codes,
+                var idx = codes.GetInstruction(
                     0,
                     0,
                     OpCodes.Call,
@@ -26,7 +25,7 @@ internal static partial class C2CPatches {
                     true,
                     new Type[] { typeof(float) }
                 );
-                codes[idx] = InstructionHandlers.createMethodCall(
+                codes[idx] = InstructionHandlers.CreateMethodCall(
                     "ReikaKalseki.SeaToSea.C2CHooks",
                     nameof(C2CHooks.AddOxygenAtSurfaceMaybe),
                     false,
@@ -34,9 +33,9 @@ internal static partial class C2CPatches {
                     typeof(float)
                 );
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

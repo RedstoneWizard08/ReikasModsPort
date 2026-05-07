@@ -12,13 +12,12 @@ internal static partial class DIPatches {
     [HarmonyPatch(nameof(PropulsionCannon.ValidateNewObject))]
     public static class PropulsabilityHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try {
-                PatchLib.patchPropulsability(
+                PatchLib.PatchPropulsability(
                     codes,
-                    InstructionHandlers.getInstruction(
-                        codes,
+                    codes.GetInstruction(
                         0,
                         0,
                         OpCodes.Ldfld,
@@ -28,9 +27,9 @@ internal static partial class DIPatches {
                     ),
                     false
                 );
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

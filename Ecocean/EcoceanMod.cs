@@ -80,7 +80,7 @@ public class EcoceanMod : BaseUnityPlugin {
     public void Awake() {
         config.load();
 
-        HarmonySystem harmony = new HarmonySystem(MOD_KEY, modDLL, typeof(ECPatches));
+        var harmony = new HarmonySystem(MOD_KEY, modDLL, typeof(ECPatches));
         harmony.apply();
 
         ModVersionCheck.getFromGitVsInstall("Ecocean", modDLL, "Ecocean").register();
@@ -253,7 +253,7 @@ public class EcoceanMod : BaseUnityPlugin {
         GenUtil.registerWorldgen(new PositionedPrefab(VanillaCreatures.REAPER.prefab, reaperlessTripleVent.SetY(-200)));
         GenUtil.registerWorldgen(new PositionedPrefab(VanillaCreatures.REAPER.prefab, northDuneBit.SetY(-320)));
 
-        TerrainLootSpawner.WeightedTerrainLootSpawn wr = new TerrainLootSpawner.WeightedTerrainLootSpawn();
+        var wr = new TerrainLootSpawner.WeightedTerrainLootSpawn();
         wr.addEntry(VanillaResources.DIAMOND.prefab, 20);
         wr.addEntry(VanillaResources.GOLD.prefab, 30);
         wr.addEntry(VanillaResources.LITHIUM.prefab, 10);
@@ -277,8 +277,7 @@ public class EcoceanMod : BaseUnityPlugin {
                 ECHooks.AttractCreaturesToBase(
                     Player.main.currentSub,
                     r,
-                    c => c is GhostLeviathan || c is GhostLeviatanVoid || c is ReaperLeviathan || c is SeaDragon ||
-                         c is Shocker || c is CrabSquid || c is BoneShark
+                    c => c is GhostLeviathan or GhostLeviatanVoid or ReaperLeviathan or SeaDragon or Shocker or CrabSquid or BoneShark
                 );
             }
         );
@@ -304,7 +303,7 @@ public class EcoceanMod : BaseUnityPlugin {
         //lavaLily.addNativeBiome(VanillaBiomes.ALZ);
 
         e = locale.getEntry("Mouseovers");
-        foreach (KeyValuePair<string, string> kvp in e.getFields()) {
+        foreach (var kvp in e.getFields()) {
             if (!string.IsNullOrEmpty(kvp.Value))
                 CustomLocaleKeyDatabase.registerKey(kvp.Key, kvp.Value);
         }
@@ -312,7 +311,7 @@ public class EcoceanMod : BaseUnityPlugin {
         System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(ECHooks).TypeHandle);
 
         // PostLoad
-        if (InstructionHandlers.getTypeBySimpleName("ReikaKalseki.AqueousEngineering.BaseSonarPinger") != null) {
+        if (InstructionHandlers.GetTypeBySimpleName("ReikaKalseki.AqueousEngineering.BaseSonarPinger") != null) {
             //AE is loaded
             BaseSonarPinger.onBaseSonarPingedEvent += go =>
                 ECHooks.PingSonarFromObject(go.gameObject.FindAncestor<SubRoot>(), 0.67F);
@@ -325,14 +324,14 @@ public class EcoceanMod : BaseUnityPlugin {
             BaseRoomSpecializationSystem.instance.registerModdedObject(pinkLeaves, 0.75F);
             BaseRoomSpecializationSystem.instance.registerModdedObject(mushroomVaseStrand, 0.25F);
 
-            ACUEcosystems.addFood(new ACUEcosystems.PlantFood(glowShroom, 0.25F, BiomeRegions.Other));
-            ACUEcosystems.addFood(new ACUEcosystems.PlantFood(lavaShroom, 0.25F, BiomeRegions.LavaZone));
-            ACUEcosystems.addFood(new ACUEcosystems.PlantFood(mushroomStack, 0.02F, BiomeRegions.Other));
-            ACUEcosystems.addFood(
+            ACUEcosystems.AddFood(new ACUEcosystems.PlantFood(glowShroom, 0.25F, BiomeRegions.Other));
+            ACUEcosystems.AddFood(new ACUEcosystems.PlantFood(lavaShroom, 0.25F, BiomeRegions.LavaZone));
+            ACUEcosystems.AddFood(new ACUEcosystems.PlantFood(mushroomStack, 0.02F, BiomeRegions.Other));
+            ACUEcosystems.AddFood(
                 new ACUEcosystems.PlantFood(pinkBulbStack, 0.1F, BiomeRegions.Koosh, BiomeRegions.GrandReef)
             );
-            ACUEcosystems.addFood(new ACUEcosystems.PlantFood(pinkLeaves, 0.1F, BiomeRegions.Other));
-            ACUEcosystems.addFood(new ACUEcosystems.PlantFood(mushroomVaseStrand, 0.3F, BiomeRegions.Mushroom));
+            ACUEcosystems.AddFood(new ACUEcosystems.PlantFood(pinkLeaves, 0.1F, BiomeRegions.Other));
+            ACUEcosystems.AddFood(new ACUEcosystems.PlantFood(mushroomVaseStrand, 0.3F, BiomeRegions.Mushroom));
 
             MushroomVaseStrand.filterDrops.addEntry(TechType.Salt, 50);
             MushroomVaseStrand.filterDrops.addEntry(TechType.Copper, 10);

@@ -31,7 +31,7 @@ public class FoodEffectSystem {
     }
 
     internal void register() {
-        XMLLocale.LocaleEntry e = getLocaleEntry();
+        var e = getLocaleEntry();
         addEffect(TechType.KooshChunk, (s, go) => shiftMorale(-10), e.getString("koosh"));
         addEffect(TechType.BulboTreePiece, (s, go) => shiftMorale(-5), e.getString("bulbo"));
         addEffect(TechType.OrangeMushroomSpore, (s, go) => shiftMorale(-20), e.getString("jaffa"));

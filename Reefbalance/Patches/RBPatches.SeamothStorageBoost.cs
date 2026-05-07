@@ -13,7 +13,7 @@ internal static partial class RBPatches {
     [HarmonyPatch(nameof(SeamothStorageContainer.Init))]
     public static class SeamothStorageBoost {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try { /*
             int sub = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Sub);
@@ -21,19 +21,19 @@ internal static partial class RBPatches {
             inject.add(OpCodes.Ldsfld, InstructionHandlers.convertFieldOperand("ReikaKalseki.Reefbalance.ReefbalanceMod", "onRoomFindMachine"));
             codes.InsertRange(sub+1, inject);
             */
-                codes.patchInitialHook(
+                codes.PatchInitialHook(
                     new CodeInstruction(OpCodes.Ldarg_0),
-                    InstructionHandlers.createMethodCall(
+                    InstructionHandlers.CreateMethodCall(
                         "ReikaKalseki.Reefbalance.ReefbalanceMod",
                         nameof(ReefbalanceMod.InitializeSeamothStorage),
                         false,
                         typeof(SeamothStorageContainer)
                     )
                 );
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

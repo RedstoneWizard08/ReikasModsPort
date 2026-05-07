@@ -35,7 +35,7 @@ public class LavaBomb : InteractableSpawnable {
     }
 
     public override GameObject GetGameObject() {
-        GameObject world = ObjectUtil.createWorldObject("18229b4b-3ed3-4b35-ae30-43b1c31a6d8d");
+        var world = ObjectUtil.createWorldObject("18229b4b-3ed3-4b35-ae30-43b1c31a6d8d");
         world.EnsureComponent<TechTag>().type = Info.TechType;
         world.EnsureComponent<PrefabIdentifier>().ClassId = Info.ClassID;
         //world.GetComponent<Rigidbody>().isKinematic = true;
@@ -52,7 +52,7 @@ public class LavaBomb : InteractableSpawnable {
         world.removeComponent<ResourceTrackerUpdater>();
         world.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.Far;
         var g = world.EnsureComponent<LavaBombTag>();
-        Light l = world.addLight(3, 16, new Color(1F, 0.67F, 0.1F, 1F));
+        var l = world.addLight(3, 16, new Color(1F, 0.67F, 0.1F, 1F));
         l.bounceIntensity *= 3;
         world.GetComponentInChildren<SphereCollider>().radius *= 0.8F;
         var r = world.GetComponentInChildren<Renderer>();

@@ -43,7 +43,7 @@ public class GlowShroomTag : GlowShroomTagBase {
     }
 
     protected override GameObject createProjectile() {
-        GameObject go = ObjectUtil.createWorldObject(EcoceanMod.naturalOil.ClassID);
+        var go = ObjectUtil.createWorldObject(EcoceanMod.naturalOil.ClassID);
         return go;
     }
 

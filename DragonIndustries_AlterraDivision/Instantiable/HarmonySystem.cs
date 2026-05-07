@@ -31,7 +31,7 @@ public class HarmonySystem {
         }
 
         try {
-            InstructionHandlers.runPatchesIn(harmonyInstance, patchHolder);
+            InstructionHandlers.RunPatchesIn(harmonyInstance, patchHolder);
         } catch (Exception ex) {
             FileLog.Log("Caught exception when running " + harmonyInstance.Id + " patchers!");
             FileLog.Log(ex.Message);

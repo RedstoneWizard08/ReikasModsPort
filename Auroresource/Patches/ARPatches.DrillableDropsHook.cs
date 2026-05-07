@@ -13,10 +13,10 @@ internal static partial class ARPatches {
     [HarmonyPatch(nameof(Drillable.SpawnLootAsync))]
     public static class DrillableDropsHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try {
-                var idx = codes.getInstruction(
+                var idx = codes.GetInstruction(
                     0,
                     0,
                     OpCodes.Call,
@@ -25,15 +25,15 @@ internal static partial class ARPatches {
                     true,
                     Type.EmptyTypes
                 );
-                codes[idx].operand = InstructionHandlers.convertMethodOperand(
+                codes[idx].operand = InstructionHandlers.ConvertMethodOperand(
                     "ReikaKalseki.Auroresource.ARHooks",
                     nameof(ARHooks.GetDrillableDrop),
                     false,
                     typeof(Drillable)
                 );
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

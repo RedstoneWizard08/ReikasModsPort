@@ -47,7 +47,7 @@ public class GlassForestWreck : WreckHandler {
 			var cc = t.GetComponentInChildren<Collider>(true);
 			SNUtil.Log("Adding gravity to " + n + " in " + t.gameObject.GetFullHierarchyPath().Substring(gameObject.GetFullHierarchyPath().Length) + " @ " + t.position + " (" + (cc != null) + ")");
 			if (cc) {
-				ObjectUtil.applyGravity(t.gameObject);
+				t.gameObject.applyGravity();
 				var prop = t.gameObject.EnsureComponent<GlassForestWreckProp>();
 				prop.init("glassforestwreck", 90);
 			}

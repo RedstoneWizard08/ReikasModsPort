@@ -19,10 +19,10 @@ public class ItemRegistry {
         if (registry.ContainsKey(id)) {
             SNUtil.Log("Fetching item '" + id + "'", SNUtil.TryGetModDLL(true));
             return registry[id];
-        } else {
-            SNUtil.Log("Could not find item '" + id + "'", SNUtil.TryGetModDLL(true));
-            return null;
         }
+
+        SNUtil.Log("Could not find item '" + id + "'", SNUtil.TryGetModDLL(true));
+        return null;
     }
 
     public void addListener(Action<CustomPrefab> a) {
@@ -34,11 +34,11 @@ public class ItemRegistry {
             if (doLog)
                 SNUtil.Log("Fetching item '" + tt + "'", SNUtil.TryGetModDLL(true));
             return registryTech[tt];
-        } else {
-            if (doLog)
-                SNUtil.Log("Could not find item '" + tt + "'", SNUtil.TryGetModDLL(true));
-            return null;
         }
+
+        if (doLog)
+            SNUtil.Log("Could not find item '" + tt + "'", SNUtil.TryGetModDLL(true));
+        return null;
     }
 
     public void addItem(CustomPrefab di) {

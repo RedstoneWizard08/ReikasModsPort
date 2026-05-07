@@ -191,7 +191,7 @@ if (!prawnBayHeatRippleCylinder) {/*
         //depthWarningFX2 = Camera.main.gameObject.EnsureComponent<DepthDarkeningFX>();
         //SBUtil.writeToChat("Doing enviro damage on "+dmg+" in "+dmg.gameObject+" = "+dmg.player);
         var biome = GetBiome(dmg.gameObject); //Player.main.GetBiomeString();
-        var prawn = biome == "AuroraPrawnBay" || biome == "AuroraPrawnBayDoor";
+        var prawn = biome is "AuroraPrawnBay" or "AuroraPrawnBayDoor";
         var aurora = prawn || biome == "AuroraFireCeilingTunnel";
         var diveSuit = dmg.player && dmg.player.HasReinforcedGloves() && dmg.player.HasReinforcedSuit();
         if (aurora && !diveSuit &&
@@ -373,9 +373,9 @@ if (!prawnBayHeatRippleCylinder) {/*
             }
 
             return used;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     internal float GetHeatDamageModuleFactor(TechType tt) {
@@ -852,7 +852,7 @@ if (!prawnBayHeatRippleCylinder) {/*
         var ep = Player.main;
         if (!ep)
             return false;
-        MapRoomCamera cam = SNUtil.GetControllingCamera(ep);
+        var cam = SNUtil.GetControllingCamera(ep);
         //SNUtil.writeToChat(cam+"");
         if (cam && GetLrPowerLeakage(cam.gameObject) > 0)
             return true;

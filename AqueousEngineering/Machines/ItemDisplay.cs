@@ -280,38 +280,38 @@ public class ItemDisplayLogic : CustomMachineLogic {
             var obj = props.getRenderObj(pp.gameObject);
             ret = obj ? obj.GetComponentInChildren<Renderer>() : null;
             return obj;
-        } else {
-            var a = pp.GetComponentInChildren<Animator>();
-            if (a) {
-                ret = a.GetComponentInChildren<Renderer>();
-                return a.gameObject;
-            }
-
-            var rr = pp.GetComponentsInChildren<Renderer>();
-            foreach (var r in rr) {
-                if (r.GetComponent<Light>())
-                    continue;
-                var cloneFrom = r.gameObject;
-                if (cloneFrom.GetFullHierarchyPath().Contains("$DisplayRoot")) {
-                    while (cloneFrom.transform.parent && !cloneFrom.name.Contains("$DisplayRoot"))
-                        cloneFrom = cloneFrom.transform.parent.gameObject;
-                    var seek = "offset=";
-                    var idx = cloneFrom.name.IndexOf(seek, StringComparison.InvariantCultureIgnoreCase);
-                    if (idx >= 0) {
-                        additionalRenderSpace = float.Parse(
-                            cloneFrom.name.Substring(idx + seek.Length),
-                            System.Globalization.CultureInfo.InvariantCulture
-                        );
-                    }
-                }
-
-                ret = r;
-                return cloneFrom;
-            }
-
-            ret = null;
-            return null;
         }
+
+        var a = pp.GetComponentInChildren<Animator>();
+        if (a) {
+            ret = a.GetComponentInChildren<Renderer>();
+            return a.gameObject;
+        }
+
+        var rr = pp.GetComponentsInChildren<Renderer>();
+        foreach (var r in rr) {
+            if (r.GetComponent<Light>())
+                continue;
+            var cloneFrom = r.gameObject;
+            if (cloneFrom.GetFullHierarchyPath().Contains("$DisplayRoot")) {
+                while (cloneFrom.transform.parent && !cloneFrom.name.Contains("$DisplayRoot"))
+                    cloneFrom = cloneFrom.transform.parent.gameObject;
+                var seek = "offset=";
+                var idx = cloneFrom.name.IndexOf(seek, StringComparison.InvariantCultureIgnoreCase);
+                if (idx >= 0) {
+                    additionalRenderSpace = float.Parse(
+                        cloneFrom.name.Substring(idx + seek.Length),
+                        System.Globalization.CultureInfo.InvariantCulture
+                    );
+                }
+            }
+
+            ret = r;
+            return cloneFrom;
+        }
+
+        ret = null;
+        return null;
     }
 }
 

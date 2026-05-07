@@ -17,7 +17,7 @@ public class GlowOilNatural : PickedUpAsOtherItem {
     }
 
     public override GameObject GetGameObject() {
-        GameObject world = EcoceanMod.glowOil.GetGameObject().clone();
+        var world = EcoceanMod.glowOil.GetGameObject().clone();
         world.EnsureComponent<TechTag>().type = Info.TechType;
         world.EnsureComponent<PrefabIdentifier>().ClassId = Info.ClassID;
         world.EnsureComponent<Pickupable>().SetTechTypeOverride(Info.TechType);
@@ -32,7 +32,7 @@ public class GlowOilNatural : PickedUpAsOtherItem {
 
     public void register() {
         this.Register();
-        PDAManager.PDAPage p = EcoceanMod.glowOil.getPDAEntry();
+        var p = EcoceanMod.glowOil.getPDAEntry();
         KnownTechHandler.SetAnalysisTechEntry(Info.TechType, new List<TechType>() { template });
         var e = new PDAScanner.EntryData {
             key = Info.TechType,

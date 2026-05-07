@@ -30,7 +30,7 @@ public sealed class PiezoChunk : WorldGenerator {
         angs[angs.Length - 1] = new Vector3(Random.Range(-30F, 30F), Random.Range(0, 360F), 0);
         angs[angs.Length - 2] = new Vector3(Random.Range(150F, 210F), Random.Range(0, 360F), 0);
         foreach (var ang in angs) {
-            GameObject go = spawner(EcoceanMod.piezo.Info.ClassID);
+            var go = spawner(EcoceanMod.piezo.Info.ClassID);
             go.transform.position = position;
             go.transform.rotation = Quaternion.Euler(ang.x, ang.y, ang.z); //UnityEngine.Random.rotationUniform;
             go.transform.position += go.transform.up * Random.Range(0.25F, 0.5F);

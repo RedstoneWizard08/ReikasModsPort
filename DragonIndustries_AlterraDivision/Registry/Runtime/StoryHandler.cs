@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Xml;
 using Nautilus.Handlers;
+using Nautilus.Utility;
 using Story;
 
 using UnityEngine;
@@ -25,8 +26,7 @@ public class StoryHandler : SerializedTracker<StoryHandler.StoryGoalRecord>, ISt
 	private StoryHandler() : base("StoryGoals.dat", false, parse, parseLegacy) {
 		//load in world load//IngameMenuHandler.Main.RegisterOnLoadEvent(handleLoad);
 		
-		// TODO
-		// IngameMenuHandler.Main.RegisterOnSaveEvent(this.handleSave);
+		SaveUtils.RegisterOnSaveEvent(handleSave);
 	}
 
 	private static StoryGoalRecord parse(XmlElement s) {
@@ -148,9 +148,7 @@ public class StoryHandler : SerializedTracker<StoryHandler.StoryGoalRecord>, ISt
 					dt.fire();
 				}
 			}
-			else {
-				//SNUtil.writeToChat("Trigger "+kvp.Key+" condition is not met");
-			}
+			//SNUtil.writeToChat("Trigger "+kvp.Key+" condition is not met");
 		}
 	}
 

@@ -10,7 +10,7 @@ public class VoidOrganic : WorldCollectedItem {
     internal VoidOrganic(XMLLocale.LocaleEntry e) : base(e, "505e7eff-46b3-4ad2-84e1-0fadb7be306c") {
         AddOnRegister(() => { CraftDataHandler.SetPickupSound(Info.TechType, "event:/loot/pickup_seatreaderpoop"); });
         renderModify = r => {
-            GameObject world = r.gameObject.FindAncestor<PrefabIdentifier>().gameObject;
+            var world = r.gameObject.FindAncestor<PrefabIdentifier>().gameObject;
             world.removeComponent<EnzymeBall>();
             var pp = world.EnsureComponent<Pickupable>();
             pp.SetTechTypeOverride(Info.TechType);

@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using BepInEx;
 using BepInEx.Logging;
 using Nautilus.Assets;
-using Nautilus.Handlers; //Working with Lists and Collections
+using Nautilus.Handlers;
+using Nautilus.Utility; //Working with Lists and Collections
 //For data read/write methods
 //More advanced manipulation of lists/collections
 using UnityEngine; //Needed for most Unity Enginer manipulations: Vectors, GameObjects, Audio, etc.
@@ -108,7 +109,7 @@ public class DIMod : BaseUnityPlugin {
                             MathUtil.getRandomVectorAround(new Vector3(-0.3F, 0.24F, 0), 0.15F);
                         sphere.transform.localRotation = Quaternion.identity;
                         sphere.removeComponent<Collider>();
-                        // ECCHelpers.ApplySNShaders(sphere, new UBERMaterialProperties(0, 0, 5));
+                        MaterialUtils.ApplySNShaders(sphere, 0, 0, 5);
                         var r2 = sphere.GetComponentInChildren<Renderer>();
                         r2.material.SetColor("_GlowColor", new Color(1, 0.75F, 0.33F, 1));
                         RenderUtil.setEmissivity(r2, 0.8F);

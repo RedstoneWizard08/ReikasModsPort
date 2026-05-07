@@ -12,13 +12,13 @@ internal static partial class DIPatches {
     [HarmonyPatch(nameof(PowerRelay.AddInboundPower))]
     public static class SeabasePowerReferenceHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try {
-                codes.patchEveryReturnPre(
+                codes.PatchEveryReturnPre(
                     new CodeInstruction(OpCodes.Ldarg_0),
                     new CodeInstruction(OpCodes.Ldarg_1),
-                    InstructionHandlers.createMethodCall(
+                    InstructionHandlers.CreateMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
                         nameof(DIHooks.LinkPowerRelayToBase),
                         false,

@@ -13,7 +13,7 @@ public static partial class AEPatches {
     [HarmonyPatch(nameof(uGUI_CameraDrone.LateUpdate))]
     public static class CameraFuzzHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try {
                 for (var i = 0; i < codes.Count; i++) {
@@ -21,7 +21,7 @@ public static partial class AEPatches {
                     if (ci.opcode == OpCodes.Callvirt) {
                         var mi = (MethodInfo)ci.operand;
                         if (mi.Name == "GetScreenDistance") {
-                            ci.operand = InstructionHandlers.convertMethodOperand(
+                            ci.operand = InstructionHandlers.ConvertMethodOperand(
                                 "ReikaKalseki.AqueousEngineering.AEHooks",
                                 nameof(AEHooks.GetCameraDistanceForRenderFX),
                                 false,
@@ -32,9 +32,9 @@ public static partial class AEPatches {
                     }
                 }
 
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

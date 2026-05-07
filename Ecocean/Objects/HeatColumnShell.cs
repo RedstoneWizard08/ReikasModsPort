@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using Nautilus.Utility;
 using ReikaKalseki.DIAlterra;
 using UnityEngine;
 
@@ -22,7 +23,7 @@ public class HeatColumnShell : InteractableSpawnable {
     }
 
     public override GameObject GetGameObject() {
-        GameObject
+        var
             world = GameObject.CreatePrimitive(PrimitiveType.Cylinder)
                 .setName(
                     "HeatColumnShell(Clone)"
@@ -35,13 +36,12 @@ public class HeatColumnShell : InteractableSpawnable {
         world.layer = LayerID.Useable;
         world.EnsureComponent<HeatColumnShellTag>();
 
-        // TODO
-        // ECCHelpers.ApplySNShaders(world, new UBERMaterialProperties(0, 0, 5));
+        MaterialUtils.ApplySNShaders(world, 0, 0, 5);
         var r = world.GetComponentInChildren<Renderer>();
         RenderUtil.makeTransparent(r);
         r.receiveShadows = false;
         r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-        Texture2D tex = TextureManager.getTexture(EcoceanMod.modDLL, "Textures/heatcolumnshell");
+        var tex = TextureManager.getTexture(EcoceanMod.modDLL, "Textures/heatcolumnshell");
         //r.materials[0].SetTexture("_MainTex", tex);
         //r.materials[0].EnableKeyword("MARMO_EMISSION");
         r.materials[0].EnableKeyword("MARMO_SPECMAP");
@@ -55,7 +55,7 @@ public class HeatColumnShell : InteractableSpawnable {
         //AcidicBrineDamageTrigger acid = world.EnsureComponent<AcidicBrineDamageTrigger>();
 
         var c = new Color(0.2F, 1F, 0.67F);
-        Light l = world.addLight(0.7F, 5, c);
+        var l = world.addLight(0.7F, 5, c);
         l.type = LightType.Spot;
 
         return world;

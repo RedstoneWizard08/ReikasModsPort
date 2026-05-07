@@ -17,7 +17,7 @@ internal class ECEmperor : MonoBehaviour {
     }
 
     private void applyPassivity() {
-        foreach (AggressiveWhenSeeTarget a in WorldUtil.getObjectsNearWithComponent<AggressiveWhenSeeTarget>(
+        foreach (var a in WorldUtil.getObjectsNearWithComponent<AggressiveWhenSeeTarget>(
                      transform.position,
                      100
                  )) {

@@ -13,11 +13,10 @@ internal static partial class C2CPatches {
     [HarmonyPatch(nameof(Stalker.CheckLoseTooth))]
     public static class StalkerToothDropHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try {
-                var idx = InstructionHandlers.getInstruction(
-                    codes,
+                var idx = codes.GetInstruction(
                     0,
                     0,
                     OpCodes.Call,
@@ -26,15 +25,15 @@ internal static partial class C2CPatches {
                     true,
                     new Type[0]
                 );
-                codes[idx].operand = InstructionHandlers.convertMethodOperand(
+                codes[idx].operand = InstructionHandlers.ConvertMethodOperand(
                     "ReikaKalseki.SeaToSea.C2CHooks",
                     nameof(C2CHooks.StalkerTryDropTooth),
                     false,
                     typeof(Stalker)
                 );
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

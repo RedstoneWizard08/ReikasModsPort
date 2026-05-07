@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Xml;
+using Nautilus.Utility;
 using ReikaKalseki.DIAlterra;
 using UnityEngine;
 
@@ -33,7 +34,7 @@ public class AcuCallbackSystem {
     }
 
     private readonly string _oldSaveDir = Path.Combine(
-        Path.GetDirectoryName(AqueousEngineeringMod.modDLL.Location),
+        Path.GetDirectoryName(AqueousEngineeringMod.modDLL.Location)!,
         "acu_data_cache"
     );
 
@@ -45,9 +46,8 @@ public class AcuCallbackSystem {
     }
 
     internal void Register() {
-        // TODO
-        // IngameMenuHandler.Main.RegisterOnLoadEvent(loadSave);
-        // IngameMenuHandler.Main.RegisterOnSaveEvent(save);
+        SaveUtils.RegisterOnStartLoadingEvent(LoadSave);
+        SaveUtils.RegisterOnSaveEvent(Save);
         SNUtil.MigrateSaveDataFolder(_oldSaveDir, ".xml", SaveFileName);
     }
 
@@ -114,7 +114,7 @@ public class AcuCallbackSystem {
             e.AddProperty("tick", LastTick);
 
             foreach (var go in CreatureData.Values) {
-                var e2 = e.OwnerDocument.CreateElement("creatureStatus");
+                var e2 = e.OwnerDocument!.CreateElement("creatureStatus");
                 go.SaveToXML(e2);
                 e.AppendChild(e2);
             }
@@ -136,7 +136,7 @@ public class AcuCallbackSystem {
         if (File.Exists(path)) {
             var doc = new XmlDocument();
             doc.Load(path);
-            foreach (XmlElement e in doc.DocumentElement.ChildNodes) {
+            foreach (XmlElement e in doc.DocumentElement!.ChildNodes) {
                 try {
                     var pfb = new CachedAcuData(e.GetVector("position").Value);
                     pfb.LoadFromXML(e);
@@ -213,7 +213,7 @@ public class AcuCallbackSystem {
         private AcuCallback _controller;
 
         private static readonly Type ResourceMonitorLogic =
-            InstructionHandlers.getTypeBySimpleName("ResourceMonitor.Components.ResourceMonitorLogic");
+            InstructionHandlers.GetTypeBySimpleName("ResourceMonitor.Components.ResourceMonitorLogic");
 
         internal void SetController(AcuCallback acu) {
             if (_controller == acu)
@@ -428,7 +428,7 @@ public class AcuCallbackSystem {
             values["day"] = dday;
             values["time"] = (int)(frac * 1200) + "s";
             values["contents"] = GenerateContentList();
-            values["biome"] = CurrentTheme.getName();
+            values["biome"] = CurrentTheme.GetName();
             values["plants"] = PlantCount.ToString("0.0");
             values["herbivores"] = HerbivoreCount.ToString("0.0");
             values["carnivores"] = CarnivoreCount.ToString("0.0");
@@ -502,7 +502,7 @@ public class AcuCallbackSystem {
             var consistent = true;
             _currentWarnings.Clear();
             PotentialBiomes.Clear();
-            PotentialBiomes.AddRange(BiomeRegions.getAllBiomes());
+            PotentialBiomes.AddRange(BiomeRegions.GetAllBiomes());
             //SNUtil.writeToChat("SC:"+sc);
             var plants = Planter.GetComponentsInChildren<PrefabIdentifier>();
             PlantCount = 0;
@@ -557,7 +557,7 @@ public class AcuCallbackSystem {
                         }
                     }
 
-                    var c = ACUEcosystems.handleCreature(
+                    var c = ACUEcosystems.HandleCreature(
                         this,
                         dT,
                         wpc,
@@ -600,10 +600,10 @@ public class AcuCallbackSystem {
                 }
             }
 
-            var plantTypes = ACUEcosystems.collectPlants(this, plants, PotentialBiomes);
+            var plantTypes = ACUEcosystems.CollectPlants(this, plants, PotentialBiomes);
             consistent = PotentialBiomes.Count > 0 && PlantCount > 0;
             var max = PotentialBiomes.Count == 1
-                ? ACUEcosystems.getPlantsForBiome(PotentialBiomes.First()).Count
+                ? ACUEcosystems.GetPlantsForBiome(PotentialBiomes.First()).Count
                 : 99;
             var plantVar = plantTypes.Count >= Mathf.Min(2, max);
             var tooManyCarnisPrey = CarnivoreCount > Math.Max(

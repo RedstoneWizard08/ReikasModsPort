@@ -12,11 +12,11 @@ internal static partial class DIPatches {
     [HarmonyPatch(nameof(Inventory.LoseItems))]
     public static class ItemLossHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try {
-                codes.patchInitialHook(
-                    InstructionHandlers.createMethodCall(
+                codes.PatchInitialHook(
+                    InstructionHandlers.CreateMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
                         nameof(DIHooks.OnItemsLost),
                         false,
@@ -26,12 +26,12 @@ internal static partial class DIPatches {
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
 
                 //this is a bugfix, they stop at second last item for some reason
-                var idx = InstructionHandlers.getFirstOpcode(codes, 0, OpCodes.Sub);
+                var idx = InstructionHandlers.GetFirstOpcode(codes, 0, OpCodes.Sub);
                 codes.RemoveAt(idx);
                 codes.RemoveAt(idx - 1);
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

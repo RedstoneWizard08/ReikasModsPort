@@ -88,7 +88,9 @@ public class WorldgenDatabase {
                         var ot = ObjectTemplate.construct(e);
                         if (ot == null) {
                             throw new Exception("No worldgen loadable for '" + e.Name + "' " + e.Format() + ": NULL");
-                        } else if (ot is DICustomPrefab pfb) {
+                        }
+
+                        if (ot is DICustomPrefab pfb) {
                             /*
                             if (pfb.isCrate) {
                                 //GenUtil.spawnItemCrate(pfb.position, pfb.tech, pfb.rotation);

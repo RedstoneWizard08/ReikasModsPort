@@ -110,8 +110,7 @@ internal class SeamothTetherController : MonoBehaviour {
                     }*/
 
                     var c = go.GetComponent<Creature>();
-                    if (c is GasoPod || c is Shocker || c is LavaLizard || c is Jellyray || c is Stalker ||
-                        c is BoneShark || c is SpineEel || c is SandShark || c is Warper) {
+                    if (c is GasoPod or Shocker or LavaLizard or Jellyray or Stalker or BoneShark or SpineEel or SandShark or Warper) {
                         available.Add(rb);
                         return;
                     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 using ReikaKalseki.DIAlterra;
 using UnityEngine;
@@ -49,15 +50,15 @@ public static class C2CUtil {
     public static bool checkConditionAndShowPDAAndVoicelogIfNot(bool check, string page, PDAMessages.Messages msg) {
         if (check) {
             return true;
-        } else {
-            MoraleSystem.instance.shiftMorale(-10);
-            if (PDAMessagePrompts.instance.trigger(PDAMessages.getAttr(msg).key)) {
-                if (!string.IsNullOrEmpty(page))
-                    PDAManager.getPage(page).unlock(false);
-            }
-
-            return false;
         }
+
+        MoraleSystem.instance.shiftMorale(-10);
+        if (PDAMessagePrompts.instance.trigger(PDAMessages.getAttr(msg).key)) {
+            if (!string.IsNullOrEmpty(page))
+                PDAManager.getPage(page).unlock(false);
+        }
+
+        return false;
     }
 
     public static bool playerCanHeal() {
@@ -107,45 +108,38 @@ public static bool hasNoGasMask() {
         List<GameObject> azurite = [];
         var azur = CustomMaterials.getItem(CustomMaterials.Materials.VENT_CRYSTAL).ClassID;
         foreach (var pi in UnityEngine.Object.FindObjectsOfType<PrefabIdentifier>()) {
-            if (pi.ClassId == "407e40cf-69f2-4412-8ab6-45faac5c4ea2") {
-                for (var ang = 0; ang < 360; ang += 10) {
-                    var a = UnityEngine.Random.Range(ang - 5F, ang + 5F);
-                    float r = 16;
-                    var dt = new Vector3(
-                        Mathf.Cos(a) * r,
-                        -UnityEngine.Random.Range(0, UnityEngine.Random.Range(25, 40)),
-                        Mathf.Sin(a) * r
-                    );
-                    var vec = pi.transform.position + dt;
-                    var ray = new Ray(vec, -dt.SetY(0));
-                    if (UWE.Utils.RaycastIntoSharedBuffer(
-                            ray,
-                            24,
-                            Voxeland.GetTerrainLayerMask(),
-                            QueryTriggerInteraction.Ignore
-                        ) > 0) {
-                        var hit = UWE.Utils.sharedHitBuffer[0];
-                        if (hit.transform != null) {
-                            var flag = true;
-                            foreach (var pi2 in WorldUtil.getObjectsNearWithComponent<PrefabIdentifier>(
-                                         hit.point,
-                                         9F
-                                     )) {
-                                if (pi2.ClassId == azur) {
-                                    flag = false;
-                                    break;
-                                }
-                            }
+            if (pi.ClassId != "407e40cf-69f2-4412-8ab6-45faac5c4ea2") continue;
+            for (var ang = 0; ang < 360; ang += 10) {
+                var a = UnityEngine.Random.Range(ang - 5F, ang + 5F);
+                const float r = 16;
+                var dt = new Vector3(
+                    Mathf.Cos(a) * r,
+                    -UnityEngine.Random.Range(0, UnityEngine.Random.Range(25, 40)),
+                    Mathf.Sin(a) * r
+                );
+                var vec = pi.transform.position + dt;
+                var ray = new Ray(vec, -dt.SetY(0));
+                if (UWE.Utils.RaycastIntoSharedBuffer(
+                        ray,
+                        24,
+                        Voxeland.GetTerrainLayerMask(),
+                        QueryTriggerInteraction.Ignore
+                    ) <= 0) continue;
+                var hit = UWE.Utils.sharedHitBuffer[0];
+                if (hit.transform != null) {
+                    var flag = WorldUtil.getObjectsNearWithComponent<PrefabIdentifier>(
+                            hit.point,
+                            9F
+                        )
+                        .All(pi2 => pi2.ClassId != azur);
 
-                            if (!flag)
-                                continue;
-                            var go = ObjectUtil.createWorldObject(azur);
-                            go.transform.rotation = MathUtil.unitVecToRotation(hit.normal);
-                            go.transform.Rotate(Vector3.up * UnityEngine.Random.Range(0F, 360F), Space.Self);
-                            go.transform.position = hit.point;
-                            azurite.Add(go);
-                        }
-                    }
+                    if (!flag)
+                        continue;
+                    var go = ObjectUtil.createWorldObject(azur);
+                    go.transform.rotation = MathUtil.unitVecToRotation(hit.normal);
+                    go.transform.Rotate(Vector3.up * UnityEngine.Random.Range(0F, 360F), Space.Self);
+                    go.transform.position = hit.point;
+                    azurite.Add(go);
                 }
             }
         }
@@ -185,16 +179,11 @@ public static bool hasNoGasMask() {
                     ) > 0) {
                     var hit = UWE.Utils.sharedHitBuffer[0];
                     if (hit.transform != null) {
-                        var flag = true;
-                        foreach (var pi in WorldUtil.getObjectsNearWithComponent<PrefabIdentifier>(
-                                     hit.point,
-                                     0.2F
-                                 )) {
-                            if (pi.ClassId == SeaToSeaMod.LrNestGrass.Info.ClassID) {
-                                flag = false;
-                                break;
-                            }
-                        }
+                        var flag = WorldUtil.getObjectsNearWithComponent<PrefabIdentifier>(
+                                hit.point,
+                                0.2F
+                            )
+                            .All(pi => pi.ClassId != SeaToSeaMod.LrNestGrass.Info.ClassID);
 
                         if (!flag)
                             continue;
@@ -219,16 +208,11 @@ public static bool hasNoGasMask() {
                 var hit = UWE.Utils.sharedHitBuffer[0];
                 SNUtil.WriteToChat(i + ": " + hit.transform);
                 if (hit.transform != null && hit.normal.y > -0.7F) {
-                    var flag = true;
-                    foreach (var pi in WorldUtil.getObjectsNearWithComponent<PrefabIdentifier>(
-                                 hit.point,
-                                 0.2F
-                             )) {
-                        if (pi.ClassId == SeaToSeaMod.LrNestGrass.Info.ClassID) {
-                            flag = false;
-                            break;
-                        }
-                    }
+                    var flag = WorldUtil.getObjectsNearWithComponent<PrefabIdentifier>(
+                            hit.point,
+                            0.2F
+                        )
+                        .All(pi => pi.ClassId != SeaToSeaMod.LrNestGrass.Info.ClassID);
 
                     if (!flag)
                         continue;
@@ -260,7 +244,7 @@ public static bool hasNoGasMask() {
             ? sub.upgradeConsole.modules.GetCount(C2CItems.cyclopsStorage.Info.TechType)
             : 0;
         var slots = 18; //18 vanilla base
-        // TODO
+        // TODO: MoreCyclopsUpgrades Compat
         // if (QModManager.API.QModServices.Main.ModPresent("MoreCyclopsUpgrades"))
         //     slots += 6 + (amt * 6) + (amt / 2 * 12); //https://i.imgur.com/JUr54tB.png
         // else
@@ -301,7 +285,7 @@ public static bool hasNoGasMask() {
     public static void swapRepulsionCannons() {
         var ii = Inventory.main.quickSlots.heldItem;
         var tt = ii == null || !ii.item ? TechType.None : ii.item.GetTechType();
-        if (ii != null && (tt == TechType.PropulsionCannon || tt == TechType.RepulsionCannon)) {
+        if (ii != null && tt is TechType.PropulsionCannon or TechType.RepulsionCannon) {
             var to = tt == TechType.PropulsionCannon ? TechType.RepulsionCannon : TechType.PropulsionCannon;
             var selSlot = InventoryUtil.getActiveQuickslot();
             //TechType batt = TechType.None;

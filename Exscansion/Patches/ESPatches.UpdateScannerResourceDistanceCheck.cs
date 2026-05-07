@@ -12,21 +12,21 @@ internal static partial class ESPatches {
     [HarmonyPatch(nameof(MapRoomFunctionality.OnResourceDiscovered))]
     public static class UpdateScannerResourceDistanceCheck {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try {
                 InsnList li = [
-                    InstructionHandlers.createMethodCall(
+                    InstructionHandlers.CreateMethodCall(
                         "ReikaKalseki.Exscansion.ESHooks",
                         nameof(ESHooks.GetScannerMaxRangeSq),
                         false,
                         new string[0]
                     ),
                 ];
-                codes.replaceConstantWithMethodCall(250000F, li);
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                codes.ReplaceConstantWithMethodCall(250000F, li);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

@@ -13,23 +13,22 @@ internal static partial class ECPatches {
     [HarmonyPatch(nameof(FiltrationMachine.UpdateFiltering))]
     public static class WaterFilterSaltRateHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = new InsnList(instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            var codes = new InsnList(instructions);
             try {
-                int idx = InstructionHandlers.getInstruction(
-                    codes,
+                var idx = codes.GetInstruction(
                     0,
                     0,
                     OpCodes.Stfld,
                     "FiltrationMachine",
                     "timeRemainingSalt"
                 );
-                idx = InstructionHandlers.getLastOpcodeBefore(codes, idx, OpCodes.Ldloc_S);
+                idx = codes.GetLastOpcodeBefore(idx, OpCodes.Ldloc_S);
                 codes.InsertRange(
                     idx + 1,
                     new InsnList {
                         new CodeInstruction(OpCodes.Ldarg_0),
-                        InstructionHandlers.createMethodCall(
+                        InstructionHandlers.CreateMethodCall(
                             "ReikaKalseki.Ecocean.ECHooks",
                             nameof(ECHooks.GetWaterFilterSaltTickTime),
                             false,
@@ -39,7 +38,7 @@ internal static partial class ECPatches {
                     }
                 );
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

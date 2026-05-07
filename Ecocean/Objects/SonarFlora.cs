@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Nautilus.Utility;
 using ReikaKalseki.DIAlterra;
 using UnityEngine;
 
@@ -34,7 +35,7 @@ public class SonarFloraTag : SonarOnlyRenderer {
 
     public void setShape(Vector3 c) {
         aoe = c;
-        foreach (SonarRender r in renderers)
+        foreach (var r in renderers)
             GameObject.DestroyImmediate(r.renderer.gameObject);
         renderers.Clear();
     }
@@ -42,17 +43,16 @@ public class SonarFloraTag : SonarOnlyRenderer {
     protected override void Update() {
         base.Update();
         if (renderers.Count == 0) {
-            foreach (Renderer r in this.GetComponentsInChildren<Renderer>())
+            foreach (var r in this.GetComponentsInChildren<Renderer>())
                 renderers.Add(new SonarRender(r));
             if (EcoceanMod.config.getBoolean(ECConfig.ConfigEntries.GOODCREEPSONAR)) {
-                for (int i = renderers.Count; i < blobCount; i++) {
-                    GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere).setName("SonarBlob");
+                for (var i = renderers.Count; i < blobCount; i++) {
+                    var sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere).setName("SonarBlob");
                     sphere.transform.localScale = Vector3.one * Random.Range(minSize, maxSize);
                     sphere.transform.SetParent(transform);
                     sphere.transform.localPosition = MathUtil.getRandomVectorAround(baseOffset, aoe);
                     sphere.removeComponent<Collider>();
-                    // TODO
-                    // ECCHelpers.ApplySNShaders(sphere, new UBERMaterialProperties(0, 10, 8));
+                    MaterialUtils.ApplySNShaders(sphere, 0, 10, 8);
                     var r = sphere.GetComponentInChildren<Renderer>();
                     RenderUtil.setEmissivity(r, 8);
                     RenderUtil.setGlossiness(r, 10, 0, 0);
@@ -64,15 +64,14 @@ public class SonarFloraTag : SonarOnlyRenderer {
                 }
             } else if (renderers.Count == 0) {
                 SNUtil.Log("Adding cheap sonar flora halo");
-                GameObject sphere = gameObject.getChildObject("SonarHalo");
+                var sphere = gameObject.getChildObject("SonarHalo");
                 if (!sphere) {
                     sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere).setName("SonarHalo");
                     sphere.transform.SetParent(transform);
                     sphere.transform.localPosition = Vector3.zero;
                     sphere.transform.localRotation = Quaternion.identity;
                     sphere.transform.localScale = Vector3.one * 12;
-                    // TODO
-                    // ECCHelpers.ApplySNShaders(sphere, new UBERMaterialProperties(0, 10, 5));
+                    MaterialUtils.ApplySNShaders(sphere, 0, 10, 5);
                     sphere.removeComponent<Collider>();
                 }
 
@@ -94,7 +93,7 @@ public class SonarFloraTag : SonarOnlyRenderer {
         r.materials[0].SetColor("_BorderColor", new Color(4.25F, 0, 0, 1));
         r.materials[0].SetFloat("_NoiseThickness", 0.07F);
         r.materials[0].SetFloat("_NoiseStr", 0.15F);
-        SonarRender sr = new SonarRender(r);
+        var sr = new SonarRender(r);
         sr.fadeInSpeed = 2.5F;
         sr.fadeOutSpeed = 0.5F;
         r.enabled = false;

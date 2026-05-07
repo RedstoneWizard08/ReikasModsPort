@@ -113,11 +113,11 @@ internal class VoidChunkPlants : RandomPlant {
 			for (var i = 0; i < mushrooms; i++) {
 				var vec2 = new Vector3(vec.x+Random.Range(-1F, 1F), vec.y, vec.z+Random.Range(-1F, 1F));
 				var tries = 0;
-				while ((ObjectUtil.objectCollidesPosition(go, vec2) || isColliding(vec2, gennedMushrooms)) && tries < 5) {
+				while ((go.objectCollidesPosition(vec2) || isColliding(vec2, gennedMushrooms)) && tries < 5) {
 					vec2 = new Vector3(vec.x + Random.Range(-1F, 1F), vec.y, vec.z + Random.Range(-1F, 1F));
 					tries++;
 				}
-				if (!ObjectUtil.objectCollidesPosition(go, vec2) && !isColliding(vec2, gennedMushrooms)) {
+				if (!go.objectCollidesPosition(vec2) && !isColliding(vec2, gennedMushrooms)) {
 					if (validPlantPosCheck != null && !validPlantPosCheck(vec2 + Vector3.up * 0.2F, "mush"))
 						continue;
 					var go2 = base.generatePlant(vec2, VanillaFlora.DEEP_MUSHROOM.getRandomPrefab(true));

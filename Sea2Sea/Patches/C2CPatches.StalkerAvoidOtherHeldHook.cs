@@ -13,29 +13,28 @@ internal static partial class C2CPatches {
     [HarmonyPatch(nameof(CollectShiny.Perform))]
     public static class StalkerAvoidOtherHeldHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try {
-                var idx2 = InstructionHandlers.getInstruction(
-                    codes,
+                var idx2 = codes.GetInstruction(
                     0,
                     0,
                     OpCodes.Stfld,
                     "CollectShiny",
                     "shinyTarget"
                 );
-                var idx1 = InstructionHandlers.getLastOpcodeBefore(codes, idx2, OpCodes.Ldc_I4_0);
-                InstructionHandlers.nullInstructions(codes, idx1, idx2);
-                codes[idx1] = InstructionHandlers.createMethodCall(
+                var idx1 = codes.GetLastOpcodeBefore(idx2, OpCodes.Ldc_I4_0);
+                InstructionHandlers.NullInstructions(codes, idx1, idx2);
+                codes[idx1] = InstructionHandlers.CreateMethodCall(
                     "ReikaKalseki.SeaToSea.C2CHooks",
                     nameof(C2CHooks.OnShinyTargetIsCurrentlyHeldByStalker),
                     false,
                     typeof(CollectShiny)
                 );
                 //codes.RemoveRange();
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

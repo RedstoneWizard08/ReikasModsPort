@@ -21,7 +21,7 @@ public class VoidTongue : CustomPrefab {
     }
 
     public GameObject GetGameObject() {
-        GameObject world = ObjectUtil.createWorldObject("8914acde-168e-438f-9b2b-6b9332d8c1a1");
+        var world = ObjectUtil.createWorldObject("8914acde-168e-438f-9b2b-6b9332d8c1a1");
         world.removeComponent<HangingStinger>();
         world.removeComponent<LiveMixin>();
         world.removeComponent<WorldForces>();
@@ -33,7 +33,7 @@ public class VoidTongue : CustomPrefab {
         world.EnsureComponent<JointHelper>().jointType = ObjectUtil.lookupPrefab(VanillaCreatures.FLOATER.prefab)
             .GetComponent<Floater>().jointHelper.jointType;
         world.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.Global;
-        Light l = world.addLight(3, 2, Color.white);
+        var l = world.addLight(3, 2, Color.white);
         world.layer = LayerID.Useable;
         foreach (var r in world.GetComponentsInChildren<Renderer>()) {
             RenderUtil.swapTextures(EcoceanMod.modDLL, r, "Textures/VoidTongue/");

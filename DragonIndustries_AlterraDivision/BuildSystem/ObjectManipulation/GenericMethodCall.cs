@@ -28,7 +28,7 @@ internal abstract class GenericMethodCall : ManipulationBase {
 	public override void loadFromXML(XmlElement e) {
 		var tn = e.GetProperty("typeName");
 		var name = e.GetProperty("name");
-		var t = InstructionHandlers.getTypeBySimpleName(tn);
+		var t = InstructionHandlers.GetTypeBySimpleName(tn);
 		//call = t.GetMethod(name, unchecked((System.Reflection.BindingFlags)0x7fffffff));
 		call = t.GetMethod(name, [typeof(GameObject)]);
 	}

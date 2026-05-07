@@ -8,12 +8,12 @@ namespace ReikaKalseki.AqueousEngineering;
 
 public static class ACUEcosystems {
     internal static readonly float
-        FOOD_SCALAR = 0.2F; //all food values and metabolism multiplied by this, to give granularity
+        FoodScalar = 0.2F; //all food values and metabolism multiplied by this, to give granularity
 
-    private static readonly Dictionary<TechType, AnimalFood> edibleFish = new();
-    private static readonly Dictionary<string, PlantFood> ediblePlants = new();
+    private static readonly Dictionary<TechType, AnimalFood> EdibleFish = new();
+    private static readonly Dictionary<string, PlantFood> EdiblePlants = new();
 
-    private static readonly Dictionary<TechType, ACUMetabolism> metabolisms = new() {
+    private static readonly Dictionary<TechType, ACUMetabolism> Metabolisms = new() {
         { TechType.RabbitRay, new ACUMetabolism(2F, 0.2F, 0.2F, false, BiomeRegions.Shallows) },
         { TechType.Crash, new ACUMetabolism(1.0F, 0.1F, 0.8F, true, BiomeRegions.Shallows) },
         { TechType.Biter, new ACUMetabolism(0.5F, 0.2F, 0.4F, true, BiomeRegions.RedGrass, BiomeRegions.Other) },
@@ -46,7 +46,7 @@ public static class ACUEcosystems {
     };
 
     static ACUEcosystems() {
-        addFood(
+        AddFood(
             new AnimalFood(
                 TechType.Reginald,
                 BiomeRegions.RedGrass,
@@ -56,7 +56,7 @@ public static class ACUEcosystems {
                 BiomeRegions.Other
             )
         );
-        addFood(
+        AddFood(
             new AnimalFood(
                 TechType.Peeper,
                 BiomeRegions.Shallows,
@@ -67,10 +67,10 @@ public static class ACUEcosystems {
                 BiomeRegions.Other
             )
         );
-        addFood(new AnimalFood(TechType.HoleFish, BiomeRegions.Shallows));
-        addFood(new AnimalFood(TechType.Oculus, BiomeRegions.Jellyshroom));
-        addFood(new AnimalFood(TechType.GarryFish, BiomeRegions.Shallows, BiomeRegions.Other));
-        addFood(
+        AddFood(new AnimalFood(TechType.HoleFish, BiomeRegions.Shallows));
+        AddFood(new AnimalFood(TechType.Oculus, BiomeRegions.Jellyshroom));
+        AddFood(new AnimalFood(TechType.GarryFish, BiomeRegions.Shallows, BiomeRegions.Other));
+        AddFood(
             new AnimalFood(
                 TechType.Boomerang,
                 BiomeRegions.Shallows,
@@ -80,7 +80,7 @@ public static class ACUEcosystems {
                 BiomeRegions.Other
             )
         );
-        addFood(
+        AddFood(
             new AnimalFood(
                 TechType.Spadefish,
                 BiomeRegions.RedGrass,
@@ -89,7 +89,7 @@ public static class ACUEcosystems {
                 BiomeRegions.Other
             )
         );
-        addFood(
+        AddFood(
             new AnimalFood(
                 TechType.Bladderfish,
                 BiomeRegions.Shallows,
@@ -100,10 +100,10 @@ public static class ACUEcosystems {
                 BiomeRegions.Other
             )
         );
-        addFood(new AnimalFood(TechType.Eyeye, BiomeRegions.Jellyshroom, BiomeRegions.GrandReef, BiomeRegions.Koosh));
-        addFood(new AnimalFood(TechType.LavaEyeye, BiomeRegions.LavaZone));
-        addFood(new AnimalFood(TechType.LavaBoomerang, BiomeRegions.LavaZone));
-        addFood(
+        AddFood(new AnimalFood(TechType.Eyeye, BiomeRegions.Jellyshroom, BiomeRegions.GrandReef, BiomeRegions.Koosh));
+        AddFood(new AnimalFood(TechType.LavaEyeye, BiomeRegions.LavaZone));
+        AddFood(new AnimalFood(TechType.LavaBoomerang, BiomeRegions.LavaZone));
+        AddFood(
             new AnimalFood(
                 TechType.Hoopfish,
                 BiomeRegions.Kelp,
@@ -112,21 +112,21 @@ public static class ACUEcosystems {
                 BiomeRegions.Other
             )
         );
-        addFood(new AnimalFood(TechType.Spinefish, BiomeRegions.BloodKelp, BiomeRegions.LostRiver));
-        addFood(new AnimalFood(TechType.Hoverfish, BiomeRegions.Kelp));
-        addFood(new AnimalFood(TechType.Jumper, BiomeRegions.Shallows, BiomeRegions.Kelp, BiomeRegions.Other));
+        AddFood(new AnimalFood(TechType.Spinefish, BiomeRegions.BloodKelp, BiomeRegions.LostRiver));
+        AddFood(new AnimalFood(TechType.Hoverfish, BiomeRegions.Kelp));
+        AddFood(new AnimalFood(TechType.Jumper, BiomeRegions.Shallows, BiomeRegions.Kelp, BiomeRegions.Other));
 
-        addFood(new PlantFood(VanillaFlora.CREEPVINE, 0.15F, BiomeRegions.Kelp));
-        addFood(new PlantFood(VanillaFlora.CREEPVINE_FERTILE, 0.25F, BiomeRegions.Kelp));
-        addFood(new PlantFood(VanillaFlora.BLOOD_KELP, 0.25F, BiomeRegions.BloodKelp));
-        addFood(new PlantFood(VanillaFlora.JELLYSHROOM_SMALL, 0.25F, BiomeRegions.Jellyshroom));
-        addFood(new PlantFood(VanillaFlora.EYE_STALK, 0.15F, BiomeRegions.Other));
-        addFood(new PlantFood(VanillaFlora.GABE_FEATHER, 0.15F, BiomeRegions.BloodKelp, BiomeRegions.Other));
-        addFood(new PlantFood(VanillaFlora.GHOSTWEED, 0.25F, BiomeRegions.LostRiver));
-        addFood(new PlantFood(VanillaFlora.HORNGRASS, 0.05F, BiomeRegions.Other));
-        addFood(new PlantFood(VanillaFlora.KOOSH, 0.15F, BiomeRegions.Koosh));
-        addFood(new PlantFood(VanillaFlora.MEMBRAIN, 0.3F, BiomeRegions.GrandReef));
-        addFood(
+        AddFood(new PlantFood(VanillaFlora.CREEPVINE, 0.15F, BiomeRegions.Kelp));
+        AddFood(new PlantFood(VanillaFlora.CREEPVINE_FERTILE, 0.25F, BiomeRegions.Kelp));
+        AddFood(new PlantFood(VanillaFlora.BLOOD_KELP, 0.25F, BiomeRegions.BloodKelp));
+        AddFood(new PlantFood(VanillaFlora.JELLYSHROOM_SMALL, 0.25F, BiomeRegions.Jellyshroom));
+        AddFood(new PlantFood(VanillaFlora.EYE_STALK, 0.15F, BiomeRegions.Other));
+        AddFood(new PlantFood(VanillaFlora.GABE_FEATHER, 0.15F, BiomeRegions.BloodKelp, BiomeRegions.Other));
+        AddFood(new PlantFood(VanillaFlora.GHOSTWEED, 0.25F, BiomeRegions.LostRiver));
+        AddFood(new PlantFood(VanillaFlora.HORNGRASS, 0.05F, BiomeRegions.Other));
+        AddFood(new PlantFood(VanillaFlora.KOOSH, 0.15F, BiomeRegions.Koosh));
+        AddFood(new PlantFood(VanillaFlora.MEMBRAIN, 0.3F, BiomeRegions.GrandReef));
+        AddFood(
             new PlantFood(
                 VanillaFlora.PAPYRUS,
                 0.15F,
@@ -135,7 +135,7 @@ public static class ACUEcosystems {
                 BiomeRegions.Other
             )
         );
-        addFood(
+        AddFood(
             new PlantFood(
                 VanillaFlora.VIOLET_BEAU,
                 0.2F,
@@ -145,7 +145,7 @@ public static class ACUEcosystems {
                 BiomeRegions.Other
             )
         );
-        addFood(
+        AddFood(
             new PlantFood(
                 VanillaFlora.CAVE_BUSH,
                 0.05F,
@@ -154,54 +154,54 @@ public static class ACUEcosystems {
                 BiomeRegions.Other
             )
         );
-        addFood(new PlantFood(VanillaFlora.REGRESS, 0.2F, BiomeRegions.GrandReef, BiomeRegions.Other));
-        addFood(
+        AddFood(new PlantFood(VanillaFlora.REGRESS, 0.2F, BiomeRegions.GrandReef, BiomeRegions.Other));
+        AddFood(
             new PlantFood(VanillaFlora.REDWORT, 0.15F, BiomeRegions.RedGrass, BiomeRegions.Koosh, BiomeRegions.Other)
         );
-        addFood(new PlantFood(VanillaFlora.ROUGE_CRADLE, 0.05F, BiomeRegions.RedGrass, BiomeRegions.Other));
-        addFood(new PlantFood(VanillaFlora.SEACROWN, 0.4F, BiomeRegions.Koosh, BiomeRegions.RedGrass));
-        addFood(new PlantFood(VanillaFlora.SPOTTED_DOCKLEAF, 0.25F, BiomeRegions.Koosh, BiomeRegions.Other));
-        addFood(new PlantFood(VanillaFlora.VEINED_NETTLE, 0.15F, BiomeRegions.Shallows));
-        addFood(new PlantFood(VanillaFlora.WRITHING_WEED, 0.15F, BiomeRegions.Shallows, BiomeRegions.Mushroom));
-        addFood(new PlantFood(VanillaFlora.BLUE_PALM, 0.25F, BiomeRegions.Shallows, BiomeRegions.Mushroom));
-        addFood(new PlantFood(VanillaFlora.PYGMY_FAN, 0.33F, BiomeRegions.Mushroom));
-        addFood(new PlantFood(VanillaFlora.TIGER, 0.5F, BiomeRegions.RedGrass));
-        addFood(new PlantFood(VanillaFlora.DEEP_MUSHROOM, 0.1F, BiomeRegions.LostRiver, BiomeRegions.LavaZone));
+        AddFood(new PlantFood(VanillaFlora.ROUGE_CRADLE, 0.05F, BiomeRegions.RedGrass, BiomeRegions.Other));
+        AddFood(new PlantFood(VanillaFlora.SEACROWN, 0.4F, BiomeRegions.Koosh, BiomeRegions.RedGrass));
+        AddFood(new PlantFood(VanillaFlora.SPOTTED_DOCKLEAF, 0.25F, BiomeRegions.Koosh, BiomeRegions.Other));
+        AddFood(new PlantFood(VanillaFlora.VEINED_NETTLE, 0.15F, BiomeRegions.Shallows));
+        AddFood(new PlantFood(VanillaFlora.WRITHING_WEED, 0.15F, BiomeRegions.Shallows, BiomeRegions.Mushroom));
+        AddFood(new PlantFood(VanillaFlora.BLUE_PALM, 0.25F, BiomeRegions.Shallows, BiomeRegions.Mushroom));
+        AddFood(new PlantFood(VanillaFlora.PYGMY_FAN, 0.33F, BiomeRegions.Mushroom));
+        AddFood(new PlantFood(VanillaFlora.TIGER, 0.5F, BiomeRegions.RedGrass));
+        AddFood(new PlantFood(VanillaFlora.DEEP_MUSHROOM, 0.1F, BiomeRegions.LostRiver, BiomeRegions.LavaZone));
     }
 
-    public static void addPost() {
+    public static void AddPost() {
         var tt = SNUtil.GetTechType("StellarThalassacean");
         if (tt != TechType.None)
-            addPredatorType(tt, 6F, 1.5F, 0.3F, false, BiomeRegions.GrandReef, BiomeRegions.Koosh, BiomeRegions.Other);
+            AddPredatorType(tt, 6F, 1.5F, 0.3F, false, BiomeRegions.GrandReef, BiomeRegions.Koosh, BiomeRegions.Other);
 
         tt = SNUtil.GetTechType("JasperThalassacean");
         if (tt != TechType.None)
-            addPredatorType(tt, 6F, 1.5F, 0.3F, false, BiomeRegions.LostRiver);
+            AddPredatorType(tt, 6F, 1.5F, 0.3F, false, BiomeRegions.LostRiver);
 
         tt = SNUtil.GetTechType("Twisteel");
         if (tt != TechType.None)
-            addPredatorType(tt, 2F, 0.5F, 0.8F, true, BiomeRegions.BloodKelp, BiomeRegions.Koosh);
+            AddPredatorType(tt, 2F, 0.5F, 0.8F, true, BiomeRegions.BloodKelp, BiomeRegions.Koosh);
 
         tt = SNUtil.GetTechType("JellySpinner");
         if (tt != TechType.None)
-            addFood(new AnimalFood(tt, BiomeRegions.BloodKelp, BiomeRegions.LostRiver));
+            AddFood(new AnimalFood(tt, BiomeRegions.BloodKelp, BiomeRegions.LostRiver));
 
         tt = SNUtil.GetTechType("TriangleFish");
         if (tt != TechType.None)
-            addFood(new AnimalFood(tt, BiomeRegions.Shallows));
+            AddFood(new AnimalFood(tt, BiomeRegions.Shallows));
 
         tt = SNUtil.GetTechType("Axetail");
         if (tt != TechType.None)
-            addFood(new AnimalFood(tt, BiomeRegions.RedGrass));
+            AddFood(new AnimalFood(tt, BiomeRegions.RedGrass));
 
         tt = SNUtil.GetTechType("RibbonRay");
         if (tt != TechType.None)
-            addFood(new AnimalFood(tt, BiomeRegions.Shallows, BiomeRegions.Mushroom));
+            AddFood(new AnimalFood(tt, BiomeRegions.Shallows, BiomeRegions.Mushroom));
 
         tt = SNUtil.GetTechType("GrandGlider");
         if (tt != TechType.None) {
-            addFood(new AnimalFood(tt, 2, BiomeRegions.GrandReef, BiomeRegions.Koosh, BiomeRegions.Other));
-            addPredatorType(
+            AddFood(new AnimalFood(tt, 2, BiomeRegions.GrandReef, BiomeRegions.Koosh, BiomeRegions.Other));
+            AddPredatorType(
                 tt,
                 3.0F,
                 0.8F,
@@ -215,7 +215,7 @@ public static class ACUEcosystems {
 
         tt = SNUtil.GetTechType("Filtorb");
         if (tt != TechType.None)
-            addFood(
+            AddFood(
                 new AnimalFood(
                     tt,
                     0.1F,
@@ -226,29 +226,28 @@ public static class ACUEcosystems {
                 )
             );
 
-        addClownPincher("EmeraldClownPincher", BiomeRegions.Kelp);
-        addClownPincher("SapphireClownPincher", BiomeRegions.GrandReef);
-        addClownPincher("RubyClownPincher", BiomeRegions.LavaZone);
-        addClownPincher("AmberClownPincher", BiomeRegions.Other);
-        addClownPincher("CitrineClownPincher", BiomeRegions.Other);
+        AddClownPincher("EmeraldClownPincher", BiomeRegions.Kelp);
+        AddClownPincher("SapphireClownPincher", BiomeRegions.GrandReef);
+        AddClownPincher("RubyClownPincher", BiomeRegions.LavaZone);
+        AddClownPincher("AmberClownPincher", BiomeRegions.Other);
+        AddClownPincher("CitrineClownPincher", BiomeRegions.Other);
 
         tt = SNUtil.GetTechType("GulperLeviathanBaby");
         if (tt != TechType.None)
-            addPredatorType(tt, 5F, 4F, 0.2F, true, BiomeRegions.GrandReef);
+            AddPredatorType(tt, 5F, 4F, 0.2F, true, BiomeRegions.GrandReef);
         tt = SNUtil.GetTechType("GulperLeviathan");
         if (tt != TechType.None)
-            addPredatorType(tt, 8F, 8F, 0.2F, true, BiomeRegions.BloodKelp, BiomeRegions.GrandReef, BiomeRegions.Other);
+            AddPredatorType(tt, 8F, 8F, 0.2F, true, BiomeRegions.BloodKelp, BiomeRegions.GrandReef, BiomeRegions.Other);
     }
 
-    private static void addClownPincher(string id, BiomeRegions.RegionType br) {
+    private static void AddClownPincher(string id, BiomeRegions.RegionType br) {
         var tt = SNUtil.GetTechType(id);
-        if (tt != TechType.None) {
-            addFood(new AnimalFood(tt, br));
-            addPredatorType(tt, 1.5F, 2F, 1.6F, false, br);
-        }
+        if (tt == TechType.None) return;
+        AddFood(new AnimalFood(tt, br));
+        AddPredatorType(tt, 1.5F, 2F, 1.6F, false, br);
     }
 
-    public static void addPredatorType(
+    public static void AddPredatorType(
         TechType tt,
         float relativeValue,
         float metaRate,
@@ -259,61 +258,61 @@ public static class ACUEcosystems {
         var li = rr.ToList();
         li.RemoveAt(0);
         var am = new ACUMetabolism(relativeValue, metaRate, pooChance, carn, rr[0], li);
-        metabolisms[tt] = am;
+        Metabolisms[tt] = am;
     }
 
-    public static void addFood(Food f) {
+    public static void AddFood(Food f) {
         if (f is AnimalFood food) {
-            edibleFish[food.item] = food;
+            EdibleFish[food.Item] = food;
         } else if (f is PlantFood plantFood) {
-            foreach (var s in plantFood.classIDs)
-                ediblePlants[s] = plantFood;
+            foreach (var s in plantFood.ClassIDs)
+                EdiblePlants[s] = plantFood;
         }
     }
 
-    public static ACUMetabolism getMetabolismForAnimal(TechType tt) {
-        return metabolisms.ContainsKey(tt) ? metabolisms[tt] : null;
+    public static ACUMetabolism GetMetabolismForAnimal(TechType tt) {
+        return Metabolisms.ContainsKey(tt) ? Metabolisms[tt] : null;
     }
 
-    public static AnimalFood getAnimalFood(TechType tt) {
-        return edibleFish.ContainsKey(tt) ? edibleFish[tt] : null;
+    public static AnimalFood GetAnimalFood(TechType tt) {
+        return EdibleFish.ContainsKey(tt) ? EdibleFish[tt] : null;
     }
 
-    public static PlantFood getPlantFood(string pfb) {
-        return ediblePlants.ContainsKey(pfb) ? ediblePlants[pfb] : null;
+    public static PlantFood GetPlantFood(string pfb) {
+        return EdiblePlants.ContainsKey(pfb) ? EdiblePlants[pfb] : null;
     }
 
-    public static List<PlantFood> getPlantsForBiome(BiomeRegions.RegionType r) {
+    public static List<PlantFood> GetPlantsForBiome(BiomeRegions.RegionType r) {
         List<PlantFood> li = [];
-        foreach (var f in ediblePlants.Values) {
-            if (f.isRegion(r))
+        foreach (var f in EdiblePlants.Values) {
+            if (f.IsRegion(r))
                 li.Add(f);
         }
 
         return li;
     }
 
-    public static List<AnimalFood> getSmallFishForBiome(BiomeRegions.RegionType r) {
+    public static List<AnimalFood> GetSmallFishForBiome(BiomeRegions.RegionType r) {
         List<AnimalFood> li = [];
-        foreach (var f in edibleFish.Values) {
-            if (f.isRegion(r))
+        foreach (var f in EdibleFish.Values) {
+            if (f.IsRegion(r))
                 li.Add(f);
         }
 
         return li;
     }
 
-    public static List<TechType> getPredatorsForBiome(BiomeRegions.RegionType r) {
+    public static List<TechType> GetPredatorsForBiome(BiomeRegions.RegionType r) {
         List<TechType> li = [];
-        foreach (var kvp in metabolisms) {
-            if (kvp.Value.isRegion(r, false))
+        foreach (var kvp in Metabolisms) {
+            if (kvp.Value.IsRegion(r, false))
                 li.Add(kvp.Key);
         }
 
         return li;
     }
 
-    internal static Creature handleCreature(
+    internal static Creature HandleCreature(
         AcuCallbackSystem.AcuCallback acu,
         float dT,
         WaterParkCreature wp,
@@ -323,7 +322,7 @@ public static class ACUEcosystems {
         bool acuRoom,
         HashSet<BiomeRegions.RegionType> possibleBiomes
     ) {
-        if (edibleFish.ContainsKey(tt)) {
+        if (EdibleFish.ContainsKey(tt)) {
             if (tt == TechType.Peeper && wp.gameObject.GetComponent<Peeper>().isHero)
                 acu.SparkleCount++;
             else if (tt == TechType.Cutefish)
@@ -331,20 +330,20 @@ public static class ACUEcosystems {
             else if (tt == TechType.Gasopod)
                 acu.GasopodCount++;
             else //sparkle peepers and cuddlefish are always valid
-                possibleBiomes.IntersectWith(edibleFish[tt].regionType);
+                possibleBiomes.IntersectWith(EdibleFish[tt].RegionType);
             //if (possibleBiomes.Count <= 0)
             //	SNUtil.writeToChat("Biome list empty after "+tt+" > "+edibleFish[tt]);
             if (acu.NextIsDebug)
-                SNUtil.WriteToChat(tt + " > " + edibleFish[tt] + " > " + string.Join(",", possibleBiomes));
+                SNUtil.WriteToChat(tt + " > " + EdibleFish[tt] + " > " + string.Join(",", possibleBiomes));
             foodFish.Add(wp);
             acu.HerbivoreCount++;
-        } else if (metabolisms.ContainsKey(tt)) {
-            var am = metabolisms[tt];
-            if (am.isCarnivore)
-                acu.CarnivoreCount += am.relativeValue;
+        } else if (Metabolisms.ContainsKey(tt)) {
+            var am = Metabolisms[tt];
+            if (am.IsCarnivore)
+                acu.CarnivoreCount += am.RelativeValue;
             else
-                acu.HerbivoreCount += am.relativeValue;
-            List<BiomeRegions.RegionType> li = [..am.additionalRegions, am.primaryRegion];
+                acu.HerbivoreCount += am.RelativeValue;
+            List<BiomeRegions.RegionType> li = [..am.AdditionalRegions, am.PrimaryRegion];
             possibleBiomes.IntersectWith(li);
             if (acu.NextIsDebug)
                 SNUtil.WriteToChat(tt + " > " + am + " > " + string.Join(",", possibleBiomes));
@@ -352,10 +351,10 @@ public static class ACUEcosystems {
             //	SNUtil.writeToChat("Biome list empty after "+tt+" > "+am);
             var c = wp.gameObject.GetComponentInChildren<Creature>();
             if (wp.isMature) {
-                c.Hunger.Add(dT * am.metabolismPerSecond * FOOD_SCALAR);
+                c.Hunger.Add(dT * am.MetabolismPerSecond * FoodScalar);
                 c.Hunger.Falloff = 0;
                 if (c.Hunger.Value >= 0.5F) {
-                    eat(acu, wp, c, am, plants, acuRoom);
+                    Eat(acu, wp, c, am, plants, acuRoom);
                 }
             }
 
@@ -365,7 +364,7 @@ public static class ACUEcosystems {
         return null;
     }
 
-    internal static HashSet<PlantFood> collectPlants(
+    internal static HashSet<PlantFood> CollectPlants(
         AcuCallbackSystem.AcuCallback acu,
         PrefabIdentifier[] plants,
         HashSet<BiomeRegions.RegionType> possibleBiomes
@@ -373,18 +372,18 @@ public static class ACUEcosystems {
         HashSet<PlantFood> set = [];
         foreach (var pi in plants) {
             if (pi) {
-                if (ediblePlants.ContainsKey(pi.ClassId)) {
-                    var pf = ediblePlants[pi.ClassId];
-                    possibleBiomes.IntersectWith(pf.regionType);
+                if (EdiblePlants.ContainsKey(pi.ClassId)) {
+                    var pf = EdiblePlants[pi.ClassId];
+                    possibleBiomes.IntersectWith(pf.RegionType);
                     //if (possibleBiomes.Count <= 0)
                     //	SNUtil.writeToChat("Biome list empty after "+vf+" > "+pf);
                     if (acu.NextIsDebug)
                         SNUtil.WriteToChat(
-                            pi + " > " + pf + " & " + string.Join(",", pf.regionType) + " > " +
+                            pi + " > " + pf + " & " + string.Join(",", pf.RegionType) + " > " +
                             string.Join(",", possibleBiomes)
                         );
                     set.Add(pf);
-                    acu.PlantCount += getPlantValue(pi);
+                    acu.PlantCount += GetPlantValue(pi);
                 }
             }
         }
@@ -392,7 +391,7 @@ public static class ACUEcosystems {
         return set;
     }
 
-    private static float getPlantValue(PrefabIdentifier pi) {
+    private static float GetPlantValue(PrefabIdentifier pi) {
         if (VanillaFlora.WRITHING_WEED.includes(pi.ClassId) || VanillaFlora.GELSACK.includes(pi.ClassId))
             return 0.5F;
         if (VanillaFlora.ACID_MUSHROOM.includes(pi.ClassId) || VanillaFlora.DEEP_MUSHROOM.includes(pi.ClassId))
@@ -404,7 +403,7 @@ public static class ACUEcosystems {
         return bp != null ? bp.getSize() == Plantable.PlantSize.Large ? 1 : 0.5F : 1;
     }
 
-    private static void eat(
+    private static void Eat(
         AcuCallbackSystem.AcuCallback acu,
         WaterParkCreature wp,
         Creature c,
@@ -412,12 +411,12 @@ public static class ACUEcosystems {
         PrefabIdentifier[] plants,
         bool acuRoom
     ) {
-        if (tryEat(acu, c, am, plants, out var amt, out var eaten)) {
-            onEaten(acu, wp, c, am, amt, eaten, acuRoom);
+        if (TryEat(acu, c, am, plants, out var amt, out var eaten)) {
+            OnEaten(acu, wp, c, am, amt, eaten, acuRoom);
         }
     }
 
-    private static bool tryEat(
+    private static bool TryEat(
         AcuCallbackSystem.AcuCallback acu,
         Creature c,
         ACUMetabolism am,
@@ -425,7 +424,7 @@ public static class ACUEcosystems {
         out Food amt,
         out GameObject eaten
     ) {
-        if (am.isCarnivore) {
+        if (am.IsCarnivore) {
             var wp = acu.Acu.items[Random.Range(0, acu.Acu.items.Count)];
             if (wp) {
                 var pp = wp.gameObject.GetComponentInChildren<Pickupable>();
@@ -438,24 +437,20 @@ public static class ACUEcosystems {
                 }
 
                 //SNUtil.writeToChat(pp+" > "+tt+" > "+edibleFish.ContainsKey(tt));
-                if (edibleFish.ContainsKey(tt)) {
+                if (EdibleFish.ContainsKey(tt)) {
                     eaten = pp.gameObject;
-                    amt = edibleFish[tt];
+                    amt = EdibleFish[tt];
                     //SNUtil.writeToChat(c+" ate a "+tt+" and got "+amt+", is now "+c.Hunger.Value);
                     return true;
                 }
             }
-
-            amt = null;
-            eaten = null;
-            return false;
         } else if (pia.Length > 0) {
             var idx = Random.Range(0, pia.Length);
             var tt = pia[idx];
             if (tt) {
                 //SNUtil.writeToChat(tt+" > "+vf+" > "+ediblePlants.ContainsKey(vf));
-                if (ediblePlants.ContainsKey(tt.ClassId)) {
-                    amt = ediblePlants[tt.ClassId];
+                if (EdiblePlants.TryGetValue(tt.ClassId, out var plant)) {
+                    amt = plant;
                     //SNUtil.writeToChat(c+" ate a "+vf+" and got "+amt);
                     eaten = tt.gameObject;
                     return true;
@@ -468,7 +463,7 @@ public static class ACUEcosystems {
         return false;
     }
 
-    private static void onEaten(
+    private static void OnEaten(
         AcuCallbackSystem.AcuCallback acu,
         WaterParkCreature wp,
         Creature c,
@@ -477,14 +472,14 @@ public static class ACUEcosystems {
         GameObject eaten,
         bool acuRoom
     ) {
-        var food = amt.foodValue * FOOD_SCALAR * 2.5F;
+        var food = amt.FoodValue * FoodScalar * 2.5F;
         if (acuRoom)
             food *= 1.2F;
-        if (amt.isRegion(am.primaryRegion)) {
+        if (amt.IsRegion(am.PrimaryRegion)) {
             food *= 3;
         } else {
-            foreach (var r in am.additionalRegions) {
-                if (amt.isRegion(r)) {
+            foreach (var r in am.AdditionalRegions) {
+                if (amt.IsRegion(r)) {
                     food *= 2;
                     break;
                 }
@@ -497,53 +492,52 @@ public static class ACUEcosystems {
             c.gameObject.EnsureComponent<InfectedMixin>().IncreaseInfectedAmount(0.2F);
         }
 
-        if (c.Hunger.Value >= food) {
-            c.Happy.Add(1F);
-            c.Hunger.Add(-food);
-            var f = am.normalizedPoopChance * amt.foodValue * Mathf.Pow(wp.age, 2F);
-            f *= AqueousEngineeringMod.config.getFloat(AEConfig.ConfigEntries.POO_RATE);
-            if (acuRoom)
-                f *= 1.5F;
-            //SNUtil.writeToChat(c+" ate > "+f);
-            amt.consume(c, acu, acu.Planter, eaten);
-            if (f > 0 && Random.Range(0F, 1F) < f) {
-                var poo = ObjectUtil.createWorldObject(AqueousEngineeringMod.poo.Info.ClassID);
-                poo.transform.position = c.transform.position + Vector3.down * 0.05F;
-                poo.transform.rotation = Random.rotationUniform;
-                acu.Acu.AddItem(poo.GetComponent<Pickupable>());
-                //SNUtil.writeToChat("Poo spawned");
-            }
+        if (!(c.Hunger.Value >= food)) return;
+        c.Happy.Add(1F);
+        c.Hunger.Add(-food);
+        var f = am.NormalizedPoopChance * amt.FoodValue * Mathf.Pow(wp.age, 2F);
+        f *= AqueousEngineeringMod.config.getFloat(AEConfig.ConfigEntries.POO_RATE);
+        if (acuRoom)
+            f *= 1.5F;
+        //SNUtil.writeToChat(c+" ate > "+f);
+        amt.Consume(c, acu, acu.Planter, eaten);
+        if (f > 0 && Random.Range(0F, 1F) < f) {
+            var poo = ObjectUtil.createWorldObject(AqueousEngineeringMod.poo.Info.ClassID);
+            poo.transform.position = c.transform.position + Vector3.down * 0.05F;
+            poo.transform.rotation = Random.rotationUniform;
+            acu.Acu.AddItem(poo.GetComponent<Pickupable>());
+            //SNUtil.writeToChat("Poo spawned");
+        }
 
-            var cache = acu.GetOrCreateCreatureStatus(c);
-            if (cache != null) {
-                cache.Hunger = c.Hunger.Value;
-                cache.Happy = c.Happy.Value;
-            }
+        var cache = acu.GetOrCreateCreatureStatus(c);
+        if (cache != null) {
+            cache.Hunger = c.Hunger.Value;
+            cache.Happy = c.Happy.Value;
         }
     }
 
     public abstract class Food {
-        public readonly float foodValue;
-        internal readonly HashSet<BiomeRegions.RegionType> regionType = [];
+        public readonly float FoodValue;
+        internal readonly HashSet<BiomeRegions.RegionType> RegionType = [];
 
         internal Food(float f, params BiomeRegions.RegionType[] r) {
-            foodValue = f;
-            regionType.AddRange(r.ToList());
+            FoodValue = f;
+            RegionType.AddRange(r.ToList());
         }
 
-        public bool isRegion(BiomeRegions.RegionType r) {
-            return regionType.Contains(r);
+        public bool IsRegion(BiomeRegions.RegionType r) {
+            return RegionType.Contains(r);
         }
 
         public override string ToString() {
-            return $"[Food FoodValue={foodValue}, BiomeRegions.RegionType=[{string.Join(",", regionType)}]]";
+            return $"[Food FoodValue={FoodValue}, BiomeRegions.RegionType=[{string.Join(",", RegionType)}]]";
         }
 
-        public void addBiome(BiomeRegions.RegionType r) {
-            regionType.Add(r);
+        public void AddBiome(BiomeRegions.RegionType r) {
+            RegionType.Add(r);
         }
 
-        internal abstract void consume(
+        internal abstract void Consume(
             Creature c,
             AcuCallbackSystem.AcuCallback acu,
             StorageContainer sc,
@@ -552,32 +546,32 @@ public static class ACUEcosystems {
     }
 
     public class AnimalFood : Food {
-        internal readonly TechType item;
+        internal readonly TechType Item;
 
         public AnimalFood(CustomPrefab s, params BiomeRegions.RegionType[] r) : this(s.TechType, r) {
         }
 
-        internal AnimalFood(TechType tt, params BiomeRegions.RegionType[] r) : base(calculateFoodValue(tt), r) {
-            item = tt;
+        internal AnimalFood(TechType tt, params BiomeRegions.RegionType[] r) : base(CalculateFoodValue(tt), r) {
+            Item = tt;
         }
 
         internal AnimalFood(TechType tt, float f, params BiomeRegions.RegionType[] r) : base(f, r) {
-            item = tt;
+            Item = tt;
         }
 
         public AnimalFood(CustomPrefab s, float f, params BiomeRegions.RegionType[] r) : base(f, r) {
-            item = s.TechType;
+            Item = s.TechType;
         }
 
-        public static float calculateFoodValue(TechType tt) {
-            GameObject go = ObjectUtil.lookupPrefab(SNUtil.GetTechType("Cooked" + tt));
+        public static float CalculateFoodValue(TechType tt) {
+            var go = ObjectUtil.lookupPrefab(SNUtil.GetTechType("Cooked" + tt));
             if (!go)
                 go = ObjectUtil.lookupPrefab(SNUtil.GetTechType(tt + "Cooked"));
             var ea = go ? go.GetComponent<Eatable>() : null;
             return ea ? ea.foodValue * 0.01F : 0.2F; //so a reginald is ~40%
         }
 
-        internal override void consume(
+        internal override void Consume(
             Creature c,
             AcuCallbackSystem.AcuCallback acu,
             StorageContainer sc,
@@ -589,7 +583,7 @@ public static class ACUEcosystems {
     }
 
     public class PlantFood : Food {
-        internal readonly HashSet<string> classIDs = [];
+        internal readonly HashSet<string> ClassIDs = [];
 
         internal PlantFood(VanillaFlora vf, float f, params BiomeRegions.RegionType[] r) : this(
             vf.getPrefabs(true, true),
@@ -606,10 +600,10 @@ public static class ACUEcosystems {
         }
 
         internal PlantFood(IEnumerable<string> ids, float f, params BiomeRegions.RegionType[] r) : base(f, r) {
-            classIDs.AddRange(ids);
+            ClassIDs.AddRange(ids);
         }
 
-        internal override void consume(
+        internal override void Consume(
             Creature c,
             AcuCallbackSystem.AcuCallback acu,
             StorageContainer sc,
@@ -626,12 +620,12 @@ public static class ACUEcosystems {
     }
 
     public class ACUMetabolism {
-        public readonly float relativeValue;
-        public readonly bool isCarnivore;
-        public readonly float metabolismPerSecond;
-        public readonly float normalizedPoopChance;
-        public readonly BiomeRegions.RegionType primaryRegion;
-        internal readonly HashSet<BiomeRegions.RegionType> additionalRegions = [];
+        public readonly float RelativeValue;
+        public readonly bool IsCarnivore;
+        public readonly float MetabolismPerSecond;
+        public readonly float NormalizedPoopChance;
+        public readonly BiomeRegions.RegionType PrimaryRegion;
+        internal readonly HashSet<BiomeRegions.RegionType> AdditionalRegions = [];
 
         internal ACUMetabolism(
             float v,
@@ -651,25 +645,25 @@ public static class ACUEcosystems {
             BiomeRegions.RegionType r,
             List<BiomeRegions.RegionType> rr
         ) {
-            relativeValue = v;
-            normalizedPoopChance = pp * 6;
-            metabolismPerSecond = mf * 0.0003F;
-            isCarnivore = isc;
-            primaryRegion = r;
-            additionalRegions.AddRange(rr);
+            RelativeValue = v;
+            NormalizedPoopChance = pp * 6;
+            MetabolismPerSecond = mf * 0.0003F;
+            IsCarnivore = isc;
+            PrimaryRegion = r;
+            AdditionalRegions.AddRange(rr);
         }
 
-        public bool isRegion(BiomeRegions.RegionType r, bool primaryOnly) {
-            return r == primaryRegion || (!primaryOnly && additionalRegions.Contains(r));
+        public bool IsRegion(BiomeRegions.RegionType r, bool primaryOnly) {
+            return r == PrimaryRegion || (!primaryOnly && AdditionalRegions.Contains(r));
         }
 
-        public void addBiome(BiomeRegions.RegionType r) {
-            additionalRegions.Add(r);
+        public void AddBiome(BiomeRegions.RegionType r) {
+            AdditionalRegions.Add(r);
         }
 
         public override string ToString() {
             return
-                $"[ACUMetabolism IsCarnivore={isCarnivore}, MetabolismPerSecond={metabolismPerSecond.ToString("0.0000")}, NormalizedPoopChance={normalizedPoopChance}, PrimaryRegion={primaryRegion}, AdditionalRegions=[{string.Join(",", additionalRegions)}]]]";
+                $"[ACUMetabolism IsCarnivore={IsCarnivore}, MetabolismPerSecond={MetabolismPerSecond.ToString("0.0000")}, NormalizedPoopChance={NormalizedPoopChance}, PrimaryRegion={PrimaryRegion}, AdditionalRegions=[{string.Join(",", AdditionalRegions)}]]]";
         }
     }
 }

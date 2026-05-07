@@ -417,7 +417,7 @@ public class LiquidBreathingSystem {
         internal Image Background;
         internal Image Foreground;
 
-        internal Text Timer;
+        internal TextMeshProUGUI Timer;
 
         internal bool LeftSide;
 
@@ -481,8 +481,8 @@ public class LiquidBreathingSystem {
                 Timer.transform.SetParent(transform, false);
                 Timer.transform.localPosition = Vector3.zero;
                 Timer.transform.rotation = Quaternion.identity;
-                Timer.alignment = LeftSide ? TextAnchor.MiddleLeft : TextAnchor.MiddleRight;
-                Timer.resizeTextForBestFit = false;
+                Timer.alignment = LeftSide ? TextAlignmentOptions.MidlineLeft : TextAlignmentOptions.MidlineRight;
+                // Timer.resizeTextForBestFit = false;
                 Timer.fontSize = 30;
             }
 

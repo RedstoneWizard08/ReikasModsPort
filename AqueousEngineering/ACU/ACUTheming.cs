@@ -17,7 +17,7 @@ public static class AcuTheming {
     private static readonly Dictionary<string, MaterialPropertyDefinition> TerrainGrassTextures = new();
 
     private static readonly string RootCachePath = Path.Combine(
-        Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+        Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
         "GrassTex"
     );
 
@@ -236,16 +236,14 @@ public static class AcuTheming {
             } else if (n.StartsWith("Coral_reef_small_deco", StringComparison.InvariantCulture)) {
                 var flag = true;
                 if (acu.DecoHolders.Count > 0) {
-                    foreach (var slot in acu.DecoHolders) {
-                        if (Vector3.Distance(slot.transform.position, t.position) <= 0.05F) {
-                            t.gameObject.destroy();
-                            flag = false;
-                            break;
-                        }
+                    if (acu.DecoHolders.Any(slot => Vector3.Distance(slot.transform.position, t.position) <= 0.05F)) {
+                        t.gameObject.destroy();
+                        flag = false;
                     }
                 }
 
-                if (flag) {
+                if (!flag) continue;
+                {
                     var slot = new GameObject(AcuDecoSlotName);
                     slot.SetActive(true);
                     slot.transform.parent = acu.LowestSegment.transform;
@@ -266,16 +264,14 @@ public static class AcuTheming {
                 var biomeSlot = bt.gameObject;
                 var match = biomeSlot.name == theme.ID;
                 biomeSlot.SetActive(match);
-                if (match) {
-                    found = true;
-                    if (bt.childCount == 0) {
-                        var def = GetRandomAcuProp(acu.Acu, theme);
-                        //SNUtil.writeToChat("$$"+def);
-                        //SNUtil.log("$$"+def);
-                        if (def != null)
-                            AddProp(def.Spawn(), slot, theme, biomeSlot);
-                    }
-                }
+                if (!match) continue;
+                found = true;
+                if (bt.childCount != 0) continue;
+                var def = GetRandomAcuProp(acu.Acu, theme);
+                //SNUtil.writeToChat("$$"+def);
+                //SNUtil.log("$$"+def);
+                if (def != null)
+                    AddProp(def.Spawn(), slot, theme, biomeSlot);
             }
 
             if (!found) {
@@ -289,15 +285,15 @@ public static class AcuTheming {
         acu.LastThemeUpdate = time;
         acu.AppliedTheme = true;
 
-        if (FloorTextures.ContainsKey(theme)) {
+        if (FloorTextures.TryGetValue(theme, out var texture)) {
             var r = acu.Floor.GetComponentInChildren<Renderer>();
-            r.material.mainTexture = FloorTextures[theme];
+            r.material.mainTexture = texture;
         }
 
         //SNUtil.writeToChat("::"+b);
-        if (theme.baseBiome == null) return;
+        if (theme.BaseBiome == null) return;
         {
-            var biomeSky = WorldUtil.getSkybox(theme.baseBiome);
+            var biomeSky = WorldUtil.getSkybox(theme.BaseBiome);
             if (!biomeSky) return;
             foreach (var glass in acu.Column.Select(wp =>
                          wp.gameObject.getChildObject("model/Large_Aquarium_generic_room_glass_01")
@@ -318,8 +314,8 @@ public static class AcuTheming {
                 m.SetFloat(Fresnel, 0.5F);
                 m.SetFloat(Shininess, 7.5F);
                 m.SetFloat(SpecInt, 0.75F);
-                m.SetColor(Color1, theme.waterColor);
-                m.SetColor(SpecColor, theme.waterColor);
+                m.SetColor(Color1, theme.WaterColor);
+                m.SetColor(SpecColor, theme.WaterColor);
             }
 
             foreach (var wp in acu.Acu.items.Where(wp => wp)) {
@@ -346,21 +342,20 @@ public static class AcuTheming {
             };
         }
 
-        if (go) {
-            go.transform.parent = rSlot.transform;
-            go.transform.localPosition = Vector3.zero;
-            //go.transform.localRotation = Quaternion.identity;
-            go.removeComponent<PrefabIdentifier>();
-            go.removeComponent<TechTag>();
-            go.removeComponent<Pickupable>();
-            go.removeComponent<Collider>();
-            go.removeComponent<PickPrefab>();
-            go.removeComponent<Light>();
-            go.removeComponent<SkyApplier>();
-            var sk = go.EnsureComponent<SkyApplier>();
-            sk.renderers = go.GetComponentsInChildren<Renderer>(true);
-            go.setSky(MarmoSkies.main.skyBaseInterior);
-        }
+        if (!go) return;
+        go.transform.parent = rSlot.transform;
+        go.transform.localPosition = Vector3.zero;
+        //go.transform.localRotation = Quaternion.identity;
+        go.removeComponent<PrefabIdentifier>();
+        go.removeComponent<TechTag>();
+        go.removeComponent<Pickupable>();
+        go.removeComponent<Collider>();
+        go.removeComponent<PickPrefab>();
+        go.removeComponent<Light>();
+        go.removeComponent<SkyApplier>();
+        var sk = go.EnsureComponent<SkyApplier>();
+        sk.renderers = go.GetComponentsInChildren<Renderer>(true);
+        go.setSky(MarmoSkies.main.skyBaseInterior);
     }
 
     private class AcuPropDefinition {

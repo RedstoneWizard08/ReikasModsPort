@@ -138,13 +138,15 @@ internal class HeatSinkTag : MonoBehaviour {
     internal Color getColor(float f) {
         if (f < 0.125F) {
             return Color.Lerp(Color.black, glowFinal, f * 8);
-        } else if (f < 0.5F) {
+        }
+
+        if (f < 0.5F) {
             f = (f - 0.125F) / 0.375F;
             return Color.Lerp(glowFinal, glowMid, f);
-        } else {
-            f = (f - 0.5F) * 2;
-            return Color.Lerp(glowMid, glowNew, f);
         }
+
+        f = (f - 0.5F) * 2;
+        return Color.Lerp(glowMid, glowNew, f);
     }
 
     internal void onFired(float intensity) {

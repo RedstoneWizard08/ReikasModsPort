@@ -13,11 +13,11 @@ internal static partial class RBPatches {
     [HarmonyPatch(nameof(Drillable.OnDrill))]
     public static class PrawnDrillSpeedHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try {
-                var idx = InstructionHandlers.getInstruction(codes, 0, 0, OpCodes.Ldc_R4, 5F);
-                codes[idx] = InstructionHandlers.createMethodCall(
+                var idx = codes.GetInstruction(0, 0, OpCodes.Ldc_R4, 5F);
+                codes[idx] = InstructionHandlers.CreateMethodCall(
                     "ReikaKalseki.Reefbalance.ReefbalanceMod",
                     nameof(ReefbalanceMod.GetDrillingSpeed),
                     false,
@@ -28,10 +28,10 @@ internal static partial class RBPatches {
                     idx,
                     new InsnList { new CodeInstruction(OpCodes.Ldarg_0), new CodeInstruction(OpCodes.Ldarg_2) }
                 );
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

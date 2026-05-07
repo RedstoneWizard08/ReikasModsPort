@@ -159,8 +159,7 @@ public class AutofarmerLogic : CustomMachineLogic {
                     var pp = drop.GetComponent<PickPrefab>();
                     td = pp.pickTech;
                     drop = ObjectUtil.lookupPrefab(td);
-                } else if (td == TechType.JellyPlantSeed || td == TechType.WhiteMushroomSpore ||
-                           td == TechType.AcidMushroomSpore) {
+                } else if (td is TechType.JellyPlantSeed or TechType.WhiteMushroomSpore or TechType.AcidMushroomSpore) {
                     td = tt;
                     drop = ObjectUtil.lookupPrefab(tt).clone();
                 }
@@ -186,8 +185,7 @@ public class AutofarmerLogic : CustomMachineLogic {
                         //SNUtil.log("fp pp "+pp);
                         if (pp)
                             pp.SetPickedUp();
-                    } else if (td == TechType.JellyPlant || td == TechType.WhiteMushroom ||
-                               td == TechType.AcidMushroom) {
+                    } else if (td is TechType.JellyPlant or TechType.WhiteMushroom or TechType.AcidMushroom) {
                         //pl.ReplaceItem(pt, drop.GetComponent<Plantable>());
                     }
 

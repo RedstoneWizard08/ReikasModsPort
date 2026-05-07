@@ -97,7 +97,7 @@ public class LavaShroomTag : GlowShroomTagBase {
     }
 
     protected override GameObject createProjectile() {
-        GameObject go = ObjectUtil.createWorldObject(EcoceanMod.lavaBomb.ClassID);
+        var go = ObjectUtil.createWorldObject(EcoceanMod.lavaBomb.ClassID);
         return go;
     }
 

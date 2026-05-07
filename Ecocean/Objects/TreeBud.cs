@@ -31,7 +31,7 @@ public class TreeBud : CustomPrefab {
     }
 
     public GameObject GetGameObject() {
-        GameObject world = ObjectUtil.createWorldObject(VanillaFlora.PINECONE.getRandomPrefab(false));
+        var world = ObjectUtil.createWorldObject(VanillaFlora.PINECONE.getRandomPrefab(false));
         world.EnsureComponent<TechTag>().type = Info.TechType;
         world.EnsureComponent<PrefabIdentifier>().ClassId = Info.ClassID;
         var r = world.GetComponentInChildren<Renderer>();

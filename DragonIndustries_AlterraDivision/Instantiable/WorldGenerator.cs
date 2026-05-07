@@ -34,7 +34,7 @@ public abstract class WorldGenerator : ObjectTemplate {
 			var scatt = e.GetVector("scatter", true);
 			if (scatt != null && scatt.HasValue)
 				pos += MathUtil.getRandomVectorBetween(-scatt.Value, scatt.Value);
-			var tt = InstructionHandlers.getTypeBySimpleName(typeName);
+			var tt = InstructionHandlers.GetTypeBySimpleName(typeName);
 			if (tt == null)
 				throw new Exception("No class found for '" + typeName + "'!");
 			var gen = (WorldGenerator)Activator.CreateInstance(tt, new object[]{pos});
@@ -57,7 +57,7 @@ public abstract class WorldGenerator : ObjectTemplate {
 
 	protected bool isColliding(Vector3 vec, List<GameObject> li) {
 		foreach (var go in li) {
-			if (ObjectUtil.objectCollidesPosition(go, vec))
+			if (go.objectCollidesPosition(vec))
 				return true;
 		}
 		return false;

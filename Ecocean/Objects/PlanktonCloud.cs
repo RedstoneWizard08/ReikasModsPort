@@ -37,7 +37,7 @@ public class PlanktonCloud : InteractableSpawnable {
     }
 
     public override GameObject GetGameObject() {
-        GameObject world = ObjectUtil.createWorldObject("0e67804e-4a59-449d-929a-cd3fc2bef82c");
+        var world = ObjectUtil.createWorldObject("0e67804e-4a59-449d-929a-cd3fc2bef82c");
         world.EnsureComponent<TechTag>().type = Info.TechType;
         world.EnsureComponent<PrefabIdentifier>().ClassId = Info.ClassID;
         world.removeComponent<Collider>();
@@ -65,7 +65,7 @@ public class PlanktonCloud : InteractableSpawnable {
     }
 
     internal void tickSpawner(Player ep, BiomeSpawnData data, float dT) {
-        HashSet<PlanktonCloudTag> clouds =
+        var clouds =
             WorldUtil.getObjectsNearWithComponent<PlanktonCloudTag>(ep.transform.position, 150);
         //SNUtil.writeToChat(data.spawnSuccessRate+" > "+clouds.Count+"/"+data.maxDensity);
         var f = (float)(1 + densityNoise.getValue(ep.transform.position)) * data.densityNoiseIntensity;
@@ -84,7 +84,7 @@ public class PlanktonCloud : InteractableSpawnable {
                         pos = pos.SetY(-UnityEngine.Random.Range(data2.minDepth, data2.maxDepth));
                     }
 
-                    GameObject go = ObjectUtil.createWorldObject(Info.ClassID);
+                    var go = ObjectUtil.createWorldObject(Info.ClassID);
                     go.transform.position = pos;
                     go.fullyEnable();
                     //SNUtil.writeToChat("spawned plankton at "+go.transform.position+" dist="+Vector3.Distance(pos, ep.transform.position));
@@ -95,7 +95,7 @@ public class PlanktonCloud : InteractableSpawnable {
     }
 
     internal Vector3 getRandomPosition(Player ep, BiomeSpawnData data = null) {
-        Vector3 pos = MathUtil.getRandomVectorAround(ep.transform.position, 120);
+        var pos = MathUtil.getRandomVectorAround(ep.transform.position, 120);
         var dist = pos - ep.transform.position;
         pos = ep.transform.position + dist.SetLength(UnityEngine.Random.Range(50F, 150F));
         if (data != null)
@@ -239,7 +239,7 @@ public class PlanktonCloudTag : PlanktonCloudClearableContactZone {
         gameObject.removeComponent<Locomotion>();
         gameObject.removeComponent<CreatureUtils>();
         gameObject.removeComponent<BehaviourLOD>();
-        // gameObject.removeComponent<LastScarePosition>(); // TODO
+        gameObject.removeComponent<FleeWhenScared>();
         health = gameObject.EnsureComponent<LiveMixin>();
         gameObject.fullyEnable();
         gameObject.GetComponent<Rigidbody>().isKinematic = true;

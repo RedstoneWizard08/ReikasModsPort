@@ -16,10 +16,10 @@ public class HeatColumnFog : CustomPrefab {
     }
 
     public GameObject GetGameObject() {
-        GameObject podRef = ObjectUtil.lookupPrefab("bfe8345c-fe3c-4c2b-9a03-51bcc5a2a782");
+        var podRef = ObjectUtil.lookupPrefab("bfe8345c-fe3c-4c2b-9a03-51bcc5a2a782");
         var pod = podRef.GetComponent<GasPod>();
         var fog = pod.gasEffectPrefab;
-        GameObject world = fog.clone();
+        var world = fog.clone();
         world.EnsureComponent<TechTag>().type = Info.TechType;
         world.EnsureComponent<PrefabIdentifier>().ClassId = Info.ClassID;
         world.EnsureComponent<HeatColumnFogTag>();

@@ -13,11 +13,10 @@ internal static partial class DIPatches {
     [HarmonyPriority(Priority.Last)]
     public static class RedundantScanHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try {
-                var idx = InstructionHandlers.getInstruction(
-                    codes,
+                var idx = codes.GetInstruction(
                     0,
                     0,
                     OpCodes.Call,
@@ -26,21 +25,21 @@ internal static partial class DIPatches {
                     true,
                     new Type[] { typeof(TechType), typeof(int), typeof(bool), typeof(bool) }
                 );
-                var idx0 = InstructionHandlers.getLastOpcodeBefore(codes, idx - 1, OpCodes.Call);
+                var idx0 = codes.GetLastOpcodeBefore(idx - 1, OpCodes.Call);
                 codes.RemoveRange(idx0 + 1, idx - idx0);
                 codes.Insert(
                     idx0 + 1,
-                    InstructionHandlers.createMethodCall(
+                    InstructionHandlers.CreateMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
                         nameof(DIHooks.OnRedundantFragmentScan),
                         false,
                         new Type[0]
                     )
                 );
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

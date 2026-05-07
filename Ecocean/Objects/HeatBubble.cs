@@ -12,7 +12,7 @@ public class HeatBubble : CustomPrefab {
     }
 
     public GameObject GetGameObject() {
-        GameObject world = ObjectUtil.createAirBubble();
+        var world = ObjectUtil.createAirBubble();
         world.removeComponent<Bubble>();
         world.removeComponent<Collider>();
         world.removeComponent<LiveMixin>();

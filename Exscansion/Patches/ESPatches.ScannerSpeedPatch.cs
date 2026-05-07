@@ -2,23 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
 using HarmonyLib;
 using ReikaKalseki.DIAlterra;
 
-namespace ReikaKalseki.AqueousEngineering;
+namespace ReikaKalseki.Exscansion;
 
-public static partial class AEPatches {
-    [HarmonyPatch(typeof(WaterPark))]
-    [HarmonyPatch(nameof(WaterPark.CanDropItemInside))]
-    public static class WaterParkItemDroppabilityHook {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+internal static partial class ESPatches {
+    [HarmonyPatch(typeof(MapRoomFunctionality))]
+    [HarmonyPatch(nameof(MapRoomFunctionality.UpdateScanRangeAndInterval))]
+    public static class ScannerSpeedPatch {
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
-            InsnList codes = [];
+            var codes = new InsnList(instructions);
             try {
-                codes.Add(OpCodes.Ldarg_0);
-                codes.Invoke("ReikaKalseki.AqueousEngineering.AEHooks", "canAddItemToACU", false, typeof(Pickupable));
-                codes.Add(OpCodes.Ret);
+                RangePatchLib.replaceBaseSpeedReference(codes);
+                RangePatchLib.replaceSpeedBonusReference(codes);
                 InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {
                 InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());

@@ -13,27 +13,26 @@ internal static partial class ESPatches {
     [HarmonyPatch(nameof(uGUI_ResourceTracker.UpdateBlips))]
     public static class PingHUDGenerationHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try {
-                var idx = InstructionHandlers.getInstruction(
-                    codes,
+                var idx = codes.GetInstruction(
                     0,
                     1,
                     OpCodes.Stfld,
                     "uGUI_ResourceTracker+Blip",
                     "techType"
                 );
-                codes[idx] = InstructionHandlers.createMethodCall(
+                codes[idx] = InstructionHandlers.CreateMethodCall(
                     "ReikaKalseki.Exscansion.ESHooks",
                     nameof(ESHooks.SetResourcePingType),
                     false,
                     typeof(uGUI_ResourceTracker.Blip),
                     typeof(TechType)
                 );
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

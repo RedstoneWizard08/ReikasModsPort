@@ -55,7 +55,7 @@ public class FloatingPowerRelay : CustomMachine<FloatingPowerRelayLogic> {
 
         go.EnsureComponent<EcoTarget>().SetTargetType(EcoTargetType.Shiny);
         go.EnsureComponent<PrefabIdentifier>().ClassId = ClassID;
-        ObjectUtil.makeMapRoomScannable(go, Info.TechType, true);
+        go.makeMapRoomScannable(Info.TechType, true);
 
         go.GetComponent<PowerFX>().attachPoint.transform.localPosition = Vector3.zero;
 

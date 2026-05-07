@@ -12,13 +12,13 @@ internal static partial class DIPatches {
     [HarmonyPatch(nameof(Player.SetRadiationAmount))]
     public static class RadiationAmountIntercept {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try {
-                var idx = InstructionHandlers.getFirstOpcode(codes, 0, OpCodes.Stfld);
+                var idx = InstructionHandlers.GetFirstOpcode(codes, 0, OpCodes.Stfld);
                 codes.Insert(
                     idx,
-                    InstructionHandlers.createMethodCall(
+                    InstructionHandlers.CreateMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
                         nameof(DIHooks.GetRadiationLevel),
                         false,
@@ -27,10 +27,10 @@ internal static partial class DIPatches {
                     )
                 );
                 codes.Insert(0, new CodeInstruction(OpCodes.Ldarg_0));
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

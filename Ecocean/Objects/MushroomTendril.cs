@@ -66,7 +66,7 @@ public class MushroomTendril : CustomPrefab {
 
 			if (animators.Length < 4) {
 				for (var i = animators.Length; i < 4; i++) {
-					GameObject go = ObjectUtil.lookupPrefab(VanillaFlora.STINGERS.getRandomPrefab(false)).GetComponentInChildren<Animator>().gameObject.clone();
+					var go = ObjectUtil.lookupPrefab(VanillaFlora.STINGERS.getRandomPrefab(false)).GetComponentInChildren<Animator>().gameObject.clone();
 					go.transform.SetParent(transform);
 				}
 				animators = GetComponentsInChildren<Animator>();

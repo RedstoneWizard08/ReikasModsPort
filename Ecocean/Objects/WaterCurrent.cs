@@ -15,7 +15,7 @@ public static class WaterCurrent {
         new WaterCurrentHotStrong().Register();
         new WaterCurrentImpassable().Register();
 
-        XMLLocale.LocaleEntry e = EcoceanMod.locale.getEntry("WaterCurrent");
+        var e = EcoceanMod.locale.getEntry("WaterCurrent");
         EcoceanMod.waterCurrentCommon = EnumHandler.AddEntry<TechType>(e.key).WithPdaInfo(e.name, e.desc);
         SNUtil.AddPdaEntry(
             basic,
@@ -39,7 +39,7 @@ public abstract class WaterCurrentBase<T> : CustomPrefab where T : WaterCurrentT
     }
 
     public GameObject GetGameObject() {
-        GameObject world = ObjectUtil.createWorldObject("42b38968-bd3a-4bfd-9d93-17078d161b29")
+        var world = ObjectUtil.createWorldObject("42b38968-bd3a-4bfd-9d93-17078d161b29")
             .setName(Info.ClassID + "[Clone]");
         world.EnsureComponent<TechTag>().type = EcoceanMod.waterCurrentCommon;
         world.EnsureComponent<PrefabIdentifier>().ClassId = Info.ClassID;

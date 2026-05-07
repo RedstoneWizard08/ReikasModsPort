@@ -5,6 +5,7 @@ using System.Linq;
 using System.Xml;
 using Nautilus.Handlers;
 using Nautilus.Json;
+using Nautilus.Utility;
 
 namespace ReikaKalseki.DIAlterra;
 
@@ -20,8 +21,7 @@ public class SerializedTracker<E> where E : SerializedTrackedEvent {
 		saveFileName = name;
 		parser = f;
 		legacyParser = l;
-		// TODO
-		// IngameMenuHandler.Main.RegisterOnSaveEvent(this.handleSave);
+		SaveUtils.RegisterOnSaveEvent(handleSave);
 		if (loadWithGame)
 			WaitScreenHandler.RegisterLoadTask("DIAlterra", handleLoad);
 	}
@@ -80,9 +80,6 @@ public class SerializedTracker<E> where E : SerializedTrackedEvent {
 					var tt = parser.Invoke(e);
 					if (tt != null) {
 						add(tt);
-					}
-					else {
-
 					}
 				}
 				catch (Exception ex) {

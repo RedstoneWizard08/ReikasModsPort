@@ -11,7 +11,7 @@ public class PlanktonItem : WorldCollectedItem {
         //inventorySize = new Vector2int(2, 1);
 
         renderModify = r => {
-            GameObject root = r.gameObject.FindAncestor<PrefabIdentifier>().gameObject;
+            var root = r.gameObject.FindAncestor<PrefabIdentifier>().gameObject;
             root.transform.localScale = Vector3.one * 1F;
             root.removeComponent<PickPrefab>();
             root.removeComponent<Plantable>();

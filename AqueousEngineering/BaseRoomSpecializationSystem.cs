@@ -312,7 +312,7 @@ public class BaseRoomSpecializationSystem { //TODO 2.0 handle large rooms
 
     public float getLeisureDecoThreshold(bool large) {
         var val = AqueousEngineeringMod.config.getFloat(AEConfig.ConfigEntries.LEISUREDECO);
-        // TODO
+        // TODO: FCS Compat
         // if (QModManager.API.QModServices.Main.ModPresent("FCSAlterraHub"))
         // 	val = val * 1.25F + 5;
         if (large)
@@ -528,7 +528,7 @@ public class BaseRoomSpecializationSystem { //TODO 2.0 handle large rooms
             var dist = Vector3.Distance(tgt.GetPosition(), pos);
             if (dist <= 250) {
                 var c = tgt.GetGameObject().GetComponent<Creature>();
-                var val = c is ReaperLeviathan || c is GhostLeviatanVoid || c is GhostLeviathan || c is SeaDragon
+                var val = c is ReaperLeviathan or GhostLeviatanVoid or GhostLeviathan or SeaDragon
                     ? 1.5F
                     : 1;
                 ret += val * (float)MathUtil.linterpolate(dist, 80, 250, 1, 0, true);
@@ -582,7 +582,7 @@ public class BaseRoomSpecializationSystem { //TODO 2.0 handle large rooms
             return;
         }
 
-        // TODO
+        // TODO: LockerMod Compat
         // if (pi.ClassId == STANDING_LOCKER_PREFAB && QModManager.API.QModServices.Main.ModPresent("lockerMod")) { //locker content display
         // 	getInventoryDecoValue(pi.GetComponent<StorageContainer>(), deco, debug, 0.2F); //20% value since it contains many many items, and they are small
         // }
@@ -649,7 +649,7 @@ public class BaseRoomSpecializationSystem { //TODO 2.0 handle large rooms
 
     private void getACUDecoValue(AcuCallbackSystem.AcuCallback wp, bool largeRoom, DecoRatingTracker deco, bool debug) {
         var baseVal = wp.ConsistentBiome
-            ? BiomeBase.GetBiome(wp.CurrentTheme.baseBiome).SceneryValue * (largeRoom ? 3 : 2)
+            ? BiomeBase.GetBiome(wp.CurrentTheme.BaseBiome).SceneryValue * (largeRoom ? 3 : 2)
             : 1;
         deco.addDeco(baseVal); //even empty has some value; can do directly since never more than one ACU per room
         getInventoryDecoValue(wp.Acu.items.Select(wpi => wpi.GetComponent<Pickupable>()), deco, debug, 0.5F);
@@ -723,7 +723,7 @@ public class BaseRoomSpecializationSystem { //TODO 2.0 handle large rooms
 
     public bool storageHasDecoValue(StorageContainer sc) {
         var pi = sc.GetComponent<PrefabIdentifier>();
-        // TODO
+        // TODO: LockerMod Compat
         // var hasLockers = QModManager.API.QModServices.Main.ModPresent("lockerMod");
         var hasLockers = false;
         return (pi && pi.ClassId == AqueousEngineeringMod.displayBlock.ClassID) ||

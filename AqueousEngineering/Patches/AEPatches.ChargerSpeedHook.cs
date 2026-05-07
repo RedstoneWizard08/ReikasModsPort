@@ -13,19 +13,19 @@ public static partial class AEPatches {
     [HarmonyPatch(nameof(Charger.Update))]
     public static class ChargerSpeedHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try {
                 for (var i = codes.Count - 1; i >= 0; i--) {
-                    if (InstructionHandlers.matchOperands(
+                    if (InstructionHandlers.MatchOperands(
                             codes[i].operand,
-                            InstructionHandlers.convertFieldOperand("Charger", "chargeSpeed")
+                            InstructionHandlers.ConvertFieldOperand("Charger", "chargeSpeed")
                         )) {
                         codes.InsertRange(
                             i + 1,
                             new InsnList {
                                 new CodeInstruction(OpCodes.Ldarg_0),
-                                InstructionHandlers.createMethodCall(
+                                InstructionHandlers.CreateMethodCall(
                                     "ReikaKalseki.AqueousEngineering.AEHooks",
                                     nameof(AEHooks.GetChargerSpeed),
                                     false,
@@ -37,9 +37,9 @@ public static partial class AEPatches {
                     }
                 }
 
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

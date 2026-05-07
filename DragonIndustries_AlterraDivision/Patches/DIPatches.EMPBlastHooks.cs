@@ -11,24 +11,24 @@ namespace ReikaKalseki.DIAlterra;
 internal static partial class DIPatches {
     [HarmonyPatch(typeof(EMPBlast))]
     [HarmonyPatch(nameof(EMPBlast.OnTouch))]
-    public static class EMPBlastHooks {
+    public static class EmpBlastHooks {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try {
                 for (var i = codes.Count - 1; i >= 0; i--) {
                     if (codes[i].opcode == OpCodes.Callvirt) {
                         var mi = (MethodInfo)codes[i].operand;
                         if (mi.Name == "DisableElectronicsForTime") {
-                            PatchLib.injectEMPHook(codes, i);
+                            PatchLib.InjectEmpHook(codes, i);
                         }
                     }
                 }
 
-                codes.patchInitialHook(
+                codes.PatchInitialHook(
                     new CodeInstruction(OpCodes.Ldarg_0),
                     new CodeInstruction(OpCodes.Ldarg_1),
-                    InstructionHandlers.createMethodCall(
+                    InstructionHandlers.CreateMethodCall(
                         "ReikaKalseki.DIAlterra.DIHooks",
                         nameof(DIHooks.OnEmpTouch),
                         false,
@@ -36,9 +36,9 @@ internal static partial class DIPatches {
                         typeof(Collider)
                     )
                 );
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

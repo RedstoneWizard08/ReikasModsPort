@@ -185,9 +185,8 @@ public static class RenderUtil {
                         flag = true;
                         //if (!skipPrint)
                         //	SNUtil.log("Found "+r+"/"+i+" "+type+" texture @ "+name, a);
-                    } else {
-                        //SNUtil.writeToChat("No texture found at "+path, a);
                     }
+                    //SNUtil.writeToChat("No texture found at "+path, a);
                 }
             }
         }
@@ -276,8 +275,7 @@ public static class RenderUtil {
     public static void convertToModel(this GameObject modelObj, params Type[] except) {
         var li = except.ToSet();
         foreach (var c in modelObj.GetComponentsInChildren<Component>()) {
-            if (c is Transform || c is Renderer || c is MeshFilter || c is Animator || c is Collider ||
-                c is VFXFabricating || c is PrefabIdentifier || c is ChildObjectIdentifier || c is AnimatorComponent)
+            if (c is Transform or Renderer or MeshFilter or Animator or Collider or VFXFabricating or PrefabIdentifier or ChildObjectIdentifier or AnimatorComponent)
                 continue;
             if (li.Contains(c.GetType()))
                 continue;
@@ -315,9 +313,9 @@ public static class RenderUtil {
             newTex.SetPixels(newColors);
             newTex.Apply();
             return newTex;
-        } else {
-            return s.texture;
         }
+
+        return s.texture;
     }
 
     public static Sprite copySprite(this Sprite source) {

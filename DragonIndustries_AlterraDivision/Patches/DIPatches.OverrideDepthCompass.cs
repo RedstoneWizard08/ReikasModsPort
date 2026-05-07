@@ -12,7 +12,7 @@ internal static partial class DIPatches {
     [HarmonyPatch(nameof(uGUI_DepthCompass.UpdateDepth))]
     public static class OverrideDepthCompass {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try { /*
             for (int i = codes.Count-1; i >= 0; i--) {
@@ -23,8 +23,7 @@ internal static partial class DIPatches {
                     }
                 }
             }*/
-                var idx = InstructionHandlers.getInstruction(
-                    codes,
+                var idx = codes.GetInstruction(
                     0,
                     0,
                     OpCodes.Call,
@@ -41,7 +40,7 @@ internal static partial class DIPatches {
                 //li.add(OpCodes.Stloc_S, 0);
                 codes.InsertRange(idx+2, li);*/
 
-                codes[idx].operand = InstructionHandlers.convertMethodOperand(
+                codes[idx].operand = InstructionHandlers.ConvertMethodOperand(
                     "ReikaKalseki.DIAlterra.DIHooks",
                     nameof(DIHooks.GetCompassDepth),
                     false,
@@ -49,10 +48,10 @@ internal static partial class DIPatches {
                     typeof(int).MakeByRefType(),
                     typeof(int).MakeByRefType()
                 );
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

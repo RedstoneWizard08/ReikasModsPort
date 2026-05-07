@@ -332,7 +332,7 @@ public static class AEHooks {
     }
 
     public static void OnTakeDamage(DIHooks.DamageToDeal dmg) {
-        if (dmg.Type == DamageType.Heat || dmg.Type == DamageType.Fire) {
+        if (dmg.Type is DamageType.Heat or DamageType.Fire) {
             var pi = dmg.Target.FindAncestor<PrefabIdentifier>();
             if (pi && pi.ClassId == AqueousEngineeringMod.collector.ClassID)
                 dmg.SetValue(0);

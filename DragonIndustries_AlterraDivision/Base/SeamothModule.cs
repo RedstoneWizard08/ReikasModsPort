@@ -50,7 +50,7 @@ public abstract class SeamothModule : CustomEquipable {
         dependency = TechType.BaseUpgradeConsole;
 
         AddOnRegister(() => {
-                if (QuickSlotType == QuickSlotType.Chargeable || QuickSlotType == QuickSlotType.SelectableChargeable) {
+                if (QuickSlotType is QuickSlotType.Chargeable or QuickSlotType.SelectableChargeable) {
                     CraftDataHandler.SetMaxCharge(Info.TechType, getMaxCharge());
                     CraftDataHandler.SetEnergyCost(Info.TechType, getChargingPowerCost());
                 }

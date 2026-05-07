@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using Nautilus.Assets;
+using Nautilus.Utility;
 using ReikaKalseki.DIAlterra;
 using ReikaKalseki.Exscansion;
 using UnityEngine;
@@ -85,9 +86,8 @@ public class AvoliteSpawner {
         GenUtil.registerPrefabWorldgen(_spawnerObject, false, BiomeType.Mountains_Grass, 1, 0.5F);
         GenUtil.registerPrefabWorldgen(_spawnerObject, false, BiomeType.Mountains_Sand, 1, 0.3F);
 
-        // TODO
-        // IngameMenuHandler.Main.RegisterOnLoadEvent(LoadSave);
-        // IngameMenuHandler.Main.RegisterOnSaveEvent(Save);
+        SaveUtils.RegisterOnSaveEvent(Save);
+        SaveUtils.RegisterOnStartLoadingEvent(LoadSave);
         SNUtil.MigrateSaveDataFolder(_oldSaveDir, ".xml", SaveFileName);
 
         _avo = CustomMaterials.getItem(CustomMaterials.Materials.PHASE_CRYSTAL).ClassID;
@@ -179,19 +179,19 @@ public class AvoliteSpawner {
 
         if (_objectCountsToGo.Count == 0 || UnityEngine.Random.Range(0, 5) == 0) {
             return GetCount("947f2823-c42a-45ef-94e4-52a9f1d3459c") < _scrapCount ? GetRandomScrap().prefab : null;
-        } else {
-            var pfb = _objectCountsToGo.Keys.ToList()[UnityEngine.Random.Range(0, _objectCountsToGo.Count)];
-            var amt = _objectCountsToGo[pfb];
-            //SNUtil.log("Tried "+pfb+" > "+getCount(pfb)+"/"+objectCountsToGo[pfb]);
-            if (amt > 1) {
-                _objectCountsToGo[pfb] = amt - 1;
-            } else {
-                _objectCountsToGo.Remove(pfb);
-                //SNUtil.log("Removing "+pfb+" from dict: "+objectCountsToGo.toDebugString<string, int>());
-            }
-
-            return pfb;
         }
+
+        var pfb = _objectCountsToGo.Keys.ToList()[UnityEngine.Random.Range(0, _objectCountsToGo.Count)];
+        var amt = _objectCountsToGo[pfb];
+        //SNUtil.log("Tried "+pfb+" > "+getCount(pfb)+"/"+objectCountsToGo[pfb]);
+        if (amt > 1) {
+            _objectCountsToGo[pfb] = amt - 1;
+        } else {
+            _objectCountsToGo.Remove(pfb);
+            //SNUtil.log("Removing "+pfb+" from dict: "+objectCountsToGo.toDebugString<string, int>());
+        }
+
+        return pfb;
     }
 
     private double GetClosest(string pfb, Vector3 pos) {
@@ -223,7 +223,7 @@ public class AvoliteSpawner {
     }
 
     private bool IsValidPosition(Vector3 pos) {
-        if (pos.y >= -100 || pos.y <= -400)
+        if (pos.y is >= -100 or <= -400)
             return false;
         var biome = WaterBiomeManager.main.GetBiome(pos, false);
         return VanillaBiomes.Mountains.IsInBiome(pos) && pos.x >= C2CHooks.GunCenter.x &&
@@ -258,29 +258,27 @@ public class AvoliteSpawner {
                 s.tryConvert();
             }*/
 
-            // TODO
-            // if (map.scanActive && ResourceTracker.resources.ContainsKey(_spawnerObject.TechType) &&
-            //     map.typeToScan == _spawnerObject.TechType && map.resourceNodes.Count > 0) {
-            //     //SNUtil.writeToChat("Scanner room is scanning and has "+map.resourceNodes.Count+" hits");
-            //     //Dictionary<string, ResourceTracker.ResourceInfo> info = ResourceTracker.resources[spawnerObject.TechType];
-            //     /*
-            //     HashSet<SunbeamDebris> set = WorldUtil.getObjectsNearWithComponent<SunbeamDebris>(map.resourceNodes[UnityEngine.Random.Range(0, map.resourceNodes.Count)].position, 4);
-            //     if (set.Count > 0)
-            //         set.First().tryConvert();*/
-            //     WorldUtil.getGameObjectsNear(
-            //         map.transform.position,
-            //         map.GetScanRange(),
-            //         go => {
-            //             var s = go.GetComponent<SunbeamDebris>();
-            //             if (s) {
-            //                 s.TryConvert();
-            //             }
-            //         }
-            //     );
-            // }
-        } else {
-            //SNUtil.writeToChat("Scanner room @ "+map.transform.position+" is not in mountains, is in "+BiomeBase.getBiome(map.transform.position));
+            if (map.scanActive && ResourceTrackerDatabase.resources.ContainsKey(_spawnerObject.TechType) &&
+                map.typeToScan == _spawnerObject.TechType && map.resourceNodes.Count > 0) {
+                //SNUtil.writeToChat("Scanner room is scanning and has "+map.resourceNodes.Count+" hits");
+                //Dictionary<string, ResourceTracker.ResourceInfo> info = ResourceTracker.resources[spawnerObject.TechType];
+                /*
+                HashSet<SunbeamDebris> set = WorldUtil.getObjectsNearWithComponent<SunbeamDebris>(map.resourceNodes[UnityEngine.Random.Range(0, map.resourceNodes.Count)].position, 4);
+                if (set.Count > 0)
+                    set.First().tryConvert();*/
+                WorldUtil.getGameObjectsNear(
+                    map.transform.position,
+                    map.GetScanRange(),
+                    go => {
+                        var s = go.GetComponent<SunbeamDebris>();
+                        if (s) {
+                            s.TryConvert();
+                        }
+                    }
+                );
+            }
         }
+        //SNUtil.writeToChat("Scanner room @ "+map.transform.position+" is not in mountains, is in "+BiomeBase.getBiome(map.transform.position));
     }
 
     private class SunbeamDebrisObject : CustomPrefab {

@@ -13,13 +13,13 @@ internal static partial class C2CPatches {
     [HarmonyPatch(nameof(Player.GetOxygenPerBreath))]
     public static class PlayerO2Use {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             InsnList codes = [];
             try {
-                codes.add(OpCodes.Ldarg_0);
-                codes.add(OpCodes.Ldarg_1);
-                codes.add(OpCodes.Ldarg_2);
-                codes.invoke(
+                codes.Add(OpCodes.Ldarg_0);
+                codes.Add(OpCodes.Ldarg_1);
+                codes.Add(OpCodes.Ldarg_2);
+                codes.Invoke(
                     "ReikaKalseki.SeaToSea.C2CHooks",
                     nameof(C2CHooks.GetPlayerO2Use),
                     false,
@@ -27,10 +27,10 @@ internal static partial class C2CPatches {
                     typeof(float),
                     typeof(int)
                 );
-                codes.add(OpCodes.Ret);
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                codes.Add(OpCodes.Ret);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

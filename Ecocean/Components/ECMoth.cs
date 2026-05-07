@@ -56,11 +56,11 @@ public class ECMoth : MonoBehaviour {
         if (flashCount > 5 && UnityEngine.Random.Range(0F, 1F) <
             (flashCount - 5) / 250F * getFlashEffectiveness() *
             getLightIntensity() /* && seamoth.mainAnimator.GetBool("reaper_attack")*/) {
-            GameObject go = WorldUtil.areAnyObjectsNear(
+            var go = WorldUtil.areAnyObjectsNear(
                 transform.position,
                 60,
                 obj => {
-                    ReaperLeviathan rl = obj.GetComponent<ReaperLeviathan>();
+                    var rl = obj.GetComponent<ReaperLeviathan>();
                     return rl && rl.holdingVehicle == seamoth;
                 }
             );
@@ -80,7 +80,7 @@ public class ECMoth : MonoBehaviour {
             lastCellCheckTime = time;
             //stuckCells = GetComponentsInChildren<VoidBubbleTag>().Length;
             stuckCells = 0;
-            foreach (VoidBubbleTag vb in WorldUtil.getObjectsNearWithComponent<VoidBubbleTag>(transform.position, 24)) {
+            foreach (var vb in WorldUtil.getObjectsNearWithComponent<VoidBubbleTag>(transform.position, 24)) {
                 if (vb.isStuckTo(body))
                     stuckCells++;
             }

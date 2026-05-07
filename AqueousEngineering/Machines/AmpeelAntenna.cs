@@ -159,7 +159,7 @@ public class AmpeelAntennaLogic : CustomMachineLogic {
     protected override void updateEntity(float seconds) {
         var time = DayNightCycle.main.timePassedAsFloat;
         if (sub && connectedACU && !connectedACUPart) {
-            IEnumerable<WaterParkGeometry> li = sub.GetComponentsInChildren<WaterParkGeometry>()
+            var li = sub.GetComponentsInChildren<WaterParkGeometry>()
                 .Where(wp => wp.GetModule() == connectedACU);
             connectedACUPart = AcuCallbackSystem.Instance.GetAcuCeiling(li).transform.parent
                 .GetComponent<WaterParkGeometry>();

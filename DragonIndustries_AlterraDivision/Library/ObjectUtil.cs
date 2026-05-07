@@ -178,11 +178,11 @@ public static class ObjectUtil {
     }
 
     public static void removeComponent<C>(this GameObject go, bool immediate = true) where C : Component {
-        applyToComponents<C>(go, immediate ? 2 : 1, true, true);
+        go.applyToComponents<C>(immediate ? 2 : 1, true, true);
     }
 
     public static void setActive<C>(this GameObject go, bool active) where C : Component {
-        applyToComponents<C>(go, 0, true, active);
+        go.applyToComponents<C>(0, true, active);
     }
 
     private static void applyToComponents<C>(this GameObject go, int destroy, bool setA, bool setTo)
@@ -204,7 +204,7 @@ public static class ObjectUtil {
     }
 
     public static void dumpObjectData(this GameObject go, bool includeChildren = true) {
-        dumpObjectData(go, 0, includeChildren);
+        go.dumpObjectData(0, includeChildren);
     }
 
     private static void dumpObjectData(this GameObject go, int indent, bool includeChildren = true) {
@@ -240,7 +240,7 @@ public static class ObjectUtil {
         if (pp) {
             SNUtil.Log("plantable: " + pp.name + " = " + pp.plantTechType, SNUtil.DiDLL, indent);
             SNUtil.Log("plant: ", SNUtil.DiDLL, indent);
-            dumpObjectData(pp.growingPlant, indent + 1);
+            pp.growingPlant.dumpObjectData(indent + 1);
         }
 
         var live = go.GetComponent<LiveMixin>();
@@ -264,14 +264,13 @@ public static class ObjectUtil {
             for (var i = 0; i < go.transform.childCount; i++) {
                 var ch = go.transform.GetChild(i).gameObject;
                 SNUtil.Log("child object #" + i + ": " + (includeChildren ? "" : ch.name), SNUtil.DiDLL, indent);
-                if (includeChildren)
-                    dumpObjectData(ch, indent + 3);
+                if (includeChildren) ch.dumpObjectData(indent + 3);
             }
         }
     }
 
     public static void dumpObjectData(this Component go) {
-        dumpObjectData(go, 0);
+        go.dumpObjectData(0);
     }
 
     private static void dumpObjectData(this Component go, int indent) {
@@ -281,7 +280,7 @@ public static class ObjectUtil {
         }
 
         SNUtil.Log("component " + go, SNUtil.DiDLL, indent);
-        dumpObjectData(go.gameObject);
+        go.gameObject.dumpObjectData();
     }
 
     public static void dumpObjectData(Mesh m) {
@@ -330,7 +329,7 @@ public static class ObjectUtil {
     }
 
     public static int removeChildObject(this GameObject go, string name, bool immediate = true) {
-        var find = getChildObject(go, name);
+        var find = go.getChildObject(name);
         HashSet<int> removed = [];
         while (go && find) {
             find.SetActive(false);
@@ -339,7 +338,7 @@ public static class ObjectUtil {
                 find.destroy();
             else
                 find.destroy(false);
-            find = getChildObject(go, name);
+            find = go.getChildObject(name);
             if (find && removed.Contains(find.GetInstanceID()))
                 find = null;
             if (removed.Count > 500) {
@@ -383,7 +382,7 @@ public static class ObjectUtil {
             }
 
             if (recursive && (startWild || endWild)) {
-                ret.AddRange(getChildObjects(t.gameObject, name, true));
+                ret.AddRange(t.gameObject.getChildObjects(name, true));
             }
         }
 
@@ -403,17 +402,17 @@ public static class ObjectUtil {
                     "Looking for child wildcard match " + name + " > " + startWild + ", " + endWild,
                     SNUtil.DiDLL
                 );
-            return findFirstChildMatching(go, name, startWild, endWild);
-        } else {
-            var t = go.transform.Find(name);
-            if (t != null)
-                return t.gameObject;
-            t = go.transform.Find(name + "(Clone)");
-            if (t != null)
-                return t.gameObject;
-            t = go.transform.Find(name + "(Placeholder)");
-            return t != null ? t.gameObject : null;
+            return go.findFirstChildMatching(name, startWild, endWild);
         }
+
+        var t = go.transform.Find(name);
+        if (t != null)
+            return t.gameObject;
+        t = go.transform.Find(name + "(Clone)");
+        if (t != null)
+            return t.gameObject;
+        t = go.transform.Find(name + "(Placeholder)");
+        return t != null ? t.gameObject : null;
     }
 
     public static GameObject findFirstChildMatching(this GameObject go, string s0, bool startWild, bool endWild) {
@@ -435,16 +434,16 @@ public static class ObjectUtil {
 
             if (match) {
                 return t.gameObject;
-            } else {
-                if (debugMode)
-                    SNUtil.Log(
-                        "Found no match for " + s0 + " against " + t.gameObject.GetFullHierarchyPath(),
-                        SNUtil.DiDLL
-                    );
-                var inner = findFirstChildMatching(t.gameObject, s0, startWild, endWild);
-                if (inner)
-                    return inner;
             }
+
+            if (debugMode)
+                SNUtil.Log(
+                    "Found no match for " + s0 + " against " + t.gameObject.GetFullHierarchyPath(),
+                    SNUtil.DiDLL
+                );
+            var inner = t.gameObject.findFirstChildMatching(s0, startWild, endWild);
+            if (inner)
+                return inner;
         }
 
         return null;
@@ -507,10 +506,10 @@ public static class ObjectUtil {
         if (go) {
             go.SetActive(makeActive);
             return go;
-        } else {
-            SNUtil.WriteToChat("Prefab found and placed but resulted in null?!");
-            return null;
         }
+
+        SNUtil.WriteToChat("Prefab found and placed but resulted in null?!");
+        return null;
     }
 
     public static O clone<O>(this O go) where O : UnityEngine.Object {
@@ -550,8 +549,7 @@ public static class ObjectUtil {
     }
 
     public static bool isRawFish(this TechType tt) {
-        return false; // TODO
-        // return CraftData.cookedCreatureList.ContainsKey(tt);
+        return TechData.GetProcessed(tt) != null;
     }
 
     public static FoodCategory getFoodCategory(this TechType tt) {
@@ -560,10 +558,9 @@ public static class ObjectUtil {
         // TODO
         // else if (CraftData.cookedCreatureList.Values.Contains(tt) || tt.AsString().StartsWith("Cured"))
         //     return FoodCategory.EDIBLEMEAT;
-        else if (tt.isPlantable())
+        if (tt.isPlantable())
             return FoodCategory.PLANT;
-        else
-            return FoodCategory.OTHER;
+        return FoodCategory.OTHER;
     }
 
     public static GameObject lookupPrefab(TechType tt) {
@@ -711,9 +708,9 @@ public static class ObjectUtil {
         if (pfb is CustomPrefab p && p.TryGetGadget<CraftingGadget>(out var c) && false) {
             world = getItemGO(p as CustomPrefab, pfb.baseTemplate.getPrefabID());
             world = world.clone();
-        } else {
-            world = createWorldObject(pfb.baseTemplate.getPrefabID(), true, false);
         }
+
+        world = createWorldObject(pfb.baseTemplate.getPrefabID(), true, false);
 
         if (!world) {
             SNUtil.WriteToChat("Could not fetch template GO for " + pfb);
@@ -826,8 +823,7 @@ public static class ObjectUtil {
         }
 
         foreach (Transform t in go.transform) {
-            if (t)
-                fullyEnable(t.gameObject);
+            if (t) t.gameObject.fullyEnable();
         }
     }
 
@@ -851,8 +847,7 @@ public static class ObjectUtil {
     }
 
     public static bool isVisible(this GameObject go) {
-        return WorldUtil.lineOfSight(go, Player.main.gameObject, r => !r.collider.gameObject.FindAncestor<Vehicle>()) &&
-               isOnScreen(go, Camera.main);
+        return WorldUtil.lineOfSight(go, Player.main.gameObject, r => !r.collider.gameObject.FindAncestor<Vehicle>()) && go.isOnScreen(Camera.main);
     }
 
     public static bool isLookingAt(Transform looker, Vector3 pos, float maxAng) {
@@ -860,7 +855,7 @@ public static class ObjectUtil {
     }
 
     public static bool isRoom(this GameObject go, bool allowTunnelConnections) {
-        return isPieceType(go, allowTunnelConnections, "BaseRoom");
+        return go.isPieceType(allowTunnelConnections, "BaseRoom");
     }
 
     public static bool isMoonpool(this GameObject go, bool allowTunnelConnections, bool allowRoof) {
@@ -872,7 +867,7 @@ public static class ObjectUtil {
             );
         }
 
-        return isPieceType(go, allowTunnelConnections, "BaseMoonpool");
+        return go.isPieceType(allowTunnelConnections, "BaseMoonpool");
     }
 
     private static bool isPieceType(this GameObject go, bool allowTunnelConnections, string type) {
@@ -885,11 +880,11 @@ public static class ObjectUtil {
         }
 
         var bc = go.FindAncestor<BaseCell>();
-        return bc && getChildObject(bc.gameObject, type);
+        return bc && bc.gameObject.getChildObject(type);
     }
 
     public static bool isInWater(this GameObject go) {
-        return go.transform.position.y <= Ocean.GetOceanLevel() && isLoose(go) &&
+        return go.transform.position.y <= Ocean.GetOceanLevel() && go.isLoose() &&
                !WorldUtil.isPrecursorBiome(go.transform.position);
     }
 
@@ -907,7 +902,7 @@ public static class ObjectUtil {
     }
 
     public static bool isPlayer(this Component c, bool allowChildren = false) {
-        return isPlayer(c.gameObject, allowChildren);
+        return c.gameObject.isPlayer(allowChildren);
     }
 
     public static bool isPlayer(this GameObject c, bool allowChildren = false) {
@@ -915,7 +910,7 @@ public static class ObjectUtil {
     }
 
     public static bool isPlayerOrCreature(this Component c, bool allowChildren = false) {
-        return isPlayer(c, allowChildren) || (allowChildren
+        return c.isPlayer(allowChildren) || (allowChildren
             ? (bool)c.gameObject.FindAncestor<Creature>()
             : (bool)c.gameObject.GetComponent<Creature>());
     } /*
@@ -1029,7 +1024,7 @@ public static class ObjectUtil {
     }
 
     public static string tryGetObjectIdentifiers(this Component c, out PrefabIdentifier prefab, out TechType tech) {
-        return tryGetObjectIdentifiers(c.gameObject, out prefab, out tech);
+        return c.gameObject.tryGetObjectIdentifiers(out prefab, out tech);
     }
 
     public static string tryGetObjectIdentifiers(this GameObject go, out PrefabIdentifier prefab, out TechType tech) {

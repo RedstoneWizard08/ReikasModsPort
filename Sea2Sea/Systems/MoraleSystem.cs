@@ -356,9 +356,9 @@ public class MoraleSystem {
                             ? 0
                             : (float)MathUtil.linterpolate(since, 0, fadeTime1, effect1Initial, 0, true);
                     }
-                } else {
-                    return 0;
                 }
+
+                return 0;
             },
             isForce
         );
@@ -372,9 +372,9 @@ public class MoraleSystem {
                         return initial;
                     var since = StoryHandler.instance.getTimeSince(goal);
                     return since >= fadeTime ? 0 : (float)MathUtil.linterpolate(since, 0, fadeTime, initial, 0, true);
-                } else {
-                    return 0;
                 }
+
+                return 0;
             },
             isForce
         );

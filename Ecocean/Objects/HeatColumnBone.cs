@@ -34,7 +34,7 @@ public class HeatColumnBone : CustomPrefab {
     }
 
     public GameObject GetGameObject() {
-        GameObject world = ObjectUtil.createWorldObject(basis);
+        var world = ObjectUtil.createWorldObject(basis);
         world.EnsureComponent<HeatColumnBoneTag>().basis = basis;
         world.fullyEnable();
         world.EnsureComponent<LargeWorldEntity>().cellLevel = LargeWorldEntity.CellLevel.VeryFar;

@@ -13,15 +13,15 @@ internal static partial class C2CPatches {
     [HarmonyPatch(nameof(GhostLeviatanVoid.UpdateVoidBehaviour))]
     public static class VoidLeviathanBehaviorHook {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             InsnList codes = [];
             try {
-                codes.add(OpCodes.Ldarg_0);
-                codes.invoke("ReikaKalseki.SeaToSea.C2CHooks", "TickVoidLeviathan", false, typeof(GhostLeviatanVoid));
-                codes.add(OpCodes.Ret);
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                codes.Add(OpCodes.Ldarg_0);
+                codes.Invoke("ReikaKalseki.SeaToSea.C2CHooks", "TickVoidLeviathan", false, typeof(GhostLeviatanVoid));
+                codes.Add(OpCodes.Ret);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

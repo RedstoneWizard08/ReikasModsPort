@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using Nautilus.Utility;
 using UnityEngine;
 
 namespace ReikaKalseki.DIAlterra;
@@ -15,13 +16,12 @@ public static class WorldgenLog {
 		//saveSlot = SNUtil.getCurrentSaveDir();
 		//saveFile = Path.Combine(saveSlot, "Worldgen.log");
 
-		// TODO
-		// IngameMenuHandler.Main.RegisterOnLoadEvent(queue.Clear);
-		// IngameMenuHandler.Main.RegisterOnSaveEvent(save);
+		SaveUtils.RegisterOnSaveEvent(save);
+		SaveUtils.RegisterOnStartLoadingEvent(queue.Clear);
 	}
 
 	public static void log(GameObject go) {
-		log(go.name + " (" + ObjectUtil.tryGetObjectIdentifiers(go, out var classID, out var tt) + ") @ " + go.transform.position + " / " + go.transform.eulerAngles);
+		log(go.name + " (" + go.tryGetObjectIdentifiers(out var classID, out var tt) + ") @ " + go.transform.position + " / " + go.transform.eulerAngles);
 	}
 
 	public static void log(string s) {

@@ -96,10 +96,9 @@ public class TechTypeMappingConfig<E> {
 				val = new Color(red / 255F, green / 255F, blue / 255F, 1);
 				return true;
 			}
-			else {
-				val = Color.white;
-				return false;
-			}
+
+			val = Color.white;
+			return false;
 		}
 
 		public override string getSample() {

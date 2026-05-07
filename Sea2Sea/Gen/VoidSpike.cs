@@ -173,7 +173,7 @@ public sealed class VoidSpike : WorldGenerator {
         if (spike == null)
             return false;
         //vec = vec+Vector3.up*0.4F; //since we *want* the actual pos to slightly intersect
-        return ObjectUtil.objectCollidesPosition(spike, vec) || isPointWithinBoundingCone(vec, r);
+        return spike.objectCollidesPosition(vec) || isPointWithinBoundingCone(vec, r);
     }
 
     private bool isPointWithinBoundingCone(Vector3 vec, double dr) {
@@ -281,7 +281,7 @@ public sealed class VoidSpike : WorldGenerator {
                 //pos.y += (3.5F-radius);
                 //SNUtil.log("Attempted ore @ "+pos);
                 if ((validPlantPosCheck == null || validPlantPosCheck(pos + Vector3.up * 0.15F, "ore")) &&
-                    (floater == null || !ObjectUtil.objectCollidesPosition(floater, pos))) {
+                    (floater == null || !floater.objectCollidesPosition(pos))) {
                     var ore = oreChoices.getRandomEntry();
                     while (pos.y > ore.maxY) {
                         ore = oreChoices.getRandomEntry();

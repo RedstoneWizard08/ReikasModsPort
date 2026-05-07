@@ -14,11 +14,10 @@ internal static partial class RBPatches {
     [HarmonyPatch(nameof(ConstructableBase.SetState))]
     public static class BuildingDestroyCollidingCheck {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
-            InstructionHandlers.logPatchStart(MethodBase.GetCurrentMethod(), instructions);
+            InstructionHandlers.LogPatchStart(MethodBase.GetCurrentMethod(), instructions);
             var codes = new InsnList(instructions);
             try {
-                var idx = InstructionHandlers.getInstruction(
-                    codes,
+                var idx = codes.GetInstruction(
                     0,
                     0,
                     OpCodes.Call,
@@ -27,16 +26,16 @@ internal static partial class RBPatches {
                     false,
                     new Type[] { typeof(GameObject) }
                 );
-                codes[idx] = InstructionHandlers.createMethodCall(
+                codes[idx] = InstructionHandlers.CreateMethodCall(
                     "ReikaKalseki.Reefbalance.ReefbalanceMod",
                     nameof(ReefbalanceMod.CanBuildingDestroyObject),
                     false,
                     typeof(GameObject)
                 );
-                InstructionHandlers.logCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
+                InstructionHandlers.LogCompletedPatch(MethodBase.GetCurrentMethod(), instructions);
                 //FileLog.Log("Codes are "+InstructionHandlers.toString(codes));
             } catch (Exception e) {
-                InstructionHandlers.logErroredPatch(MethodBase.GetCurrentMethod());
+                InstructionHandlers.LogErroredPatch(MethodBase.GetCurrentMethod());
                 FileLog.Log(e.Message);
                 FileLog.Log(e.StackTrace);
                 FileLog.Log(e.ToString());

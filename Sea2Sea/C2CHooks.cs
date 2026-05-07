@@ -1091,8 +1091,7 @@ public static class C2CHooks {
                     WaterTemperatureSimulation.main.GetTemperature(p.transform.position) > 270) {
                     dmg.SetValue(dmg.GetAmount() * 1.25F);
                 } else if (flag) {
-                    if ((dmg.Type == DamageType.Poison || dmg.Type == DamageType.Acid ||
-                         dmg.Type == DamageType.Electrical) && dmg.Dealer != Player.main.gameObject) {
+                    if (dmg.Type is DamageType.Poison or DamageType.Acid or DamageType.Electrical && dmg.Dealer != Player.main.gameObject) {
                         //this means something has to deal at least 50 damage to do anything with seal suit, and 20 with reinf (yet most poison is DoT and so does less per)
                         //and lots of other damage is *= Time.deltaTime too, so is tiny per
                         //even LR brine damage is 10 in 1s increments, though is caught by the upper case instead
@@ -1132,8 +1131,7 @@ public static class C2CHooks {
             //SubRoot sub = dmg.target.FindAncestor<SubRoot>();
             //if (sub && sub.isCyclops)
             //	SNUtil.writeToChat("Cyclops ["+dmg.target.GetFullHierarchyPath()+"] took "+dmg.amount+" of "+dmg.type+" from '"+dmg.dealer+"'");
-            if (dmg.Type == DamageType.Normal || dmg.Type == DamageType.Drill || dmg.Type == DamageType.Puncture ||
-                dmg.Type == DamageType.Electrical) {
+            if (dmg.Type is DamageType.Normal or DamageType.Drill or DamageType.Puncture or DamageType.Electrical) {
                 var s = dmg.Target.FindAncestor<DeepStalkerTag>();
                 if (s) {
                     if (dmg.Type == DamageType.Electrical)
@@ -1594,7 +1592,7 @@ public static class C2CHooks {
 
     public static GameObject GetCrafterGhostModel(GameObject ret, TechType tech) {
         SNUtil.Log("Crafterghost for " + tech + ": " + ret);
-        if (tech == TechType.PrecursorKey_Red || tech == TechType.PrecursorKey_White) {
+        if (tech is TechType.PrecursorKey_Red or TechType.PrecursorKey_White) {
             ret = ObjectUtil.lookupPrefab(CraftData.GetClassIdForTechType(tech));
             ret = ret.clone();
             ret = ret.getChildObject("Model");
@@ -3122,7 +3120,7 @@ public static class C2CHooks {
     }
 
     public static void MergeDeathrunRecipeChange(TechType tt, RecipeData td) {
-        RecipeData real = RecipeUtil.getRecipe(tt);
+        var real = RecipeUtil.getRecipe(tt);
         if (real == null) {
             SNUtil.Log("Discarding deathrun " + tt + " recipe, as there is no vanilla recipe");
             return;
@@ -3133,7 +3131,7 @@ public static class C2CHooks {
             RecipeUtil.toString(real)
         );
         var cost = RecipeUtil.getIngredientsDict(real);
-        foreach (Ingredient i in td.Ingredients) {
+        foreach (var i in td.Ingredients) {
             if (cost.ContainsKey(i.techType)) {
                 cost[i.techType] = Math.Max(cost[i.techType], i.amount);
             }
@@ -3234,7 +3232,7 @@ public static class C2CHooks {
         }
 
         if (id != TechType.None) {
-            Vector2int sz = TechData.GetItemSize(id);
+            var sz = TechData.GetItemSize(id);
             if (sp.Filter.storageContainer.container.HasRoomFor(sz.x, sz.y)) {
                 var it = ObjectUtil.createWorldObject(id).GetComponent<Pickupable>();
                 it.Pickup(false);
@@ -3358,7 +3356,7 @@ public static class C2CHooks {
             var pp = go.GetComponent<Pickupable>();
             if (pp) {
                 var tt = pp.GetTechType();
-                if (tt == TechType.BigFilteredWater || tt == TechType.DisinfectedWater || tt == TechType.FilteredWater)
+                if (tt is TechType.BigFilteredWater or TechType.DisinfectedWater or TechType.FilteredWater)
                     return;
                 if (tt == C2CItems.treatment.TechType ||
                     tt == CraftingItems.getItem(CraftingItems.Items.WeakEnzyme42).TechType)
@@ -3367,7 +3365,9 @@ public static class C2CHooks {
                 if (tt == TechType.Coffee) {
                     MoraleSystem.instance.onDrinkCoffee();
                     return;
-                } else if (tt == TechType.Snack1 || tt == TechType.Snack2 || tt == TechType.Snack3) {
+                }
+
+                if (tt is TechType.Snack1 or TechType.Snack2 or TechType.Snack3) {
                     morale = 20;
                     PlayerMovementSpeedModifier.add(0.9F, 60 * 10);
                 } else if (tt == TechType.WaterFiltrationSuitWater) {
@@ -3389,8 +3389,7 @@ public static class C2CHooks {
                         var evt = li[i];
                         if (!evt.isEating)
                             continue;
-                        if (tt == TechType.BigFilteredWater || tt == TechType.DisinfectedWater ||
-                            tt == TechType.FilteredWater || tt == TechType.WaterFiltrationSuitWater || tt == TechType.Coffee)
+                        if (tt is TechType.BigFilteredWater or TechType.DisinfectedWater or TechType.FilteredWater or TechType.WaterFiltrationSuitWater or TechType.Coffee)
                             continue;
                         //SNUtil.writeToChat("ate "+evt.itemType+" @ "+evt.eventTime);
                         if (MoraleSystem.instance.areFoodsDifferent(evt.itemType, tt)) {

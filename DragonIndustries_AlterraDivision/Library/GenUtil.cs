@@ -273,10 +273,10 @@ public static class GenUtil {
             }
 
             return true;
-        } else {
-            SNUtil.Log("Generator " + gen + " failed, trying again in one second", SNUtil.DiDLL);
-            return false;
         }
+
+        SNUtil.Log("Generator " + gen + " failed, trying again in one second", SNUtil.DiDLL);
+        return false;
     }
 
     public abstract class CustomPrefabImpl : CustomPrefab, DIPrefab<StringPrefabContainer> {

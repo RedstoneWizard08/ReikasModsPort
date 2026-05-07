@@ -91,7 +91,7 @@ public sealed class GrandReefVoidChunk : WorldGenerator {
             var pos = getRandomPlantPosition();
             if (pos != null && pos.HasValue) {
                 var use = pos.Value;
-                while (!ObjectUtil.objectCollidesPosition(rock, use) && position.y - use.y < 2) {
+                while (!rock.objectCollidesPosition(use) && position.y - use.y < 2) {
                     use.y -= 0.05F;
                 }
 
@@ -116,7 +116,7 @@ public sealed class GrandReefVoidChunk : WorldGenerator {
             go.transform.rotation = UnityEngine.Random.rotationUniform;
             rocks.Add(go);
 
-            ObjectUtil.applyGravity(go);
+            go.applyGravity();
         }
 
         var genned = 0;

@@ -38,7 +38,7 @@ public abstract class GlowshroomBase<T> : BasicCustomPlant, MultiTexturePrefab w
         go.removeChildObject("Jellyshroom_Loot_InsideShroom");
         go.removeChildObject("Jellyshroom_Creature_CrabSnake");
         if (!go.GetComponentInChildren<Light>()) {
-            Light l = go.addLight(2, 30, getLightColor());
+            var l = go.addLight(2, 30, getLightColor());
             l.gameObject.transform.localPosition = Vector3.up * 5;
         }
 
@@ -133,11 +133,11 @@ public abstract class GlowShroomTagBase : MonoBehaviour {
     }
 
     private void setModel() {
-        GameObject pfb = ObjectUtil.lookupPrefab("3e199d12-2d75-4c58-a819-d78beeb24e2c");
+        var pfb = ObjectUtil.lookupPrefab("3e199d12-2d75-4c58-a819-d78beeb24e2c");
         var a = GetComponentInChildren<Animator>();
         if (a) {
             var r = pfb.GetComponentInChildren<MeshRenderer>();
-            GameObject mdl = r.gameObject.clone();
+            var mdl = r.gameObject.clone();
             mdl.transform.SetParent(transform);
             mdl.transform.localPosition = a.transform.localPosition;
             mdl.transform.localRotation = Quaternion.Euler(-90, a.transform.localEulerAngles.y, 0);
@@ -146,10 +146,10 @@ public abstract class GlowShroomTagBase : MonoBehaviour {
             a.gameObject.destroy(false);
         }
 
-        GameObject coll = gameObject.getChildObject("collision");
+        var coll = gameObject.getChildObject("collision");
         if (coll) {
-            GameObject cap = pfb.getChildObject("Capsule");
-            GameObject coll2 = cap.clone();
+            var cap = pfb.getChildObject("Capsule");
+            var coll2 = cap.clone();
             coll2.transform.SetParent(transform);
             coll2.transform.localPosition = coll.transform.localPosition;
             coll2.transform.localRotation = Quaternion.Euler(-90, coll.transform.localEulerAngles.y, 0);
@@ -244,7 +244,7 @@ public abstract class GlowShroomTagBase : MonoBehaviour {
         var rb = go.GetComponent<Rigidbody>();
         rb.isKinematic = false;
         rb.angularVelocity = MathUtil.getRandomVectorAround(Vector3.zero, 15);
-        Vector3 vec = MathUtil.getRandomVectorAround(
+        var vec = MathUtil.getRandomVectorAround(
             transform.up.normalized * Random.Range(10F, 15F) * getFireVelocity(),
             0.5F
         );

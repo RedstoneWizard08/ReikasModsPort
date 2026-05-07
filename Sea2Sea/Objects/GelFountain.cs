@@ -38,7 +38,7 @@ public class GelFountain : InteractableSpawnable {
         world.removeComponent<LiveMixin>();
         world.removeComponent<Pickupable>();
         world.removeComponent<ResourceTracker>();
-        ObjectUtil.makeMapRoomScannable(world, Info.TechType);
+        world.makeMapRoomScannable(Info.TechType);
         world.removeComponent<Rigidbody>();
         world.removeComponent<WorldForces>();
         var bc = world.GetComponent<BoxCollider>();
