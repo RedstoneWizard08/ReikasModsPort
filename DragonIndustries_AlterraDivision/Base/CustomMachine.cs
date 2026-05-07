@@ -41,6 +41,7 @@ public abstract class CustomMachine<M> : CustomPrefab, DIPrefab<CustomMachine<M>
                     TechnologyUnlockSystem.instance.registerPage(Info.TechType, page);
                 this.SetPdaGroupCategory(GroupForPDA, CategoryForPDA);
                 this.SetRecipe(GetBlueprintRecipe());
+                Info.WithIcon(getIcon());
             }
         );
 
