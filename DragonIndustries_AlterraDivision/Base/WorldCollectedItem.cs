@@ -36,9 +36,11 @@ public class WorldCollectedItem : CustomPrefab, DIPrefab<StringPrefabContainer> 
 
         SetGameObject(GetGameObject);
 
-        AddOnRegister(() => { ItemRegistry.instance.addItem(this); });
-
-        Info.WithSizeInInventory(SizeInInventory).WithIcon(getIcon());
+        AddOnRegister(() => {
+                ItemRegistry.instance.addItem(this);
+                Info.WithSizeInInventory(SizeInInventory).WithIcon(getIcon());
+            }
+        );
     }
 
     public GameObject GetGameObject() {

@@ -44,14 +44,13 @@ public abstract class RetexturedFish : CustomPrefab, DIPrefab<StringPrefabContai
     protected RetexturedFish(string id, string name, string desc, string pfb) : base(id, name, desc) {
         baseTemplate = new StringPrefabContainer(pfb);
         _ownerMod = SNUtil.TryGetModDLL();
-        Info.WithIcon(GetSprite());
         SetGameObject(GetGameObject);
         // TODO
         // this.SetSpawns(_nativeBiomesSurface.ToArray());
-        Info.WithSizeInInventory(SizeInInventory);
 
         // typeof(ModPrefab).GetField("Mod", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(this, ownerMod);
         AddOnRegister(() => {
+                Info.WithIcon(GetSprite()).WithSizeInInventory(SizeInInventory);
                 Creatures[Info.TechType] = this;
                 CreatureIDs[Info.ClassID] = this;
 

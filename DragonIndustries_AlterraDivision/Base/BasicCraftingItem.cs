@@ -55,12 +55,13 @@ public class BasicCraftingItem : CustomPrefab, DIPrefab<BasicCraftingItem, Strin
                 recipe.FabricatorType = FabricatorType;
                 recipe.CraftingTime = CraftingTime;
                 recipe.StepsToFabricatorTab = StepsToFabricatorTab;
+                
+                this.SetPdaGroupCategory(GroupForPDA, CategoryForPDA);
+                Info.WithIcon(GetItemSprite()).WithSizeInInventory(SizeInInventory);
             }
         );
 
-        this.SetPdaGroupCategory(GroupForPDA, CategoryForPDA);
         SetGameObject(GetGameObject);
-        Info.WithIcon(GetItemSprite()).WithSizeInInventory(SizeInInventory);
     }
 
     public virtual CraftTree.Type FabricatorType => CraftTree.Type.Fabricator;

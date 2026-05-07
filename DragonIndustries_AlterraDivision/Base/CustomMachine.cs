@@ -39,12 +39,12 @@ public abstract class CustomMachine<M> : CustomPrefab, DIPrefab<CustomMachine<M>
                 SaveSystem.addSaveHandler(Info.ClassID, saveHandler);
                 if (page != null)
                     TechnologyUnlockSystem.instance.registerPage(Info.TechType, page);
+                this.SetPdaGroupCategory(GroupForPDA, CategoryForPDA);
+                this.SetRecipe(GetBlueprintRecipe());
             }
         );
 
         SetGameObject(GetGameObject);
-        this.SetPdaGroupCategory(GroupForPDA, CategoryForPDA);
-        this.SetRecipe(GetBlueprintRecipe());
     }
 
     public CustomMachine<M> addIngredient(ItemDef item, int amt) {

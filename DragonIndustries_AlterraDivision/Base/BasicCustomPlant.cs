@@ -62,10 +62,10 @@ public class BasicCustomPlant : CustomPrefab, DIPrefab<FloraPrefabFetch>, Flora 
                     CraftDataHandler.SetHarvestFinalCutBonus(Info.TechType, finalCutBonus);
                     SNUtil.Log("Finished patching " + this + " > " + seed, ownerMod);
                 }
+                Info.WithIcon(GetItemSprite()).WithSizeInInventory(SizeInInventory);
             }
         );
         SetGameObject(GetGameObject);
-        Info.WithIcon(GetItemSprite()).WithSizeInInventory(SizeInInventory);
     }
 
     public static void setPlantSeed(CustomPrefab seed, BasicCustomPlant plant) {

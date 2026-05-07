@@ -32,10 +32,10 @@ public class BasicCustomOre : CustomPrefab, DIPrefab<VanillaResources> {
                 if (collectSound != null) {
                     CraftDataHandler.SetPickupSound(Info.TechType, collectSound);
                 }
+                Info.WithIcon(GetItemSprite()).WithSizeInInventory(SizeInInventory);
             }
         );
         SetGameObject(GetGameObject);
-        Info.WithIcon(GetItemSprite()).WithSizeInInventory(SizeInInventory);
     }
 
     public void registerWorldgen(BiomeType biome, int amt, float chance) {
