@@ -126,6 +126,7 @@ public class AqueousEngineeringMod : BaseUnityPlugin {
         e = itemLocale.getEntry("CraftingNodes");
         nuclearCategory = EnumHandler.AddEntry<TechCategory>("Nuclear").WithPdaInfo(e.getString("nuclear"))
             .RegisterToTechGroup(TechGroup.Resources);
+        TreeCategories.Register(nuclearCategory, TechGroup.Resources);
         CraftTreeHandler.AddTabNode(
             CraftTree.Type.Fabricator,
             "Nuclear",

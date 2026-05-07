@@ -1180,7 +1180,7 @@ public static class C2CRecipes {
             pfbMdl
         );
         ingot.addIngredient(item, amt);
-        ingot.craftingSubCategory = "C2CIngots";
+        ingot.craftingSubCategory = C2CItems.ingotCategory;
         TechData.GetCraftTime(TechType.TitaniumIngot, out ingot.craftingTime);
         ingot.unlockRequirement = TechType.Unobtanium;
         ingot.sprite = TextureManager.getSprite(

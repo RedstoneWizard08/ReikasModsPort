@@ -11,7 +11,7 @@ public class SeamothHeatSink : BasicCraftingItem {
         "WorldEntities/Natural/CopperWire"
     ) {
         sprite = TextureManager.getSprite(SeaToSeaMod.ModDLL, "Textures/Items/Seamothheatsink");
-        craftingSubCategory = "Tools";
+        craftingSubCategory = TechCategory.Tools;
         craftingTime = 4;
         unlockRequirement = TechType.Unobtanium;
         inventorySize = new Vector2int(1, 2);

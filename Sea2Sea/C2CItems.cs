@@ -105,6 +105,7 @@ public static class C2CItems {
         var e = SeaToSeaMod.MiscLocale.getEntry("CraftingNodes");
         chemistryCategory = EnumHandler.AddEntry<TechCategory>("C2Chemistry").WithPdaInfo(e.getString("chemistry"))
             .RegisterToTechGroup(TechGroup.Resources);
+        TreeCategories.Register(chemistryCategory, TechGroup.Resources);
         CraftTreeHandler.AddTabNode(
             CraftTree.Type.Fabricator,
             "C2Chemistry",
@@ -115,6 +116,7 @@ public static class C2CItems {
 
         ingotCategory = EnumHandler.AddEntry<TechCategory>("C2CIngots").WithPdaInfo(e.getString("ingots"))
             .RegisterToTechGroup(TechGroup.Resources);
+        TreeCategories.Register(ingotCategory, TechGroup.Resources);
         CraftTreeHandler.AddTabNode(
             CraftTree.Type.Fabricator,
             "C2CIngots",
@@ -151,6 +153,7 @@ public static class C2CItems {
 
         precursorCategory = EnumHandler.AddEntry<TechCategory>("C2CPrecursor").WithPdaInfo(e.getString("precursor"))
             .RegisterToTechGroup(TechGroup.Resources);
+        TreeCategories.Register(precursorCategory, TechGroup.Resources);
 
         brokenRedTablet = new BrokenTablet(TechType.PrecursorKey_Red);
         brokenWhiteTablet = new BrokenTablet(TechType.PrecursorKey_White);

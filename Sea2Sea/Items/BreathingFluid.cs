@@ -12,7 +12,7 @@ public class BreathingFluid : BasicCraftingItem {
     ) {
         sprite = TextureManager.getSprite(SeaToSeaMod.ModDLL, "Textures/Items/BreathFluid");
         unlockRequirement = TechType.Unobtanium; //SeaToSeaMod.rebreatherV2.TechType;
-        craftingSubCategory = "C2Chemistry";
+        craftingSubCategory = C2CItems.chemistryCategory;
         craftingTime = 15;
         inventorySize = new Vector2int(3, 3);
         renderModify = r => {

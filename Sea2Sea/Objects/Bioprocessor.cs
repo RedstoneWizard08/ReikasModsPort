@@ -55,6 +55,7 @@ public class Bioprocessor : CustomMachine<BioprocessorLogic> {
         sparklePeeperDisplay.Register();
         bioprocCategory = EnumHandler.AddEntry<TechCategory>("bioprocessor").WithPdaInfo("Bioprocessor")
             .RegisterToTechGroup(TechGroup.Resources);
+        TreeCategories.Register(bioprocCategory, TechGroup.Resources);
         /*
         ItemRegistry.instance.addListener(item => {
             if (item.ClassID == "MiniPoop") {

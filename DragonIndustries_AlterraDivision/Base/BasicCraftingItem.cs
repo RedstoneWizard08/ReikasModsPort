@@ -22,7 +22,7 @@ public class BasicCraftingItem : CustomPrefab, DIPrefab<BasicCraftingItem, Strin
     public float craftingTime = 0;
     public Vector2int inventorySize = new(1, 1);
     public readonly List<PlannedIngredient> byproducts = [];
-    public string craftingSubCategory = "" + TechCategory.BasicMaterials;
+    public TechCategory craftingSubCategory = TechCategory.BasicMaterials;
     public Action<Renderer> renderModify = null;
 
     public float glowIntensity { get; set; }
@@ -54,6 +54,7 @@ public class BasicCraftingItem : CustomPrefab, DIPrefab<BasicCraftingItem, Strin
 
                 recipe.FabricatorType = FabricatorType;
                 recipe.CraftingTime = CraftingTime;
+                recipe.StepsToFabricatorTab = StepsToFabricatorTab;
             }
         );
 
@@ -102,8 +103,8 @@ public class BasicCraftingItem : CustomPrefab, DIPrefab<BasicCraftingItem, Strin
     public virtual TechCategory CategoryForPDA {
         get {
             var ret = TechCategory.Misc;
-            return Enum.TryParse(craftingSubCategory, out ret) ? ret :
-                EnumHandler.TryGetValue(craftingSubCategory, out ret) ? ret :
+            return Enum.TryParse(craftingSubCategory.ToString(), out ret) ? ret :
+                EnumHandler.TryGetValue(craftingSubCategory.ToString(), out ret) ? ret :
                 TechCategory.BasicMaterials;
         }
     }
@@ -111,7 +112,21 @@ public class BasicCraftingItem : CustomPrefab, DIPrefab<BasicCraftingItem, Strin
     public virtual string[] StepsToFabricatorTab =>
         //SNUtil.log("Fetching craftingsubcat "+craftingSubCategory+" from "+FriendlyName);
         //RecipeUtil.dumpCraftTree(CraftTree.Type.Fabricator);
-        ["Resources", craftingSubCategory];
+        GetGroupForCategory(craftingSubCategory).ToString() == craftingSubCategory.ToString()
+            ? [craftingSubCategory.ToString()]
+            : [GetGroupForCategory(craftingSubCategory).ToString(), craftingSubCategory.ToString()];
+
+    private static TechGroup GetGroupForCategory(TechCategory category) {
+        return category switch {
+            TechCategory.BasicMaterials or TechCategory.AdvancedMaterials or TechCategory.Electronics => TechGroup
+                .Resources,
+            TechCategory.Water or TechCategory.CookedFood or TechCategory.CuredFood => TechGroup.Survival,
+            TechCategory.Equipment or TechCategory.Tools => TechGroup.Personal,
+            TechCategory.Machines => TechGroup.Machines,
+            TechCategory.Workbench => TechGroup.Workbench,
+            _ => TreeCategories.customCategories.GetOrDefault(category, TechGroup.Uncategorized),
+        };
+    }
 
     public virtual GameObject GetGameObject() {
         var go = ObjectUtil.getModPrefabBaseObject(this);

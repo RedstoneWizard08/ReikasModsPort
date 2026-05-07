@@ -108,7 +108,7 @@ public class ReefbalanceMod : BaseUnityPlugin {
                 "Laminated glass with titanium reinforcement, suitable for underwater pressure vessels.",
                 "WorldEntities/Natural/Glass"
             ) {
-                craftingSubCategory = "" + TechCategory.BasicMaterials,
+                craftingSubCategory = TechCategory.BasicMaterials,
                 craftingTime = 1.5F,
                 numberCrafted = 2,
                 unlockRequirement = TechType.Unobtanium,

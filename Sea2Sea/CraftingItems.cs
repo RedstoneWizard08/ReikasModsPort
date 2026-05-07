@@ -26,7 +26,7 @@ public static class CraftingItems {
             );
             mappings[m] = item;
             item.craftingSubCategory =
-                attr.category == TechCategory.VehicleUpgrades ? "C2Chemistry" : "" + attr.category;
+                attr.category == TechCategory.VehicleUpgrades ? C2CItems.chemistryCategory : attr.category;
             item.unlockRequirement = attr.dependency; /*
             if (m == Items.Sealant || m == Items.SealFabric) {
                 item.unlockRequirement = SeaToSeaMod.alkali.TechType;
